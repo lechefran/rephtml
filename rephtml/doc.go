@@ -72,53 +72,75 @@ func (h *HtmlFile) PString(s string) *HtmlFile {
 	return h
 }
 
+/*
+Internal parsing function to format style attributes
+*/
 func (h *HtmlFile) parseStyleBytes(b []byte) []byte {
 	var fb bytes.Buffer
-	open, close := b[0], b[len(b)-1]
-	contents := bytes.Fields(b[open+1 : close])
+	open, close := bytes.Index(b, []byte("{"))+1, len(b)-1
+	contents := bytes.Fields(b[open:close])
 	t := tabs(h.ttrack)
+	fb.WriteString(t)
+	fb.Write(b[:open])
+	fb.WriteString(newline)
+	h.ttrack++
+	t = tabs(h.ttrack)
 	for _, c := range contents {
 		fb.WriteString(t)
 		fb.Write(c)
-		fb.WriteString(";" + newline)
+		fb.WriteString(newline)
 	}
+	h.ttrack--
+	t = tabs(h.ttrack)
+	fb.WriteString(t + "}" + newline)
 	return fb.Bytes()
 }
 
 func (h *HtmlFile) Prepare() *HtmlFile {
-	t := tabs(h.ttrack + 1)
+	t := tabs(h.ttrack)
 	h.buf.WriteString("<html>" + newline)
 	h.buf.WriteString(t + "<header>" + newline)
-	t = tabs(h.ttrack + 1)
+	h.ttrack++
+	t = tabs(h.ttrack)
 	h.buf.WriteString(t + "<style>" + newline)
-	t = tabs(h.ttrack + 1)
-	// for _, s := range h.style {
-	// 	h.parseStyleBytes(s)
-	// }
-	h.buf.WriteString(indent + "</style>")
-	h.buf.WriteString(indent + "</header>")
-	h.buf.WriteString(indent + "<body>")
-	for _, s := range h.body {
-		h.buf.WriteString(indent + tab)
-		h.buf.Write(s)
+	h.ttrack++
+	t = tabs(h.ttrack)
+	for i := 0; i < len(h.style); i++ {
+		if i != len(h.style)-1 {
+			h.buf.Write(h.parseStyleBytes(h.style[i]))
+			h.buf.WriteString(newline)
+		} else {
+			h.buf.Write(h.parseStyleBytes(h.style[i]))
+		}
 	}
-	h.buf.WriteString(indent + "</body>" + newline)
+	h.ttrack--
+	t = tabs(h.ttrack)
+	h.buf.WriteString(t + "</style>" + newline)
+	h.ttrack--
+	t = tabs(h.ttrack)
+	h.buf.WriteString(t + "</header>" + newline)
+	h.buf.WriteString(t + "<body>" + newline)
+	h.ttrack++
+	t = tabs(h.ttrack)
+	for i := 0; i < len(h.body); i++ {
+		if i != len(h.body)-1 {
+			h.buf.WriteString(t)
+			h.buf.Write(h.body[i])
+			h.buf.WriteString(newline)
+		} else {
+			h.buf.WriteString(t)
+			h.buf.Write(h.body[i])
+		}
+	}
+	h.ttrack--
+	t = tabs(h.ttrack)
+	h.buf.WriteString(newline + t + "</body>" + newline)
 	h.buf.WriteString("</html>")
 	return h
 }
 
 // change of plans- write to byte arr first, parse later
 func (h *HtmlFile) StyleString(s string) *HtmlFile {
-	// s = strings.ReplaceAll(s, "\t", "")
-	// s = strings.ReplaceAll(s, ";", "; ")
-	// open, close := strings.Index(s, "{"), strings.Index(s, "}")
-	// props := s[open+1 : close-1]
-	// fs := s[:open+1]
-	// propsarr := strings.Fields(props)
-	// for _, p := range propsarr {
-	// 	fs += p
-	// }
-	// fs += s[close:]
 	fs := strings.ReplaceAll(s, ";", "; ")
 	h.style = append(h.style, []byte(fs))
 	return h

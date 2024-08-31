@@ -98,11 +98,19 @@ func main() {
 	fmt.Println("close: " + string(closeb))
 	tst = strings.ReplaceAll(tst, ";", "; ")
 	fmt.Println("modified string after replace all: " + tst)
-	tst1 := []byte(tst)
+	tst1 := []byte(tst[open+1 : close])
 	tst2 := bytes.Fields(tst1)
+	var buffer bytes.Buffer
+	buffer.WriteString(tst[:open])
+	buffer.WriteString("{" + newline)
 	for _, t := range tst2 {
 		fmt.Println(string(t))
+		buffer.WriteString(tab)
+		buffer.Write(t)
+		buffer.WriteString(newline)
 	}
+	buffer.WriteString("}")
+	fmt.Printf("string format in buffer:\n%s\n", buffer.String())
 }
 
 func ReadCsv(path string) [][]string {
