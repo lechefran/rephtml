@@ -90,9 +90,11 @@ func main() {
 	// }
 
 	tst := "th, td {font-family:Arial;padding:10px;text-align:center;}"
-	openb, closeb := tst[strings.Index(tst, "{")], tst[len(tst)-1]
+	open, close := strings.Index(tst, "{"), len(tst)-1
+	openb, closeb := tst[open], tst[close]
 	fmt.Println("original string: " + tst)
 	fmt.Println("open: " + string(openb))
+	fmt.Println("string leading to open: " + tst[:open])
 	fmt.Println("close: " + string(closeb))
 	tst = strings.ReplaceAll(tst, ";", "; ")
 	fmt.Println("modified string after replace all: " + tst)
