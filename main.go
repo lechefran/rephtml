@@ -6,7 +6,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/lechefran/rephtml/rephtml"
+	rephtml "github.com/lechefran/rephtml/components"
 )
 
 const indent = "\n\t"
@@ -37,7 +37,7 @@ func main() {
 		Width:       "80%",
 	}
 	tableTag := []string{"table"}
-	tableStyle := &rephtml.StyleTag{
+	tableStyle := &rephtml.Style{
 		Props: tableProps,
 		Tags:  tableTag,
 	}
@@ -56,8 +56,9 @@ func main() {
 		}`)
 	html.Style(tableStyle)
 	html.H1String("Test")
-	html.TableString([]string{"header1", "header2", "header3"}, [][]string{{"a1", "a2", "a3"}, {"b1", "b2", "b3"}})
+	html.TableString([]string{"header1", "header2"}, [][]string{{"a1", "a2", "a3"}, {"b1", "b2", "b3"}})
 	html.PString("Test paragraph for testing purposes")
+	html.PStringWithStyle("Test style paragraph for testing purposes", "font-size: 30px")
 	html.Prepare()
 	html.WriteToFile("report.html")
 }

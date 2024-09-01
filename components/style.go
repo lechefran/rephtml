@@ -376,7 +376,7 @@ func (p *CssProps) NewCssProps() *CssProps {
 	return &CssProps{}
 }
 
-type StyleTag struct {
+type Style struct {
 	buf   bytes.Buffer
 	pmap  *PropMap
 	Props CssProps
@@ -396,7 +396,7 @@ func formatStringArray(sarr []string) string {
 }
 
 // todo: use byte array over string
-func (s *StyleTag) Prepare() {
+func (s *Style) Prepare() {
 	res := ""
 	val := reflect.ValueOf(s.Props)
 	t := val.Type()
@@ -409,11 +409,11 @@ func (s *StyleTag) Prepare() {
 	s.buf.WriteString(formatStringArray(s.Tags) + "{" + res + "}")
 }
 
-func (s *StyleTag) Bytes() []byte {
+func (s *Style) Bytes() []byte {
 	return s.buf.Bytes()
 }
 
-func (s *StyleTag) PropMap(p *PropMap) *StyleTag {
+func (s *Style) PropMap(p *PropMap) *Style {
 	s.pmap = p
 	return s
 }

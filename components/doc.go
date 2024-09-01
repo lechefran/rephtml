@@ -27,7 +27,7 @@ func NewHtmlFile() *HtmlFile {
 
 // vv struct functions vv
 
-func (h *HtmlFile) Style(s *StyleTag) *HtmlFile {
+func (h *HtmlFile) Style(s *Style) *HtmlFile {
 	h.style = append(h.style, s.Bytes())
 	return h
 }
@@ -70,6 +70,15 @@ a string parameter as the assigned value
 */
 func (h *HtmlFile) PString(s string) *HtmlFile {
 	h.body = append(h.body, []byte("<p>"+s+"</p>"))
+	return h
+}
+
+func (h *HtmlFile) PStringWithStyle(s, style string) *HtmlFile {
+	if style == "" {
+		h.body = append(h.body, []byte("<p>"+s+"</p>"))
+	} else {
+		h.body = append(h.body, []byte("<p style=\""+style+"\";>"+s+"</p>"))
+	}
 	return h
 }
 
