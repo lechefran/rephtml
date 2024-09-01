@@ -3,7 +3,6 @@ package rephtml
 import (
 	"bytes"
 	"reflect"
-	"strings"
 )
 
 /*
@@ -388,15 +387,15 @@ func formatStringArray(sarr []string) string {
 	res := ""
 	for i := 0; i < len(sarr); i++ {
 		if i != len(sarr)-1 {
-			res += sarr[i] + ", "
+			res += sarr[i] + ","
 		} else {
-			res += sarr[i] + " "
+			res += sarr[i]
 		}
 	}
 	return res
 }
 
-// todo: fix formatting
+// todo: use byte array over string
 func (s *StyleTag) Prepare() {
 	res := ""
 	val := reflect.ValueOf(s.Props)
@@ -404,15 +403,10 @@ func (s *StyleTag) Prepare() {
 	for i := 0; i < val.NumField(); i++ {
 		k, v := t.Field(i).Name, val.Field(i)
 		if k != "" && v.String() != "" {
-			res += s.pmap.pmap[k] + ": " + v.String() + "\\s"
+			res += s.pmap.pmap[k] + ":" + v.String() + ";"
 		}
 	}
-	s.buf.WriteString(formatStringArray(s.Tags) + "{" + newline)
-	lst := strings.Split(res, "\\s")
-	for _, l := range lst {
-		s.buf.WriteString(tab + tab + tab + l + ";" + newline)
-	}
-	s.buf.WriteString(tab + tab + "}")
+	s.buf.WriteString(formatStringArray(s.Tags) + "{" + res + "}")
 }
 
 func (s *StyleTag) Bytes() []byte {

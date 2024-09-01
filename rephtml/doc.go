@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"log"
 	"os"
+	"regexp"
 	"strings"
 )
 
@@ -77,22 +78,75 @@ Internal parsing function to format style attributes
 */
 func (h *HtmlFile) parseStyleBytes(b []byte) []byte {
 	var fb bytes.Buffer
-	open, close := bytes.Index(b, []byte("{"))+1, len(b)-1
-	contents := bytes.Fields(b[open:close])
-	t := tabs(h.ttrack)
-	fb.WriteString(t)
-	fb.Write(b[:open])
-	fb.WriteString(newline)
+
+	nsb := strip(b) // remove all spaces
+
+	// get indexes for open an close braces
+	open, close := bytes.Index(nsb, []byte("{"))+1, len(nsb)-1
+
+	// cut array into parts: opening, contents, and closing
+	openb, closeb := nsb[:open], nsb[close]
+	contents := nsb[open:close]
+
+	// add spacing between open values
+	openbTmp := []byte{}
+	for i := 0; i < len(openb); i++ {
+		if openb[i] == ',' {
+			openbTmp = append(openbTmp, openb[i])
+			openbTmp = append(openbTmp, ' ')
+		} else if openb[i] == '{' {
+			openbTmp = append(openbTmp, ' ')
+			openbTmp = append(openbTmp, openb[i])
+		} else {
+			openbTmp = append(openbTmp, openb[i])
+		}
+	}
+	openbTmp = append(openbTmp, '\n')
+	openb = openbTmp
+
+	// write openb to buffer
+	fb.WriteString(tabs(h.ttrack))
+	fb.Write(openb)
+
+	// next, process contents
+	contentsTmp := make([]byte, 0, len(contents))
+	for _, b := range contents {
+		if b == ';' {
+			contentsTmp = append(contentsTmp, ' ')
+		} else {
+			contentsTmp = append(contentsTmp, b)
+		}
+	}
+	contents = contentsTmp
+
+	// split con
+	carr := bytes.Fields(contents)
+	carrTmp := make([][]byte, 0, len(carr))
+	for _, c := range carr {
+		cTmp := []byte{}
+		for i := 0; i < len(c); i++ {
+			if c[i] == ':' {
+				cTmp = append(cTmp, c[i])
+				cTmp = append(cTmp, ' ')
+			} else {
+				cTmp = append(cTmp, c[i])
+			}
+		}
+		cTmp = append(cTmp, ';')
+		cTmp = append(cTmp, '\n')
+		carrTmp = append(carrTmp, cTmp)
+	}
+	carr = carrTmp
+
 	h.ttrack++
-	t = tabs(h.ttrack)
-	for _, c := range contents {
-		fb.WriteString(t)
+	for _, c := range carr {
+		fb.WriteString(tabs(h.ttrack))
 		fb.Write(c)
-		fb.WriteString(newline)
 	}
 	h.ttrack--
-	t = tabs(h.ttrack)
-	fb.WriteString(t + "}" + newline)
+	fb.WriteString(tabs(h.ttrack))
+	fb.WriteByte(closeb)
+	fb.WriteByte('\n')
 	return fb.Bytes()
 }
 
@@ -170,6 +224,11 @@ func (h *HtmlFile) TableString(harr []string, darr [][]string) *HtmlFile {
 	tbl += t + "</table>"
 	h.body = append(h.body, []byte(tbl))
 	return h
+}
+
+func strip(bytes []byte) []byte {
+	re := regexp.MustCompile("\\s+")
+	return re.ReplaceAll(bytes, nil)
 }
 
 /*
