@@ -85,7 +85,7 @@ func (h *HtmlFile) PStringWithStyle(s, style string) *HtmlFile {
 /*
 Internal parsing function to format style attributes
 */
-func (h *HtmlFile) parseStyleBytes(b []byte) []byte {
+func (h *HtmlFile) formatStyle(b []byte) []byte {
 	var fb bytes.Buffer
 
 	nsb := strip(b) // remove all spaces
@@ -170,10 +170,10 @@ func (h *HtmlFile) Prepare() *HtmlFile {
 	t = tabs(h.ttrack)
 	for i := 0; i < len(h.style); i++ {
 		if i != len(h.style)-1 {
-			h.buf.Write(h.parseStyleBytes(h.style[i]))
+			h.buf.Write(h.formatStyle(h.style[i]))
 			h.buf.WriteString(newline)
 		} else {
-			h.buf.Write(h.parseStyleBytes(h.style[i]))
+			h.buf.Write(h.formatStyle(h.style[i]))
 		}
 	}
 	h.ttrack--
@@ -251,15 +251,15 @@ func tabs(t int) string {
 	return res
 }
 
-func (h *HtmlFile) WriteToFile(s string) {
+func (h *HtmlFile) WriteToFile(path string) {
 	if len(h.head) == 0 && len(h.body) == 0 && len(h.style) == 0 {
-		log.Print("No values were appended to the HTML File. " + s + " will not be created")
+		log.Print("No values were appended to the HTML File. " + path + " will not be created")
 	}
-	if _, err := os.Stat(s); os.IsExist(err) {
-		if err := os.Remove(s); err != nil {
+	if _, err := os.Stat(path); os.IsExist(err) {
+		if err := os.Remove(path); err != nil {
 			log.Fatal(err)
 		}
-		file, err := os.Create(s)
+		file, err := os.Create(path)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -268,7 +268,7 @@ func (h *HtmlFile) WriteToFile(s string) {
 			log.Fatal(err)
 		}
 	} else {
-		file, err := os.Create(s)
+		file, err := os.Create(path)
 		if err != nil {
 			log.Fatal(err)
 		}

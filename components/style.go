@@ -383,16 +383,8 @@ type Style struct {
 	Tags  []string
 }
 
-func formatStringArray(sarr []string) string {
-	res := ""
-	for i := 0; i < len(sarr); i++ {
-		if i != len(sarr)-1 {
-			res += sarr[i] + ","
-		} else {
-			res += sarr[i]
-		}
-	}
-	return res
+func (s *Style) Bytes() []byte {
+	return s.buf.Bytes()
 }
 
 // todo: use byte array over string
@@ -409,8 +401,16 @@ func (s *Style) Prepare() {
 	s.buf.WriteString(formatStringArray(s.Tags) + "{" + res + "}")
 }
 
-func (s *Style) Bytes() []byte {
-	return s.buf.Bytes()
+func formatStringArray(sarr []string) string {
+	res := ""
+	for i := 0; i < len(sarr); i++ {
+		if i != len(sarr)-1 {
+			res += sarr[i] + ","
+		} else {
+			res += sarr[i]
+		}
+	}
+	return res
 }
 
 func (s *Style) PropMap(p *PropMap) *Style {
