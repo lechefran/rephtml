@@ -36,6 +36,7 @@ func main() {
 		MarginRight: "auto",
 		Width:       "80%",
 	}
+
 	tableTag := []string{"table"}
 	tableStyle := &rephtml.Style{
 		Props: tableProps,
@@ -43,6 +44,12 @@ func main() {
 	}
 	tableStyle.PropMap(pmap)
 	tableStyle.Prepare()
+
+	// create table
+	table := rephtml.NewTable()
+	table.Headers([]string{"testhdr1", "testhdr2"})
+	table.AddRow([]string{"testval1", "testhval2"})
+	table.Prepare()
 
 	html := *rephtml.NewHtmlFile()
 	html.StyleString(`h1, h2, h3, h4, h5, h6, p {
@@ -56,9 +63,10 @@ func main() {
 		}`)
 	html.Style(tableStyle)
 	html.H1String("Test")
-	html.TableString([]string{"header1", "header2"}, [][]string{{"a1", "a2", "a3"}, {"b1", "b2", "b3"}})
+	html.TableString([]string{"hdr1", "hdr2", "hdr3"}, [][]string{{"a1", "a2", "a3"}, {"b1", "b2", "b3"}})
 	html.PString("Test paragraph for testing purposes")
 	html.PStringWithStyle("Test style paragraph for testing purposes", "font-size: 30px")
+	html.Table(table)
 	html.Prepare()
 	html.WriteToFile("report.html")
 }

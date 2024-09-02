@@ -7,7 +7,7 @@ type Table struct {
 	class   []string
 	headers []string
 	id      string
-	rows    []string
+	rows    [][]string
 	style   []string
 }
 
@@ -55,17 +55,17 @@ func (t *Table) Id(s string) *Table {
 	return t
 }
 
-func (t *Table) AddRow(s string) *Table {
+func (t *Table) AddRow(s []string) *Table {
 	t.rows = append(t.rows, s)
 	return t
 }
 
-func (t *Table) AddRows(s []string) *Table {
+func (t *Table) AddRows(s [][]string) *Table {
 	t.rows = append(t.rows, s...)
 	return t
 }
 
-func (t *Table) Rows(s []string) *Table {
+func (t *Table) Rows(s [][]string) *Table {
 	t.rows = append(t.rows, s...)
 	return t
 }
@@ -86,5 +86,27 @@ func (t *Table) Styles(s []string) *Table {
 }
 
 func (t *Table) Prepare() *Table {
+	t.buf.WriteString("<table>")
+
+	// write headers
+	t.buf.WriteString("<tr>")
+	for _, h := range t.headers {
+		t.buf.WriteString("<th>" + h + "</th>")
+	}
+	t.buf.WriteString("<tr>")
+
+	// write rows
+	for i := 0; i < len(t.rows); i++ {
+		t.buf.WriteString("<tr>")
+		for j := 0; j < len(t.rows[i]); j++ {
+			t.buf.WriteString("<td>" + t.rows[i][j] + "</td>")
+		}
+		t.buf.WriteString("</tr>")
+	}
+	t.buf.WriteString("</table>")
 	return t
+}
+
+func (t *Table) Bytes() []byte {
+	return t.buf.Bytes()
 }

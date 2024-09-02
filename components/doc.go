@@ -2,6 +2,7 @@ package rephtml
 
 import (
 	"bytes"
+	"fmt"
 	"log"
 	"os"
 	"regexp"
@@ -29,6 +30,11 @@ func NewHtmlFile() *HtmlFile {
 
 func (h *HtmlFile) Style(s *Style) *HtmlFile {
 	h.style = append(h.style, s.Bytes())
+	return h
+}
+
+func (h *HtmlFile) Table(t *Table) *HtmlFile {
+	h.body = append(h.body, t.Bytes())
 	return h
 }
 
@@ -87,7 +93,6 @@ Internal parsing function to format style attributes
 */
 func (h *HtmlFile) formatStyle(b []byte) []byte {
 	var fb bytes.Buffer
-
 	nsb := strip(b) // remove all spaces
 
 	// get indexes for open an close braces
@@ -159,6 +164,35 @@ func (h *HtmlFile) formatStyle(b []byte) []byte {
 	return fb.Bytes()
 }
 
+/*
+Internal parsing function to format table elements
+*/
+func (h *HtmlFile) formatTable(b []byte) {
+	var fb bytes.Buffer
+	nsb := strip(b) // remove all spaces
+	nsbsplit := []byte{}
+
+	// split byte array by tags
+	for i := 0; i < len(nsb)-1; i++ {
+		nsbsplit = append(nsbsplit, nsb[i])
+		if nsb[i] == '>' && nsb[i+1] == '<' {
+			nsbsplit = append(nsbsplit, ' ')
+		}
+		if i+1 == len(nsb)-1 {
+			nsbsplit = append(nsbsplit, '>')
+		}
+	}
+	// sarr := bytes.Fields(nsbsplit)
+
+	// track the number of headers and rows
+	// hdr, rows := [][][]byte{}, [][][]byte{}
+	// for i := 1; i < len(sarr)-1; i++ {
+	// 	if bytes.Equal(sarr[i-1], []byte("<tr>"))sarr[i-1] ==
+	// }
+
+	fmt.Println(fb.String())
+}
+
 func (h *HtmlFile) Prepare() *HtmlFile {
 	t := tabs(h.ttrack)
 	h.buf.WriteString("<html>" + newline)
@@ -187,12 +221,20 @@ func (h *HtmlFile) Prepare() *HtmlFile {
 	t = tabs(h.ttrack)
 	for i := 0; i < len(h.body); i++ {
 		if i != len(h.body)-1 {
+			bbytes := h.body[i]
+			if bytes.Contains(bbytes, []byte("table")) {
+				h.formatTable(bbytes)
+			}
 			h.buf.WriteString(t)
-			h.buf.Write(h.body[i])
+			h.buf.Write(bbytes)
 			h.buf.WriteString(newline)
 		} else {
+			bbytes := h.body[i]
+			if bytes.Contains(bbytes, []byte("table")) {
+				h.formatTable(bbytes)
+			}
 			h.buf.WriteString(t)
-			h.buf.Write(h.body[i])
+			h.buf.Write(bbytes)
 		}
 	}
 	h.ttrack--
@@ -209,6 +251,7 @@ func (h *HtmlFile) StyleString(s string) *HtmlFile {
 	return h
 }
 
+// todo: fix to write to byte arr first, parse later
 func (h *HtmlFile) TableString(harr []string, darr [][]string) *HtmlFile {
 	t := indent + tab
 	tbl := "<table>"

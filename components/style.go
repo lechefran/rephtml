@@ -387,7 +387,6 @@ func (s *Style) Bytes() []byte {
 	return s.buf.Bytes()
 }
 
-// todo: use byte array over string
 func (s *Style) Prepare() {
 	res := ""
 	val := reflect.ValueOf(s.Props)
