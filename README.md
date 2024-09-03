@@ -1,5 +1,5 @@
 # rephtml
-A simple HTML file creator written using Go!
+A simple HTML file creator written in Go! rephtml supports both string and struct parameters.
 ### Simple Example
 ```
 html := NewHtmlFile()
@@ -18,7 +18,9 @@ html.Style(`table {
 	width: 80%;
 	}`)
 html.H1("Test H1 Header")
-html.Table([]string{"header1", "header2", "header3"}, [][]string{{"record1", "record2", "record3"}, {"record4", "record5", "record6"}})
+html.Table([]string{"header1", "header2", "header3"},
+          [][]string{{"record1", "record2", "record3"},
+          {"record4", "record5", "record6"}})
 html.P("Test paragraph for testing purposes")
 html.Prepare()
 html.WriteToFile("report.html") // create a file named report.html in the current directory
