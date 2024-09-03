@@ -93,7 +93,7 @@ func (t *Table) Prepare() *Table {
 	for _, h := range t.headers {
 		t.buf.WriteString("<th>" + h + "</th>")
 	}
-	t.buf.WriteString("<tr>")
+	t.buf.WriteString("</tr>")
 
 	// write rows
 	for i := 0; i < len(t.rows); i++ {

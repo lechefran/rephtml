@@ -2,6 +2,7 @@ package rephtml
 
 import (
 	"bytes"
+	"fmt"
 	"log"
 	"os"
 	"regexp"
@@ -181,38 +182,42 @@ func (h *HtmlFile) formatTable(b []byte) []byte {
 			nsbsplit = append(nsbsplit, '>')
 		}
 	}
+	fmt.Println(string(nsbsplit))
 	sarr := bytes.Fields(nsbsplit)
 
 	// obtain the open and close table tags, and contents
-	opent, closet := sarr[0], sarr[len(sarr)-1]
-	contents := sarr[1 : len(sarr)-2]
+	// opent, closet := sarr[0], sarr[len(sarr)-1]
+	contents := sarr[1 : len(sarr)-1]
 
 	// write open tag to buffer
-	fb.Write(opent)
+	fb.WriteString(tabs(h.ttrack))
+	fb.Write(sarr[0])
 	fb.WriteByte('\n')
+	h.ttrack++
 
 	// loop through contents
-	var curr bytes.Buffer
 	for _, c := range contents {
 		if bytes.Equal(c, []byte("<tr>")) {
-			curr.WriteByte('\t')
-			curr.Write(c)
-			curr.WriteByte('\n')
+			fb.WriteString(tabs(h.ttrack))
+			fb.Write(c)
+			fb.WriteByte('\n')
+			h.ttrack++
 		} else if bytes.Equal(c, []byte("</tr>")) {
-			curr.WriteByte('\t')
-			curr.Write(c)
-			curr.WriteByte('\n')
-			fb.Write(curr.Bytes())
-			curr.Reset()
+			h.ttrack--
+			fb.WriteString(tabs(h.ttrack))
+			fb.Write(c)
+			fb.WriteByte('\n')
 		} else {
-			curr.WriteByte('\t')
-			curr.Write(c)
-			curr.WriteByte('\n')
+			fb.WriteString(tabs(h.ttrack))
+			fb.Write(c)
+			fb.WriteByte('\n')
 		}
 	}
 
 	// write close tag to header
-	fb.Write(closet)
+	h.ttrack--
+	fb.WriteString(tabs(h.ttrack))
+	fb.Write(sarr[len(sarr)-1])
 	fb.WriteByte('\n')
 	return fb.Bytes()
 }
@@ -234,6 +239,7 @@ func (h *HtmlFile) Prepare() *HtmlFile {
 			h.buf.Write(h.formatStyle(h.style[i]))
 		}
 	}
+
 	h.ttrack--
 	t = tabs(h.ttrack)
 	h.buf.WriteString(t + "</style>" + newline)
@@ -243,29 +249,19 @@ func (h *HtmlFile) Prepare() *HtmlFile {
 	h.buf.WriteString(t + "<body>" + newline)
 	h.ttrack++
 	t = tabs(h.ttrack)
+
 	for i := 0; i < len(h.body); i++ {
-		if i != len(h.body)-1 {
-			bbytes := h.body[i]
-			if bytes.Contains(bbytes, []byte("table")) {
-				h.buf.Write(h.formatTable(bbytes))
-			} else {
-				h.buf.WriteString(t)
-				h.buf.Write(bbytes)
-				h.buf.WriteString(newline)
-			}
+		if bytes.Contains(h.body[i], []byte("<table>")) {
+			h.buf.Write(h.formatTable(h.body[i]))
 		} else {
-			bbytes := h.body[i]
-			if bytes.Contains(bbytes, []byte("table")) {
-				h.buf.Write(h.formatTable(bbytes))
-			} else {
-				h.buf.WriteString(t)
-				h.buf.Write(bbytes)
-			}
+			h.buf.WriteString(t)
+			h.buf.Write(h.body[i])
+			h.buf.WriteString(newline)
 		}
 	}
+
 	h.ttrack--
-	t = tabs(h.ttrack)
-	h.buf.WriteString(newline + t + "</body>" + newline)
+	h.buf.WriteString(tabs(h.ttrack) + "</body>" + newline)
 	h.buf.WriteString("</html>")
 	return h
 }
@@ -279,27 +275,24 @@ func (h *HtmlFile) StyleString(s string) *HtmlFile {
 
 // todo: fix to write to byte arr first, parse later
 func (h *HtmlFile) TableString(harr []string, darr [][]string) *HtmlFile {
-	t := indent + tab
 	tbl := "<table>"
-	t += tab
-	tbl += t + "<tr>"
-	t += tab
+
+	// write headers
+	tbl += "<tr>"
 	for _, h := range harr {
-		tbl += t + "<th>" + h + "</th>"
+		tbl += "<th>" + h + "</th>"
 	}
-	t = t[:strings.LastIndex(t, tab)]
-	tbl += t + "</tr>"
+	tbl += "</tr>"
+
+	// write rows
 	for _, d := range darr {
-		tbl += t + "<tr>"
-		t += tab
+		tbl += "<tr>"
 		for _, d1 := range d {
-			tbl += t + "<td>" + d1 + "</td>"
+			tbl += "<td>" + d1 + "</td>"
 		}
-		t = t[:strings.LastIndex(t, tab)]
-		tbl += t + "</tr>"
+		tbl += "</tr>"
 	}
-	t = t[:strings.LastIndex(t, tab)]
-	tbl += t + "</table>"
+	tbl += "</table>"
 	h.body = append(h.body, []byte(tbl))
 	return h
 }
