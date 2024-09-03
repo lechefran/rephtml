@@ -2,7 +2,6 @@ package rephtml
 
 import (
 	"bytes"
-	"fmt"
 	"log"
 	"os"
 	"regexp"
@@ -167,7 +166,7 @@ func (h *HtmlFile) formatStyle(b []byte) []byte {
 /*
 Internal parsing function to format table elements
 */
-func (h *HtmlFile) formatTable(b []byte) {
+func (h *HtmlFile) formatTable(b []byte) []byte {
 	var fb bytes.Buffer
 	nsb := strip(b) // remove all spaces
 	nsbsplit := []byte{}
@@ -182,15 +181,40 @@ func (h *HtmlFile) formatTable(b []byte) {
 			nsbsplit = append(nsbsplit, '>')
 		}
 	}
-	// sarr := bytes.Fields(nsbsplit)
+	sarr := bytes.Fields(nsbsplit)
 
-	// track the number of headers and rows
-	// hdr, rows := [][][]byte{}, [][][]byte{}
-	// for i := 1; i < len(sarr)-1; i++ {
-	// 	if bytes.Equal(sarr[i-1], []byte("<tr>"))sarr[i-1] ==
-	// }
+	// obtain the open and close table tags, and contents
+	opent, closet := sarr[0], sarr[len(sarr)-1]
+	contents := sarr[1 : len(sarr)-2]
 
-	fmt.Println(fb.String())
+	// write open tag to buffer
+	fb.Write(opent)
+	fb.WriteByte('\n')
+
+	// loop through contents
+	var curr bytes.Buffer
+	for _, c := range contents {
+		if bytes.Equal(c, []byte("<tr>")) {
+			curr.WriteByte('\t')
+			curr.Write(c)
+			curr.WriteByte('\n')
+		} else if bytes.Equal(c, []byte("</tr>")) {
+			curr.WriteByte('\t')
+			curr.Write(c)
+			curr.WriteByte('\n')
+			fb.Write(curr.Bytes())
+			curr.Reset()
+		} else {
+			curr.WriteByte('\t')
+			curr.Write(c)
+			curr.WriteByte('\n')
+		}
+	}
+
+	// write close tag to header
+	fb.Write(closet)
+	fb.WriteByte('\n')
+	return fb.Bytes()
 }
 
 func (h *HtmlFile) Prepare() *HtmlFile {
@@ -223,18 +247,20 @@ func (h *HtmlFile) Prepare() *HtmlFile {
 		if i != len(h.body)-1 {
 			bbytes := h.body[i]
 			if bytes.Contains(bbytes, []byte("table")) {
-				h.formatTable(bbytes)
+				h.buf.Write(h.formatTable(bbytes))
+			} else {
+				h.buf.WriteString(t)
+				h.buf.Write(bbytes)
+				h.buf.WriteString(newline)
 			}
-			h.buf.WriteString(t)
-			h.buf.Write(bbytes)
-			h.buf.WriteString(newline)
 		} else {
 			bbytes := h.body[i]
 			if bytes.Contains(bbytes, []byte("table")) {
-				h.formatTable(bbytes)
+				h.buf.Write(h.formatTable(bbytes))
+			} else {
+				h.buf.WriteString(t)
+				h.buf.Write(bbytes)
 			}
-			h.buf.WriteString(t)
-			h.buf.Write(bbytes)
 		}
 	}
 	h.ttrack--
