@@ -1,6 +1,9 @@
 package rephtml
 
-import "bytes"
+import (
+	"bytes"
+	"fmt"
+)
 
 type Table struct {
 	buf     bytes.Buffer
@@ -86,9 +89,24 @@ func (t *Table) Styles(s []string) *Table {
 }
 
 func (t *Table) Prepare() *Table {
-	t.buf.WriteString("<table>")
+	// see if table has id and class tags to add
+	t.buf.WriteString("<table")
+	if t.id != "" {
+		t.buf.WriteString(" id=\"" + t.id + "\"")
+	}
+	if len(t.class) != 0 {
+		t.buf.WriteString(" class=\"")
+		for i := 0; i < len(t.class); i++ {
+			t.buf.WriteString(t.class[i])
+			if i != len(t.class)-1 {
+				t.buf.WriteString(" ")
+			}
+		}
+		t.buf.WriteString("\"")
+	}
+	t.buf.WriteByte('>')
 
-	// write headers
+	// write header
 	t.buf.WriteString("<tr>")
 	for _, h := range t.headers {
 		t.buf.WriteString("<th>" + h + "</th>")
@@ -108,5 +126,6 @@ func (t *Table) Prepare() *Table {
 }
 
 func (t *Table) Bytes() []byte {
+	fmt.Println(t.buf.String())
 	return t.buf.Bytes()
 }

@@ -2,7 +2,6 @@ package rephtml
 
 import (
 	"bytes"
-	"fmt"
 	"log"
 	"os"
 	"regexp"
@@ -133,7 +132,7 @@ func (h *HtmlFile) formatStyle(b []byte) []byte {
 	}
 	contents = contentsTmp
 
-	// split con
+	// split contents
 	carr := bytes.Fields(contents)
 	carrTmp := make([][]byte, 0, len(carr))
 	for _, c := range carr {
@@ -169,10 +168,24 @@ Internal parsing function to format table elements
 */
 func (h *HtmlFile) formatTable(b []byte) []byte {
 	var fb bytes.Buffer
+
+	// see if open table tag has id and class values
+	var tmp bytes.Buffer
+	opent := []byte{}
+	for _, c := range b {
+		if c != '>' {
+			tmp.WriteByte(c)
+		} else {
+			tmp.WriteByte('>')
+			break
+		}
+	}
+	opent = tmp.Bytes()
+	b = b[bytes.IndexByte(b, '>')+1:]
 	nsb := strip(b) // remove all spaces
-	nsbsplit := []byte{}
 
 	// split byte array by tags
+	nsbsplit := []byte{}
 	for i := 0; i < len(nsb)-1; i++ {
 		nsbsplit = append(nsbsplit, nsb[i])
 		if nsb[i] == '>' && nsb[i+1] == '<' {
@@ -182,16 +195,12 @@ func (h *HtmlFile) formatTable(b []byte) []byte {
 			nsbsplit = append(nsbsplit, '>')
 		}
 	}
-	fmt.Println(string(nsbsplit))
 	sarr := bytes.Fields(nsbsplit)
-
-	// obtain the open and close table tags, and contents
-	// opent, closet := sarr[0], sarr[len(sarr)-1]
-	contents := sarr[1 : len(sarr)-1]
+	contents := sarr[:len(sarr)-1] // remove closing tag, and obtain contents
 
 	// write open tag to buffer
 	fb.WriteString(tabs(h.ttrack))
-	fb.Write(sarr[0])
+	fb.Write(opent)
 	fb.WriteByte('\n')
 	h.ttrack++
 
@@ -251,7 +260,8 @@ func (h *HtmlFile) Prepare() *HtmlFile {
 	t = tabs(h.ttrack)
 
 	for i := 0; i < len(h.body); i++ {
-		if bytes.Contains(h.body[i], []byte("<table>")) {
+		if bytes.Contains(h.body[i], []byte("<table")) &&
+			bytes.Contains(h.body[i], []byte(">")) {
 			h.buf.Write(h.formatTable(h.body[i]))
 		} else {
 			h.buf.WriteString(t)
