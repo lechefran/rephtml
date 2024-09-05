@@ -50,6 +50,8 @@ func main() {
 	table.Class([]string{"testclass1", "testclass2"})
 	table.Headers([]string{"testhdr1", "testhdr2"})
 	table.AddRow([]string{"testval1", "testhval2"})
+	table.AddStyle("color", "blue")
+	table.AddStyle("color", "red") // override color from blue to red
 	table.Prepare()
 
 	html := *rephtml.NewHtmlFile()

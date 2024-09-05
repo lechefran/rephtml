@@ -11,11 +11,13 @@ type Table struct {
 	headers []string
 	id      string
 	rows    [][]string
-	style   []string
+	style   map[string]string // rewrite to make use of CssProps?
 }
 
 func NewTable() *Table {
-	return &Table{}
+	return &Table{
+		style: make(map[string]string),
+	}
 }
 
 func (t *Table) AddClass(s string) *Table {
@@ -44,7 +46,7 @@ func (t *Table) AddHeaders(s []string) *Table {
 }
 
 func (t *Table) Headers(s []string) *Table {
-	t.headers = append(t.headers, s...)
+	t.headers = s
 	return t
 }
 
@@ -69,27 +71,29 @@ func (t *Table) AddRows(s [][]string) *Table {
 }
 
 func (t *Table) Rows(s [][]string) *Table {
-	t.rows = append(t.rows, s...)
+	t.rows = s
 	return t
 }
 
-func (t *Table) AddStyle(s string) *Table {
-	t.style = append(t.style, s)
+func (t *Table) AddStyle(k, v string) *Table {
+	t.style[k] = v
 	return t
 }
 
-func (t *Table) AddStyles(s []string) *Table {
-	t.style = append(t.style, s...)
+func (t *Table) AddStyles(m map[string]string) *Table {
+	for k, v := range m {
+		t.style[k] = v
+	}
 	return t
 }
 
-func (t *Table) Styles(s []string) *Table {
-	t.style = append(t.style, s...)
+func (t *Table) Styles(m map[string]string) *Table {
+	t.style = m
 	return t
 }
 
 func (t *Table) Prepare() *Table {
-	// see if table has id and class tags to add
+	// see if table has id, class, and style tags to add
 	t.buf.WriteString("<table")
 	if t.id != "" {
 		t.buf.WriteString(" id=\"" + t.id + "\"")
@@ -101,6 +105,18 @@ func (t *Table) Prepare() *Table {
 			if i != len(t.class)-1 {
 				t.buf.WriteString(" ")
 			}
+		}
+		t.buf.WriteString("\"")
+	}
+	if len(t.style) != 0 {
+		idx := 0
+		t.buf.WriteString(" style=\"")
+		for k, v := range t.style {
+			t.buf.WriteString(k + ": " + v + ";")
+			if idx != len(t.style)-1 {
+				t.buf.WriteString(" ")
+			}
+			idx++
 		}
 		t.buf.WriteString("\"")
 	}

@@ -25,7 +25,7 @@ func NewHtmlFile() *HtmlFile {
 	}
 }
 
-// vv struct functions vv
+// vv element struct functions vv
 
 func (h *HtmlFile) Style(s *Style) *HtmlFile {
 	h.style = append(h.style, s.Bytes())
@@ -37,7 +37,7 @@ func (h *HtmlFile) Table(t *Table) *HtmlFile {
 	return h
 }
 
-// vv string functions vv
+// vv element string functions vv
 
 func (h *HtmlFile) H1String(s string) *HtmlFile {
 	h.body = append(h.body, []byte("<h1>"+s+"</h1>"))
@@ -78,14 +78,124 @@ func (h *HtmlFile) PString(s string) *HtmlFile {
 	return h
 }
 
+/*
+Add a paragraph element to the HTML document with
+a string parameter as the assigned value and a style value
+*/
 func (h *HtmlFile) PStringWithStyle(s, style string) *HtmlFile {
 	if style == "" {
 		h.body = append(h.body, []byte("<p>"+s+"</p>"))
 	} else {
-		h.body = append(h.body, []byte("<p style=\""+style+"\";>"+s+"</p>"))
+		h.body = append(h.body, []byte("<p style=\""+style+";\">"+s+"</p>"))
 	}
 	return h
 }
+
+func (h *HtmlFile) StyleString(s string) *HtmlFile {
+	fs := strings.ReplaceAll(s, ";", "; ")
+	h.style = append(h.style, []byte(fs))
+	return h
+}
+
+func (h *HtmlFile) TableString(harr []string, darr [][]string) *HtmlFile {
+	tbl := "<table>"
+
+	// write headers
+	tbl += "<tr>"
+	for _, h := range harr {
+		tbl += "<th>" + h + "</th>"
+	}
+	tbl += "</tr>"
+
+	// write rows
+	for _, d := range darr {
+		tbl += "<tr>"
+		for _, d1 := range d {
+			tbl += "<td>" + d1 + "</td>"
+		}
+		tbl += "</tr>"
+	}
+	tbl += "</table>"
+	h.body = append(h.body, []byte(tbl))
+	return h
+}
+
+// vv general functions vv
+
+func (h *HtmlFile) Prepare() *HtmlFile {
+	t := tabs(h.ttrack)
+	h.buf.WriteString("<html>" + newline)
+	h.buf.WriteString(t + "<header>" + newline)
+	h.ttrack++
+	t = tabs(h.ttrack)
+	h.buf.WriteString(t + "<style>" + newline)
+	h.ttrack++
+	t = tabs(h.ttrack)
+	for i := 0; i < len(h.style); i++ {
+		if i != len(h.style)-1 {
+			h.buf.Write(h.formatStyle(h.style[i]))
+			h.buf.WriteString(newline)
+		} else {
+			h.buf.Write(h.formatStyle(h.style[i]))
+		}
+	}
+
+	h.ttrack--
+	t = tabs(h.ttrack)
+	h.buf.WriteString(t + "</style>" + newline)
+	h.ttrack--
+	t = tabs(h.ttrack)
+	h.buf.WriteString(t + "</header>" + newline)
+	h.buf.WriteString(t + "<body>" + newline)
+	h.ttrack++
+	t = tabs(h.ttrack)
+
+	for i := 0; i < len(h.body); i++ {
+		if bytes.Contains(h.body[i], []byte("<table")) &&
+			bytes.Contains(h.body[i], []byte(">")) {
+			h.buf.Write(h.formatTable(h.body[i]))
+		} else {
+			h.buf.WriteString(t)
+			h.buf.Write(h.body[i])
+			h.buf.WriteString(newline)
+		}
+	}
+
+	h.ttrack--
+	h.buf.WriteString(tabs(h.ttrack) + "</body>" + newline)
+	h.buf.WriteString("</html>")
+	return h
+}
+
+func (h *HtmlFile) WriteToFile(path string) {
+	if len(h.head) == 0 && len(h.body) == 0 && len(h.style) == 0 {
+		log.Print("No values were appended to the HTML File. " + path + " will not be created")
+	}
+	if _, err := os.Stat(path); os.IsExist(err) {
+		if err := os.Remove(path); err != nil {
+			log.Fatal(err)
+		}
+		file, err := os.Create(path)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer file.Close()
+		if _, err := file.Write(h.buf.Bytes()); err != nil {
+			log.Fatal(err)
+		}
+	} else {
+		file, err := os.Create(path)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer file.Close()
+		if _, err := file.Write(h.buf.Bytes()); err != nil {
+			log.Fatal(err)
+		}
+	}
+}
+
+// vv helper functions vv
 
 /*
 Internal parsing function to format style attributes
@@ -231,89 +341,16 @@ func (h *HtmlFile) formatTable(b []byte) []byte {
 	return fb.Bytes()
 }
 
-func (h *HtmlFile) Prepare() *HtmlFile {
-	t := tabs(h.ttrack)
-	h.buf.WriteString("<html>" + newline)
-	h.buf.WriteString(t + "<header>" + newline)
-	h.ttrack++
-	t = tabs(h.ttrack)
-	h.buf.WriteString(t + "<style>" + newline)
-	h.ttrack++
-	t = tabs(h.ttrack)
-	for i := 0; i < len(h.style); i++ {
-		if i != len(h.style)-1 {
-			h.buf.Write(h.formatStyle(h.style[i]))
-			h.buf.WriteString(newline)
-		} else {
-			h.buf.Write(h.formatStyle(h.style[i]))
-		}
-	}
-
-	h.ttrack--
-	t = tabs(h.ttrack)
-	h.buf.WriteString(t + "</style>" + newline)
-	h.ttrack--
-	t = tabs(h.ttrack)
-	h.buf.WriteString(t + "</header>" + newline)
-	h.buf.WriteString(t + "<body>" + newline)
-	h.ttrack++
-	t = tabs(h.ttrack)
-
-	for i := 0; i < len(h.body); i++ {
-		if bytes.Contains(h.body[i], []byte("<table")) &&
-			bytes.Contains(h.body[i], []byte(">")) {
-			h.buf.Write(h.formatTable(h.body[i]))
-		} else {
-			h.buf.WriteString(t)
-			h.buf.Write(h.body[i])
-			h.buf.WriteString(newline)
-		}
-	}
-
-	h.ttrack--
-	h.buf.WriteString(tabs(h.ttrack) + "</body>" + newline)
-	h.buf.WriteString("</html>")
-	return h
-}
-
-// change of plans- write to byte arr first, parse later
-func (h *HtmlFile) StyleString(s string) *HtmlFile {
-	fs := strings.ReplaceAll(s, ";", "; ")
-	h.style = append(h.style, []byte(fs))
-	return h
-}
-
-// todo: fix to write to byte arr first, parse later
-func (h *HtmlFile) TableString(harr []string, darr [][]string) *HtmlFile {
-	tbl := "<table>"
-
-	// write headers
-	tbl += "<tr>"
-	for _, h := range harr {
-		tbl += "<th>" + h + "</th>"
-	}
-	tbl += "</tr>"
-
-	// write rows
-	for _, d := range darr {
-		tbl += "<tr>"
-		for _, d1 := range d {
-			tbl += "<td>" + d1 + "</td>"
-		}
-		tbl += "</tr>"
-	}
-	tbl += "</table>"
-	h.body = append(h.body, []byte(tbl))
-	return h
-}
-
+/*
+Internal parsing function to remove all spaces from a byte array
+*/
 func strip(bytes []byte) []byte {
 	re := regexp.MustCompile("\\s+")
 	return re.ReplaceAll(bytes, nil)
 }
 
 /*
-Helper method that creates tabs based on the value of ttrack
+Internal function that creates tabs based on the value of t
 */
 func tabs(t int) string {
 	res := ""
@@ -321,32 +358,4 @@ func tabs(t int) string {
 		res += tab
 	}
 	return res
-}
-
-func (h *HtmlFile) WriteToFile(path string) {
-	if len(h.head) == 0 && len(h.body) == 0 && len(h.style) == 0 {
-		log.Print("No values were appended to the HTML File. " + path + " will not be created")
-	}
-	if _, err := os.Stat(path); os.IsExist(err) {
-		if err := os.Remove(path); err != nil {
-			log.Fatal(err)
-		}
-		file, err := os.Create(path)
-		if err != nil {
-			log.Fatal(err)
-		}
-		defer file.Close()
-		if _, err := file.Write(h.buf.Bytes()); err != nil {
-			log.Fatal(err)
-		}
-	} else {
-		file, err := os.Create(path)
-		if err != nil {
-			log.Fatal(err)
-		}
-		defer file.Close()
-		if _, err := file.Write(h.buf.Bytes()); err != nil {
-			log.Fatal(err)
-		}
-	}
 }
