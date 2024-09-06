@@ -27,6 +27,11 @@ func NewHtmlFile() *HtmlFile {
 
 // vv element struct functions vv
 
+func (h *HtmlFile) Div(d *Div) *HtmlFile {
+	h.body = append(h.body, d.Bytes())
+	return h
+}
+
 func (h *HtmlFile) Style(s *Style) *HtmlFile {
 	h.style = append(h.style, s.Bytes())
 	return h
@@ -167,6 +172,9 @@ func (h *HtmlFile) Prepare() *HtmlFile {
 		if bytes.Contains(h.body[i], []byte("<table")) &&
 			bytes.Contains(h.body[i], []byte(">")) {
 			h.buf.Write(h.formatTable(h.body[i]))
+		} else if bytes.Contains(h.body[i], []byte("<div")) &&
+			bytes.Contains(h.body[i], []byte(">")) {
+			h.buf.Write(h.formatDiv(h.body[i]))
 		} else {
 			h.buf.WriteString(t)
 			h.buf.Write(h.body[i])
@@ -209,6 +217,47 @@ func (h *HtmlFile) WriteToFile(path string) {
 }
 
 // vv helper functions vv
+
+/*
+Internal parsing function to format div element and its contents
+*/
+func (h *HtmlFile) formatDiv(b []byte) []byte {
+	var fb bytes.Buffer
+
+	// split byte array by tags
+	curr := []byte{}
+	sarr := [][]byte{}
+	for i := 0; i < len(b)-1; i++ {
+		curr = append(curr, b[i])
+		if b[i] == '>' && b[i+1] == '<' {
+			sarr = append(sarr, curr)
+			curr = []byte{} // reset values of curr
+		}
+		if i+1 == len(b)-1 {
+			curr = append(curr, '>')
+			sarr = append(sarr, curr)
+		}
+	}
+
+	for _, s := range sarr {
+		if bytes.Contains(s, []byte("<div")) && bytes.Contains(s, []byte(">")) {
+			fb.WriteString(tabs(h.ttrack))
+			fb.Write(s)
+			h.ttrack++
+		} else if bytes.Equal(s, []byte("</div>")) {
+			h.ttrack--
+			fb.WriteByte('\n')
+			fb.WriteString(tabs(h.ttrack))
+			fb.Write(s)
+		} else {
+			fb.WriteByte('\n')
+			fb.WriteString(tabs(h.ttrack))
+			fb.Write(s)
+		}
+	}
+	fb.WriteByte('\n')
+	return fb.Bytes()
+}
 
 /*
 Internal parsing function to format style attributes

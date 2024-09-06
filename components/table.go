@@ -2,7 +2,6 @@ package rephtml
 
 import (
 	"bytes"
-	"fmt"
 )
 
 type Table struct {
@@ -142,6 +141,5 @@ func (t *Table) Prepare() *Table {
 }
 
 func (t *Table) Bytes() []byte {
-	fmt.Println(t.buf.String())
 	return t.buf.Bytes()
 }

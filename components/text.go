@@ -47,9 +47,7 @@ func (p *P) Prepare() *P {
 		for k, v := range p.style {
 			p.buf.WriteString(k + ": " + v + ";")
 			if idx != len(p.style)-1 {
-				if idx != len(p.style)-1 {
-					p.buf.WriteString(" ")
-				}
+				p.buf.WriteByte(' ')
 			}
 			idx++
 		}

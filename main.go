@@ -3,7 +3,6 @@ package main
 import (
 	"bytes"
 	"encoding/csv"
-	"fmt"
 	"log"
 	"os"
 
@@ -60,14 +59,27 @@ func main() {
 	pgStyles["color"] = "#a0d6b4"
 	pgStyles["font-size"] = "60px"
 
-	// create parapgraph
+	// create parapgraphs
 	pg := rephtml.NewP()
 	pg.Text("Hello, World!")
 	pg.AddStyle("font-size", "60px")
 	pg.AddStyles(pgStyles)
 	pg.Prepare()
 
-	fmt.Println(string(pg.Bytes()))
+	pg1 := rephtml.NewP()
+	pg1.Text("Test paragraph in DIV")
+	pg1.AddStyle("color", "#FFFFFF")
+	pg1.Prepare()
+
+	// create div styles
+	dStyles := make(map[string]string, 1)
+	dStyles["background-color"] = "#CCCCFF"
+
+	// create div
+	d := rephtml.NewDiv()
+	d.Add(pg1)
+	d.AddStyles(dStyles)
+	d.Prepare()
 
 	html := *rephtml.NewHtmlFile()
 	html.StyleString(`h1, h2, h3, h4, h5, h6, p {
@@ -89,6 +101,7 @@ func main() {
 	html.PStringWithStyle("Test style paragraph for testing purposes", "font-size: 30px")
 	html.P(pg)
 	html.Table(table)
+	html.Div(d)
 	html.Prepare()
 	html.WriteToFile("report.html")
 
