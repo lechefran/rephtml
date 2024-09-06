@@ -404,7 +404,7 @@ func formatStringArray(sarr []string) string {
 	res := ""
 	for i := 0; i < len(sarr); i++ {
 		if i != len(sarr)-1 {
-			res += sarr[i] + ","
+			res += sarr[i] + ", "
 		} else {
 			res += sarr[i]
 		}

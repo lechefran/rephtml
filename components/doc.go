@@ -91,6 +91,15 @@ func (h *HtmlFile) PStringWithStyle(s, style string) *HtmlFile {
 	return h
 }
 
+/*
+Add a paragraph element to the HTML document with
+a paragraph struct
+*/
+func (h *HtmlFile) P(p *P) *HtmlFile {
+	h.body = append(h.body, p.Bytes())
+	return h
+}
+
 func (h *HtmlFile) StyleString(s string) *HtmlFile {
 	fs := strings.ReplaceAll(s, ";", "; ")
 	h.style = append(h.style, []byte(fs))
@@ -121,6 +130,10 @@ func (h *HtmlFile) TableString(harr []string, darr [][]string) *HtmlFile {
 }
 
 // vv general functions vv
+
+func (h *HtmlFile) Bytes() []byte {
+	return h.buf.Bytes()
+}
 
 func (h *HtmlFile) Prepare() *HtmlFile {
 	t := tabs(h.ttrack)
