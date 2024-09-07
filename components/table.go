@@ -91,7 +91,7 @@ func (t *Table) Styles(m map[string]string) *Table {
 	return t
 }
 
-func (t *Table) Prepare() *Table {
+func (t *Table) Prepare() {
 	// see if table has id, class, and style tags to add
 	t.buf.WriteString("<table")
 	if t.id != "" {
@@ -137,7 +137,6 @@ func (t *Table) Prepare() *Table {
 		t.buf.WriteString("</tr>")
 	}
 	t.buf.WriteString("</table>")
-	return t
 }
 
 func (t *Table) Bytes() []byte {

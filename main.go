@@ -76,9 +76,8 @@ func main() {
 	dStyles["background-color"] = "#CCCCFF"
 
 	// create div
-	d := rephtml.NewDiv()
-	d.Add(pg1)
-	d.AddStyles(dStyles)
+	d := rephtml.NewDiv().Add(pg1).AddStyles(dStyles)
+	d.Add(table) // to fix
 	d.Prepare()
 
 	html := *rephtml.NewHtmlFile()

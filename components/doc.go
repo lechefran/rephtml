@@ -2,9 +2,9 @@ package rephtml
 
 import (
 	"bytes"
+	"fmt"
 	"log"
 	"os"
-	"regexp"
 	"strings"
 )
 
@@ -239,7 +239,10 @@ func (h *HtmlFile) formatDiv(b []byte) []byte {
 		}
 	}
 
+	fmt.Println("sarr size: " + string(len(sarr)))
+
 	for _, s := range sarr {
+		fmt.Println("current s value in sarr: " + string(s))
 		if bytes.Contains(s, []byte("<div")) && bytes.Contains(s, []byte(">")) {
 			fb.WriteString(tabs(h.ttrack))
 			fb.Write(s)
@@ -249,6 +252,10 @@ func (h *HtmlFile) formatDiv(b []byte) []byte {
 			fb.WriteByte('\n')
 			fb.WriteString(tabs(h.ttrack))
 			fb.Write(s)
+		} else if bytes.Contains(s, []byte("<table")) &&
+			bytes.Contains(s, []byte(">")) {
+			fmt.Println("This is a table, I say!")
+			fb.Write(h.formatTable(s))
 		} else {
 			fb.WriteByte('\n')
 			fb.WriteString(tabs(h.ttrack))
@@ -401,23 +408,4 @@ func (h *HtmlFile) formatTable(b []byte) []byte {
 	fb.Write(sarr[len(sarr)-1])
 	fb.WriteByte('\n')
 	return fb.Bytes()
-}
-
-/*
-Internal parsing function to remove all spaces from a byte array
-*/
-func strip(bytes []byte) []byte {
-	re := regexp.MustCompile("\\s+")
-	return re.ReplaceAll(bytes, nil)
-}
-
-/*
-Internal function that creates tabs based on the value of t
-*/
-func tabs(t int) string {
-	res := ""
-	for i := 0; i < t; i++ {
-		res += tab
-	}
-	return res
 }

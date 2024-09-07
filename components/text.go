@@ -40,7 +40,7 @@ func (p *P) Bytes() []byte {
 	return p.buf.Bytes()
 }
 
-func (p *P) Prepare() *P {
+func (p *P) Prepare() {
 	if len(p.style) != 0 {
 		idx := 0
 		p.buf.WriteString("<p style=\"")
@@ -55,5 +55,4 @@ func (p *P) Prepare() *P {
 	} else {
 		p.buf.WriteString("<p>" + p.text + "</p>")
 	}
-	return p
 }

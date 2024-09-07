@@ -8,5 +8,5 @@ appeneded to the HTML document's body
 */
 type Elements interface {
 	Bytes() []byte
-	Prepare() *P
+	Prepare()
 }
