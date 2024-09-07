@@ -169,12 +169,14 @@ func (h *HtmlFile) Prepare() *HtmlFile {
 	t = tabs(h.ttrack)
 
 	for i := 0; i < len(h.body); i++ {
-		if bytes.Contains(h.body[i], []byte("<table")) &&
+		if bytes.Contains(h.body[i], []byte("<div")) &&
 			bytes.Contains(h.body[i], []byte(">")) {
-			h.buf.Write(h.formatTable(h.body[i]))
-		} else if bytes.Contains(h.body[i], []byte("<div")) &&
-			bytes.Contains(h.body[i], []byte(">")) {
+			fmt.Println("div hit!")
 			h.buf.Write(h.formatDiv(h.body[i]))
+		} else if bytes.Contains(h.body[i], []byte("<table")) &&
+			bytes.Contains(h.body[i], []byte(">")) {
+			fmt.Println("table hit!")
+			h.buf.Write(h.formatTable(h.body[i]))
 		} else {
 			h.buf.WriteString(t)
 			h.buf.Write(h.body[i])
@@ -239,7 +241,7 @@ func (h *HtmlFile) formatDiv(b []byte) []byte {
 		}
 	}
 
-	fmt.Println("sarr size: " + string(len(sarr)))
+	fmt.Printf("sarr size: %d\n", len(sarr))
 
 	for _, s := range sarr {
 		fmt.Println("current s value in sarr: " + string(s))
@@ -252,10 +254,6 @@ func (h *HtmlFile) formatDiv(b []byte) []byte {
 			fb.WriteByte('\n')
 			fb.WriteString(tabs(h.ttrack))
 			fb.Write(s)
-		} else if bytes.Contains(s, []byte("<table")) &&
-			bytes.Contains(s, []byte(">")) {
-			fmt.Println("This is a table, I say!")
-			fb.Write(h.formatTable(s))
 		} else {
 			fb.WriteByte('\n')
 			fb.WriteString(tabs(h.ttrack))

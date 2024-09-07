@@ -2,7 +2,6 @@ package rephtml
 
 import (
 	"bytes"
-	"unicode"
 )
 
 type Div struct {
@@ -51,12 +50,10 @@ func (d *Div) Prepare() {
 	}
 
 	for _, c := range d.contents {
-		for _, c1 := range c {
-			if unicode.IsSpace(rune(c1)) {
-				d.buf.WriteByte(' ')
-			} else {
-				d.buf.WriteByte(c1)
-			}
+		if bytes.Contains(c, []byte("<table")) && bytes.Contains(c, []byte(">")) {
+			d.buf.Write(d.formatTable(c))
+		} else {
+			d.buf.Write(c)
 		}
 	}
 	d.buf.WriteString("</div>")
@@ -95,10 +92,10 @@ func (d *Div) formatTable(b []byte) []byte {
 	contents := sarr[:len(sarr)-1] // remove closing tag, and obtain contents
 
 	// write open tag to buffer
-	fb.WriteString(tabs(d.ttrack))
+	// fb.WriteString(tabs(d.ttrack))
 	fb.Write(opent)
 	fb.WriteByte('\n')
-	d.ttrack++
+	d.ttrack += 4 // get vaue from html file
 
 	// loop through contents
 	for _, c := range contents {
@@ -118,5 +115,9 @@ func (d *Div) formatTable(b []byte) []byte {
 			fb.WriteByte('\n')
 		}
 	}
+
+	d.ttrack--
+	fb.WriteString(tabs(d.ttrack))
+	fb.WriteString("</table>")
 	return fb.Bytes()
 }
