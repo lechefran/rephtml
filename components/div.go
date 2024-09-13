@@ -17,6 +17,11 @@ func NewDiv() *Div {
 	}
 }
 
+func (d *Div) Tabs(i int) *Div {
+	d.ttrack = i
+	return d
+}
+
 func (d *Div) Add(e Elements) *Div {
 	d.contents = append(d.contents, e.Bytes())
 	return d
@@ -50,6 +55,9 @@ func (d *Div) Prepare() {
 	}
 
 	for _, c := range d.contents {
+		// if bytes.Contains(c, []byte("<div")) && bytes.Contains(c, []byte(">")) {
+		// 	d.buf.WriteByte('\n')
+		// }
 		if bytes.Contains(c, []byte("<table")) && bytes.Contains(c, []byte(">")) {
 			d.buf.Write(d.formatTable(c))
 		} else {
@@ -57,6 +65,44 @@ func (d *Div) Prepare() {
 		}
 	}
 	d.buf.WriteString("</div>")
+}
+
+func (d *Div) formatDiv(b []byte) []byte {
+	var fb bytes.Buffer
+
+	// split byte array by tags
+	curr := []byte{}
+	sarr := [][]byte{}
+	for i := 0; i < len(b)-1; i++ {
+		curr = append(curr, b[i])
+		if b[i] == '>' && b[i+1] == '<' {
+			sarr = append(sarr, curr)
+			curr = []byte{} // reset values of curr
+		}
+		if i+1 == len(b)-1 {
+			curr = append(curr, '>')
+			sarr = append(sarr, curr)
+		}
+	}
+
+	for _, s := range sarr {
+		if bytes.Contains(s, []byte("<div")) && bytes.Contains(s, []byte(">")) {
+			fb.WriteString(tabs(d.ttrack))
+			fb.Write(s)
+			d.ttrack++
+		} else if bytes.Equal(s, []byte("</div>")) {
+			d.ttrack--
+			fb.WriteByte('\n')
+			fb.WriteString(tabs(d.ttrack))
+			fb.Write(s)
+		} else {
+			fb.WriteByte('\n')
+			fb.WriteString(tabs(d.ttrack))
+			fb.Write(s)
+		}
+	}
+	fb.WriteByte('\n')
+	return fb.Bytes()
 }
 
 func (d *Div) formatTable(b []byte) []byte {
@@ -92,10 +138,9 @@ func (d *Div) formatTable(b []byte) []byte {
 	contents := sarr[:len(sarr)-1] // remove closing tag, and obtain contents
 
 	// write open tag to buffer
-	// fb.WriteString(tabs(d.ttrack))
 	fb.Write(opent)
 	fb.WriteByte('\n')
-	d.ttrack += 4 // get vaue from html file
+	d.ttrack += 4
 
 	// loop through contents
 	for _, c := range contents {
@@ -119,5 +164,6 @@ func (d *Div) formatTable(b []byte) []byte {
 	d.ttrack--
 	fb.WriteString(tabs(d.ttrack))
 	fb.WriteString("</table>")
+	fb.WriteByte('\n')
 	return fb.Bytes()
 }

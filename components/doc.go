@@ -28,6 +28,7 @@ func NewHtmlFile() *HtmlFile {
 // vv element struct functions vv
 
 func (h *HtmlFile) Div(d *Div) *HtmlFile {
+	d.Tabs(h.ttrack)
 	h.body = append(h.body, d.Bytes())
 	return h
 }
@@ -171,11 +172,10 @@ func (h *HtmlFile) Prepare() *HtmlFile {
 	for i := 0; i < len(h.body); i++ {
 		if bytes.Contains(h.body[i], []byte("<div")) &&
 			bytes.Contains(h.body[i], []byte(">")) {
-			fmt.Println("div hit!")
+			fmt.Printf("html file ttrack: %d\n", h.ttrack)
 			h.buf.Write(h.formatDiv(h.body[i]))
 		} else if bytes.Contains(h.body[i], []byte("<table")) &&
 			bytes.Contains(h.body[i], []byte(">")) {
-			fmt.Println("table hit!")
 			h.buf.Write(h.formatTable(h.body[i]))
 		} else {
 			h.buf.WriteString(t)
@@ -241,10 +241,7 @@ func (h *HtmlFile) formatDiv(b []byte) []byte {
 		}
 	}
 
-	fmt.Printf("sarr size: %d\n", len(sarr))
-
 	for _, s := range sarr {
-		fmt.Println("current s value in sarr: " + string(s))
 		if bytes.Contains(s, []byte("<div")) && bytes.Contains(s, []byte(">")) {
 			fb.WriteString(tabs(h.ttrack))
 			fb.Write(s)

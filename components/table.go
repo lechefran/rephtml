@@ -137,6 +137,7 @@ func (t *Table) Prepare() {
 		t.buf.WriteString("</tr>")
 	}
 	t.buf.WriteString("</table>")
+	t.buf.WriteByte('\n')
 }
 
 func (t *Table) Bytes() []byte {

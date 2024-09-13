@@ -71,13 +71,24 @@ func main() {
 	pg1.AddStyle("color", "#FFFFFF")
 	pg1.Prepare()
 
+	h1 := rephtml.NewH1()
+	h1.Text("Paragraph struct!")
+	h1.Prepare()
+
 	// create div styles
 	dStyles := make(map[string]string, 1)
 	dStyles["background-color"] = "#CCCCFF"
 
 	// create div
-	d := rephtml.NewDiv().Add(pg1).AddStyles(dStyles)
-	d.Add(table) // to fix
+	d := rephtml.NewDiv().Add(pg1).Add(h1).AddStyles(dStyles)
+	// d.Add(table) // to fix
+	// d.Prepare()
+
+	// create another div
+	d1 := rephtml.NewDiv().Add(h1).AddStyles(dStyles)
+	d1.Prepare()
+
+	d.Add(d1)
 	d.Prepare()
 
 	html := *rephtml.NewHtmlFile()
@@ -101,6 +112,7 @@ func main() {
 	html.P(pg)
 	html.Table(table)
 	html.Div(d)
+	html.Div(d1)
 	html.Prepare()
 	html.WriteToFile("report.html")
 
