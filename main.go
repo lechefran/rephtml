@@ -75,21 +75,23 @@ func main() {
 	h1.Text("Paragraph struct!")
 	h1.Prepare()
 
+	// create comment
+	c := rephtml.NewComment().Text("This is a test comment.")
+	c.Prepare()
+
 	// create div styles
 	dStyles := make(map[string]string, 1)
 	dStyles["background-color"] = "#CCCCFF"
 
 	// create div
 	d := rephtml.NewDiv().Add(pg1).Add(h1).AddStyles(dStyles)
-	// d.Add(table) // to fix
-	// d.Prepare()
+	d.Add(c)
+	d.Add(table) // to fix
+	d.Prepare()
 
 	// create another div
 	d1 := rephtml.NewDiv().Add(h1).AddStyles(dStyles)
 	d1.Prepare()
-
-	d.Add(d1)
-	d.Prepare()
 
 	html := *rephtml.NewHtmlFile()
 	html.StyleString(`h1, h2, h3, h4, h5, h6, p {

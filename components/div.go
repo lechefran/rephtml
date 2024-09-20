@@ -55,9 +55,6 @@ func (d *Div) Prepare() {
 	}
 
 	for _, c := range d.contents {
-		// if bytes.Contains(c, []byte("<div")) && bytes.Contains(c, []byte(">")) {
-		// 	d.buf.WriteByte('\n')
-		// }
 		if bytes.Contains(c, []byte("<table")) && bytes.Contains(c, []byte(">")) {
 			d.buf.Write(d.formatTable(c))
 		} else {
@@ -101,7 +98,6 @@ func (d *Div) formatDiv(b []byte) []byte {
 			fb.Write(s)
 		}
 	}
-	fb.WriteByte('\n')
 	return fb.Bytes()
 }
 
@@ -164,6 +160,5 @@ func (d *Div) formatTable(b []byte) []byte {
 	d.ttrack--
 	fb.WriteString(tabs(d.ttrack))
 	fb.WriteString("</table>")
-	fb.WriteByte('\n')
 	return fb.Bytes()
 }

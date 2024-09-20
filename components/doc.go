@@ -2,7 +2,6 @@ package rephtml
 
 import (
 	"bytes"
-	"fmt"
 	"log"
 	"os"
 	"strings"
@@ -172,7 +171,6 @@ func (h *HtmlFile) Prepare() *HtmlFile {
 	for i := 0; i < len(h.body); i++ {
 		if bytes.Contains(h.body[i], []byte("<div")) &&
 			bytes.Contains(h.body[i], []byte(">")) {
-			fmt.Printf("html file ttrack: %d\n", h.ttrack)
 			h.buf.Write(h.formatDiv(h.body[i]))
 		} else if bytes.Contains(h.body[i], []byte("<table")) &&
 			bytes.Contains(h.body[i], []byte(">")) {

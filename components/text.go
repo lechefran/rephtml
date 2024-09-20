@@ -57,6 +57,28 @@ func (p *P) Prepare() {
 	}
 }
 
+type Comment struct {
+	buf  bytes.Buffer
+	text string
+}
+
+func NewComment() *Comment {
+	return &Comment{}
+}
+
+func (c *Comment) Text(s string) *Comment {
+	c.text = s
+	return c
+}
+
+func (c *Comment) Bytes() []byte {
+	return c.buf.Bytes()
+}
+
+func (c *Comment) Prepare() {
+	c.buf.WriteString("<!--" + c.text + "-->")
+}
+
 type H1 struct {
 	buf   bytes.Buffer
 	style map[string]string
