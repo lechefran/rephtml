@@ -366,3 +366,64 @@ func (h *H6) Prepare() {
 		h.buf.WriteString("<h6>" + h.text + "</h6>")
 	}
 }
+
+type Anchor struct {
+	buf        bytes.Buffer
+	style      map[string]string
+	link, text string
+}
+
+func NewAnchor() *Anchor {
+	return &Anchor{
+		style: make(map[string]string),
+	}
+}
+
+func (a *Anchor) AddStyle(k, v string) *Anchor {
+	a.style[k] = v
+	return a
+}
+
+func (a *Anchor) Style(m map[string]string) *Anchor {
+	a.style = m
+	return a
+}
+
+func (a *Anchor) Text(s string) *Anchor {
+	a.text = s
+	return a
+}
+
+func (a *Anchor) Link(s string) *Anchor {
+	a.link = s
+	return a
+}
+
+func (a *Anchor) Bytes() []byte {
+	return a.buf.Bytes()
+}
+
+func (a *Anchor) Prepare() {
+	if len(a.style) != 0 {
+		idx := 0
+		a.buf.WriteString("<a style=\"")
+		for k, v := range a.style {
+			a.buf.WriteString(k + ": " + v + ";")
+			if idx != len(a.style)-1 {
+				a.buf.WriteByte(' ')
+			}
+			idx++
+		}
+		if a.link != "" {
+			a.buf.WriteString(" href=\"" + a.link + "\">" + a.text + "</a>")
+		} else {
+			a.buf.WriteString(">" + a.text + "</a>")
+		}
+	} else {
+		if a.link != "" {
+			a.buf.WriteString("<a href=\"" + a.link + "\">" + a.text + "</a>")
+		} else {
+			a.buf.WriteString("<a>" + a.text + "</a>")
+		}
+	}
+}

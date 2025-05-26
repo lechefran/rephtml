@@ -11,17 +11,29 @@ const indent = "\n\t"
 const newline = "\n"
 const tab = "\t"
 
+type Options struct {
+	AllowMedia   bool // allow audio, images, and video
+	AllowScripts bool // allow embedded code
+	CheckIds     bool // id validation strictness
+}
+
 type HtmlFile struct {
 	buf         bytes.Buffer
 	head        []byte
 	style, body [][]byte
 	ttrack      int // tab tracker
+	options     Options
 }
 
 func NewHtmlFile() *HtmlFile {
 	return &HtmlFile{
 		ttrack: 1,
 	}
+}
+
+func (h *HtmlFile) AddOptions(options Options) *HtmlFile {
+	h.options = options
+	return h
 }
 
 // vv element struct functions vv
@@ -75,6 +87,8 @@ func (h *HtmlFile) H6String(s string) *HtmlFile {
 }
 
 /*
+PString
+
 Add a paragraph element to the HTML document with
 a string parameter as the assigned value
 */
@@ -84,6 +98,8 @@ func (h *HtmlFile) PString(s string) *HtmlFile {
 }
 
 /*
+PStringWithStyle
+
 Add a paragraph element to the HTML document with
 a string parameter as the assigned value and a style value
 */
@@ -97,6 +113,8 @@ func (h *HtmlFile) PStringWithStyle(s, style string) *HtmlFile {
 }
 
 /*
+P
+
 Add a paragraph element to the HTML document with
 a paragraph struct
 */
@@ -225,8 +243,8 @@ func (h *HtmlFile) formatDiv(b []byte) []byte {
 	var fb bytes.Buffer
 
 	// split byte array by tags
-	curr := []byte{}
-	sarr := [][]byte{}
+	var curr []byte
+	var sarr [][]byte
 	for i := 0; i < len(b)-1; i++ {
 		curr = append(curr, b[i])
 		if b[i] == '>' && b[i+1] == '<' {
@@ -266,32 +284,32 @@ func (h *HtmlFile) formatStyle(b []byte) []byte {
 	var fb bytes.Buffer
 	nsb := strip(b) // remove all spaces
 
-	// get indexes for open an close braces
-	open, close := bytes.Index(nsb, []byte("{"))+1, len(nsb)-1
+	// get indexes for open and close braces
+	op, cls := bytes.Index(nsb, []byte("{"))+1, len(nsb)-1
 
 	// cut array into parts: opening, contents, and closing
-	openb, closeb := nsb[:open], nsb[close]
-	contents := nsb[open:close]
+	opb, clsb := nsb[:op], nsb[cls]
+	contents := nsb[op:cls]
 
 	// add spacing between open values
-	openbTmp := []byte{}
-	for i := 0; i < len(openb); i++ {
-		if openb[i] == ',' {
-			openbTmp = append(openbTmp, openb[i])
-			openbTmp = append(openbTmp, ' ')
-		} else if openb[i] == '{' {
-			openbTmp = append(openbTmp, ' ')
-			openbTmp = append(openbTmp, openb[i])
+	opbTmp := []byte{}
+	for i := 0; i < len(opb); i++ {
+		if opb[i] == ',' {
+			opbTmp = append(opbTmp, opb[i])
+			opbTmp = append(opbTmp, ' ')
+		} else if opb[i] == '{' {
+			opbTmp = append(opbTmp, ' ')
+			opbTmp = append(opbTmp, opb[i])
 		} else {
-			openbTmp = append(openbTmp, openb[i])
+			opbTmp = append(opbTmp, opb[i])
 		}
 	}
-	openbTmp = append(openbTmp, '\n')
-	openb = openbTmp
+	opbTmp = append(opbTmp, '\n')
+	opb = opbTmp
 
-	// write openb to buffer
+	// write opb to buffer
 	fb.WriteString(tabs(h.ttrack))
-	fb.Write(openb)
+	fb.Write(opb)
 
 	// next, process contents
 	contentsTmp := make([]byte, 0, len(contents))
@@ -330,7 +348,7 @@ func (h *HtmlFile) formatStyle(b []byte) []byte {
 	}
 	h.ttrack--
 	fb.WriteString(tabs(h.ttrack))
-	fb.WriteByte(closeb)
+	fb.WriteByte(clsb)
 	fb.WriteByte('\n')
 	return fb.Bytes()
 }

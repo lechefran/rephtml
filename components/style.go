@@ -5,12 +5,13 @@ import (
 	"reflect"
 )
 
+// CssProps
 /*
-* Implementation of all CSS properties
-* This may be overkill since a bulk majority of these
-* properties may not be relevant currently
-* or may never be relevant for this project
- */
+Implementation of all CSS properties.
+This may be overkill since a bulk majority of these
+properties may not be relevant currently
+or may never be relevant for this project
+*/
 type CssProps struct {
 	AccentColor              string
 	AlignContent             string

@@ -1,10 +1,9 @@
 package rephtml
 
+// Elements Interface
 /*
-HTML Elements Interface
-
 Holds HTML element information that can be
-appeneded to the HTML document's body
+appended to the HTML document's body
 */
 type Elements interface {
 	Bytes() []byte

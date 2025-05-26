@@ -9,10 +9,6 @@ import (
 	rephtml "github.com/lechefran/rephtml/components"
 )
 
-const indent = "\n\t"
-const newline = "\n"
-const tab = "\t"
-
 type HtmlDiv struct {
 	buf     bytes.Buffer
 	content [][]byte
@@ -46,7 +42,7 @@ func main() {
 
 	// create table
 	table := rephtml.NewTable()
-	table.Id("myId")
+	table.Id("myId1")
 	table.Class([]string{"testclass1", "testclass2"})
 	table.Headers([]string{"testhdr1", "testhdr2"})
 	table.AddRow([]string{"testval1", "testhval2"})
@@ -54,12 +50,12 @@ func main() {
 	table.AddStyle("color", "red") // override color from blue to red
 	table.Prepare()
 
-	// create parapgraph styles
+	// create paragraph styles
 	pgStyles := make(map[string]string, 2)
 	pgStyles["color"] = "#a0d6b4"
 	pgStyles["font-size"] = "60px"
 
-	// create parapgraphs
+	// create paragraphs
 	pg := rephtml.NewP()
 	pg.Text("Hello, World!")
 	pg.AddStyle("font-size", "60px")
@@ -103,7 +99,7 @@ func main() {
 			padding: 10px;
 			text-align: center;
 		}`)
-	html.StyleString(`#myId {
+	html.StyleString(`#myId1 {
 			font-size: 60px;
 		}`)
 	html.Style(tableStyle)
