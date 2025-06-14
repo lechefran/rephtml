@@ -19,7 +19,9 @@ func NewDiv() *HtmlDiv {
 }
 
 func (d *HtmlDiv) ReadBuffer(b *bytes.Buffer) {
-	b.Read(d.buf.Bytes())
+	if _, err := b.Read(d.buf.Bytes()); err != nil {
+		return
+	}
 }
 
 func main() {
@@ -123,7 +125,11 @@ func ReadCsv(path string) [][]string {
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer f.Close()
+	defer func(f *os.File) {
+		if err := f.Close(); err != nil {
+			log.Fatal(err)
+		}
+	}(f)
 	rdr := csv.NewReader(f)
 	rdr.FieldsPerRecord = -1
 	res, err := rdr.ReadAll()

@@ -7,7 +7,6 @@ import (
 	"strings"
 )
 
-const indent = "\n\t"
 const newline = "\n"
 const tab = "\t"
 
@@ -21,6 +20,8 @@ type HtmlFile struct {
 	buf         bytes.Buffer
 	head        []byte
 	style, body [][]byte
+	lang        string
+	title       string
 	ttrack      int // tab tracker
 	options     Options
 }
@@ -29,6 +30,11 @@ func NewHtmlFile() *HtmlFile {
 	return &HtmlFile{
 		ttrack: 1,
 	}
+}
+
+func (h *HtmlFile) Lang(lang string) *HtmlFile {
+	h.lang = lang
+	return h
 }
 
 func (h *HtmlFile) AddOptions(options Options) *HtmlFile {
@@ -160,28 +166,37 @@ func (h *HtmlFile) Bytes() []byte {
 
 func (h *HtmlFile) Prepare() *HtmlFile {
 	t := tabs(h.ttrack)
-	h.buf.WriteString("<html>" + newline)
-	h.buf.WriteString(t + "<header>" + newline)
-	h.ttrack++
-	t = tabs(h.ttrack)
-	h.buf.WriteString(t + "<style>" + newline)
-	h.ttrack++
-	t = tabs(h.ttrack)
-	for i := 0; i < len(h.style); i++ {
-		if i != len(h.style)-1 {
-			h.buf.Write(h.formatStyle(h.style[i]))
-			h.buf.WriteString(newline)
-		} else {
-			h.buf.Write(h.formatStyle(h.style[i]))
-		}
+	if h.lang != "" {
+		h.buf.WriteString("<html>" + newline)
+	} else {
+		h.buf.WriteString("<html lang=\"" + h.lang + "\">" + newline)
 	}
+	h.buf.WriteString(t + "<head>" + newline)
+	h.ttrack++
+	t = tabs(h.ttrack)
+	if h.title != "" {
+		h.buf.WriteString("<title>" + h.title + "</title>" + newline)
+	}
+	if len(h.style) > 0 {
+		h.buf.WriteString(t + "<style>" + newline)
+		h.ttrack++
+		t = tabs(h.ttrack)
+		for i := 0; i < len(h.style); i++ {
+			if i != len(h.style)-1 {
+				h.buf.Write(h.formatStyle(h.style[i]))
+				h.buf.WriteString(newline)
+			} else {
+				h.buf.Write(h.formatStyle(h.style[i]))
+			}
+		}
 
-	h.ttrack--
+		h.ttrack--
+		t = tabs(h.ttrack)
+		h.buf.WriteString(t + "</style>" + newline)
+		h.ttrack--
+	}
 	t = tabs(h.ttrack)
-	h.buf.WriteString(t + "</style>" + newline)
-	h.ttrack--
-	t = tabs(h.ttrack)
-	h.buf.WriteString(t + "</header>" + newline)
+	h.buf.WriteString(t + "</head>" + newline)
 	h.buf.WriteString(t + "<body>" + newline)
 	h.ttrack++
 	t = tabs(h.ttrack)
@@ -218,7 +233,11 @@ func (h *HtmlFile) WriteToFile(path string) {
 		if err != nil {
 			log.Fatal(err)
 		}
-		defer file.Close()
+		defer func(file *os.File) {
+			if err := file.Close(); err != nil {
+				log.Fatal(err)
+			}
+		}(file)
 		if _, err := file.Write(h.buf.Bytes()); err != nil {
 			log.Fatal(err)
 		}
@@ -227,7 +246,11 @@ func (h *HtmlFile) WriteToFile(path string) {
 		if err != nil {
 			log.Fatal(err)
 		}
-		defer file.Close()
+		defer func(file *os.File) {
+			if err := file.Close(); err != nil {
+				log.Fatal(err)
+			}
+		}(file)
 		if _, err := file.Write(h.buf.Bytes()); err != nil {
 			log.Fatal(err)
 		}
@@ -292,7 +315,7 @@ func (h *HtmlFile) formatStyle(b []byte) []byte {
 	contents := nsb[op:cls]
 
 	// add spacing between open values
-	opbTmp := []byte{}
+	var opbTmp []byte
 	for i := 0; i < len(opb); i++ {
 		if opb[i] == ',' {
 			opbTmp = append(opbTmp, opb[i])
@@ -361,7 +384,7 @@ func (h *HtmlFile) formatTable(b []byte) []byte {
 
 	// see if open table tag has id and class values
 	var tmp bytes.Buffer
-	opent := []byte{}
+	var opent []byte
 	for _, c := range b {
 		if c != '>' {
 			tmp.WriteByte(c)
@@ -375,7 +398,7 @@ func (h *HtmlFile) formatTable(b []byte) []byte {
 	nsb := strip(b) // remove all spaces
 
 	// split byte array by tags
-	nsbsplit := []byte{}
+	var nsbsplit []byte
 	for i := 0; i < len(nsb)-1; i++ {
 		nsbsplit = append(nsbsplit, nsb[i])
 		if nsb[i] == '>' && nsb[i+1] == '<' {

@@ -28,10 +28,10 @@ html.WriteToFile("report.html") // create a file named report.html in the curren
 
 ## Supported Elements
 ### Document Structure
-- [ ] `<html>` - Root element
-- [ ] `<head>` - Document head
-- [ ] `<body>` - Document body
-- [ ] `<title>` - Document title
+- [X] `<html>` - Root element
+- [X] `<head>` - Document head
+- [X] `<body>` - Document body
+- [X] `<title>` - Document title
 - [ ] `<base>` - Base URL
 - [ ] `<link>` - External resource link
 - [ ] `<meta>` - Metadata
@@ -46,11 +46,11 @@ html.WriteToFile("report.html") // create a file named report.html in the curren
 - [ ] `<aside>` - Sidebar content
 - [ ] `<footer>` - Footer section
 - [ ] `<address>` - Contact information
-- [ ] `<h1>` through `<h6>` - Headings
+- [X] `<h1>` through `<h6>` - Headings
 
 ### Text Content
-- [ ] `<div>` - Generic container
-- [ ] `<p>` - Paragraph
+- [X] `<div>` - Generic container
+- [X] `<p>` - Paragraph
 - [ ] `<hr>` - Horizontal rule
 - [ ] `<pre>` - Preformatted text
 - [ ] `<blockquote>` - Block quotation
@@ -127,16 +127,16 @@ html.WriteToFile("report.html") // create a file named report.html in the curren
 - [ ] `<ins>` - Inserted text
 
 ### Table Content
-- [ ] `<table>` - Table
+- [X] `<table>` - Table
 - [ ] `<caption>` - Table caption
 - [ ] `<colgroup>` - Column group
 - [ ] `<col>` - Table column
 - [ ] `<tbody>` - Table body
 - [ ] `<thead>` - Table head
 - [ ] `<tfoot>` - Table foot
-- [ ] `<tr>` - Table row
-- [ ] `<td>` - Table data cell
-- [ ] `<th>` - Table header cell
+- [X] `<tr>` - Table row
+- [X] `<td>` - Table data cell
+- [X] `<th>` - Table header cell
 
 ### Forms
 - [ ] `<form>` - Form
