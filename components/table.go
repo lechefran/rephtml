@@ -11,6 +11,11 @@ type Table struct {
 	id      string
 	rows    [][]string
 	style   map[string]string // rewrite to make use of CssProps?
+	caption *Caption
+	thead   *Thead
+	tbody   *Tbody
+	tfoot   *Tfoot
+	trs     []*Tr
 }
 
 func NewTable() *Table {
@@ -91,6 +96,31 @@ func (t *Table) Styles(m map[string]string) *Table {
 	return t
 }
 
+func (t *Table) AddCaption(c *Caption) *Table {
+	t.caption = c
+	return t
+}
+
+func (t *Table) AddThead(th *Thead) *Table {
+	t.thead = th
+	return t
+}
+
+func (t *Table) AddTbody(tb *Tbody) *Table {
+	t.tbody = tb
+	return t
+}
+
+func (t *Table) AddTfoot(tf *Tfoot) *Table {
+	t.tfoot = tf
+	return t
+}
+
+func (t *Table) AddTr(tr *Tr) *Table {
+	t.trs = append(t.trs, tr)
+	return t
+}
+
 func (t *Table) Prepare() {
 	// see if table has id, class, and style tags to add
 	t.buf.WriteString("<table")
@@ -121,21 +151,57 @@ func (t *Table) Prepare() {
 	}
 	t.buf.WriteByte('>')
 
-	// write header
-	t.buf.WriteString("<tr>")
-	for _, h := range t.headers {
-		t.buf.WriteString("<th>" + h + "</th>")
+	// write caption if present
+	if t.caption != nil {
+		t.caption.Prepare()
+		t.buf.Write(t.caption.Bytes())
 	}
-	t.buf.WriteString("</tr>")
 
-	// write rows
-	for i := 0; i < len(t.rows); i++ {
-		t.buf.WriteString("<tr>")
-		for j := 0; j < len(t.rows[i]); j++ {
-			t.buf.WriteString("<td>" + t.rows[i][j] + "</td>")
-		}
-		t.buf.WriteString("</tr>")
+	// write thead if present
+	if t.thead != nil {
+		t.thead.Prepare()
+		t.buf.Write(t.thead.Bytes())
 	}
+
+	// write tbody if present
+	if t.tbody != nil {
+		t.tbody.Prepare()
+		t.buf.Write(t.tbody.Bytes())
+	}
+
+	// write tfoot if present
+	if t.tfoot != nil {
+		t.tfoot.Prepare()
+		t.buf.Write(t.tfoot.Bytes())
+	}
+
+	// write direct tr elements if present
+	for _, tr := range t.trs {
+		tr.Prepare()
+		t.buf.Write(tr.Bytes())
+	}
+
+	// write legacy header and rows if no structured elements are used
+	if t.thead == nil && t.tbody == nil && t.tfoot == nil && len(t.trs) == 0 {
+		// write header
+		if len(t.headers) > 0 {
+			t.buf.WriteString("<tr>")
+			for _, h := range t.headers {
+				t.buf.WriteString("<th>" + h + "</th>")
+			}
+			t.buf.WriteString("</tr>")
+		}
+
+		// write rows
+		for i := 0; i < len(t.rows); i++ {
+			t.buf.WriteString("<tr>")
+			for j := 0; j < len(t.rows[i]); j++ {
+				t.buf.WriteString("<td>" + t.rows[i][j] + "</td>")
+			}
+			t.buf.WriteString("</tr>")
+		}
+	}
+
 	t.buf.WriteString("</table>")
 }
 
