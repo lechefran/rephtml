@@ -129,8 +129,8 @@ html.WriteToFile("report.html") // create a file named report.html in the curren
 ### Table Content
 - [X] `<table>` - Table
 - [X] `<caption>` - Table caption
-- [ ] `<colgroup>` - Column group
-- [ ] `<col>` - Table column
+- [X] `<colgroup>` - Column group
+- [X] `<col>` - Table column
 - [X] `<tbody>` - Table body
 - [X] `<thead>` - Table head
 - [X] `<tfoot>` - Table foot

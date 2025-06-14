@@ -542,3 +542,567 @@ func (c *Caption) Prepare() {
 func (c *Caption) Bytes() []byte {
 	return c.buf.Bytes()
 }
+
+type Col struct {
+	buf   bytes.Buffer
+	class []string
+	id    string
+	style map[string]string
+	span  int
+}
+
+func NewCol() *Col {
+	return &Col{
+		style: make(map[string]string),
+	}
+}
+
+func (col *Col) AddClass(s string) *Col {
+	col.class = append(col.class, s)
+	return col
+}
+
+func (col *Col) AddClasses(s []string) *Col {
+	col.class = append(col.class, s...)
+	return col
+}
+
+func (col *Col) Class(s []string) *Col {
+	col.class = append(col.class, s...)
+	return col
+}
+
+func (col *Col) AddId(s string) *Col {
+	col.id = s
+	return col
+}
+
+func (col *Col) Id(s string) *Col {
+	col.id = s
+	return col
+}
+
+func (col *Col) AddStyle(k, v string) *Col {
+	col.style[k] = v
+	return col
+}
+
+func (col *Col) AddStyles(m map[string]string) *Col {
+	for k, v := range m {
+		col.style[k] = v
+	}
+	return col
+}
+
+func (col *Col) Styles(m map[string]string) *Col {
+	col.style = m
+	return col
+}
+
+func (col *Col) Span(s int) *Col {
+	col.span = s
+	return col
+}
+
+func (col *Col) Prepare() {
+	col.buf.WriteString("<col")
+	if col.id != "" {
+		col.buf.WriteString(" id=\"" + col.id + "\"")
+	}
+	if len(col.class) != 0 {
+		col.buf.WriteString(" class=\"")
+		for i := 0; i < len(col.class); i++ {
+			col.buf.WriteString(col.class[i])
+			if i != len(col.class)-1 {
+				col.buf.WriteString(" ")
+			}
+		}
+		col.buf.WriteString("\"")
+	}
+	if len(col.style) != 0 {
+		idx := 0
+		col.buf.WriteString(" style=\"")
+		for k, v := range col.style {
+			col.buf.WriteString(k + ": " + v + ";")
+			if idx != len(col.style)-1 {
+				col.buf.WriteString(" ")
+			}
+			idx++
+		}
+		col.buf.WriteString("\"")
+	}
+	if col.span > 0 {
+		col.buf.WriteString(" span=\"")
+		col.buf.WriteString(string(rune(col.span + '0')))
+		col.buf.WriteString("\"")
+	}
+	col.buf.WriteString(">")
+}
+
+func (col *Col) Bytes() []byte {
+	return col.buf.Bytes()
+}
+
+type Colgroup struct {
+	buf      bytes.Buffer
+	class    []string
+	id       string
+	style    map[string]string
+	contents [][]byte
+	span     int
+}
+
+func NewColgroup() *Colgroup {
+	return &Colgroup{
+		style: make(map[string]string),
+	}
+}
+
+func (cg *Colgroup) AddClass(s string) *Colgroup {
+	cg.class = append(cg.class, s)
+	return cg
+}
+
+func (cg *Colgroup) AddClasses(s []string) *Colgroup {
+	cg.class = append(cg.class, s...)
+	return cg
+}
+
+func (cg *Colgroup) Class(s []string) *Colgroup {
+	cg.class = append(cg.class, s...)
+	return cg
+}
+
+func (cg *Colgroup) AddId(s string) *Colgroup {
+	cg.id = s
+	return cg
+}
+
+func (cg *Colgroup) Id(s string) *Colgroup {
+	cg.id = s
+	return cg
+}
+
+func (cg *Colgroup) AddStyle(k, v string) *Colgroup {
+	cg.style[k] = v
+	return cg
+}
+
+func (cg *Colgroup) AddStyles(m map[string]string) *Colgroup {
+	for k, v := range m {
+		cg.style[k] = v
+	}
+	return cg
+}
+
+func (cg *Colgroup) Styles(m map[string]string) *Colgroup {
+	cg.style = m
+	return cg
+}
+
+func (cg *Colgroup) Add(e Elements) *Colgroup {
+	cg.contents = append(cg.contents, e.Bytes())
+	return cg
+}
+
+func (cg *Colgroup) Span(s int) *Colgroup {
+	cg.span = s
+	return cg
+}
+
+func (cg *Colgroup) Prepare() {
+	cg.buf.WriteString("<colgroup")
+	if cg.id != "" {
+		cg.buf.WriteString(" id=\"" + cg.id + "\"")
+	}
+	if len(cg.class) != 0 {
+		cg.buf.WriteString(" class=\"")
+		for i := 0; i < len(cg.class); i++ {
+			cg.buf.WriteString(cg.class[i])
+			if i != len(cg.class)-1 {
+				cg.buf.WriteString(" ")
+			}
+		}
+		cg.buf.WriteString("\"")
+	}
+	if len(cg.style) != 0 {
+		idx := 0
+		cg.buf.WriteString(" style=\"")
+		for k, v := range cg.style {
+			cg.buf.WriteString(k + ": " + v + ";")
+			if idx != len(cg.style)-1 {
+				cg.buf.WriteString(" ")
+			}
+			idx++
+		}
+		cg.buf.WriteString("\"")
+	}
+	if cg.span > 0 {
+		cg.buf.WriteString(" span=\"")
+		cg.buf.WriteString(string(rune(cg.span + '0')))
+		cg.buf.WriteString("\"")
+	}
+	cg.buf.WriteByte('>')
+
+	for _, cont := range cg.contents {
+		cg.buf.Write(cont)
+	}
+	cg.buf.WriteString("</colgroup>")
+}
+
+func (cg *Colgroup) Bytes() []byte {
+	return cg.buf.Bytes()
+}
+
+type Tr struct {
+	buf      bytes.Buffer
+	class    []string
+	id       string
+	style    map[string]string
+	contents [][]byte
+}
+
+func NewTr() *Tr {
+	return &Tr{
+		style: make(map[string]string),
+	}
+}
+
+func (tr *Tr) AddClass(s string) *Tr {
+	tr.class = append(tr.class, s)
+	return tr
+}
+
+func (tr *Tr) AddClasses(s []string) *Tr {
+	tr.class = append(tr.class, s...)
+	return tr
+}
+
+func (tr *Tr) Class(s []string) *Tr {
+	tr.class = append(tr.class, s...)
+	return tr
+}
+
+func (tr *Tr) AddId(s string) *Tr {
+	tr.id = s
+	return tr
+}
+
+func (tr *Tr) Id(s string) *Tr {
+	tr.id = s
+	return tr
+}
+
+func (tr *Tr) AddStyle(k, v string) *Tr {
+	tr.style[k] = v
+	return tr
+}
+
+func (tr *Tr) AddStyles(m map[string]string) *Tr {
+	for k, v := range m {
+		tr.style[k] = v
+	}
+	return tr
+}
+
+func (tr *Tr) Styles(m map[string]string) *Tr {
+	tr.style = m
+	return tr
+}
+
+func (tr *Tr) Add(e Elements) *Tr {
+	tr.contents = append(tr.contents, e.Bytes())
+	return tr
+}
+
+func (tr *Tr) Prepare() {
+	tr.buf.WriteString("<tr")
+	if tr.id != "" {
+		tr.buf.WriteString(" id=\"" + tr.id + "\"")
+	}
+	if len(tr.class) != 0 {
+		tr.buf.WriteString(" class=\"")
+		for i := 0; i < len(tr.class); i++ {
+			tr.buf.WriteString(tr.class[i])
+			if i != len(tr.class)-1 {
+				tr.buf.WriteString(" ")
+			}
+		}
+		tr.buf.WriteString("\"")
+	}
+	if len(tr.style) != 0 {
+		idx := 0
+		tr.buf.WriteString(" style=\"")
+		for k, v := range tr.style {
+			tr.buf.WriteString(k + ": " + v + ";")
+			if idx != len(tr.style)-1 {
+				tr.buf.WriteString(" ")
+			}
+			idx++
+		}
+		tr.buf.WriteString("\"")
+	}
+	tr.buf.WriteByte('>')
+
+	for _, cont := range tr.contents {
+		tr.buf.Write(cont)
+	}
+	tr.buf.WriteString("</tr>")
+}
+
+func (tr *Tr) Bytes() []byte {
+	return tr.buf.Bytes()
+}
+
+type Td struct {
+	buf      bytes.Buffer
+	class    []string
+	id       string
+	style    map[string]string
+	contents [][]byte
+	colspan  int
+	rowspan  int
+}
+
+func NewTd() *Td {
+	return &Td{
+		style: make(map[string]string),
+	}
+}
+
+func (td *Td) AddClass(s string) *Td {
+	td.class = append(td.class, s)
+	return td
+}
+
+func (td *Td) AddClasses(s []string) *Td {
+	td.class = append(td.class, s...)
+	return td
+}
+
+func (td *Td) Class(s []string) *Td {
+	td.class = append(td.class, s...)
+	return td
+}
+
+func (td *Td) AddId(s string) *Td {
+	td.id = s
+	return td
+}
+
+func (td *Td) Id(s string) *Td {
+	td.id = s
+	return td
+}
+
+func (td *Td) AddStyle(k, v string) *Td {
+	td.style[k] = v
+	return td
+}
+
+func (td *Td) AddStyles(m map[string]string) *Td {
+	for k, v := range m {
+		td.style[k] = v
+	}
+	return td
+}
+
+func (td *Td) Styles(m map[string]string) *Td {
+	td.style = m
+	return td
+}
+
+func (td *Td) Add(e Elements) *Td {
+	td.contents = append(td.contents, e.Bytes())
+	return td
+}
+
+func (td *Td) Colspan(c int) *Td {
+	td.colspan = c
+	return td
+}
+
+func (td *Td) Rowspan(r int) *Td {
+	td.rowspan = r
+	return td
+}
+
+func (td *Td) Prepare() {
+	td.buf.WriteString("<td")
+	if td.id != "" {
+		td.buf.WriteString(" id=\"" + td.id + "\"")
+	}
+	if len(td.class) != 0 {
+		td.buf.WriteString(" class=\"")
+		for i := 0; i < len(td.class); i++ {
+			td.buf.WriteString(td.class[i])
+			if i != len(td.class)-1 {
+				td.buf.WriteString(" ")
+			}
+		}
+		td.buf.WriteString("\"")
+	}
+	if len(td.style) != 0 {
+		idx := 0
+		td.buf.WriteString(" style=\"")
+		for k, v := range td.style {
+			td.buf.WriteString(k + ": " + v + ";")
+			if idx != len(td.style)-1 {
+				td.buf.WriteString(" ")
+			}
+			idx++
+		}
+		td.buf.WriteString("\"")
+	}
+	if td.colspan > 0 {
+		td.buf.WriteString(" colspan=\"")
+		td.buf.WriteString(string(rune(td.colspan + '0')))
+		td.buf.WriteString("\"")
+	}
+	if td.rowspan > 0 {
+		td.buf.WriteString(" rowspan=\"")
+		td.buf.WriteString(string(rune(td.rowspan + '0')))
+		td.buf.WriteString("\"")
+	}
+	td.buf.WriteByte('>')
+
+	for _, cont := range td.contents {
+		td.buf.Write(cont)
+	}
+	td.buf.WriteString("</td>")
+}
+
+func (td *Td) Bytes() []byte {
+	return td.buf.Bytes()
+}
+
+type Th struct {
+	buf      bytes.Buffer
+	class    []string
+	id       string
+	style    map[string]string
+	contents [][]byte
+	colspan  int
+	rowspan  int
+	scope    string
+}
+
+func NewTh() *Th {
+	return &Th{
+		style: make(map[string]string),
+	}
+}
+
+func (th *Th) AddClass(s string) *Th {
+	th.class = append(th.class, s)
+	return th
+}
+
+func (th *Th) AddClasses(s []string) *Th {
+	th.class = append(th.class, s...)
+	return th
+}
+
+func (th *Th) Class(s []string) *Th {
+	th.class = append(th.class, s...)
+	return th
+}
+
+func (th *Th) AddId(s string) *Th {
+	th.id = s
+	return th
+}
+
+func (th *Th) Id(s string) *Th {
+	th.id = s
+	return th
+}
+
+func (th *Th) AddStyle(k, v string) *Th {
+	th.style[k] = v
+	return th
+}
+
+func (th *Th) AddStyles(m map[string]string) *Th {
+	for k, v := range m {
+		th.style[k] = v
+	}
+	return th
+}
+
+func (th *Th) Styles(m map[string]string) *Th {
+	th.style = m
+	return th
+}
+
+func (th *Th) Add(e Elements) *Th {
+	th.contents = append(th.contents, e.Bytes())
+	return th
+}
+
+func (th *Th) Colspan(c int) *Th {
+	th.colspan = c
+	return th
+}
+
+func (th *Th) Rowspan(r int) *Th {
+	th.rowspan = r
+	return th
+}
+
+func (th *Th) Scope(s string) *Th {
+	th.scope = s
+	return th
+}
+
+func (th *Th) Prepare() {
+	th.buf.WriteString("<th")
+	if th.id != "" {
+		th.buf.WriteString(" id=\"" + th.id + "\"")
+	}
+	if len(th.class) != 0 {
+		th.buf.WriteString(" class=\"")
+		for i := 0; i < len(th.class); i++ {
+			th.buf.WriteString(th.class[i])
+			if i != len(th.class)-1 {
+				th.buf.WriteString(" ")
+			}
+		}
+		th.buf.WriteString("\"")
+	}
+	if len(th.style) != 0 {
+		idx := 0
+		th.buf.WriteString(" style=\"")
+		for k, v := range th.style {
+			th.buf.WriteString(k + ": " + v + ";")
+			if idx != len(th.style)-1 {
+				th.buf.WriteString(" ")
+			}
+			idx++
+		}
+		th.buf.WriteString("\"")
+	}
+	if th.colspan > 0 {
+		th.buf.WriteString(" colspan=\"")
+		th.buf.WriteString(string(rune(th.colspan + '0')))
+		th.buf.WriteString("\"")
+	}
+	if th.rowspan > 0 {
+		th.buf.WriteString(" rowspan=\"")
+		th.buf.WriteString(string(rune(th.rowspan + '0')))
+		th.buf.WriteString("\"")
+	}
+	if th.scope != "" {
+		th.buf.WriteString(" scope=\"" + th.scope + "\"")
+	}
+	th.buf.WriteByte('>')
+
+	for _, cont := range th.contents {
+		th.buf.Write(cont)
+	}
+	th.buf.WriteString("</th>")
+}
+
+func (th *Th) Bytes() []byte {
+	return th.buf.Bytes()
+}
