@@ -32,7 +32,7 @@ html.WriteToFile("report.html") // create a file named report.html in the curren
 - [X] `<head>` - Document head
 - [X] `<body>` - Document body
 - [X] `<title>` - Document title
-- [ ] `<base>` - Base URL
+- [X] `<base>` - Base URL
 - [ ] `<link>` - External resource link
 - [ ] `<meta>` - Metadata
 - [ ] `<style>` - Internal CSS

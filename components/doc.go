@@ -10,12 +10,6 @@ import (
 const newline = "\n"
 const tab = "\t"
 
-type Options struct {
-	AllowMedia   bool // allow audio, images, and video
-	AllowScripts bool // allow embedded code
-	CheckIds     bool // id validation strictness
-}
-
 type HtmlFile struct {
 	buf         bytes.Buffer
 	head        []byte
@@ -23,7 +17,18 @@ type HtmlFile struct {
 	lang        string
 	title       string
 	ttrack      int // tab tracker
+	base        Base
 	options     Options
+}
+
+type Base struct {
+	link, target string
+}
+
+type Options struct {
+	AllowMedia   bool // allow audio, images, and video
+	AllowScripts bool // allow embedded code
+	CheckIds     bool // id validation strictness
 }
 
 func NewHtmlFile() *HtmlFile {
@@ -42,8 +47,13 @@ func (h *HtmlFile) Title(title string) *HtmlFile {
 	return h
 }
 
-func (h *HtmlFile) AddOptions(options Options) *HtmlFile {
-	h.options = options
+func (h *HtmlFile) AddOptions(opts Options) *HtmlFile {
+	h.options = opts
+	return h
+}
+
+func (h *HtmlFile) Base(b Base) *HtmlFile {
+	h.base = b
 	return h
 }
 
@@ -181,6 +191,13 @@ func (h *HtmlFile) Prepare() *HtmlFile {
 	t = tabs(h.ttrack)
 	if h.title != "" {
 		h.buf.WriteString("<title>" + h.title + "</title>" + newline)
+	}
+	if h.base.link != "" {
+		h.buf.WriteString("<base href=\"" + h.base.link)
+		if h.base.target != "" {
+			h.buf.WriteString("\" target=\"" + h.base.target)
+		}
+		h.buf.WriteString("\">" + newline)
 	}
 	if len(h.style) > 0 {
 		h.buf.WriteString(t + "<style>" + newline)
