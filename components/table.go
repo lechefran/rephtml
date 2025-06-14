@@ -199,8 +199,8 @@ func (th *Thead) Styles(m map[string]string) *Thead {
 	return th
 }
 
-func (th *Thead) Add(e Elements) *Thead {
-	th.contents = append(th.contents, e.Bytes())
+func (th *Thead) AddTr(tr *Tr) *Thead {
+	th.contents = append(th.contents, tr.Bytes())
 	return th
 }
 
@@ -299,8 +299,8 @@ func (tb *Tbody) Styles(m map[string]string) *Tbody {
 	return tb
 }
 
-func (tb *Tbody) Add(e Elements) *Tbody {
-	tb.contents = append(tb.contents, e.Bytes())
+func (tb *Tbody) AddTr(tr *Tr) *Tbody {
+	tb.contents = append(tb.contents, tr.Bytes())
 	return tb
 }
 
@@ -399,8 +399,8 @@ func (tf *Tfoot) Styles(m map[string]string) *Tfoot {
 	return tf
 }
 
-func (tf *Tfoot) Add(e Elements) *Tfoot {
-	tf.contents = append(tf.contents, e.Bytes())
+func (tf *Tfoot) AddTr(tr *Tr) *Tfoot {
+	tf.contents = append(tf.contents, tr.Bytes())
 	return tf
 }
 
@@ -810,8 +810,13 @@ func (tr *Tr) Styles(m map[string]string) *Tr {
 	return tr
 }
 
-func (tr *Tr) Add(e Elements) *Tr {
-	tr.contents = append(tr.contents, e.Bytes())
+func (tr *Tr) AddTh(th *Th) *Tr {
+	tr.contents = append(tr.contents, th.Bytes())
+	return tr
+}
+
+func (tr *Tr) AddTd(td *Td) *Tr {
+	tr.contents = append(tr.contents, td.Bytes())
 	return tr
 }
 
