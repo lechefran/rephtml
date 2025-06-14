@@ -37,6 +37,11 @@ func (h *HtmlFile) Lang(lang string) *HtmlFile {
 	return h
 }
 
+func (h *HtmlFile) Title(title string) *HtmlFile {
+	h.title = title
+	return h
+}
+
 func (h *HtmlFile) AddOptions(options Options) *HtmlFile {
 	h.options = options
 	return h
