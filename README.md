@@ -65,7 +65,7 @@ html.WriteToFile("report.html") // create a file named report.html in the curren
 - [ ] `<figcaption>` - Figure caption
 
 ### Inline Text Semantics
-- [ ] `<a>` - Anchor/link
+- [X] `<a>` - Anchor/link
 - [ ] `<abbr>` - Abbreviation
 - [ ] `<b>` - Bold text
 - [ ] `<bdi>` - Bidirectional isolate
@@ -131,9 +131,9 @@ html.WriteToFile("report.html") // create a file named report.html in the curren
 - [ ] `<caption>` - Table caption
 - [ ] `<colgroup>` - Column group
 - [ ] `<col>` - Table column
-- [ ] `<tbody>` - Table body
-- [ ] `<thead>` - Table head
-- [ ] `<tfoot>` - Table foot
+- [X] `<tbody>` - Table body
+- [X] `<thead>` - Table head
+- [X] `<tfoot>` - Table foot
 - [X] `<tr>` - Table row
 - [X] `<td>` - Table data cell
 - [X] `<th>` - Table header cell
