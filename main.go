@@ -50,6 +50,7 @@ func main() {
 	table.AddRow([]string{"testval1", "testhval2"})
 	table.AddStyle("color", "blue")
 	table.AddStyle("color", "red") // override color from blue to red
+	table.AddCaption(rephtml.NewCaption().Text("Hello World"))
 	table.Prepare()
 
 	// create paragraph styles

@@ -510,11 +510,11 @@ func (tf *Tfoot) Bytes() []byte {
 }
 
 type Caption struct {
-	buf      bytes.Buffer
-	class    []string
-	id       string
-	style    map[string]string
-	contents [][]byte
+	buf   bytes.Buffer
+	class []string
+	id    string
+	style map[string]string
+	text  string
 }
 
 func NewCaption() *Caption {
@@ -565,8 +565,8 @@ func (c *Caption) Styles(m map[string]string) *Caption {
 	return c
 }
 
-func (c *Caption) Add(e Elements) *Caption {
-	c.contents = append(c.contents, e.Bytes())
+func (c *Caption) Text(text string) *Caption {
+	c.text = text
 	return c
 }
 
@@ -599,9 +599,7 @@ func (c *Caption) Prepare() {
 	}
 	c.buf.WriteByte('>')
 
-	for _, cont := range c.contents {
-		c.buf.Write(cont)
-	}
+	c.buf.WriteString(c.text)
 	c.buf.WriteString("</caption>")
 }
 
