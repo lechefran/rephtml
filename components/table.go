@@ -442,3 +442,103 @@ func (tf *Tfoot) Prepare() {
 func (tf *Tfoot) Bytes() []byte {
 	return tf.buf.Bytes()
 }
+
+type Caption struct {
+	buf      bytes.Buffer
+	class    []string
+	id       string
+	style    map[string]string
+	contents [][]byte
+}
+
+func NewCaption() *Caption {
+	return &Caption{
+		style: make(map[string]string),
+	}
+}
+
+func (c *Caption) AddClass(s string) *Caption {
+	c.class = append(c.class, s)
+	return c
+}
+
+func (c *Caption) AddClasses(s []string) *Caption {
+	c.class = append(c.class, s...)
+	return c
+}
+
+func (c *Caption) Class(s []string) *Caption {
+	c.class = append(c.class, s...)
+	return c
+}
+
+func (c *Caption) AddId(s string) *Caption {
+	c.id = s
+	return c
+}
+
+func (c *Caption) Id(s string) *Caption {
+	c.id = s
+	return c
+}
+
+func (c *Caption) AddStyle(k, v string) *Caption {
+	c.style[k] = v
+	return c
+}
+
+func (c *Caption) AddStyles(m map[string]string) *Caption {
+	for k, v := range m {
+		c.style[k] = v
+	}
+	return c
+}
+
+func (c *Caption) Styles(m map[string]string) *Caption {
+	c.style = m
+	return c
+}
+
+func (c *Caption) Add(e Elements) *Caption {
+	c.contents = append(c.contents, e.Bytes())
+	return c
+}
+
+func (c *Caption) Prepare() {
+	c.buf.WriteString("<caption")
+	if c.id != "" {
+		c.buf.WriteString(" id=\"" + c.id + "\"")
+	}
+	if len(c.class) != 0 {
+		c.buf.WriteString(" class=\"")
+		for i := 0; i < len(c.class); i++ {
+			c.buf.WriteString(c.class[i])
+			if i != len(c.class)-1 {
+				c.buf.WriteString(" ")
+			}
+		}
+		c.buf.WriteString("\"")
+	}
+	if len(c.style) != 0 {
+		idx := 0
+		c.buf.WriteString(" style=\"")
+		for k, v := range c.style {
+			c.buf.WriteString(k + ": " + v + ";")
+			if idx != len(c.style)-1 {
+				c.buf.WriteString(" ")
+			}
+			idx++
+		}
+		c.buf.WriteString("\"")
+	}
+	c.buf.WriteByte('>')
+
+	for _, cont := range c.contents {
+		c.buf.Write(cont)
+	}
+	c.buf.WriteString("</caption>")
+}
+
+func (c *Caption) Bytes() []byte {
+	return c.buf.Bytes()
+}
