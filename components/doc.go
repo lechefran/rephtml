@@ -25,12 +25,6 @@ type Base struct {
 	link, target string
 }
 
-type Options struct {
-	AllowMedia   bool // allow audio, images, and video
-	AllowScripts bool // allow embedded code
-	CheckIds     bool // id validation strictness
-}
-
 func NewHtmlFile() *HtmlFile {
 	return &HtmlFile{
 		ttrack: 1,
