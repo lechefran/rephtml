@@ -71,9 +71,9 @@ html.WriteToFile("report.html") // create a file named report.html in the curren
 - [X] `<bdi>` - Bidirectional isolate
 - [X] `<bdo>` - Bidirectional override
 - [X] `<br>` - Line break
-- [ ] `<cite>` - Citation
-- [ ] `<code>` - Code
-- [ ] `<data>` - Machine-readable data
+- [X] `<cite>` - Citation
+- [X] `<code>` - Code
+- [X] `<data>` - Machine-readable data
 - [ ] `<dfn>` - Definition
 - [ ] `<em>` - Emphasis
 - [X] `<i>` - Italic

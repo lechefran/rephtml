@@ -944,3 +944,182 @@ func (br *Br) Prepare() {
 		br.buf.WriteString("<br>")
 	}
 }
+
+type Cite struct {
+	buf   bytes.Buffer
+	style map[string]string
+	text  string
+}
+
+func NewCite() *Cite {
+	return &Cite{
+		style: make(map[string]string),
+	}
+}
+
+func (c *Cite) AddStyle(k, v string) *Cite {
+	c.style[k] = v
+	return c
+}
+
+func (c *Cite) AddStyles(m map[string]string) *Cite {
+	for k, v := range m {
+		c.style[k] = v
+	}
+	return c
+}
+
+func (c *Cite) Style(m map[string]string) *Cite {
+	c.style = m
+	return c
+}
+
+func (c *Cite) Text(s string) *Cite {
+	c.text = s
+	return c
+}
+
+func (c *Cite) Bytes() []byte {
+	return c.buf.Bytes()
+}
+
+func (c *Cite) Prepare() {
+	if len(c.style) != 0 {
+		idx := 0
+		c.buf.WriteString("<cite style=\"")
+		for k, v := range c.style {
+			c.buf.WriteString(k + ": " + v + ";")
+			if idx != len(c.style)-1 {
+				c.buf.WriteByte(' ')
+			}
+			idx++
+		}
+		c.buf.WriteString("\">" + c.text + "</cite>")
+	} else {
+		c.buf.WriteString("<cite>" + c.text + "</cite>")
+	}
+}
+
+type Code struct {
+	buf   bytes.Buffer
+	style map[string]string
+	text  string
+}
+
+func NewCode() *Code {
+	return &Code{
+		style: make(map[string]string),
+	}
+}
+
+func (c *Code) AddStyle(k, v string) *Code {
+	c.style[k] = v
+	return c
+}
+
+func (c *Code) AddStyles(m map[string]string) *Code {
+	for k, v := range m {
+		c.style[k] = v
+	}
+	return c
+}
+
+func (c *Code) Style(m map[string]string) *Code {
+	c.style = m
+	return c
+}
+
+func (c *Code) Text(s string) *Code {
+	c.text = s
+	return c
+}
+
+func (c *Code) Bytes() []byte {
+	return c.buf.Bytes()
+}
+
+func (c *Code) Prepare() {
+	if len(c.style) != 0 {
+		idx := 0
+		c.buf.WriteString("<code style=\"")
+		for k, v := range c.style {
+			c.buf.WriteString(k + ": " + v + ";")
+			if idx != len(c.style)-1 {
+				c.buf.WriteByte(' ')
+			}
+			idx++
+		}
+		c.buf.WriteString("\">" + c.text + "</code>")
+	} else {
+		c.buf.WriteString("<code>" + c.text + "</code>")
+	}
+}
+
+type Data struct {
+	buf   bytes.Buffer
+	style map[string]string
+	text  string
+	value string
+}
+
+func NewData() *Data {
+	return &Data{
+		style: make(map[string]string),
+	}
+}
+
+func (d *Data) AddStyle(k, v string) *Data {
+	d.style[k] = v
+	return d
+}
+
+func (d *Data) AddStyles(m map[string]string) *Data {
+	for k, v := range m {
+		d.style[k] = v
+	}
+	return d
+}
+
+func (d *Data) Style(m map[string]string) *Data {
+	d.style = m
+	return d
+}
+
+func (d *Data) Text(s string) *Data {
+	d.text = s
+	return d
+}
+
+func (d *Data) Value(s string) *Data {
+	d.value = s
+	return d
+}
+
+func (d *Data) Bytes() []byte {
+	return d.buf.Bytes()
+}
+
+func (d *Data) Prepare() {
+	if len(d.style) != 0 {
+		idx := 0
+		d.buf.WriteString("<data style=\"")
+		for k, v := range d.style {
+			d.buf.WriteString(k + ": " + v + ";")
+			if idx != len(d.style)-1 {
+				d.buf.WriteByte(' ')
+			}
+			idx++
+		}
+		d.buf.WriteString("\"")
+		if d.value != "" {
+			d.buf.WriteString(" value=\"" + d.value + "\"")
+		}
+		d.buf.WriteString(">" + d.text + "</data>")
+	} else {
+		d.buf.WriteString("<data")
+		if d.value != "" {
+			d.buf.WriteString(" value=\"" + d.value + "\"")
+		}
+		d.buf.WriteString(">" + d.text + "</data>")
+	}
+}
