@@ -785,3 +785,162 @@ func (u *U) Prepare() {
 		u.buf.WriteString("<u>" + u.text + "</u>")
 	}
 }
+
+type Dbi struct {
+	buf   bytes.Buffer
+	style map[string]string
+	text  string
+}
+
+func NewDbi() *Dbi {
+	return &Dbi{
+		style: make(map[string]string),
+	}
+}
+
+func (d *Dbi) AddStyle(k, v string) *Dbi {
+	d.style[k] = v
+	return d
+}
+
+func (d *Dbi) AddStyles(m map[string]string) *Dbi {
+	for k, v := range m {
+		d.style[k] = v
+	}
+	return d
+}
+
+func (d *Dbi) Style(m map[string]string) *Dbi {
+	d.style = m
+	return d
+}
+
+func (d *Dbi) Text(s string) *Dbi {
+	d.text = s
+	return d
+}
+
+func (d *Dbi) Bytes() []byte {
+	return d.buf.Bytes()
+}
+
+func (d *Dbi) Prepare() {
+	if len(d.style) != 0 {
+		idx := 0
+		d.buf.WriteString("<dbi style=\"")
+		for k, v := range d.style {
+			d.buf.WriteString(k + ": " + v + ";")
+			if idx != len(d.style)-1 {
+				d.buf.WriteByte(' ')
+			}
+			idx++
+		}
+		d.buf.WriteString("\">" + d.text + "</dbi>")
+	} else {
+		d.buf.WriteString("<dbi>" + d.text + "</dbi>")
+	}
+}
+
+type Dbo struct {
+	buf   bytes.Buffer
+	style map[string]string
+	text  string
+}
+
+func NewDbo() *Dbo {
+	return &Dbo{
+		style: make(map[string]string),
+	}
+}
+
+func (d *Dbo) AddStyle(k, v string) *Dbo {
+	d.style[k] = v
+	return d
+}
+
+func (d *Dbo) AddStyles(m map[string]string) *Dbo {
+	for k, v := range m {
+		d.style[k] = v
+	}
+	return d
+}
+
+func (d *Dbo) Style(m map[string]string) *Dbo {
+	d.style = m
+	return d
+}
+
+func (d *Dbo) Text(s string) *Dbo {
+	d.text = s
+	return d
+}
+
+func (d *Dbo) Bytes() []byte {
+	return d.buf.Bytes()
+}
+
+func (d *Dbo) Prepare() {
+	if len(d.style) != 0 {
+		idx := 0
+		d.buf.WriteString("<dbo style=\"")
+		for k, v := range d.style {
+			d.buf.WriteString(k + ": " + v + ";")
+			if idx != len(d.style)-1 {
+				d.buf.WriteByte(' ')
+			}
+			idx++
+		}
+		d.buf.WriteString("\">" + d.text + "</dbo>")
+	} else {
+		d.buf.WriteString("<dbo>" + d.text + "</dbo>")
+	}
+}
+
+type Br struct {
+	buf   bytes.Buffer
+	style map[string]string
+}
+
+func NewBr() *Br {
+	return &Br{
+		style: make(map[string]string),
+	}
+}
+
+func (br *Br) AddStyle(k, v string) *Br {
+	br.style[k] = v
+	return br
+}
+
+func (br *Br) AddStyles(m map[string]string) *Br {
+	for k, v := range m {
+		br.style[k] = v
+	}
+	return br
+}
+
+func (br *Br) Style(m map[string]string) *Br {
+	br.style = m
+	return br
+}
+
+func (br *Br) Bytes() []byte {
+	return br.buf.Bytes()
+}
+
+func (br *Br) Prepare() {
+	if len(br.style) != 0 {
+		idx := 0
+		br.buf.WriteString("<br style=\"")
+		for k, v := range br.style {
+			br.buf.WriteString(k + ": " + v + ";")
+			if idx != len(br.style)-1 {
+				br.buf.WriteByte(' ')
+			}
+			idx++
+		}
+		br.buf.WriteString("\">")
+	} else {
+		br.buf.WriteString("<br>")
+	}
+}
