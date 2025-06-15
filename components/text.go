@@ -1587,3 +1587,58 @@ func (rp *Rp) Prepare() {
 		rp.buf.WriteString("<rp>" + rp.text + "</rp>")
 	}
 }
+
+type Kbd struct {
+	buf   bytes.Buffer
+	style map[string]string
+	text  string
+}
+
+func NewKbd() *Kbd {
+	return &Kbd{
+		style: make(map[string]string),
+	}
+}
+
+func (k *Kbd) AddStyle(key, v string) *Kbd {
+	k.style[key] = v
+	return k
+}
+
+func (k *Kbd) AddStyles(m map[string]string) *Kbd {
+	for key, v := range m {
+		k.style[key] = v
+	}
+	return k
+}
+
+func (k *Kbd) Style(m map[string]string) *Kbd {
+	k.style = m
+	return k
+}
+
+func (k *Kbd) Text(s string) *Kbd {
+	k.text = s
+	return k
+}
+
+func (k *Kbd) Bytes() []byte {
+	return k.buf.Bytes()
+}
+
+func (k *Kbd) Prepare() {
+	if len(k.style) != 0 {
+		idx := 0
+		k.buf.WriteString("<kbd style=\"")
+		for key, v := range k.style {
+			k.buf.WriteString(key + ": " + v + ";")
+			if idx != len(k.style)-1 {
+				k.buf.WriteByte(' ')
+			}
+			idx++
+		}
+		k.buf.WriteString("\">" + k.text + "</kbd>")
+	} else {
+		k.buf.WriteString("<kbd>" + k.text + "</kbd>")
+	}
+}

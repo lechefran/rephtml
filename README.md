@@ -77,14 +77,14 @@ html.WriteToFile("report.html") // create a file named report.html in the curren
 - [X] `<dfn>` - Definition
 - [X] `<em>` - Emphasis
 - [X] `<i>` - Italic
-- [ ] `<kbd>` - Keyboard input
+- [X] `<kbd>` - Keyboard input
 - [X] `<mark>` - Highlighted text
 - [X] `<q>` - Inline quotation
-- [ ] `<ruby>` - Ruby annotation
-- [ ] `<rb>` - Ruby base
-- [ ] `<rt>` - Ruby text
-- [ ] `<rtc>` - Ruby text container
-- [ ] `<rp>` - Ruby parentheses
+- [X] `<ruby>` - Ruby annotation
+- [X] `<rb>` - Ruby base
+- [X] `<rt>` - Ruby text
+- [X] `<rtc>` - Ruby text container
+- [X] `<rp>` - Ruby parentheses
 - [X] `<s>` - Strikethrough
 - [ ] `<samp>` - Sample output
 - [ ] `<small>` - Small text
