@@ -1642,3 +1642,113 @@ func (k *Kbd) Prepare() {
 		k.buf.WriteString("<kbd>" + k.text + "</kbd>")
 	}
 }
+
+type Sub struct {
+	buf   bytes.Buffer
+	style map[string]string
+	text  string
+}
+
+func NewSub() *Sub {
+	return &Sub{
+		style: make(map[string]string),
+	}
+}
+
+func (s *Sub) AddStyle(k, v string) *Sub {
+	s.style[k] = v
+	return s
+}
+
+func (s *Sub) AddStyles(m map[string]string) *Sub {
+	for k, v := range m {
+		s.style[k] = v
+	}
+	return s
+}
+
+func (s *Sub) Style(m map[string]string) *Sub {
+	s.style = m
+	return s
+}
+
+func (s *Sub) Text(str string) *Sub {
+	s.text = str
+	return s
+}
+
+func (s *Sub) Bytes() []byte {
+	return s.buf.Bytes()
+}
+
+func (s *Sub) Prepare() {
+	if len(s.style) != 0 {
+		idx := 0
+		s.buf.WriteString("<sub style=\"")
+		for k, v := range s.style {
+			s.buf.WriteString(k + ": " + v + ";")
+			if idx != len(s.style)-1 {
+				s.buf.WriteByte(' ')
+			}
+			idx++
+		}
+		s.buf.WriteString("\">" + s.text + "</sub>")
+	} else {
+		s.buf.WriteString("<sub>" + s.text + "</sub>")
+	}
+}
+
+type Sup struct {
+	buf   bytes.Buffer
+	style map[string]string
+	text  string
+}
+
+func NewSup() *Sup {
+	return &Sup{
+		style: make(map[string]string),
+	}
+}
+
+func (s *Sup) AddStyle(k, v string) *Sup {
+	s.style[k] = v
+	return s
+}
+
+func (s *Sup) AddStyles(m map[string]string) *Sup {
+	for k, v := range m {
+		s.style[k] = v
+	}
+	return s
+}
+
+func (s *Sup) Style(m map[string]string) *Sup {
+	s.style = m
+	return s
+}
+
+func (s *Sup) Text(str string) *Sup {
+	s.text = str
+	return s
+}
+
+func (s *Sup) Bytes() []byte {
+	return s.buf.Bytes()
+}
+
+func (s *Sup) Prepare() {
+	if len(s.style) != 0 {
+		idx := 0
+		s.buf.WriteString("<sup style=\"")
+		for k, v := range s.style {
+			s.buf.WriteString(k + ": " + v + ";")
+			if idx != len(s.style)-1 {
+				s.buf.WriteByte(' ')
+			}
+			idx++
+		}
+		s.buf.WriteString("\">" + s.text + "</sup>")
+	} else {
+		s.buf.WriteString("<sup>" + s.text + "</sup>")
+	}
+}
