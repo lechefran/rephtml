@@ -427,3 +427,72 @@ func (a *Anchor) Prepare() {
 		}
 	}
 }
+
+type Abbr struct {
+	buf   bytes.Buffer
+	style map[string]string
+	text  string
+	title string
+}
+
+func NewAbbr() *Abbr {
+	return &Abbr{
+		style: make(map[string]string),
+	}
+}
+
+func (a *Abbr) AddStyle(k, v string) *Abbr {
+	a.style[k] = v
+	return a
+}
+
+func (a *Abbr) AddStyles(m map[string]string) *Abbr {
+	for k, v := range m {
+		a.style[k] = v
+	}
+	return a
+}
+
+func (a *Abbr) Style(m map[string]string) *Abbr {
+	a.style = m
+	return a
+}
+
+func (a *Abbr) Text(s string) *Abbr {
+	a.text = s
+	return a
+}
+
+func (a *Abbr) Title(s string) *Abbr {
+	a.title = s
+	return a
+}
+
+func (a *Abbr) Bytes() []byte {
+	return a.buf.Bytes()
+}
+
+func (a *Abbr) Prepare() {
+	if len(a.style) != 0 {
+		idx := 0
+		a.buf.WriteString("<abbr style=\"")
+		for k, v := range a.style {
+			a.buf.WriteString(k + ": " + v + ";")
+			if idx != len(a.style)-1 {
+				a.buf.WriteByte(' ')
+			}
+			idx++
+		}
+		a.buf.WriteString("\"")
+		if a.title != "" {
+			a.buf.WriteString(" title=\"" + a.title + "\"")
+		}
+		a.buf.WriteString(">" + a.text + "</abbr>")
+	} else {
+		a.buf.WriteString("<abbr")
+		if a.title != "" {
+			a.buf.WriteString(" title=\"" + a.title + "\"")
+		}
+		a.buf.WriteString(">" + a.text + "</abbr>")
+	}
+}

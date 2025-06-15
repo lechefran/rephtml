@@ -66,7 +66,7 @@ html.WriteToFile("report.html") // create a file named report.html in the curren
 
 ### Inline Text Semantics
 - [X] `<a>` - Anchor/link
-- [ ] `<abbr>` - Abbreviation
+- [X] `<abbr>` - Abbreviation
 - [ ] `<b>` - Bold text
 - [ ] `<bdi>` - Bidirectional isolate
 - [ ] `<bdo>` - Bidirectional override
