@@ -74,11 +74,11 @@ html.WriteToFile("report.html") // create a file named report.html in the curren
 - [X] `<cite>` - Citation
 - [X] `<code>` - Code
 - [X] `<data>` - Machine-readable data
-- [ ] `<dfn>` - Definition
-- [ ] `<em>` - Emphasis
+- [X] `<dfn>` - Definition
+- [X] `<em>` - Emphasis
 - [X] `<i>` - Italic
 - [ ] `<kbd>` - Keyboard input
-- [ ] `<mark>` - Highlighted text
+- [X] `<mark>` - Highlighted text
 - [X] `<q>` - Inline quotation
 - [ ] `<ruby>` - Ruby annotation
 - [ ] `<rb>` - Ruby base

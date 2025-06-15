@@ -1123,3 +1123,182 @@ func (d *Data) Prepare() {
 		d.buf.WriteString(">" + d.text + "</data>")
 	}
 }
+
+type Dfn struct {
+	buf   bytes.Buffer
+	style map[string]string
+	text  string
+	title string
+}
+
+func NewDfn() *Dfn {
+	return &Dfn{
+		style: make(map[string]string),
+	}
+}
+
+func (d *Dfn) AddStyle(k, v string) *Dfn {
+	d.style[k] = v
+	return d
+}
+
+func (d *Dfn) AddStyles(m map[string]string) *Dfn {
+	for k, v := range m {
+		d.style[k] = v
+	}
+	return d
+}
+
+func (d *Dfn) Style(m map[string]string) *Dfn {
+	d.style = m
+	return d
+}
+
+func (d *Dfn) Text(s string) *Dfn {
+	d.text = s
+	return d
+}
+
+func (d *Dfn) Title(s string) *Dfn {
+	d.title = s
+	return d
+}
+
+func (d *Dfn) Bytes() []byte {
+	return d.buf.Bytes()
+}
+
+func (d *Dfn) Prepare() {
+	if len(d.style) != 0 {
+		idx := 0
+		d.buf.WriteString("<dfn style=\"")
+		for k, v := range d.style {
+			d.buf.WriteString(k + ": " + v + ";")
+			if idx != len(d.style)-1 {
+				d.buf.WriteByte(' ')
+			}
+			idx++
+		}
+		d.buf.WriteString("\"")
+		if d.title != "" {
+			d.buf.WriteString(" title=\"" + d.title + "\"")
+		}
+		d.buf.WriteString(">" + d.text + "</dfn>")
+	} else {
+		d.buf.WriteString("<dfn")
+		if d.title != "" {
+			d.buf.WriteString(" title=\"" + d.title + "\"")
+		}
+		d.buf.WriteString(">" + d.text + "</dfn>")
+	}
+}
+
+type Elem struct {
+	buf   bytes.Buffer
+	style map[string]string
+	text  string
+}
+
+func NewElem() *Elem {
+	return &Elem{
+		style: make(map[string]string),
+	}
+}
+
+func (e *Elem) AddStyle(k, v string) *Elem {
+	e.style[k] = v
+	return e
+}
+
+func (e *Elem) AddStyles(m map[string]string) *Elem {
+	for k, v := range m {
+		e.style[k] = v
+	}
+	return e
+}
+
+func (e *Elem) Style(m map[string]string) *Elem {
+	e.style = m
+	return e
+}
+
+func (e *Elem) Text(s string) *Elem {
+	e.text = s
+	return e
+}
+
+func (e *Elem) Bytes() []byte {
+	return e.buf.Bytes()
+}
+
+func (e *Elem) Prepare() {
+	if len(e.style) != 0 {
+		idx := 0
+		e.buf.WriteString("<elem style=\"")
+		for k, v := range e.style {
+			e.buf.WriteString(k + ": " + v + ";")
+			if idx != len(e.style)-1 {
+				e.buf.WriteByte(' ')
+			}
+			idx++
+		}
+		e.buf.WriteString("\">" + e.text + "</elem>")
+	} else {
+		e.buf.WriteString("<elem>" + e.text + "</elem>")
+	}
+}
+
+type Mark struct {
+	buf   bytes.Buffer
+	style map[string]string
+	text  string
+}
+
+func NewMark() *Mark {
+	return &Mark{
+		style: make(map[string]string),
+	}
+}
+
+func (m *Mark) AddStyle(k, v string) *Mark {
+	m.style[k] = v
+	return m
+}
+
+func (m *Mark) AddStyles(ms map[string]string) *Mark {
+	for k, v := range ms {
+		m.style[k] = v
+	}
+	return m
+}
+
+func (m *Mark) Style(ms map[string]string) *Mark {
+	m.style = ms
+	return m
+}
+
+func (m *Mark) Text(s string) *Mark {
+	m.text = s
+	return m
+}
+
+func (m *Mark) Bytes() []byte {
+	return m.buf.Bytes()
+}
+
+func (m *Mark) Prepare() {
+	if len(m.style) != 0 {
+		idx := 0
+		m.buf.WriteString("<mark style=\"")
+		for k, v := range m.style {
+			m.buf.WriteString(k + ": " + v + ";")
+			if idx != len(m.style)-1 {
+				m.buf.WriteByte(' ')
+			}
+			idx++
+		}
+		m.buf.WriteString("\">" + m.text + "</mark>")
+	} else {
+		m.buf.WriteString("<mark>" + m.text + "</mark>")
+	}
+}
