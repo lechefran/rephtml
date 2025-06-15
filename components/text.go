@@ -496,3 +496,292 @@ func (a *Abbr) Prepare() {
 		a.buf.WriteString(">" + a.text + "</abbr>")
 	}
 }
+
+type B struct {
+	buf   bytes.Buffer
+	style map[string]string
+	text  string
+}
+
+func NewB() *B {
+	return &B{
+		style: make(map[string]string),
+	}
+}
+
+func (b *B) AddStyle(k, v string) *B {
+	b.style[k] = v
+	return b
+}
+
+func (b *B) AddStyles(m map[string]string) *B {
+	for k, v := range m {
+		b.style[k] = v
+	}
+	return b
+}
+
+func (b *B) Style(m map[string]string) *B {
+	b.style = m
+	return b
+}
+
+func (b *B) Text(s string) *B {
+	b.text = s
+	return b
+}
+
+func (b *B) Bytes() []byte {
+	return b.buf.Bytes()
+}
+
+func (b *B) Prepare() {
+	if len(b.style) != 0 {
+		idx := 0
+		b.buf.WriteString("<b style=\"")
+		for k, v := range b.style {
+			b.buf.WriteString(k + ": " + v + ";")
+			if idx != len(b.style)-1 {
+				b.buf.WriteByte(' ')
+			}
+			idx++
+		}
+		b.buf.WriteString("\">" + b.text + "</b>")
+	} else {
+		b.buf.WriteString("<b>" + b.text + "</b>")
+	}
+}
+
+type I struct {
+	buf   bytes.Buffer
+	style map[string]string
+	text  string
+}
+
+func NewI() *I {
+	return &I{
+		style: make(map[string]string),
+	}
+}
+
+func (i *I) AddStyle(k, v string) *I {
+	i.style[k] = v
+	return i
+}
+
+func (i *I) AddStyles(m map[string]string) *I {
+	for k, v := range m {
+		i.style[k] = v
+	}
+	return i
+}
+
+func (i *I) Style(m map[string]string) *I {
+	i.style = m
+	return i
+}
+
+func (i *I) Text(s string) *I {
+	i.text = s
+	return i
+}
+
+func (i *I) Bytes() []byte {
+	return i.buf.Bytes()
+}
+
+func (i *I) Prepare() {
+	if len(i.style) != 0 {
+		idx := 0
+		i.buf.WriteString("<i style=\"")
+		for k, v := range i.style {
+			i.buf.WriteString(k + ": " + v + ";")
+			if idx != len(i.style)-1 {
+				i.buf.WriteByte(' ')
+			}
+			idx++
+		}
+		i.buf.WriteString("\">" + i.text + "</i>")
+	} else {
+		i.buf.WriteString("<i>" + i.text + "</i>")
+	}
+}
+
+type Q struct {
+	buf   bytes.Buffer
+	style map[string]string
+	text  string
+	cite  string
+}
+
+func NewQ() *Q {
+	return &Q{
+		style: make(map[string]string),
+	}
+}
+
+func (q *Q) AddStyle(k, v string) *Q {
+	q.style[k] = v
+	return q
+}
+
+func (q *Q) AddStyles(m map[string]string) *Q {
+	for k, v := range m {
+		q.style[k] = v
+	}
+	return q
+}
+
+func (q *Q) Style(m map[string]string) *Q {
+	q.style = m
+	return q
+}
+
+func (q *Q) Text(s string) *Q {
+	q.text = s
+	return q
+}
+
+func (q *Q) Cite(s string) *Q {
+	q.cite = s
+	return q
+}
+
+func (q *Q) Bytes() []byte {
+	return q.buf.Bytes()
+}
+
+func (q *Q) Prepare() {
+	if len(q.style) != 0 {
+		idx := 0
+		q.buf.WriteString("<q style=\"")
+		for k, v := range q.style {
+			q.buf.WriteString(k + ": " + v + ";")
+			if idx != len(q.style)-1 {
+				q.buf.WriteByte(' ')
+			}
+			idx++
+		}
+		q.buf.WriteString("\"")
+		if q.cite != "" {
+			q.buf.WriteString(" cite=\"" + q.cite + "\"")
+		}
+		q.buf.WriteString(">" + q.text + "</q>")
+	} else {
+		q.buf.WriteString("<q")
+		if q.cite != "" {
+			q.buf.WriteString(" cite=\"" + q.cite + "\"")
+		}
+		q.buf.WriteString(">" + q.text + "</q>")
+	}
+}
+
+type S struct {
+	buf   bytes.Buffer
+	style map[string]string
+	text  string
+}
+
+func NewS() *S {
+	return &S{
+		style: make(map[string]string),
+	}
+}
+
+func (s *S) AddStyle(k, v string) *S {
+	s.style[k] = v
+	return s
+}
+
+func (s *S) AddStyles(m map[string]string) *S {
+	for k, v := range m {
+		s.style[k] = v
+	}
+	return s
+}
+
+func (s *S) Style(m map[string]string) *S {
+	s.style = m
+	return s
+}
+
+func (s *S) Text(str string) *S {
+	s.text = str
+	return s
+}
+
+func (s *S) Bytes() []byte {
+	return s.buf.Bytes()
+}
+
+func (s *S) Prepare() {
+	if len(s.style) != 0 {
+		idx := 0
+		s.buf.WriteString("<s style=\"")
+		for k, v := range s.style {
+			s.buf.WriteString(k + ": " + v + ";")
+			if idx != len(s.style)-1 {
+				s.buf.WriteByte(' ')
+			}
+			idx++
+		}
+		s.buf.WriteString("\">" + s.text + "</s>")
+	} else {
+		s.buf.WriteString("<s>" + s.text + "</s>")
+	}
+}
+
+type U struct {
+	buf   bytes.Buffer
+	style map[string]string
+	text  string
+}
+
+func NewU() *U {
+	return &U{
+		style: make(map[string]string),
+	}
+}
+
+func (u *U) AddStyle(k, v string) *U {
+	u.style[k] = v
+	return u
+}
+
+func (u *U) AddStyles(m map[string]string) *U {
+	for k, v := range m {
+		u.style[k] = v
+	}
+	return u
+}
+
+func (u *U) Style(m map[string]string) *U {
+	u.style = m
+	return u
+}
+
+func (u *U) Text(s string) *U {
+	u.text = s
+	return u
+}
+
+func (u *U) Bytes() []byte {
+	return u.buf.Bytes()
+}
+
+func (u *U) Prepare() {
+	if len(u.style) != 0 {
+		idx := 0
+		u.buf.WriteString("<u style=\"")
+		for k, v := range u.style {
+			u.buf.WriteString(k + ": " + v + ";")
+			if idx != len(u.style)-1 {
+				u.buf.WriteByte(' ')
+			}
+			idx++
+		}
+		u.buf.WriteString("\">" + u.text + "</u>")
+	} else {
+		u.buf.WriteString("<u>" + u.text + "</u>")
+	}
+}

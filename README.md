@@ -67,7 +67,7 @@ html.WriteToFile("report.html") // create a file named report.html in the curren
 ### Inline Text Semantics
 - [X] `<a>` - Anchor/link
 - [X] `<abbr>` - Abbreviation
-- [ ] `<b>` - Bold text
+- [X] `<b>` - Bold text
 - [ ] `<bdi>` - Bidirectional isolate
 - [ ] `<bdo>` - Bidirectional override
 - [ ] `<br>` - Line break
@@ -76,16 +76,16 @@ html.WriteToFile("report.html") // create a file named report.html in the curren
 - [ ] `<data>` - Machine-readable data
 - [ ] `<dfn>` - Definition
 - [ ] `<em>` - Emphasis
-- [ ] `<i>` - Italic
+- [X] `<i>` - Italic
 - [ ] `<kbd>` - Keyboard input
 - [ ] `<mark>` - Highlighted text
-- [ ] `<q>` - Inline quotation
+- [X] `<q>` - Inline quotation
 - [ ] `<ruby>` - Ruby annotation
 - [ ] `<rb>` - Ruby base
 - [ ] `<rt>` - Ruby text
 - [ ] `<rtc>` - Ruby text container
 - [ ] `<rp>` - Ruby parentheses
-- [ ] `<s>` - Strikethrough
+- [X] `<s>` - Strikethrough
 - [ ] `<samp>` - Sample output
 - [ ] `<small>` - Small text
 - [ ] `<span>` - Generic inline container
@@ -93,7 +93,7 @@ html.WriteToFile("report.html") // create a file named report.html in the curren
 - [ ] `<sub>` - Subscript
 - [ ] `<sup>` - Superscript
 - [ ] `<time>` - Date/time
-- [ ] `<u>` - Underline
+- [X] `<u>` - Underline
 - [ ] `<var>` - Variable
 - [ ] `<wbr>` - Word break opportunity
 
