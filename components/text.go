@@ -1302,3 +1302,288 @@ func (m *Mark) Prepare() {
 		m.buf.WriteString("<mark>" + m.text + "</mark>")
 	}
 }
+
+type Ruby struct {
+	buf      bytes.Buffer
+	style    map[string]string
+	contents [][]byte
+}
+
+func NewRuby() *Ruby {
+	return &Ruby{
+		style: make(map[string]string),
+	}
+}
+
+func (r *Ruby) AddStyle(k, v string) *Ruby {
+	r.style[k] = v
+	return r
+}
+
+func (r *Ruby) AddStyles(m map[string]string) *Ruby {
+	for k, v := range m {
+		r.style[k] = v
+	}
+	return r
+}
+
+func (r *Ruby) Style(m map[string]string) *Ruby {
+	r.style = m
+	return r
+}
+
+func (r *Ruby) Add(e Elements) *Ruby {
+	r.contents = append(r.contents, e.Bytes())
+	return r
+}
+
+func (r *Ruby) Bytes() []byte {
+	return r.buf.Bytes()
+}
+
+func (r *Ruby) Prepare() {
+	if len(r.style) != 0 {
+		idx := 0
+		r.buf.WriteString("<ruby style=\"")
+		for k, v := range r.style {
+			r.buf.WriteString(k + ": " + v + ";")
+			if idx != len(r.style)-1 {
+				r.buf.WriteByte(' ')
+			}
+			idx++
+		}
+		r.buf.WriteString("\">")
+	} else {
+		r.buf.WriteString("<ruby>")
+	}
+	
+	for _, content := range r.contents {
+		r.buf.Write(content)
+	}
+	r.buf.WriteString("</ruby>")
+}
+
+type Rb struct {
+	buf   bytes.Buffer
+	style map[string]string
+	text  string
+}
+
+func NewRb() *Rb {
+	return &Rb{
+		style: make(map[string]string),
+	}
+}
+
+func (rb *Rb) AddStyle(k, v string) *Rb {
+	rb.style[k] = v
+	return rb
+}
+
+func (rb *Rb) AddStyles(m map[string]string) *Rb {
+	for k, v := range m {
+		rb.style[k] = v
+	}
+	return rb
+}
+
+func (rb *Rb) Style(m map[string]string) *Rb {
+	rb.style = m
+	return rb
+}
+
+func (rb *Rb) Text(s string) *Rb {
+	rb.text = s
+	return rb
+}
+
+func (rb *Rb) Bytes() []byte {
+	return rb.buf.Bytes()
+}
+
+func (rb *Rb) Prepare() {
+	if len(rb.style) != 0 {
+		idx := 0
+		rb.buf.WriteString("<rb style=\"")
+		for k, v := range rb.style {
+			rb.buf.WriteString(k + ": " + v + ";")
+			if idx != len(rb.style)-1 {
+				rb.buf.WriteByte(' ')
+			}
+			idx++
+		}
+		rb.buf.WriteString("\">" + rb.text + "</rb>")
+	} else {
+		rb.buf.WriteString("<rb>" + rb.text + "</rb>")
+	}
+}
+
+type Rt struct {
+	buf   bytes.Buffer
+	style map[string]string
+	text  string
+}
+
+func NewRt() *Rt {
+	return &Rt{
+		style: make(map[string]string),
+	}
+}
+
+func (rt *Rt) AddStyle(k, v string) *Rt {
+	rt.style[k] = v
+	return rt
+}
+
+func (rt *Rt) AddStyles(m map[string]string) *Rt {
+	for k, v := range m {
+		rt.style[k] = v
+	}
+	return rt
+}
+
+func (rt *Rt) Style(m map[string]string) *Rt {
+	rt.style = m
+	return rt
+}
+
+func (rt *Rt) Text(s string) *Rt {
+	rt.text = s
+	return rt
+}
+
+func (rt *Rt) Bytes() []byte {
+	return rt.buf.Bytes()
+}
+
+func (rt *Rt) Prepare() {
+	if len(rt.style) != 0 {
+		idx := 0
+		rt.buf.WriteString("<rt style=\"")
+		for k, v := range rt.style {
+			rt.buf.WriteString(k + ": " + v + ";")
+			if idx != len(rt.style)-1 {
+				rt.buf.WriteByte(' ')
+			}
+			idx++
+		}
+		rt.buf.WriteString("\">" + rt.text + "</rt>")
+	} else {
+		rt.buf.WriteString("<rt>" + rt.text + "</rt>")
+	}
+}
+
+type Rtc struct {
+	buf      bytes.Buffer
+	style    map[string]string
+	contents [][]byte
+}
+
+func NewRtc() *Rtc {
+	return &Rtc{
+		style: make(map[string]string),
+	}
+}
+
+func (rtc *Rtc) AddStyle(k, v string) *Rtc {
+	rtc.style[k] = v
+	return rtc
+}
+
+func (rtc *Rtc) AddStyles(m map[string]string) *Rtc {
+	for k, v := range m {
+		rtc.style[k] = v
+	}
+	return rtc
+}
+
+func (rtc *Rtc) Style(m map[string]string) *Rtc {
+	rtc.style = m
+	return rtc
+}
+
+func (rtc *Rtc) Add(e Elements) *Rtc {
+	rtc.contents = append(rtc.contents, e.Bytes())
+	return rtc
+}
+
+func (rtc *Rtc) Bytes() []byte {
+	return rtc.buf.Bytes()
+}
+
+func (rtc *Rtc) Prepare() {
+	if len(rtc.style) != 0 {
+		idx := 0
+		rtc.buf.WriteString("<rtc style=\"")
+		for k, v := range rtc.style {
+			rtc.buf.WriteString(k + ": " + v + ";")
+			if idx != len(rtc.style)-1 {
+				rtc.buf.WriteByte(' ')
+			}
+			idx++
+		}
+		rtc.buf.WriteString("\">")
+	} else {
+		rtc.buf.WriteString("<rtc>")
+	}
+	
+	for _, content := range rtc.contents {
+		rtc.buf.Write(content)
+	}
+	rtc.buf.WriteString("</rtc>")
+}
+
+type Rp struct {
+	buf   bytes.Buffer
+	style map[string]string
+	text  string
+}
+
+func NewRp() *Rp {
+	return &Rp{
+		style: make(map[string]string),
+	}
+}
+
+func (rp *Rp) AddStyle(k, v string) *Rp {
+	rp.style[k] = v
+	return rp
+}
+
+func (rp *Rp) AddStyles(m map[string]string) *Rp {
+	for k, v := range m {
+		rp.style[k] = v
+	}
+	return rp
+}
+
+func (rp *Rp) Style(m map[string]string) *Rp {
+	rp.style = m
+	return rp
+}
+
+func (rp *Rp) Text(s string) *Rp {
+	rp.text = s
+	return rp
+}
+
+func (rp *Rp) Bytes() []byte {
+	return rp.buf.Bytes()
+}
+
+func (rp *Rp) Prepare() {
+	if len(rp.style) != 0 {
+		idx := 0
+		rp.buf.WriteString("<rp style=\"")
+		for k, v := range rp.style {
+			rp.buf.WriteString(k + ": " + v + ";")
+			if idx != len(rp.style)-1 {
+				rp.buf.WriteByte(' ')
+			}
+			idx++
+		}
+		rp.buf.WriteString("\">" + rp.text + "</rp>")
+	} else {
+		rp.buf.WriteString("<rp>" + rp.text + "</rp>")
+	}
+}
