@@ -86,12 +86,12 @@ html.WriteToFile("report.html") // create a file named report.html in the curren
 - [X] `<rtc>` - Ruby text container
 - [X] `<rp>` - Ruby parentheses
 - [X] `<s>` - Strikethrough
-- [ ] `<samp>` - Sample output
-- [ ] `<small>` - Small text
-- [ ] `<span>` - Generic inline container
-- [ ] `<strong>` - Strong importance
-- [ ] `<sub>` - Subscript
-- [ ] `<sup>` - Superscript
+- [X] `<samp>` - Sample output
+- [X] `<small>` - Small text
+- [X] `<span>` - Generic inline container
+- [X] `<strong>` - Strong importance
+- [X] `<sub>` - Subscript
+- [X] `<sup>` - Superscript
 - [ ] `<time>` - Date/time
 - [X] `<u>` - Underline
 - [ ] `<var>` - Variable

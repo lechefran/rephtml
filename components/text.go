@@ -1752,3 +1752,223 @@ func (s *Sup) Prepare() {
 		s.buf.WriteString("<sup>" + s.text + "</sup>")
 	}
 }
+
+type Samp struct {
+	buf   bytes.Buffer
+	style map[string]string
+	text  string
+}
+
+func NewSamp() *Samp {
+	return &Samp{
+		style: make(map[string]string),
+	}
+}
+
+func (s *Samp) AddStyle(k, v string) *Samp {
+	s.style[k] = v
+	return s
+}
+
+func (s *Samp) AddStyles(m map[string]string) *Samp {
+	for k, v := range m {
+		s.style[k] = v
+	}
+	return s
+}
+
+func (s *Samp) Style(m map[string]string) *Samp {
+	s.style = m
+	return s
+}
+
+func (s *Samp) Text(str string) *Samp {
+	s.text = str
+	return s
+}
+
+func (s *Samp) Bytes() []byte {
+	return s.buf.Bytes()
+}
+
+func (s *Samp) Prepare() {
+	if len(s.style) != 0 {
+		idx := 0
+		s.buf.WriteString("<samp style=\"")
+		for k, v := range s.style {
+			s.buf.WriteString(k + ": " + v + ";")
+			if idx != len(s.style)-1 {
+				s.buf.WriteByte(' ')
+			}
+			idx++
+		}
+		s.buf.WriteString("\">" + s.text + "</samp>")
+	} else {
+		s.buf.WriteString("<samp>" + s.text + "</samp>")
+	}
+}
+
+type Small struct {
+	buf   bytes.Buffer
+	style map[string]string
+	text  string
+}
+
+func NewSmall() *Small {
+	return &Small{
+		style: make(map[string]string),
+	}
+}
+
+func (s *Small) AddStyle(k, v string) *Small {
+	s.style[k] = v
+	return s
+}
+
+func (s *Small) AddStyles(m map[string]string) *Small {
+	for k, v := range m {
+		s.style[k] = v
+	}
+	return s
+}
+
+func (s *Small) Style(m map[string]string) *Small {
+	s.style = m
+	return s
+}
+
+func (s *Small) Text(str string) *Small {
+	s.text = str
+	return s
+}
+
+func (s *Small) Bytes() []byte {
+	return s.buf.Bytes()
+}
+
+func (s *Small) Prepare() {
+	if len(s.style) != 0 {
+		idx := 0
+		s.buf.WriteString("<small style=\"")
+		for k, v := range s.style {
+			s.buf.WriteString(k + ": " + v + ";")
+			if idx != len(s.style)-1 {
+				s.buf.WriteByte(' ')
+			}
+			idx++
+		}
+		s.buf.WriteString("\">" + s.text + "</small>")
+	} else {
+		s.buf.WriteString("<small>" + s.text + "</small>")
+	}
+}
+
+type Span struct {
+	buf   bytes.Buffer
+	style map[string]string
+	text  string
+}
+
+func NewSpan() *Span {
+	return &Span{
+		style: make(map[string]string),
+	}
+}
+
+func (s *Span) AddStyle(k, v string) *Span {
+	s.style[k] = v
+	return s
+}
+
+func (s *Span) AddStyles(m map[string]string) *Span {
+	for k, v := range m {
+		s.style[k] = v
+	}
+	return s
+}
+
+func (s *Span) Style(m map[string]string) *Span {
+	s.style = m
+	return s
+}
+
+func (s *Span) Text(str string) *Span {
+	s.text = str
+	return s
+}
+
+func (s *Span) Bytes() []byte {
+	return s.buf.Bytes()
+}
+
+func (s *Span) Prepare() {
+	if len(s.style) != 0 {
+		idx := 0
+		s.buf.WriteString("<span style=\"")
+		for k, v := range s.style {
+			s.buf.WriteString(k + ": " + v + ";")
+			if idx != len(s.style)-1 {
+				s.buf.WriteByte(' ')
+			}
+			idx++
+		}
+		s.buf.WriteString("\">" + s.text + "</span>")
+	} else {
+		s.buf.WriteString("<span>" + s.text + "</span>")
+	}
+}
+
+type Strong struct {
+	buf   bytes.Buffer
+	style map[string]string
+	text  string
+}
+
+func NewStrong() *Strong {
+	return &Strong{
+		style: make(map[string]string),
+	}
+}
+
+func (s *Strong) AddStyle(k, v string) *Strong {
+	s.style[k] = v
+	return s
+}
+
+func (s *Strong) AddStyles(m map[string]string) *Strong {
+	for k, v := range m {
+		s.style[k] = v
+	}
+	return s
+}
+
+func (s *Strong) Style(m map[string]string) *Strong {
+	s.style = m
+	return s
+}
+
+func (s *Strong) Text(str string) *Strong {
+	s.text = str
+	return s
+}
+
+func (s *Strong) Bytes() []byte {
+	return s.buf.Bytes()
+}
+
+func (s *Strong) Prepare() {
+	if len(s.style) != 0 {
+		idx := 0
+		s.buf.WriteString("<strong style=\"")
+		for k, v := range s.style {
+			s.buf.WriteString(k + ": " + v + ";")
+			if idx != len(s.style)-1 {
+				s.buf.WriteByte(' ')
+			}
+			idx++
+		}
+		s.buf.WriteString("\">" + s.text + "</strong>")
+	} else {
+		s.buf.WriteString("<strong>" + s.text + "</strong>")
+	}
+}
