@@ -1,6 +1,11 @@
 package rephtml
 
-import "bytes"
+import (
+	"bytes"
+	"log"
+	"regexp"
+	"time"
+)
 
 type P struct {
 	buf   bytes.Buffer
@@ -1356,7 +1361,7 @@ func (r *Ruby) Prepare() {
 	} else {
 		r.buf.WriteString("<ruby>")
 	}
-	
+
 	for _, content := range r.contents {
 		r.buf.Write(content)
 	}
@@ -1526,7 +1531,7 @@ func (rtc *Rtc) Prepare() {
 	} else {
 		rtc.buf.WriteString("<rtc>")
 	}
-	
+
 	for _, content := range rtc.contents {
 		rtc.buf.Write(content)
 	}
@@ -1971,4 +1976,114 @@ func (s *Strong) Prepare() {
 	} else {
 		s.buf.WriteString("<strong>" + s.text + "</strong>")
 	}
+}
+
+type Time struct {
+	buf      bytes.Buffer
+	style    map[string]string
+	text     string
+	datetime string
+}
+
+func NewTime() *Time {
+	return &Time{
+		style: make(map[string]string),
+	}
+}
+
+func (t *Time) AddStyle(k, v string) *Time {
+	t.style[k] = v
+	return t
+}
+
+func (t *Time) AddStyles(m map[string]string) *Time {
+	for k, v := range m {
+		t.style[k] = v
+	}
+	return t
+}
+
+func (t *Time) Style(m map[string]string) *Time {
+	t.style = m
+	return t
+}
+
+func (t *Time) Text(str string) *Time {
+	t.text = str
+	return t
+}
+
+func (t *Time) Datetime(dt string) *Time {
+	if !isValidDatetime(dt) {
+		log.Fatal("Invalid datetime value: " + dt)
+	}
+	t.datetime = dt
+	return t
+}
+
+func isValidDatetime(dt string) bool {
+	if dt == "" {
+		return true
+	}
+	
+	datetimeFormats := []string{
+		"2006-01-02T15:04:05Z07:00",
+		"2006-01-02T15:04:05Z",
+		"2006-01-02T15:04:05",
+		"2006-01-02T15:04Z07:00",
+		"2006-01-02T15:04Z",
+		"2006-01-02T15:04",
+		"2006-01-02",
+		"2006-01",
+		"2006",
+		"15:04:05",
+		"15:04",
+	}
+	
+	weekPattern := regexp.MustCompile(`^2006-W\d{2}$`)
+	if weekPattern.MatchString(dt) {
+		return true
+	}
+	
+	monthPattern := regexp.MustCompile(`^2006-\d{2}$`)
+	if monthPattern.MatchString(dt) {
+		return true
+	}
+	
+	durationPattern := regexp.MustCompile(`^P(?:\d+Y)?(?:\d+M)?(?:\d+D)?(?:T(?:\d+H)?(?:\d+M)?(?:\d+(?:\.\d+)?S)?)?$`)
+	if durationPattern.MatchString(dt) {
+		return true
+	}
+	
+	for _, format := range datetimeFormats {
+		if _, err := time.Parse(format, dt); err == nil {
+			return true
+		}
+	}
+	
+	return false
+}
+
+func (t *Time) Bytes() []byte {
+	return t.buf.Bytes()
+}
+
+func (t *Time) Prepare() {
+	t.buf.WriteString("<time")
+	if t.datetime != "" {
+		t.buf.WriteString(" datetime=\"" + t.datetime + "\"")
+	}
+	if len(t.style) != 0 {
+		idx := 0
+		t.buf.WriteString(" style=\"")
+		for k, v := range t.style {
+			t.buf.WriteString(k + ": " + v + ";")
+			if idx != len(t.style)-1 {
+				t.buf.WriteByte(' ')
+			}
+			idx++
+		}
+		t.buf.WriteString("\"")
+	}
+	t.buf.WriteString(">" + t.text + "</time>")
 }

@@ -92,7 +92,7 @@ html.WriteToFile("report.html") // create a file named report.html in the curren
 - [X] `<strong>` - Strong importance
 - [X] `<sub>` - Subscript
 - [X] `<sup>` - Superscript
-- [ ] `<time>` - Date/time
+- [X] `<time>` - Date/time
 - [X] `<u>` - Underline
 - [ ] `<var>` - Variable
 - [ ] `<wbr>` - Word break opportunity
