@@ -54,10 +54,10 @@ html.WriteToFile("report.html") // create a file named report.html in the curren
 - [X] `<hr>` - Horizontal rule
 - [X] `<pre>` - Preformatted text
 - [X] `<blockquote>` - Block quotation
-- [ ] `<ol>` - Ordered list
-- [ ] `<ul>` - Unordered list
+- [X] `<ol>` - Ordered list
+- [X] `<ul>` - Unordered list
 - [X] `<menu>` - Menu list
-- [ ] `<li>` - List item
+- [X] `<li>` - List item
 - [ ] `<dl>` - Description list
 - [ ] `<dt>` - Description term
 - [ ] `<dd>` - Description details

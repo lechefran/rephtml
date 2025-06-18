@@ -2437,3 +2437,223 @@ func (m *Menu) Prepare() {
 	}
 	m.buf.WriteString("</menu>")
 }
+
+type Ol struct {
+	buf      bytes.Buffer
+	style    map[string]string
+	contents [][]byte
+	start    int
+	listType string
+	reversed bool
+}
+
+func NewOl() *Ol {
+	return &Ol{
+		style: make(map[string]string),
+	}
+}
+
+func (o *Ol) AddStyle(k, v string) *Ol {
+	o.style[k] = v
+	return o
+}
+
+func (o *Ol) AddStyles(m map[string]string) *Ol {
+	for k, v := range m {
+		o.style[k] = v
+	}
+	return o
+}
+
+func (o *Ol) Style(m map[string]string) *Ol {
+	o.style = m
+	return o
+}
+
+func (o *Ol) Add(e Elements) *Ol {
+	o.contents = append(o.contents, e.Bytes())
+	return o
+}
+
+func (o *Ol) Start(s int) *Ol {
+	o.start = s
+	return o
+}
+
+func (o *Ol) Type(t string) *Ol {
+	o.listType = t
+	return o
+}
+
+func (o *Ol) Reversed(r bool) *Ol {
+	o.reversed = r
+	return o
+}
+
+func (o *Ol) Bytes() []byte {
+	return o.buf.Bytes()
+}
+
+func (o *Ol) Prepare() {
+	o.buf.WriteString("<ol")
+	if o.start > 0 {
+		o.buf.WriteString(" start=\"")
+		o.buf.WriteString(string(rune(o.start + '0')))
+		o.buf.WriteString("\"")
+	}
+	if o.listType != "" {
+		o.buf.WriteString(" type=\"" + o.listType + "\"")
+	}
+	if o.reversed {
+		o.buf.WriteString(" reversed")
+	}
+	if len(o.style) != 0 {
+		idx := 0
+		o.buf.WriteString(" style=\"")
+		for k, v := range o.style {
+			o.buf.WriteString(k + ": " + v + ";")
+			if idx != len(o.style)-1 {
+				o.buf.WriteByte(' ')
+			}
+			idx++
+		}
+		o.buf.WriteString("\"")
+	}
+	o.buf.WriteByte('>')
+
+	for _, content := range o.contents {
+		o.buf.Write(content)
+	}
+	o.buf.WriteString("</ol>")
+}
+
+type Ul struct {
+	buf      bytes.Buffer
+	style    map[string]string
+	contents [][]byte
+}
+
+func NewUl() *Ul {
+	return &Ul{
+		style: make(map[string]string),
+	}
+}
+
+func (u *Ul) AddStyle(k, v string) *Ul {
+	u.style[k] = v
+	return u
+}
+
+func (u *Ul) AddStyles(m map[string]string) *Ul {
+	for k, v := range m {
+		u.style[k] = v
+	}
+	return u
+}
+
+func (u *Ul) Style(m map[string]string) *Ul {
+	u.style = m
+	return u
+}
+
+func (u *Ul) Add(e Elements) *Ul {
+	u.contents = append(u.contents, e.Bytes())
+	return u
+}
+
+func (u *Ul) Bytes() []byte {
+	return u.buf.Bytes()
+}
+
+func (u *Ul) Prepare() {
+	if len(u.style) != 0 {
+		idx := 0
+		u.buf.WriteString("<ul style=\"")
+		for k, v := range u.style {
+			u.buf.WriteString(k + ": " + v + ";")
+			if idx != len(u.style)-1 {
+				u.buf.WriteByte(' ')
+			}
+			idx++
+		}
+		u.buf.WriteString("\">")
+	} else {
+		u.buf.WriteString("<ul>")
+	}
+
+	for _, content := range u.contents {
+		u.buf.Write(content)
+	}
+	u.buf.WriteString("</ul>")
+}
+
+type Li struct {
+	buf      bytes.Buffer
+	style    map[string]string
+	contents [][]byte
+	value    int
+}
+
+func NewLi() *Li {
+	return &Li{
+		style: make(map[string]string),
+	}
+}
+
+func (l *Li) AddStyle(k, v string) *Li {
+	l.style[k] = v
+	return l
+}
+
+func (l *Li) AddStyles(m map[string]string) *Li {
+	for k, v := range m {
+		l.style[k] = v
+	}
+	return l
+}
+
+func (l *Li) Style(m map[string]string) *Li {
+	l.style = m
+	return l
+}
+
+func (l *Li) Add(e Elements) *Li {
+	l.contents = append(l.contents, e.Bytes())
+	return l
+}
+
+func (l *Li) Value(v int) *Li {
+	l.value = v
+	return l
+}
+
+func (l *Li) Bytes() []byte {
+	return l.buf.Bytes()
+}
+
+func (l *Li) Prepare() {
+	l.buf.WriteString("<li")
+	if l.value > 0 {
+		l.buf.WriteString(" value=\"")
+		l.buf.WriteString(string(rune(l.value + '0')))
+		l.buf.WriteString("\"")
+	}
+	if len(l.style) != 0 {
+		idx := 0
+		l.buf.WriteString(" style=\"")
+		for k, v := range l.style {
+			l.buf.WriteString(k + ": " + v + ";")
+			if idx != len(l.style)-1 {
+				l.buf.WriteByte(' ')
+			}
+			idx++
+		}
+		l.buf.WriteString("\"")
+	}
+	l.buf.WriteByte('>')
+
+	for _, content := range l.contents {
+		l.buf.Write(content)
+	}
+	l.buf.WriteString("</li>")
+}
