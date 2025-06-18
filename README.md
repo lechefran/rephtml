@@ -160,8 +160,8 @@ html.WriteToFile("report.html") // create a file named report.html in the curren
 - [ ] `<dialog>` - Dialog box
 
 ### Web Components
-- [ ] `<slot>` - Web component slot
-- [ ] `<template>` - Template element
+- [X] `<slot>` - Web component slot
+- [X] `<template>` - Template element
 
 ---
 
