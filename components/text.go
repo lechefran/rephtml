@@ -2837,3 +2837,123 @@ func (d *Dd) Prepare() {
 	}
 	d.buf.WriteString("</dd>")
 }
+
+type Figure struct {
+	buf      bytes.Buffer
+	style    map[string]string
+	contents [][]byte
+}
+
+func NewFigure() *Figure {
+	return &Figure{
+		style: make(map[string]string),
+	}
+}
+
+func (f *Figure) AddStyle(k, v string) *Figure {
+	f.style[k] = v
+	return f
+}
+
+func (f *Figure) AddStyles(m map[string]string) *Figure {
+	for k, v := range m {
+		f.style[k] = v
+	}
+	return f
+}
+
+func (f *Figure) Style(m map[string]string) *Figure {
+	f.style = m
+	return f
+}
+
+func (f *Figure) Add(e Elements) *Figure {
+	f.contents = append(f.contents, e.Bytes())
+	return f
+}
+
+func (f *Figure) Bytes() []byte {
+	return f.buf.Bytes()
+}
+
+func (f *Figure) Prepare() {
+	if len(f.style) != 0 {
+		idx := 0
+		f.buf.WriteString("<figure style=\"")
+		for k, v := range f.style {
+			f.buf.WriteString(k + ": " + v + ";")
+			if idx != len(f.style)-1 {
+				f.buf.WriteByte(' ')
+			}
+			idx++
+		}
+		f.buf.WriteString("\">")
+	} else {
+		f.buf.WriteString("<figure>")
+	}
+
+	for _, content := range f.contents {
+		f.buf.Write(content)
+	}
+	f.buf.WriteString("</figure>")
+}
+
+type Figcaption struct {
+	buf      bytes.Buffer
+	style    map[string]string
+	contents [][]byte
+}
+
+func NewFigcaption() *Figcaption {
+	return &Figcaption{
+		style: make(map[string]string),
+	}
+}
+
+func (f *Figcaption) AddStyle(k, v string) *Figcaption {
+	f.style[k] = v
+	return f
+}
+
+func (f *Figcaption) AddStyles(m map[string]string) *Figcaption {
+	for k, v := range m {
+		f.style[k] = v
+	}
+	return f
+}
+
+func (f *Figcaption) Style(m map[string]string) *Figcaption {
+	f.style = m
+	return f
+}
+
+func (f *Figcaption) Add(e Elements) *Figcaption {
+	f.contents = append(f.contents, e.Bytes())
+	return f
+}
+
+func (f *Figcaption) Bytes() []byte {
+	return f.buf.Bytes()
+}
+
+func (f *Figcaption) Prepare() {
+	if len(f.style) != 0 {
+		idx := 0
+		f.buf.WriteString("<figcaption style=\"")
+		for k, v := range f.style {
+			f.buf.WriteString(k + ": " + v + ";")
+			if idx != len(f.style)-1 {
+				f.buf.WriteByte(' ')
+			}
+			idx++
+		}
+		f.buf.WriteString("\">")
+	} else {
+		f.buf.WriteString("<figcaption>")
+	}
+
+	for _, content := range f.contents {
+		f.buf.Write(content)
+	}
+	f.buf.WriteString("</figcaption>")
+}

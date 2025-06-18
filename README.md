@@ -61,8 +61,8 @@ html.WriteToFile("report.html") // create a file named report.html in the curren
 - [X] `<dl>` - Description list
 - [X] `<dt>` - Description term
 - [X] `<dd>` - Description details
-- [ ] `<figure>` - Figure with caption
-- [ ] `<figcaption>` - Figure caption
+- [X] `<figure>` - Figure with caption
+- [X] `<figcaption>` - Figure caption
 
 ### Inline Text Semantics
 - [X] `<a>` - Anchor/link
