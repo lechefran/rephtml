@@ -94,8 +94,8 @@ html.WriteToFile("report.html") // create a file named report.html in the curren
 - [X] `<sup>` - Superscript
 - [X] `<time>` - Date/time
 - [X] `<u>` - Underline
-- [ ] `<var>` - Variable
-- [ ] `<wbr>` - Word break opportunity
+- [X] `<var>` - Variable
+- [X] `<wbr>` - Word break opportunity
 
 ### Image and Multimedia
 - [ ] `<area>` - Image map area

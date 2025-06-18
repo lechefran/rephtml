@@ -2087,3 +2087,107 @@ func (t *Time) Prepare() {
 	}
 	t.buf.WriteString(">" + t.text + "</time>")
 }
+
+type Var struct {
+	buf   bytes.Buffer
+	style map[string]string
+	text  string
+}
+
+func NewVar() *Var {
+	return &Var{
+		style: make(map[string]string),
+	}
+}
+
+func (v *Var) AddStyle(k, val string) *Var {
+	v.style[k] = val
+	return v
+}
+
+func (v *Var) AddStyles(m map[string]string) *Var {
+	for k, val := range m {
+		v.style[k] = val
+	}
+	return v
+}
+
+func (v *Var) Style(m map[string]string) *Var {
+	v.style = m
+	return v
+}
+
+func (v *Var) Text(str string) *Var {
+	v.text = str
+	return v
+}
+
+func (v *Var) Bytes() []byte {
+	return v.buf.Bytes()
+}
+
+func (v *Var) Prepare() {
+	if len(v.style) != 0 {
+		idx := 0
+		v.buf.WriteString("<var style=\"")
+		for k, val := range v.style {
+			v.buf.WriteString(k + ": " + val + ";")
+			if idx != len(v.style)-1 {
+				v.buf.WriteByte(' ')
+			}
+			idx++
+		}
+		v.buf.WriteString("\">" + v.text + "</var>")
+	} else {
+		v.buf.WriteString("<var>" + v.text + "</var>")
+	}
+}
+
+type Wbr struct {
+	buf   bytes.Buffer
+	style map[string]string
+}
+
+func NewWbr() *Wbr {
+	return &Wbr{
+		style: make(map[string]string),
+	}
+}
+
+func (w *Wbr) AddStyle(k, v string) *Wbr {
+	w.style[k] = v
+	return w
+}
+
+func (w *Wbr) AddStyles(m map[string]string) *Wbr {
+	for k, v := range m {
+		w.style[k] = v
+	}
+	return w
+}
+
+func (w *Wbr) Style(m map[string]string) *Wbr {
+	w.style = m
+	return w
+}
+
+func (w *Wbr) Bytes() []byte {
+	return w.buf.Bytes()
+}
+
+func (w *Wbr) Prepare() {
+	if len(w.style) != 0 {
+		idx := 0
+		w.buf.WriteString("<wbr style=\"")
+		for k, v := range w.style {
+			w.buf.WriteString(k + ": " + v + ";")
+			if idx != len(w.style)-1 {
+				w.buf.WriteByte(' ')
+			}
+			idx++
+		}
+		w.buf.WriteString("\">")
+	} else {
+		w.buf.WriteString("<wbr>")
+	}
+}
