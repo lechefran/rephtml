@@ -51,12 +51,12 @@ html.WriteToFile("report.html") // create a file named report.html in the curren
 ### Text Content
 - [X] `<div>` - Generic container
 - [X] `<p>` - Paragraph
-- [ ] `<hr>` - Horizontal rule
-- [ ] `<pre>` - Preformatted text
-- [ ] `<blockquote>` - Block quotation
+- [X] `<hr>` - Horizontal rule
+- [X] `<pre>` - Preformatted text
+- [X] `<blockquote>` - Block quotation
 - [ ] `<ol>` - Ordered list
 - [ ] `<ul>` - Unordered list
-- [ ] `<menu>` - Menu list
+- [X] `<menu>` - Menu list
 - [ ] `<li>` - List item
 - [ ] `<dl>` - Description list
 - [ ] `<dt>` - Description term

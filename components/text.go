@@ -2191,3 +2191,249 @@ func (w *Wbr) Prepare() {
 		w.buf.WriteString("<wbr>")
 	}
 }
+
+type Hr struct {
+	buf   bytes.Buffer
+	style map[string]string
+}
+
+func NewHr() *Hr {
+	return &Hr{
+		style: make(map[string]string),
+	}
+}
+
+func (h *Hr) AddStyle(k, v string) *Hr {
+	h.style[k] = v
+	return h
+}
+
+func (h *Hr) AddStyles(m map[string]string) *Hr {
+	for k, v := range m {
+		h.style[k] = v
+	}
+	return h
+}
+
+func (h *Hr) Style(m map[string]string) *Hr {
+	h.style = m
+	return h
+}
+
+func (h *Hr) Bytes() []byte {
+	return h.buf.Bytes()
+}
+
+func (h *Hr) Prepare() {
+	if len(h.style) != 0 {
+		idx := 0
+		h.buf.WriteString("<hr style=\"")
+		for k, v := range h.style {
+			h.buf.WriteString(k + ": " + v + ";")
+			if idx != len(h.style)-1 {
+				h.buf.WriteByte(' ')
+			}
+			idx++
+		}
+		h.buf.WriteString("\">")
+	} else {
+		h.buf.WriteString("<hr>")
+	}
+}
+
+type Pre struct {
+	buf   bytes.Buffer
+	style map[string]string
+	text  string
+}
+
+func NewPre() *Pre {
+	return &Pre{
+		style: make(map[string]string),
+	}
+}
+
+func (p *Pre) AddStyle(k, v string) *Pre {
+	p.style[k] = v
+	return p
+}
+
+func (p *Pre) AddStyles(m map[string]string) *Pre {
+	for k, v := range m {
+		p.style[k] = v
+	}
+	return p
+}
+
+func (p *Pre) Style(m map[string]string) *Pre {
+	p.style = m
+	return p
+}
+
+func (p *Pre) Text(str string) *Pre {
+	p.text = str
+	return p
+}
+
+func (p *Pre) Bytes() []byte {
+	return p.buf.Bytes()
+}
+
+func (p *Pre) Prepare() {
+	if len(p.style) != 0 {
+		idx := 0
+		p.buf.WriteString("<pre style=\"")
+		for k, v := range p.style {
+			p.buf.WriteString(k + ": " + v + ";")
+			if idx != len(p.style)-1 {
+				p.buf.WriteByte(' ')
+			}
+			idx++
+		}
+		p.buf.WriteString("\">" + p.text + "</pre>")
+	} else {
+		p.buf.WriteString("<pre>" + p.text + "</pre>")
+	}
+}
+
+type Blockquote struct {
+	buf  bytes.Buffer
+	style map[string]string
+	text string
+	cite string
+}
+
+func NewBlockquote() *Blockquote {
+	return &Blockquote{
+		style: make(map[string]string),
+	}
+}
+
+func (b *Blockquote) AddStyle(k, v string) *Blockquote {
+	b.style[k] = v
+	return b
+}
+
+func (b *Blockquote) AddStyles(m map[string]string) *Blockquote {
+	for k, v := range m {
+		b.style[k] = v
+	}
+	return b
+}
+
+func (b *Blockquote) Style(m map[string]string) *Blockquote {
+	b.style = m
+	return b
+}
+
+func (b *Blockquote) Text(str string) *Blockquote {
+	b.text = str
+	return b
+}
+
+func (b *Blockquote) Cite(c string) *Blockquote {
+	b.cite = c
+	return b
+}
+
+func (b *Blockquote) Bytes() []byte {
+	return b.buf.Bytes()
+}
+
+func (b *Blockquote) Prepare() {
+	b.buf.WriteString("<blockquote")
+	if b.cite != "" {
+		b.buf.WriteString(" cite=\"" + b.cite + "\"")
+	}
+	if len(b.style) != 0 {
+		idx := 0
+		b.buf.WriteString(" style=\"")
+		for k, v := range b.style {
+			b.buf.WriteString(k + ": " + v + ";")
+			if idx != len(b.style)-1 {
+				b.buf.WriteByte(' ')
+			}
+			idx++
+		}
+		b.buf.WriteString("\"")
+	}
+	b.buf.WriteString(">" + b.text + "</blockquote>")
+}
+
+type Menu struct {
+	buf      bytes.Buffer
+	style    map[string]string
+	contents [][]byte
+	menuType string
+	label    string
+}
+
+func NewMenu() *Menu {
+	return &Menu{
+		style: make(map[string]string),
+	}
+}
+
+func (m *Menu) AddStyle(k, v string) *Menu {
+	m.style[k] = v
+	return m
+}
+
+func (m *Menu) AddStyles(ms map[string]string) *Menu {
+	for k, v := range ms {
+		m.style[k] = v
+	}
+	return m
+}
+
+func (m *Menu) Style(ms map[string]string) *Menu {
+	m.style = ms
+	return m
+}
+
+func (m *Menu) Add(e Elements) *Menu {
+	m.contents = append(m.contents, e.Bytes())
+	return m
+}
+
+func (m *Menu) Type(t string) *Menu {
+	m.menuType = t
+	return m
+}
+
+func (m *Menu) Label(l string) *Menu {
+	m.label = l
+	return m
+}
+
+func (m *Menu) Bytes() []byte {
+	return m.buf.Bytes()
+}
+
+func (m *Menu) Prepare() {
+	m.buf.WriteString("<menu")
+	if m.menuType != "" {
+		m.buf.WriteString(" type=\"" + m.menuType + "\"")
+	}
+	if m.label != "" {
+		m.buf.WriteString(" label=\"" + m.label + "\"")
+	}
+	if len(m.style) != 0 {
+		idx := 0
+		m.buf.WriteString(" style=\"")
+		for k, v := range m.style {
+			m.buf.WriteString(k + ": " + v + ";")
+			if idx != len(m.style)-1 {
+				m.buf.WriteByte(' ')
+			}
+			idx++
+		}
+		m.buf.WriteString("\"")
+	}
+	m.buf.WriteByte('>')
+
+	for _, content := range m.contents {
+		m.buf.Write(content)
+	}
+	m.buf.WriteString("</menu>")
+}
