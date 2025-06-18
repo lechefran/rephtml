@@ -40,9 +40,9 @@ html.WriteToFile("report.html") // create a file named report.html in the curren
 ### Content Sectioning
 - [X] `<header>` - Header section
 - [X] `<nav>` - Navigation section
-- [ ] `<main>` - Main content
+- [X] `<main>` - Main content
 - [X] `<section>` - Generic section
-- [ ] `<article>` - Article content
+- [X] `<article>` - Article content
 - [ ] `<aside>` - Sidebar content
 - [ ] `<footer>` - Footer section
 - [ ] `<address>` - Contact information

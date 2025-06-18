@@ -199,3 +199,123 @@ func (s *Section) Prepare() {
 	}
 	s.buf.WriteString("</section>")
 }
+
+type Main struct {
+	buf      bytes.Buffer
+	style    map[string]string
+	contents [][]byte
+}
+
+func NewMain() *Main {
+	return &Main{
+		style: make(map[string]string),
+	}
+}
+
+func (m *Main) AddStyle(k, v string) *Main {
+	m.style[k] = v
+	return m
+}
+
+func (m *Main) AddStyles(mp map[string]string) *Main {
+	for k, v := range mp {
+		m.style[k] = v
+	}
+	return m
+}
+
+func (m *Main) Style(mp map[string]string) *Main {
+	m.style = mp
+	return m
+}
+
+func (m *Main) Add(e Elements) *Main {
+	m.contents = append(m.contents, e.Bytes())
+	return m
+}
+
+func (m *Main) Bytes() []byte {
+	return m.buf.Bytes()
+}
+
+func (m *Main) Prepare() {
+	m.buf.WriteString("<main")
+	if len(m.style) != 0 {
+		idx := 0
+		m.buf.WriteString(" style=\"")
+		for k, v := range m.style {
+			m.buf.WriteString(k + ": " + v + ";")
+			if idx != len(m.style)-1 {
+				m.buf.WriteByte(' ')
+			}
+			idx++
+		}
+		m.buf.WriteString("\"")
+	}
+	m.buf.WriteByte('>')
+
+	for _, content := range m.contents {
+		m.buf.Write(content)
+	}
+	m.buf.WriteString("</main>")
+}
+
+type Article struct {
+	buf      bytes.Buffer
+	style    map[string]string
+	contents [][]byte
+}
+
+func NewArticle() *Article {
+	return &Article{
+		style: make(map[string]string),
+	}
+}
+
+func (a *Article) AddStyle(k, v string) *Article {
+	a.style[k] = v
+	return a
+}
+
+func (a *Article) AddStyles(mp map[string]string) *Article {
+	for k, v := range mp {
+		a.style[k] = v
+	}
+	return a
+}
+
+func (a *Article) Style(mp map[string]string) *Article {
+	a.style = mp
+	return a
+}
+
+func (a *Article) Add(e Elements) *Article {
+	a.contents = append(a.contents, e.Bytes())
+	return a
+}
+
+func (a *Article) Bytes() []byte {
+	return a.buf.Bytes()
+}
+
+func (a *Article) Prepare() {
+	a.buf.WriteString("<article")
+	if len(a.style) != 0 {
+		idx := 0
+		a.buf.WriteString(" style=\"")
+		for k, v := range a.style {
+			a.buf.WriteString(k + ": " + v + ";")
+			if idx != len(a.style)-1 {
+				a.buf.WriteByte(' ')
+			}
+			idx++
+		}
+		a.buf.WriteString("\"")
+	}
+	a.buf.WriteByte('>')
+
+	for _, content := range a.contents {
+		a.buf.Write(content)
+	}
+	a.buf.WriteString("</article>")
+}
