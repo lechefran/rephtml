@@ -38,10 +38,10 @@ html.WriteToFile("report.html") // create a file named report.html in the curren
 - [ ] `<style>` - Internal CSS
 
 ### Content Sectioning
-- [ ] `<header>` - Header section
-- [ ] `<nav>` - Navigation section
+- [X] `<header>` - Header section
+- [X] `<nav>` - Navigation section
 - [ ] `<main>` - Main content
-- [ ] `<section>` - Generic section
+- [X] `<section>` - Generic section
 - [ ] `<article>` - Article content
 - [ ] `<aside>` - Sidebar content
 - [ ] `<footer>` - Footer section
