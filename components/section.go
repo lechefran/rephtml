@@ -319,3 +319,183 @@ func (a *Article) Prepare() {
 	}
 	a.buf.WriteString("</article>")
 }
+
+type Aside struct {
+	buf      bytes.Buffer
+	style    map[string]string
+	contents [][]byte
+}
+
+func NewAside() *Aside {
+	return &Aside{
+		style: make(map[string]string),
+	}
+}
+
+func (as *Aside) AddStyle(k, v string) *Aside {
+	as.style[k] = v
+	return as
+}
+
+func (as *Aside) AddStyles(mp map[string]string) *Aside {
+	for k, v := range mp {
+		as.style[k] = v
+	}
+	return as
+}
+
+func (as *Aside) Style(mp map[string]string) *Aside {
+	as.style = mp
+	return as
+}
+
+func (as *Aside) Add(e Elements) *Aside {
+	as.contents = append(as.contents, e.Bytes())
+	return as
+}
+
+func (as *Aside) Bytes() []byte {
+	return as.buf.Bytes()
+}
+
+func (as *Aside) Prepare() {
+	as.buf.WriteString("<aside")
+	if len(as.style) != 0 {
+		idx := 0
+		as.buf.WriteString(" style=\"")
+		for k, v := range as.style {
+			as.buf.WriteString(k + ": " + v + ";")
+			if idx != len(as.style)-1 {
+				as.buf.WriteByte(' ')
+			}
+			idx++
+		}
+		as.buf.WriteString("\"")
+	}
+	as.buf.WriteByte('>')
+
+	for _, content := range as.contents {
+		as.buf.Write(content)
+	}
+	as.buf.WriteString("</aside>")
+}
+
+type Footer struct {
+	buf      bytes.Buffer
+	style    map[string]string
+	contents [][]byte
+}
+
+func NewFooter() *Footer {
+	return &Footer{
+		style: make(map[string]string),
+	}
+}
+
+func (f *Footer) AddStyle(k, v string) *Footer {
+	f.style[k] = v
+	return f
+}
+
+func (f *Footer) AddStyles(mp map[string]string) *Footer {
+	for k, v := range mp {
+		f.style[k] = v
+	}
+	return f
+}
+
+func (f *Footer) Style(mp map[string]string) *Footer {
+	f.style = mp
+	return f
+}
+
+func (f *Footer) Add(e Elements) *Footer {
+	f.contents = append(f.contents, e.Bytes())
+	return f
+}
+
+func (f *Footer) Bytes() []byte {
+	return f.buf.Bytes()
+}
+
+func (f *Footer) Prepare() {
+	f.buf.WriteString("<footer")
+	if len(f.style) != 0 {
+		idx := 0
+		f.buf.WriteString(" style=\"")
+		for k, v := range f.style {
+			f.buf.WriteString(k + ": " + v + ";")
+			if idx != len(f.style)-1 {
+				f.buf.WriteByte(' ')
+			}
+			idx++
+		}
+		f.buf.WriteString("\"")
+	}
+	f.buf.WriteByte('>')
+
+	for _, content := range f.contents {
+		f.buf.Write(content)
+	}
+	f.buf.WriteString("</footer>")
+}
+
+type Address struct {
+	buf      bytes.Buffer
+	style    map[string]string
+	contents [][]byte
+}
+
+func NewAddress() *Address {
+	return &Address{
+		style: make(map[string]string),
+	}
+}
+
+func (ad *Address) AddStyle(k, v string) *Address {
+	ad.style[k] = v
+	return ad
+}
+
+func (ad *Address) AddStyles(mp map[string]string) *Address {
+	for k, v := range mp {
+		ad.style[k] = v
+	}
+	return ad
+}
+
+func (ad *Address) Style(mp map[string]string) *Address {
+	ad.style = mp
+	return ad
+}
+
+func (ad *Address) Add(e Elements) *Address {
+	ad.contents = append(ad.contents, e.Bytes())
+	return ad
+}
+
+func (ad *Address) Bytes() []byte {
+	return ad.buf.Bytes()
+}
+
+func (ad *Address) Prepare() {
+	ad.buf.WriteString("<address")
+	if len(ad.style) != 0 {
+		idx := 0
+		ad.buf.WriteString(" style=\"")
+		for k, v := range ad.style {
+			ad.buf.WriteString(k + ": " + v + ";")
+			if idx != len(ad.style)-1 {
+				ad.buf.WriteByte(' ')
+			}
+			idx++
+		}
+		ad.buf.WriteString("\"")
+	}
+	ad.buf.WriteByte('>')
+
+	for _, content := range ad.contents {
+		ad.buf.Write(content)
+	}
+	ad.buf.WriteString("</address>")
+}

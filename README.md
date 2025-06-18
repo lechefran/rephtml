@@ -43,9 +43,9 @@ html.WriteToFile("report.html") // create a file named report.html in the curren
 - [X] `<main>` - Main content
 - [X] `<section>` - Generic section
 - [X] `<article>` - Article content
-- [ ] `<aside>` - Sidebar content
-- [ ] `<footer>` - Footer section
-- [ ] `<address>` - Contact information
+- [X] `<aside>` - Sidebar content
+- [X] `<footer>` - Footer section
+- [X] `<address>` - Contact information
 - [X] `<h1>` through `<h6>` - Headings
 
 ### Text Content
