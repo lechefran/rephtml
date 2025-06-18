@@ -58,9 +58,9 @@ html.WriteToFile("report.html") // create a file named report.html in the curren
 - [X] `<ul>` - Unordered list
 - [X] `<menu>` - Menu list
 - [X] `<li>` - List item
-- [ ] `<dl>` - Description list
-- [ ] `<dt>` - Description term
-- [ ] `<dd>` - Description details
+- [X] `<dl>` - Description list
+- [X] `<dt>` - Description term
+- [X] `<dd>` - Description details
 - [ ] `<figure>` - Figure with caption
 - [ ] `<figcaption>` - Figure caption
 

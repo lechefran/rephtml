@@ -2657,3 +2657,183 @@ func (l *Li) Prepare() {
 	}
 	l.buf.WriteString("</li>")
 }
+
+type Dl struct {
+	buf      bytes.Buffer
+	style    map[string]string
+	contents [][]byte
+}
+
+func NewDl() *Dl {
+	return &Dl{
+		style: make(map[string]string),
+	}
+}
+
+func (d *Dl) AddStyle(k, v string) *Dl {
+	d.style[k] = v
+	return d
+}
+
+func (d *Dl) AddStyles(m map[string]string) *Dl {
+	for k, v := range m {
+		d.style[k] = v
+	}
+	return d
+}
+
+func (d *Dl) Style(m map[string]string) *Dl {
+	d.style = m
+	return d
+}
+
+func (d *Dl) Add(e Elements) *Dl {
+	d.contents = append(d.contents, e.Bytes())
+	return d
+}
+
+func (d *Dl) Bytes() []byte {
+	return d.buf.Bytes()
+}
+
+func (d *Dl) Prepare() {
+	if len(d.style) != 0 {
+		idx := 0
+		d.buf.WriteString("<dl style=\"")
+		for k, v := range d.style {
+			d.buf.WriteString(k + ": " + v + ";")
+			if idx != len(d.style)-1 {
+				d.buf.WriteByte(' ')
+			}
+			idx++
+		}
+		d.buf.WriteString("\">")
+	} else {
+		d.buf.WriteString("<dl>")
+	}
+
+	for _, content := range d.contents {
+		d.buf.Write(content)
+	}
+	d.buf.WriteString("</dl>")
+}
+
+type Dt struct {
+	buf      bytes.Buffer
+	style    map[string]string
+	contents [][]byte
+}
+
+func NewDt() *Dt {
+	return &Dt{
+		style: make(map[string]string),
+	}
+}
+
+func (d *Dt) AddStyle(k, v string) *Dt {
+	d.style[k] = v
+	return d
+}
+
+func (d *Dt) AddStyles(m map[string]string) *Dt {
+	for k, v := range m {
+		d.style[k] = v
+	}
+	return d
+}
+
+func (d *Dt) Style(m map[string]string) *Dt {
+	d.style = m
+	return d
+}
+
+func (d *Dt) Add(e Elements) *Dt {
+	d.contents = append(d.contents, e.Bytes())
+	return d
+}
+
+func (d *Dt) Bytes() []byte {
+	return d.buf.Bytes()
+}
+
+func (d *Dt) Prepare() {
+	if len(d.style) != 0 {
+		idx := 0
+		d.buf.WriteString("<dt style=\"")
+		for k, v := range d.style {
+			d.buf.WriteString(k + ": " + v + ";")
+			if idx != len(d.style)-1 {
+				d.buf.WriteByte(' ')
+			}
+			idx++
+		}
+		d.buf.WriteString("\">")
+	} else {
+		d.buf.WriteString("<dt>")
+	}
+
+	for _, content := range d.contents {
+		d.buf.Write(content)
+	}
+	d.buf.WriteString("</dt>")
+}
+
+type Dd struct {
+	buf      bytes.Buffer
+	style    map[string]string
+	contents [][]byte
+}
+
+func NewDd() *Dd {
+	return &Dd{
+		style: make(map[string]string),
+	}
+}
+
+func (d *Dd) AddStyle(k, v string) *Dd {
+	d.style[k] = v
+	return d
+}
+
+func (d *Dd) AddStyles(m map[string]string) *Dd {
+	for k, v := range m {
+		d.style[k] = v
+	}
+	return d
+}
+
+func (d *Dd) Style(m map[string]string) *Dd {
+	d.style = m
+	return d
+}
+
+func (d *Dd) Add(e Elements) *Dd {
+	d.contents = append(d.contents, e.Bytes())
+	return d
+}
+
+func (d *Dd) Bytes() []byte {
+	return d.buf.Bytes()
+}
+
+func (d *Dd) Prepare() {
+	if len(d.style) != 0 {
+		idx := 0
+		d.buf.WriteString("<dd style=\"")
+		for k, v := range d.style {
+			d.buf.WriteString(k + ": " + v + ";")
+			if idx != len(d.style)-1 {
+				d.buf.WriteByte(' ')
+			}
+			idx++
+		}
+		d.buf.WriteString("\">")
+	} else {
+		d.buf.WriteString("<dd>")
+	}
+
+	for _, content := range d.contents {
+		d.buf.Write(content)
+	}
+	d.buf.WriteString("</dd>")
+}
