@@ -466,3 +466,144 @@ func (m *Map) Prepare() {
 	}
 	m.buf.WriteString("</map>")
 }
+
+type Video struct {
+	buf      bytes.Buffer
+	style    map[string]string
+	contents [][]byte
+	src      string
+	controls bool
+	autoplay bool
+	loop     bool
+	muted    bool
+	preload  string
+	width    string
+	height   string
+	poster   string
+}
+
+func NewVideo() *Video {
+	return &Video{
+		style: make(map[string]string),
+	}
+}
+
+func (v *Video) AddStyle(k, val string) *Video {
+	v.style[k] = val
+	return v
+}
+
+func (v *Video) AddStyles(m map[string]string) *Video {
+	for k, val := range m {
+		v.style[k] = val
+	}
+	return v
+}
+
+func (v *Video) Style(m map[string]string) *Video {
+	v.style = m
+	return v
+}
+
+func (v *Video) Add(e Elements) *Video {
+	v.contents = append(v.contents, e.Bytes())
+	return v
+}
+
+func (v *Video) Src(src string) *Video {
+	v.src = src
+	return v
+}
+
+func (v *Video) Controls(controls bool) *Video {
+	v.controls = controls
+	return v
+}
+
+func (v *Video) Autoplay(autoplay bool) *Video {
+	v.autoplay = autoplay
+	return v
+}
+
+func (v *Video) Loop(loop bool) *Video {
+	v.loop = loop
+	return v
+}
+
+func (v *Video) Muted(muted bool) *Video {
+	v.muted = muted
+	return v
+}
+
+func (v *Video) Preload(preload string) *Video {
+	v.preload = preload
+	return v
+}
+
+func (v *Video) Width(width string) *Video {
+	v.width = width
+	return v
+}
+
+func (v *Video) Height(height string) *Video {
+	v.height = height
+	return v
+}
+
+func (v *Video) Poster(poster string) *Video {
+	v.poster = poster
+	return v
+}
+
+func (v *Video) Bytes() []byte {
+	return v.buf.Bytes()
+}
+
+func (v *Video) Prepare() {
+	v.buf.WriteString("<video")
+	if v.src != "" {
+		v.buf.WriteString(" src=\"" + v.src + "\"")
+	}
+	if v.controls {
+		v.buf.WriteString(" controls")
+	}
+	if v.autoplay {
+		v.buf.WriteString(" autoplay")
+	}
+	if v.loop {
+		v.buf.WriteString(" loop")
+	}
+	if v.muted {
+		v.buf.WriteString(" muted")
+	}
+	if v.preload != "" {
+		v.buf.WriteString(" preload=\"" + v.preload + "\"")
+	}
+	if v.width != "" {
+		v.buf.WriteString(" width=\"" + v.width + "\"")
+	}
+	if v.height != "" {
+		v.buf.WriteString(" height=\"" + v.height + "\"")
+	}
+	if v.poster != "" {
+		v.buf.WriteString(" poster=\"" + v.poster + "\"")
+	}
+	if len(v.style) != 0 {
+		idx := 0
+		v.buf.WriteString(" style=\"")
+		for k, val := range v.style {
+			v.buf.WriteString(k + ": " + val + ";")
+			if idx != len(v.style)-1 {
+				v.buf.WriteByte(' ')
+			}
+			idx++
+		}
+		v.buf.WriteString("\"")
+	}
+	v.buf.WriteByte('>')
+
+	for _, content := range v.contents {
+		v.buf.Write(content)
+	}
+	v.buf.WriteString("</video>")
+}

@@ -103,7 +103,7 @@ html.WriteToFile("report.html") // create a file named report.html in the curren
 - [X] `<img>` - Image
 - [X] `<map>` - Image map
 - [X] `<track>` - Media track
-- [ ] `<video>` - Video content
+- [X] `<video>` - Video content
 
 ### Embedded Content
 - [ ] `<embed>` - External content
