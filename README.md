@@ -99,10 +99,10 @@ html.WriteToFile("report.html") // create a file named report.html in the curren
 
 ### Image and Multimedia
 - [X] `<area>` - Image map area
-- [ ] `<audio>` - Audio content
+- [X] `<audio>` - Audio content
 - [X] `<img>` - Image
 - [X] `<map>` - Image map
-- [ ] `<track>` - Media track
+- [X] `<track>` - Media track
 - [ ] `<video>` - Video content
 
 ### Embedded Content

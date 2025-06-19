@@ -190,6 +190,214 @@ func (i *Img) Prepare() {
 	i.buf.WriteString(">")
 }
 
+type Audio struct {
+	buf      bytes.Buffer
+	style    map[string]string
+	contents [][]byte
+	src      string
+	controls bool
+	autoplay bool
+	loop     bool
+	muted    bool
+	preload  string
+}
+
+func NewAudio() *Audio {
+	return &Audio{
+		style: make(map[string]string),
+	}
+}
+
+func (a *Audio) AddStyle(k, v string) *Audio {
+	a.style[k] = v
+	return a
+}
+
+func (a *Audio) AddStyles(m map[string]string) *Audio {
+	for k, v := range m {
+		a.style[k] = v
+	}
+	return a
+}
+
+func (a *Audio) Style(m map[string]string) *Audio {
+	a.style = m
+	return a
+}
+
+func (a *Audio) Add(e Elements) *Audio {
+	a.contents = append(a.contents, e.Bytes())
+	return a
+}
+
+func (a *Audio) Src(src string) *Audio {
+	a.src = src
+	return a
+}
+
+func (a *Audio) Controls(controls bool) *Audio {
+	a.controls = controls
+	return a
+}
+
+func (a *Audio) Autoplay(autoplay bool) *Audio {
+	a.autoplay = autoplay
+	return a
+}
+
+func (a *Audio) Loop(loop bool) *Audio {
+	a.loop = loop
+	return a
+}
+
+func (a *Audio) Muted(muted bool) *Audio {
+	a.muted = muted
+	return a
+}
+
+func (a *Audio) Preload(preload string) *Audio {
+	a.preload = preload
+	return a
+}
+
+func (a *Audio) Bytes() []byte {
+	return a.buf.Bytes()
+}
+
+func (a *Audio) Prepare() {
+	a.buf.WriteString("<audio")
+	if a.src != "" {
+		a.buf.WriteString(" src=\"" + a.src + "\"")
+	}
+	if a.controls {
+		a.buf.WriteString(" controls")
+	}
+	if a.autoplay {
+		a.buf.WriteString(" autoplay")
+	}
+	if a.loop {
+		a.buf.WriteString(" loop")
+	}
+	if a.muted {
+		a.buf.WriteString(" muted")
+	}
+	if a.preload != "" {
+		a.buf.WriteString(" preload=\"" + a.preload + "\"")
+	}
+	if len(a.style) != 0 {
+		idx := 0
+		a.buf.WriteString(" style=\"")
+		for k, v := range a.style {
+			a.buf.WriteString(k + ": " + v + ";")
+			if idx != len(a.style)-1 {
+				a.buf.WriteByte(' ')
+			}
+			idx++
+		}
+		a.buf.WriteString("\"")
+	}
+	a.buf.WriteByte('>')
+
+	for _, content := range a.contents {
+		a.buf.Write(content)
+	}
+	a.buf.WriteString("</audio>")
+}
+
+type Track struct {
+	buf        bytes.Buffer
+	style      map[string]string
+	src        string
+	kind       string
+	srclang    string
+	label      string
+	defaultVal bool
+}
+
+func NewTrack() *Track {
+	return &Track{
+		style: make(map[string]string),
+	}
+}
+
+func (t *Track) AddStyle(k, v string) *Track {
+	t.style[k] = v
+	return t
+}
+
+func (t *Track) AddStyles(m map[string]string) *Track {
+	for k, v := range m {
+		t.style[k] = v
+	}
+	return t
+}
+
+func (t *Track) Style(m map[string]string) *Track {
+	t.style = m
+	return t
+}
+
+func (t *Track) Src(src string) *Track {
+	t.src = src
+	return t
+}
+
+func (t *Track) Kind(kind string) *Track {
+	t.kind = kind
+	return t
+}
+
+func (t *Track) Srclang(srclang string) *Track {
+	t.srclang = srclang
+	return t
+}
+
+func (t *Track) Label(label string) *Track {
+	t.label = label
+	return t
+}
+
+func (t *Track) Default(def bool) *Track {
+	t.defaultVal = def
+	return t
+}
+
+func (t *Track) Bytes() []byte {
+	return t.buf.Bytes()
+}
+
+func (t *Track) Prepare() {
+	t.buf.WriteString("<track")
+	if t.src != "" {
+		t.buf.WriteString(" src=\"" + t.src + "\"")
+	}
+	if t.kind != "" {
+		t.buf.WriteString(" kind=\"" + t.kind + "\"")
+	}
+	if t.srclang != "" {
+		t.buf.WriteString(" srclang=\"" + t.srclang + "\"")
+	}
+	if t.label != "" {
+		t.buf.WriteString(" label=\"" + t.label + "\"")
+	}
+	if t.defaultVal {
+		t.buf.WriteString(" default")
+	}
+	if len(t.style) != 0 {
+		idx := 0
+		t.buf.WriteString(" style=\"")
+		for k, v := range t.style {
+			t.buf.WriteString(k + ": " + v + ";")
+			if idx != len(t.style)-1 {
+				t.buf.WriteByte(' ')
+			}
+			idx++
+		}
+		t.buf.WriteString("\"")
+	}
+	t.buf.WriteString(">")
+}
+
 type Map struct {
 	buf      bytes.Buffer
 	style    map[string]string
