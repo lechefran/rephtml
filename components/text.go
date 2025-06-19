@@ -2025,7 +2025,7 @@ func isValidDatetime(dt string) bool {
 	if dt == "" {
 		return true
 	}
-	
+
 	datetimeFormats := []string{
 		"2006-01-02T15:04:05Z07:00",
 		"2006-01-02T15:04:05Z",
@@ -2039,28 +2039,28 @@ func isValidDatetime(dt string) bool {
 		"15:04:05",
 		"15:04",
 	}
-	
+
 	weekPattern := regexp.MustCompile(`^2006-W\d{2}$`)
 	if weekPattern.MatchString(dt) {
 		return true
 	}
-	
+
 	monthPattern := regexp.MustCompile(`^2006-\d{2}$`)
 	if monthPattern.MatchString(dt) {
 		return true
 	}
-	
+
 	durationPattern := regexp.MustCompile(`^P(?:\d+Y)?(?:\d+M)?(?:\d+D)?(?:T(?:\d+H)?(?:\d+M)?(?:\d+(?:\.\d+)?S)?)?$`)
 	if durationPattern.MatchString(dt) {
 		return true
 	}
-	
+
 	for _, format := range datetimeFormats {
 		if _, err := time.Parse(format, dt); err == nil {
 			return true
 		}
 	}
-	
+
 	return false
 }
 
@@ -2297,10 +2297,10 @@ func (p *Pre) Prepare() {
 }
 
 type Blockquote struct {
-	buf  bytes.Buffer
+	buf   bytes.Buffer
 	style map[string]string
-	text string
-	cite string
+	text  string
+	cite  string
 }
 
 func NewBlockquote() *Blockquote {

@@ -98,10 +98,10 @@ html.WriteToFile("report.html") // create a file named report.html in the curren
 - [X] `<wbr>` - Word break opportunity
 
 ### Image and Multimedia
-- [ ] `<area>` - Image map area
+- [X] `<area>` - Image map area
 - [ ] `<audio>` - Audio content
-- [ ] `<img>` - Image
-- [ ] `<map>` - Image map
+- [X] `<img>` - Image
+- [X] `<map>` - Image map
 - [ ] `<track>` - Media track
 - [ ] `<video>` - Video content
 
