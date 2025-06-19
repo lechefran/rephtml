@@ -80,3 +80,127 @@ func (m *Math) Prepare() {
 	}
 	m.buf.WriteString("</math>")
 }
+
+type Svg struct {
+	buf       bytes.Buffer
+	style     map[string]string
+	contents  [][]byte
+	width     string
+	height    string
+	viewBox   string
+	xmlns     string
+	version   string
+	baseProfile string
+	preserveAspectRatio string
+}
+
+func NewSvg() *Svg {
+	return &Svg{
+		style: make(map[string]string),
+		xmlns: "http://www.w3.org/2000/svg",
+	}
+}
+
+func (s *Svg) AddStyle(k, v string) *Svg {
+	s.style[k] = v
+	return s
+}
+
+func (s *Svg) AddStyles(m map[string]string) *Svg {
+	for k, v := range m {
+		s.style[k] = v
+	}
+	return s
+}
+
+func (s *Svg) Style(m map[string]string) *Svg {
+	s.style = m
+	return s
+}
+
+func (s *Svg) Add(e Elements) *Svg {
+	s.contents = append(s.contents, e.Bytes())
+	return s
+}
+
+func (s *Svg) Width(width string) *Svg {
+	s.width = width
+	return s
+}
+
+func (s *Svg) Height(height string) *Svg {
+	s.height = height
+	return s
+}
+
+func (s *Svg) ViewBox(viewBox string) *Svg {
+	s.viewBox = viewBox
+	return s
+}
+
+func (s *Svg) Xmlns(xmlns string) *Svg {
+	s.xmlns = xmlns
+	return s
+}
+
+func (s *Svg) Version(version string) *Svg {
+	s.version = version
+	return s
+}
+
+func (s *Svg) BaseProfile(baseProfile string) *Svg {
+	s.baseProfile = baseProfile
+	return s
+}
+
+func (s *Svg) PreserveAspectRatio(preserveAspectRatio string) *Svg {
+	s.preserveAspectRatio = preserveAspectRatio
+	return s
+}
+
+func (s *Svg) Bytes() []byte {
+	return s.buf.Bytes()
+}
+
+func (s *Svg) Prepare() {
+	s.buf.WriteString("<svg")
+	if s.xmlns != "" {
+		s.buf.WriteString(" xmlns=\"" + s.xmlns + "\"")
+	}
+	if s.width != "" {
+		s.buf.WriteString(" width=\"" + s.width + "\"")
+	}
+	if s.height != "" {
+		s.buf.WriteString(" height=\"" + s.height + "\"")
+	}
+	if s.viewBox != "" {
+		s.buf.WriteString(" viewBox=\"" + s.viewBox + "\"")
+	}
+	if s.version != "" {
+		s.buf.WriteString(" version=\"" + s.version + "\"")
+	}
+	if s.baseProfile != "" {
+		s.buf.WriteString(" baseProfile=\"" + s.baseProfile + "\"")
+	}
+	if s.preserveAspectRatio != "" {
+		s.buf.WriteString(" preserveAspectRatio=\"" + s.preserveAspectRatio + "\"")
+	}
+	if len(s.style) != 0 {
+		idx := 0
+		s.buf.WriteString(" style=\"")
+		for k, v := range s.style {
+			s.buf.WriteString(k + ": " + v + ";")
+			if idx != len(s.style)-1 {
+				s.buf.WriteByte(' ')
+			}
+			idx++
+		}
+		s.buf.WriteString("\"")
+	}
+	s.buf.WriteByte('>')
+
+	for _, content := range s.contents {
+		s.buf.Write(content)
+	}
+	s.buf.WriteString("</svg>")
+}

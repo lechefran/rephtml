@@ -114,7 +114,7 @@ html.WriteToFile("report.html") // create a file named report.html in the curren
 - [ ] `<source>` - Media source
 
 ### SVG and MathML
-- [ ] `<svg>` - SVG graphics
+- [X] `<svg>` - SVG graphics
 - [X] `<math>` - MathML mathematics
 
 ### Scripting
