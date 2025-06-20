@@ -108,10 +108,10 @@ html.WriteToFile("report.html") // create a file named report.html in the curren
 ### Embedded Content
 - [X] `<embed>` - External content
 - [X] `<iframe>` - Inline frame
-- [ ] `<object>` - External object
-- [ ] `<picture>` - Responsive image container
-- [ ] `<portal>` - Portal element
-- [ ] `<source>` - Media source
+- [X] `<object>` - External object
+- [X] `<picture>` - Responsive image container
+- [X] `<portal>` - Portal element
+- [X] `<source>` - Media source
 
 ### SVG and MathML
 - [X] `<svg>` - SVG graphics

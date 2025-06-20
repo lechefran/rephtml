@@ -225,3 +225,347 @@ func (i *Iframe) Prepare() {
 	}
 	i.buf.WriteString("></iframe>")
 }
+
+type Object struct {
+	buf      bytes.Buffer
+	style    map[string]string
+	contents [][]byte
+	data     string
+	objType  string
+	width    string
+	height   string
+	name     string
+	usemap   string
+	form     string
+}
+
+func NewObject() *Object {
+	return &Object{
+		style: make(map[string]string),
+	}
+}
+
+func (o *Object) AddStyle(k, v string) *Object {
+	o.style[k] = v
+	return o
+}
+
+func (o *Object) AddStyles(m map[string]string) *Object {
+	for k, v := range m {
+		o.style[k] = v
+	}
+	return o
+}
+
+func (o *Object) Style(m map[string]string) *Object {
+	o.style = m
+	return o
+}
+
+func (o *Object) Add(e Elements) *Object {
+	o.contents = append(o.contents, e.Bytes())
+	return o
+}
+
+func (o *Object) Data(data string) *Object {
+	o.data = data
+	return o
+}
+
+func (o *Object) Type(objType string) *Object {
+	o.objType = objType
+	return o
+}
+
+func (o *Object) Width(width string) *Object {
+	o.width = width
+	return o
+}
+
+func (o *Object) Height(height string) *Object {
+	o.height = height
+	return o
+}
+
+func (o *Object) Name(name string) *Object {
+	o.name = name
+	return o
+}
+
+func (o *Object) Usemap(usemap string) *Object {
+	o.usemap = usemap
+	return o
+}
+
+func (o *Object) Form(form string) *Object {
+	o.form = form
+	return o
+}
+
+func (o *Object) Bytes() []byte {
+	return o.buf.Bytes()
+}
+
+func (o *Object) Prepare() {
+	o.buf.WriteString("<object")
+	if o.data != "" {
+		o.buf.WriteString(" data=\"" + o.data + "\"")
+	}
+	if o.objType != "" {
+		o.buf.WriteString(" type=\"" + o.objType + "\"")
+	}
+	if o.width != "" {
+		o.buf.WriteString(" width=\"" + o.width + "\"")
+	}
+	if o.height != "" {
+		o.buf.WriteString(" height=\"" + o.height + "\"")
+	}
+	if o.name != "" {
+		o.buf.WriteString(" name=\"" + o.name + "\"")
+	}
+	if o.usemap != "" {
+		o.buf.WriteString(" usemap=\"" + o.usemap + "\"")
+	}
+	if o.form != "" {
+		o.buf.WriteString(" form=\"" + o.form + "\"")
+	}
+	if len(o.style) != 0 {
+		idx := 0
+		o.buf.WriteString(" style=\"")
+		for k, v := range o.style {
+			o.buf.WriteString(k + ": " + v + ";")
+			if idx != len(o.style)-1 {
+				o.buf.WriteByte(' ')
+			}
+			idx++
+		}
+		o.buf.WriteString("\"")
+	}
+	o.buf.WriteByte('>')
+
+	for _, content := range o.contents {
+		o.buf.Write(content)
+	}
+	o.buf.WriteString("</object>")
+}
+
+type Picture struct {
+	buf      bytes.Buffer
+	style    map[string]string
+	contents [][]byte
+}
+
+func NewPicture() *Picture {
+	return &Picture{
+		style: make(map[string]string),
+	}
+}
+
+func (p *Picture) AddStyle(k, v string) *Picture {
+	p.style[k] = v
+	return p
+}
+
+func (p *Picture) AddStyles(m map[string]string) *Picture {
+	for k, v := range m {
+		p.style[k] = v
+	}
+	return p
+}
+
+func (p *Picture) Style(m map[string]string) *Picture {
+	p.style = m
+	return p
+}
+
+func (p *Picture) Add(e Elements) *Picture {
+	p.contents = append(p.contents, e.Bytes())
+	return p
+}
+
+func (p *Picture) Bytes() []byte {
+	return p.buf.Bytes()
+}
+
+func (p *Picture) Prepare() {
+	if len(p.style) != 0 {
+		idx := 0
+		p.buf.WriteString("<picture style=\"")
+		for k, v := range p.style {
+			p.buf.WriteString(k + ": " + v + ";")
+			if idx != len(p.style)-1 {
+				p.buf.WriteByte(' ')
+			}
+			idx++
+		}
+		p.buf.WriteString("\">")
+	} else {
+		p.buf.WriteString("<picture>")
+	}
+
+	for _, content := range p.contents {
+		p.buf.Write(content)
+	}
+	p.buf.WriteString("</picture>")
+}
+
+type Portal struct {
+	buf             bytes.Buffer
+	style           map[string]string
+	src             string
+	referrerpolicy  string
+}
+
+func NewPortal() *Portal {
+	return &Portal{
+		style: make(map[string]string),
+	}
+}
+
+func (p *Portal) AddStyle(k, v string) *Portal {
+	p.style[k] = v
+	return p
+}
+
+func (p *Portal) AddStyles(m map[string]string) *Portal {
+	for k, v := range m {
+		p.style[k] = v
+	}
+	return p
+}
+
+func (p *Portal) Style(m map[string]string) *Portal {
+	p.style = m
+	return p
+}
+
+func (p *Portal) Src(src string) *Portal {
+	p.src = src
+	return p
+}
+
+func (p *Portal) Referrerpolicy(referrerpolicy string) *Portal {
+	p.referrerpolicy = referrerpolicy
+	return p
+}
+
+func (p *Portal) Bytes() []byte {
+	return p.buf.Bytes()
+}
+
+func (p *Portal) Prepare() {
+	p.buf.WriteString("<portal")
+	if p.src != "" {
+		p.buf.WriteString(" src=\"" + p.src + "\"")
+	}
+	if p.referrerpolicy != "" {
+		p.buf.WriteString(" referrerpolicy=\"" + p.referrerpolicy + "\"")
+	}
+	if len(p.style) != 0 {
+		idx := 0
+		p.buf.WriteString(" style=\"")
+		for k, v := range p.style {
+			p.buf.WriteString(k + ": " + v + ";")
+			if idx != len(p.style)-1 {
+				p.buf.WriteByte(' ')
+			}
+			idx++
+		}
+		p.buf.WriteString("\"")
+	}
+	p.buf.WriteString("></portal>")
+}
+
+type Source struct {
+	buf    bytes.Buffer
+	style  map[string]string
+	src    string
+	srcset string
+	media  string
+	sizes  string
+	srcType string
+}
+
+func NewSource() *Source {
+	return &Source{
+		style: make(map[string]string),
+	}
+}
+
+func (s *Source) AddStyle(k, v string) *Source {
+	s.style[k] = v
+	return s
+}
+
+func (s *Source) AddStyles(m map[string]string) *Source {
+	for k, v := range m {
+		s.style[k] = v
+	}
+	return s
+}
+
+func (s *Source) Style(m map[string]string) *Source {
+	s.style = m
+	return s
+}
+
+func (s *Source) Src(src string) *Source {
+	s.src = src
+	return s
+}
+
+func (s *Source) Srcset(srcset string) *Source {
+	s.srcset = srcset
+	return s
+}
+
+func (s *Source) Media(media string) *Source {
+	s.media = media
+	return s
+}
+
+func (s *Source) Sizes(sizes string) *Source {
+	s.sizes = sizes
+	return s
+}
+
+func (s *Source) Type(srcType string) *Source {
+	s.srcType = srcType
+	return s
+}
+
+func (s *Source) Bytes() []byte {
+	return s.buf.Bytes()
+}
+
+func (s *Source) Prepare() {
+	s.buf.WriteString("<source")
+	if s.src != "" {
+		s.buf.WriteString(" src=\"" + s.src + "\"")
+	}
+	if s.srcset != "" {
+		s.buf.WriteString(" srcset=\"" + s.srcset + "\"")
+	}
+	if s.media != "" {
+		s.buf.WriteString(" media=\"" + s.media + "\"")
+	}
+	if s.sizes != "" {
+		s.buf.WriteString(" sizes=\"" + s.sizes + "\"")
+	}
+	if s.srcType != "" {
+		s.buf.WriteString(" type=\"" + s.srcType + "\"")
+	}
+	if len(s.style) != 0 {
+		idx := 0
+		s.buf.WriteString(" style=\"")
+		for k, v := range s.style {
+			s.buf.WriteString(k + ": " + v + ";")
+			if idx != len(s.style)-1 {
+				s.buf.WriteByte(' ')
+			}
+			idx++
+		}
+		s.buf.WriteString("\"")
+	}
+	s.buf.WriteString(">")
+}
