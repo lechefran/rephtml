@@ -793,3 +793,208 @@ func (f *Fieldset) Style(m map[string]string) *Fieldset {
 	}
 	return f
 }
+
+// Button represents the HTML button element for clickable buttons
+type Button struct {
+	buf            bytes.Buffer
+	style          map[string]string
+	contents       [][]byte
+	ttrack         int
+	buttonType     string
+	name           string
+	value          string
+	form           string
+	formAction     string
+	formEnctype    string
+	formMethod     string
+	formTarget     string
+	formNovalidate bool
+	disabled       bool
+	autofocus      bool
+}
+
+// NewButton creates a new Button element
+func NewButton() *Button {
+	return &Button{
+		style: make(map[string]string),
+	}
+}
+
+// Bytes returns the buffer contents
+func (b *Button) Bytes() []byte {
+	return b.buf.Bytes()
+}
+
+// Prepare builds the HTML for the button element
+func (b *Button) Prepare() {
+	b.buf.WriteString("<button")
+	
+	if b.buttonType != "" {
+		b.buf.WriteString(" type=\"" + b.buttonType + "\"")
+	}
+	
+	if b.name != "" {
+		b.buf.WriteString(" name=\"" + b.name + "\"")
+	}
+	
+	if b.value != "" {
+		b.buf.WriteString(" value=\"" + b.value + "\"")
+	}
+	
+	if b.form != "" {
+		b.buf.WriteString(" form=\"" + b.form + "\"")
+	}
+	
+	if b.formAction != "" {
+		b.buf.WriteString(" formaction=\"" + b.formAction + "\"")
+	}
+	
+	if b.formEnctype != "" {
+		b.buf.WriteString(" formenctype=\"" + b.formEnctype + "\"")
+	}
+	
+	if b.formMethod != "" {
+		b.buf.WriteString(" formmethod=\"" + b.formMethod + "\"")
+	}
+	
+	if b.formTarget != "" {
+		b.buf.WriteString(" formtarget=\"" + b.formTarget + "\"")
+	}
+	
+	if b.formNovalidate {
+		b.buf.WriteString(" formnovalidate")
+	}
+	
+	if b.disabled {
+		b.buf.WriteString(" disabled")
+	}
+	
+	if b.autofocus {
+		b.buf.WriteString(" autofocus")
+	}
+	
+	if len(b.style) != 0 {
+		idx := 0
+		b.buf.WriteString(" style=\"")
+		for k, v := range b.style {
+			b.buf.WriteString(k + ": " + v + ";")
+			if idx != len(b.style)-1 {
+				b.buf.WriteByte(' ')
+			}
+			idx++
+		}
+		b.buf.WriteString("\"")
+	}
+	
+	b.buf.WriteByte('>')
+	
+	for _, content := range b.contents {
+		b.buf.Write(content)
+	}
+	
+	b.buf.WriteString("</button>")
+}
+
+// Add adds content to the button element
+func (b *Button) Add(e Elements) *Button {
+	if e != nil {
+		e.Prepare()
+		b.contents = append(b.contents, e.Bytes())
+	}
+	return b
+}
+
+// Text adds text content to the button element
+func (b *Button) Text(text string) *Button {
+	b.contents = append(b.contents, []byte(text))
+	return b
+}
+
+// Type sets the type attribute
+func (b *Button) Type(buttonType string) *Button {
+	b.buttonType = buttonType
+	return b
+}
+
+// Name sets the name attribute
+func (b *Button) Name(name string) *Button {
+	b.name = name
+	return b
+}
+
+// Value sets the value attribute
+func (b *Button) Value(value string) *Button {
+	b.value = value
+	return b
+}
+
+// Form sets the form attribute
+func (b *Button) Form(form string) *Button {
+	b.form = form
+	return b
+}
+
+// FormAction sets the formaction attribute
+func (b *Button) FormAction(formAction string) *Button {
+	b.formAction = formAction
+	return b
+}
+
+// FormEnctype sets the formenctype attribute
+func (b *Button) FormEnctype(formEnctype string) *Button {
+	b.formEnctype = formEnctype
+	return b
+}
+
+// FormMethod sets the formmethod attribute
+func (b *Button) FormMethod(formMethod string) *Button {
+	b.formMethod = formMethod
+	return b
+}
+
+// FormTarget sets the formtarget attribute
+func (b *Button) FormTarget(formTarget string) *Button {
+	b.formTarget = formTarget
+	return b
+}
+
+// FormNovalidate sets the formnovalidate attribute
+func (b *Button) FormNovalidate(formNovalidate bool) *Button {
+	b.formNovalidate = formNovalidate
+	return b
+}
+
+// Disabled sets the disabled attribute
+func (b *Button) Disabled(disabled bool) *Button {
+	b.disabled = disabled
+	return b
+}
+
+// Autofocus sets the autofocus attribute
+func (b *Button) Autofocus(autofocus bool) *Button {
+	b.autofocus = autofocus
+	return b
+}
+
+// AddStyle adds a single CSS property
+func (b *Button) AddStyle(k, v string) *Button {
+	b.style[k] = v
+	return b
+}
+
+// AddStyles adds multiple CSS properties
+func (b *Button) AddStyles(m map[string]string) *Button {
+	for k, v := range m {
+		b.style[k] = v
+	}
+	return b
+}
+
+// Style replaces all styles
+func (b *Button) Style(m map[string]string) *Button {
+	b.style = make(map[string]string)
+	for k, v := range m {
+		b.style[k] = v
+	}
+	return b
+}
