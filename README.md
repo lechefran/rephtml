@@ -155,9 +155,9 @@ html.WriteToFile("report.html") // create a file named report.html in the curren
 - [ ] `<legend>` - Fieldset legend
 
 ### Interactive Elements
-- [ ] `<details>` - Disclosure widget
-- [ ] `<summary>` - Details summary
-- [ ] `<dialog>` - Dialog box
+- [X] `<details>` - Disclosure widget
+- [X] `<summary>` - Details summary
+- [X] `<dialog>` - Dialog box
 
 ### Web Components
 - [X] `<slot>` - Web component slot
