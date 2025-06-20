@@ -466,12 +466,12 @@ type Link struct {
 	style          map[string]string
 	rel            string
 	href           string
-	linktype       string
+	linkType       string
 	media          string
 	sizes          string
-	crossorigin    string
+	crossOrigin    string
 	integrity      string
-	referrerpolicy string
+	referrerPolicy string
 	hreflang       string
 }
 
@@ -499,8 +499,8 @@ func (l *Link) Prepare() {
 		l.buf.WriteString(" href=\"" + l.href + "\"")
 	}
 
-	if l.linktype != "" {
-		l.buf.WriteString(" type=\"" + l.linktype + "\"")
+	if l.linkType != "" {
+		l.buf.WriteString(" type=\"" + l.linkType + "\"")
 	}
 
 	if l.media != "" {
@@ -511,16 +511,16 @@ func (l *Link) Prepare() {
 		l.buf.WriteString(" sizes=\"" + l.sizes + "\"")
 	}
 
-	if l.crossorigin != "" {
-		l.buf.WriteString(" crossorigin=\"" + l.crossorigin + "\"")
+	if l.crossOrigin != "" {
+		l.buf.WriteString(" crossOrigin=\"" + l.crossOrigin + "\"")
 	}
 
 	if l.integrity != "" {
 		l.buf.WriteString(" integrity=\"" + l.integrity + "\"")
 	}
 
-	if l.referrerpolicy != "" {
-		l.buf.WriteString(" referrerpolicy=\"" + l.referrerpolicy + "\"")
+	if l.referrerPolicy != "" {
+		l.buf.WriteString(" referrerPolicy=\"" + l.referrerPolicy + "\"")
 	}
 
 	if l.hreflang != "" {
@@ -556,8 +556,8 @@ func (l *Link) Href(href string) *Link {
 }
 
 // Type sets the type attribute
-func (l *Link) Type(linktype string) *Link {
-	l.linktype = linktype
+func (l *Link) Type(linkType string) *Link {
+	l.linkType = linkType
 	return l
 }
 
@@ -573,9 +573,9 @@ func (l *Link) Sizes(sizes string) *Link {
 	return l
 }
 
-// Crossorigin sets the crossorigin attribute
-func (l *Link) Crossorigin(crossorigin string) *Link {
-	l.crossorigin = crossorigin
+// Cross Origin sets the crossOrigin attribute
+func (l *Link) CrossOrigin(crossOrigin string) *Link {
+	l.crossOrigin = crossOrigin
 	return l
 }
 
@@ -585,9 +585,9 @@ func (l *Link) Integrity(integrity string) *Link {
 	return l
 }
 
-// Referrerpolicy sets the referrerpolicy attribute
-func (l *Link) Referrerpolicy(referrerpolicy string) *Link {
-	l.referrerpolicy = referrerpolicy
+// Referrer Policy sets the referrerPolicy attribute
+func (l *Link) ReferrerPolicy(referrerPolicy string) *Link {
+	l.referrerPolicy = referrerPolicy
 	return l
 }
 
@@ -628,7 +628,7 @@ type Meta struct {
 	content   string
 	charset   string
 	property  string
-	httpequiv string
+	httpEquiv string
 	scheme    string
 }
 
@@ -664,8 +664,8 @@ func (m *Meta) Prepare() {
 		m.buf.WriteString(" property=\"" + m.property + "\"")
 	}
 
-	if m.httpequiv != "" {
-		m.buf.WriteString(" http-equiv=\"" + m.httpequiv + "\"")
+	if m.httpEquiv != "" {
+		m.buf.WriteString(" http-equiv=\"" + m.httpEquiv + "\"")
 	}
 
 	if m.scheme != "" {
@@ -714,7 +714,7 @@ func (m *Meta) Property(property string) *Meta {
 
 // HttpEquiv sets the http-equiv attribute
 func (m *Meta) HttpEquiv(httpequiv string) *Meta {
-	m.httpequiv = httpequiv
+	m.httpEquiv = httpequiv
 	return m
 }
 
@@ -753,7 +753,7 @@ type StyleElement struct {
 	style     map[string]string
 	contents  [][]byte
 	ttrack    int
-	styletype string
+	styleType string
 	media     string
 }
 
@@ -773,8 +773,8 @@ func (s *StyleElement) Bytes() []byte {
 func (s *StyleElement) Prepare() {
 	s.buf.WriteString("<style")
 
-	if s.styletype != "" {
-		s.buf.WriteString(" type=\"" + s.styletype + "\"")
+	if s.styleType != "" {
+		s.buf.WriteString(" type=\"" + s.styleType + "\"")
 	}
 
 	if s.media != "" {
@@ -819,8 +819,8 @@ func (s *StyleElement) Text(text string) *StyleElement {
 }
 
 // Type sets the type attribute
-func (s *StyleElement) Type(styletype string) *StyleElement {
-	s.styletype = styletype
+func (s *StyleElement) Type(styleType string) *StyleElement {
+	s.styleType = styleType
 	return s
 }
 
