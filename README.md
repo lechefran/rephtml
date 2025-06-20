@@ -123,8 +123,8 @@ html.WriteToFile("report.html") // create a file named report.html in the curren
 - [X] `<script>` - Script
 
 ### Demarcating Edits
-- [ ] `<del>` - Deleted text
-- [ ] `<ins>` - Inserted text
+- [X] `<del>` - Deleted text
+- [X] `<ins>` - Inserted text
 
 ### Table Content
 - [X] `<table>` - Table
