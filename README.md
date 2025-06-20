@@ -107,7 +107,7 @@ html.WriteToFile("report.html") // create a file named report.html in the curren
 
 ### Embedded Content
 - [X] `<embed>` - External content
-- [ ] `<iframe>` - Inline frame
+- [X] `<iframe>` - Inline frame
 - [ ] `<object>` - External object
 - [ ] `<picture>` - Responsive image container
 - [ ] `<portal>` - Portal element
