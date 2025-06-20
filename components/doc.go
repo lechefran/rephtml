@@ -459,3 +459,396 @@ func (h *HtmlFile) formatTable(b []byte) []byte {
 	fb.WriteByte('\n')
 	return fb.Bytes()
 }
+
+// Link represents the HTML link element for external resources
+type Link struct {
+	buf            bytes.Buffer
+	style          map[string]string
+	rel            string
+	href           string
+	linktype       string
+	media          string
+	sizes          string
+	crossorigin    string
+	integrity      string
+	referrerpolicy string
+	hreflang       string
+}
+
+// NewLink creates a new Link element
+func NewLink() *Link {
+	return &Link{
+		style: make(map[string]string),
+	}
+}
+
+// Bytes returns the buffer contents
+func (l *Link) Bytes() []byte {
+	return l.buf.Bytes()
+}
+
+// Prepare builds the HTML for the link element
+func (l *Link) Prepare() {
+	l.buf.WriteString("<link")
+
+	if l.rel != "" {
+		l.buf.WriteString(" rel=\"" + l.rel + "\"")
+	}
+
+	if l.href != "" {
+		l.buf.WriteString(" href=\"" + l.href + "\"")
+	}
+
+	if l.linktype != "" {
+		l.buf.WriteString(" type=\"" + l.linktype + "\"")
+	}
+
+	if l.media != "" {
+		l.buf.WriteString(" media=\"" + l.media + "\"")
+	}
+
+	if l.sizes != "" {
+		l.buf.WriteString(" sizes=\"" + l.sizes + "\"")
+	}
+
+	if l.crossorigin != "" {
+		l.buf.WriteString(" crossorigin=\"" + l.crossorigin + "\"")
+	}
+
+	if l.integrity != "" {
+		l.buf.WriteString(" integrity=\"" + l.integrity + "\"")
+	}
+
+	if l.referrerpolicy != "" {
+		l.buf.WriteString(" referrerpolicy=\"" + l.referrerpolicy + "\"")
+	}
+
+	if l.hreflang != "" {
+		l.buf.WriteString(" hreflang=\"" + l.hreflang + "\"")
+	}
+
+	if len(l.style) != 0 {
+		idx := 0
+		l.buf.WriteString(" style=\"")
+		for k, v := range l.style {
+			l.buf.WriteString(k + ": " + v + ";")
+			if idx != len(l.style)-1 {
+				l.buf.WriteByte(' ')
+			}
+			idx++
+		}
+		l.buf.WriteString("\"")
+	}
+
+	l.buf.WriteString(">")
+}
+
+// Rel sets the rel attribute
+func (l *Link) Rel(rel string) *Link {
+	l.rel = rel
+	return l
+}
+
+// Href sets the href attribute
+func (l *Link) Href(href string) *Link {
+	l.href = href
+	return l
+}
+
+// Type sets the type attribute
+func (l *Link) Type(linktype string) *Link {
+	l.linktype = linktype
+	return l
+}
+
+// Media sets the media attribute
+func (l *Link) Media(media string) *Link {
+	l.media = media
+	return l
+}
+
+// Sizes sets the sizes attribute
+func (l *Link) Sizes(sizes string) *Link {
+	l.sizes = sizes
+	return l
+}
+
+// Crossorigin sets the crossorigin attribute
+func (l *Link) Crossorigin(crossorigin string) *Link {
+	l.crossorigin = crossorigin
+	return l
+}
+
+// Integrity sets the integrity attribute
+func (l *Link) Integrity(integrity string) *Link {
+	l.integrity = integrity
+	return l
+}
+
+// Referrerpolicy sets the referrerpolicy attribute
+func (l *Link) Referrerpolicy(referrerpolicy string) *Link {
+	l.referrerpolicy = referrerpolicy
+	return l
+}
+
+// Hreflang sets the hreflang attribute
+func (l *Link) Hreflang(hreflang string) *Link {
+	l.hreflang = hreflang
+	return l
+}
+
+// AddStyle adds a single CSS property
+func (l *Link) AddStyle(k, v string) *Link {
+	l.style[k] = v
+	return l
+}
+
+// AddStyles adds multiple CSS properties
+func (l *Link) AddStyles(m map[string]string) *Link {
+	for k, v := range m {
+		l.style[k] = v
+	}
+	return l
+}
+
+// Style replaces all styles
+func (l *Link) Style(m map[string]string) *Link {
+	l.style = make(map[string]string)
+	for k, v := range m {
+		l.style[k] = v
+	}
+	return l
+}
+
+// Meta represents the HTML meta element for metadata
+type Meta struct {
+	buf       bytes.Buffer
+	style     map[string]string
+	name      string
+	content   string
+	charset   string
+	property  string
+	httpequiv string
+	scheme    string
+}
+
+// NewMeta creates a new Meta element
+func NewMeta() *Meta {
+	return &Meta{
+		style: make(map[string]string),
+	}
+}
+
+// Bytes returns the buffer contents
+func (m *Meta) Bytes() []byte {
+	return m.buf.Bytes()
+}
+
+// Prepare builds the HTML for the meta element
+func (m *Meta) Prepare() {
+	m.buf.WriteString("<meta")
+
+	if m.name != "" {
+		m.buf.WriteString(" name=\"" + m.name + "\"")
+	}
+
+	if m.content != "" {
+		m.buf.WriteString(" content=\"" + m.content + "\"")
+	}
+
+	if m.charset != "" {
+		m.buf.WriteString(" charset=\"" + m.charset + "\"")
+	}
+
+	if m.property != "" {
+		m.buf.WriteString(" property=\"" + m.property + "\"")
+	}
+
+	if m.httpequiv != "" {
+		m.buf.WriteString(" http-equiv=\"" + m.httpequiv + "\"")
+	}
+
+	if m.scheme != "" {
+		m.buf.WriteString(" scheme=\"" + m.scheme + "\"")
+	}
+
+	if len(m.style) != 0 {
+		idx := 0
+		m.buf.WriteString(" style=\"")
+		for k, v := range m.style {
+			m.buf.WriteString(k + ": " + v + ";")
+			if idx != len(m.style)-1 {
+				m.buf.WriteByte(' ')
+			}
+			idx++
+		}
+		m.buf.WriteString("\"")
+	}
+
+	m.buf.WriteString(">")
+}
+
+// Name sets the name attribute
+func (m *Meta) Name(name string) *Meta {
+	m.name = name
+	return m
+}
+
+// Content sets the content attribute
+func (m *Meta) Content(content string) *Meta {
+	m.content = content
+	return m
+}
+
+// Charset sets the charset attribute
+func (m *Meta) Charset(charset string) *Meta {
+	m.charset = charset
+	return m
+}
+
+// Property sets the property attribute
+func (m *Meta) Property(property string) *Meta {
+	m.property = property
+	return m
+}
+
+// HttpEquiv sets the http-equiv attribute
+func (m *Meta) HttpEquiv(httpequiv string) *Meta {
+	m.httpequiv = httpequiv
+	return m
+}
+
+// Scheme sets the scheme attribute
+func (m *Meta) Scheme(scheme string) *Meta {
+	m.scheme = scheme
+	return m
+}
+
+// AddStyle adds a single CSS property
+func (m *Meta) AddStyle(k, v string) *Meta {
+	m.style[k] = v
+	return m
+}
+
+// AddStyles adds multiple CSS properties
+func (m *Meta) AddStyles(m2 map[string]string) *Meta {
+	for k, v := range m2 {
+		m.style[k] = v
+	}
+	return m
+}
+
+// Style replaces all styles
+func (m *Meta) Style(m2 map[string]string) *Meta {
+	m.style = make(map[string]string)
+	for k, v := range m2 {
+		m.style[k] = v
+	}
+	return m
+}
+
+// StyleElement represents the HTML style element for CSS styles
+type StyleElement struct {
+	buf       bytes.Buffer
+	style     map[string]string
+	contents  [][]byte
+	ttrack    int
+	styletype string
+	media     string
+}
+
+// NewStyleElement creates a new StyleElement element
+func NewStyleElement() *StyleElement {
+	return &StyleElement{
+		style: make(map[string]string),
+	}
+}
+
+// Bytes returns the buffer contents
+func (s *StyleElement) Bytes() []byte {
+	return s.buf.Bytes()
+}
+
+// Prepare builds the HTML for the style element
+func (s *StyleElement) Prepare() {
+	s.buf.WriteString("<style")
+
+	if s.styletype != "" {
+		s.buf.WriteString(" type=\"" + s.styletype + "\"")
+	}
+
+	if s.media != "" {
+		s.buf.WriteString(" media=\"" + s.media + "\"")
+	}
+
+	if len(s.style) != 0 {
+		idx := 0
+		s.buf.WriteString(" style=\"")
+		for k, v := range s.style {
+			s.buf.WriteString(k + ": " + v + ";")
+			if idx != len(s.style)-1 {
+				s.buf.WriteByte(' ')
+			}
+			idx++
+		}
+		s.buf.WriteString("\"")
+	}
+
+	s.buf.WriteByte('>')
+
+	for _, content := range s.contents {
+		s.buf.Write(content)
+	}
+
+	s.buf.WriteString("</style>")
+}
+
+// Add adds content to the style element
+func (s *StyleElement) Add(e Elements) *StyleElement {
+	if e != nil {
+		e.Prepare()
+		s.contents = append(s.contents, e.Bytes())
+	}
+	return s
+}
+
+// Text adds CSS text content to the style element
+func (s *StyleElement) Text(text string) *StyleElement {
+	s.contents = append(s.contents, []byte(text))
+	return s
+}
+
+// Type sets the type attribute
+func (s *StyleElement) Type(styletype string) *StyleElement {
+	s.styletype = styletype
+	return s
+}
+
+// Media sets the media attribute
+func (s *StyleElement) Media(media string) *StyleElement {
+	s.media = media
+	return s
+}
+
+// AddStyle adds a single CSS property
+func (s *StyleElement) AddStyle(k, v string) *StyleElement {
+	s.style[k] = v
+	return s
+}
+
+// AddStyles adds multiple CSS properties
+func (s *StyleElement) AddStyles(m map[string]string) *StyleElement {
+	for k, v := range m {
+		s.style[k] = v
+	}
+	return s
+}
+
+// Style replaces all styles
+func (s *StyleElement) Style(m map[string]string) *StyleElement {
+	s.style = make(map[string]string)
+	for k, v := range m {
+		s.style[k] = v
+	}
+	return s
+}
