@@ -118,9 +118,9 @@ html.WriteToFile("report.html") // create a file named report.html in the curren
 - [X] `<math>` - MathML mathematics
 
 ### Scripting
-- [ ] `<canvas>` - Graphics canvas
-- [ ] `<noscript>` - No script fallback
-- [ ] `<script>` - Script
+- [X] `<canvas>` - Graphics canvas
+- [X] `<noscript>` - No script fallback
+- [X] `<script>` - Script
 
 ### Demarcating Edits
 - [ ] `<del>` - Deleted text
