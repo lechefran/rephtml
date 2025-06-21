@@ -1719,3 +1719,281 @@ func (t *Textarea) Style(m map[string]string) *Textarea {
 	}
 	return t
 }
+
+// Progress represents the HTML progress element for showing completion progress
+type Progress struct {
+	buf      bytes.Buffer
+	style    map[string]string
+	contents [][]byte
+	ttrack   int
+	value    string
+	max      string
+	form     string
+}
+
+// NewProgress creates a new Progress element
+func NewProgress() *Progress {
+	return &Progress{
+		style: make(map[string]string),
+	}
+}
+
+// Bytes returns the buffer contents
+func (p *Progress) Bytes() []byte {
+	return p.buf.Bytes()
+}
+
+// Prepare builds the HTML for the progress element
+func (p *Progress) Prepare() {
+	p.buf.WriteString("<progress")
+	
+	if p.value != "" {
+		p.buf.WriteString(" value=\"" + p.value + "\"")
+	}
+	
+	if p.max != "" {
+		p.buf.WriteString(" max=\"" + p.max + "\"")
+	}
+	
+	if p.form != "" {
+		p.buf.WriteString(" form=\"" + p.form + "\"")
+	}
+	
+	if len(p.style) != 0 {
+		idx := 0
+		p.buf.WriteString(" style=\"")
+		for k, v := range p.style {
+			p.buf.WriteString(k + ": " + v + ";")
+			if idx != len(p.style)-1 {
+				p.buf.WriteByte(' ')
+			}
+			idx++
+		}
+		p.buf.WriteString("\"")
+	}
+	
+	p.buf.WriteByte('>')
+	
+	for _, content := range p.contents {
+		p.buf.Write(content)
+	}
+	
+	p.buf.WriteString("</progress>")
+}
+
+// Add adds content to the progress element
+func (p *Progress) Add(e Elements) *Progress {
+	if e != nil {
+		e.Prepare()
+		p.contents = append(p.contents, e.Bytes())
+	}
+	return p
+}
+
+// Text adds text content to the progress element (fallback for non-supporting browsers)
+func (p *Progress) Text(text string) *Progress {
+	p.contents = append(p.contents, []byte(text))
+	return p
+}
+
+// Value sets the value attribute
+func (p *Progress) Value(value string) *Progress {
+	p.value = value
+	return p
+}
+
+// Max sets the max attribute
+func (p *Progress) Max(max string) *Progress {
+	p.max = max
+	return p
+}
+
+// Form sets the form attribute
+func (p *Progress) Form(form string) *Progress {
+	p.form = form
+	return p
+}
+
+// AddStyle adds a single CSS property
+func (p *Progress) AddStyle(k, v string) *Progress {
+	p.style[k] = v
+	return p
+}
+
+// AddStyles adds multiple CSS properties
+func (p *Progress) AddStyles(m map[string]string) *Progress {
+	for k, v := range m {
+		p.style[k] = v
+	}
+	return p
+}
+
+// Style replaces all styles
+func (p *Progress) Style(m map[string]string) *Progress {
+	p.style = make(map[string]string)
+	for k, v := range m {
+		p.style[k] = v
+	}
+	return p
+}
+
+// Meter represents the HTML meter element for displaying scalar measurements
+type Meter struct {
+	buf      bytes.Buffer
+	style    map[string]string
+	contents [][]byte
+	ttrack   int
+	value    string
+	min      string
+	max      string
+	low      string
+	high     string
+	optimum  string
+	form     string
+}
+
+// NewMeter creates a new Meter element
+func NewMeter() *Meter {
+	return &Meter{
+		style: make(map[string]string),
+	}
+}
+
+// Bytes returns the buffer contents
+func (m *Meter) Bytes() []byte {
+	return m.buf.Bytes()
+}
+
+// Prepare builds the HTML for the meter element
+func (m *Meter) Prepare() {
+	m.buf.WriteString("<meter")
+	
+	if m.value != "" {
+		m.buf.WriteString(" value=\"" + m.value + "\"")
+	}
+	
+	if m.min != "" {
+		m.buf.WriteString(" min=\"" + m.min + "\"")
+	}
+	
+	if m.max != "" {
+		m.buf.WriteString(" max=\"" + m.max + "\"")
+	}
+	
+	if m.low != "" {
+		m.buf.WriteString(" low=\"" + m.low + "\"")
+	}
+	
+	if m.high != "" {
+		m.buf.WriteString(" high=\"" + m.high + "\"")
+	}
+	
+	if m.optimum != "" {
+		m.buf.WriteString(" optimum=\"" + m.optimum + "\"")
+	}
+	
+	if m.form != "" {
+		m.buf.WriteString(" form=\"" + m.form + "\"")
+	}
+	
+	if len(m.style) != 0 {
+		idx := 0
+		m.buf.WriteString(" style=\"")
+		for k, v := range m.style {
+			m.buf.WriteString(k + ": " + v + ";")
+			if idx != len(m.style)-1 {
+				m.buf.WriteByte(' ')
+			}
+			idx++
+		}
+		m.buf.WriteString("\"")
+	}
+	
+	m.buf.WriteByte('>')
+	
+	for _, content := range m.contents {
+		m.buf.Write(content)
+	}
+	
+	m.buf.WriteString("</meter>")
+}
+
+// Add adds content to the meter element
+func (m *Meter) Add(e Elements) *Meter {
+	if e != nil {
+		e.Prepare()
+		m.contents = append(m.contents, e.Bytes())
+	}
+	return m
+}
+
+// Text adds text content to the meter element (fallback for non-supporting browsers)
+func (m *Meter) Text(text string) *Meter {
+	m.contents = append(m.contents, []byte(text))
+	return m
+}
+
+// Value sets the value attribute
+func (m *Meter) Value(value string) *Meter {
+	m.value = value
+	return m
+}
+
+// Min sets the min attribute
+func (m *Meter) Min(min string) *Meter {
+	m.min = min
+	return m
+}
+
+// Max sets the max attribute
+func (m *Meter) Max(max string) *Meter {
+	m.max = max
+	return m
+}
+
+// Low sets the low attribute
+func (m *Meter) Low(low string) *Meter {
+	m.low = low
+	return m
+}
+
+// High sets the high attribute
+func (m *Meter) High(high string) *Meter {
+	m.high = high
+	return m
+}
+
+// Optimum sets the optimum attribute
+func (m *Meter) Optimum(optimum string) *Meter {
+	m.optimum = optimum
+	return m
+}
+
+// Form sets the form attribute
+func (m *Meter) Form(form string) *Meter {
+	m.form = form
+	return m
+}
+
+// AddStyle adds a single CSS property
+func (m *Meter) AddStyle(k, v string) *Meter {
+	m.style[k] = v
+	return m
+}
+
+// AddStyles adds multiple CSS properties
+func (m *Meter) AddStyles(ma map[string]string) *Meter {
+	for k, v := range ma {
+		m.style[k] = v
+	}
+	return m
+}
+
+// Style replaces all styles
+func (m *Meter) Style(ma map[string]string) *Meter {
+	m.style = make(map[string]string)
+	for k, v := range ma {
+		m.style[k] = v
+	}
+	return m
+}
