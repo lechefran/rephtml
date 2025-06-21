@@ -147,7 +147,7 @@ html.WriteToFile("report.html") // create a file named report.html in the curren
 - [X] `<datalist>` - Data list options
 - [X] `<optgroup>` - Option group
 - [X] `<option>` - Option
-- [ ] `<textarea>` - Text area
+- [X] `<textarea>` - Text area
 - [X] `<output>` - Form output
 - [ ] `<progress>` - Progress indicator
 - [ ] `<meter>` - Scalar measurement

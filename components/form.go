@@ -1481,3 +1481,241 @@ func (o *Option) Style(m map[string]string) *Option {
 	}
 	return o
 }
+
+// Textarea represents the HTML textarea element for multi-line text input
+type Textarea struct {
+	buf          bytes.Buffer
+	style        map[string]string
+	contents     [][]byte
+	ttrack       int
+	name         string
+	form         string
+	rows         string
+	cols         string
+	placeholder  string
+	maxLength    string
+	minLength    string
+	wrap         string
+	required     bool
+	disabled     bool
+	readonly     bool
+	autofocus    bool
+	autoComplete string
+	spellcheck   string
+}
+
+// NewTextarea creates a new Textarea element
+func NewTextarea() *Textarea {
+	return &Textarea{
+		style: make(map[string]string),
+	}
+}
+
+// Bytes returns the buffer contents
+func (t *Textarea) Bytes() []byte {
+	return t.buf.Bytes()
+}
+
+// Prepare builds the HTML for the textarea element
+func (t *Textarea) Prepare() {
+	t.buf.WriteString("<textarea")
+	
+	if t.name != "" {
+		t.buf.WriteString(" name=\"" + t.name + "\"")
+	}
+	
+	if t.form != "" {
+		t.buf.WriteString(" form=\"" + t.form + "\"")
+	}
+	
+	if t.rows != "" {
+		t.buf.WriteString(" rows=\"" + t.rows + "\"")
+	}
+	
+	if t.cols != "" {
+		t.buf.WriteString(" cols=\"" + t.cols + "\"")
+	}
+	
+	if t.placeholder != "" {
+		t.buf.WriteString(" placeholder=\"" + t.placeholder + "\"")
+	}
+	
+	if t.maxLength != "" {
+		t.buf.WriteString(" maxlength=\"" + t.maxLength + "\"")
+	}
+	
+	if t.minLength != "" {
+		t.buf.WriteString(" minlength=\"" + t.minLength + "\"")
+	}
+	
+	if t.wrap != "" {
+		t.buf.WriteString(" wrap=\"" + t.wrap + "\"")
+	}
+	
+	if t.autoComplete != "" {
+		t.buf.WriteString(" autocomplete=\"" + t.autoComplete + "\"")
+	}
+	
+	if t.spellcheck != "" {
+		t.buf.WriteString(" spellcheck=\"" + t.spellcheck + "\"")
+	}
+	
+	if t.required {
+		t.buf.WriteString(" required")
+	}
+	
+	if t.disabled {
+		t.buf.WriteString(" disabled")
+	}
+	
+	if t.readonly {
+		t.buf.WriteString(" readonly")
+	}
+	
+	if t.autofocus {
+		t.buf.WriteString(" autofocus")
+	}
+	
+	if len(t.style) != 0 {
+		idx := 0
+		t.buf.WriteString(" style=\"")
+		for k, v := range t.style {
+			t.buf.WriteString(k + ": " + v + ";")
+			if idx != len(t.style)-1 {
+				t.buf.WriteByte(' ')
+			}
+			idx++
+		}
+		t.buf.WriteString("\"")
+	}
+	
+	t.buf.WriteByte('>')
+	
+	for _, content := range t.contents {
+		t.buf.Write(content)
+	}
+	
+	t.buf.WriteString("</textarea>")
+}
+
+// Add adds content to the textarea element
+func (t *Textarea) Add(e Elements) *Textarea {
+	if e != nil {
+		e.Prepare()
+		t.contents = append(t.contents, e.Bytes())
+	}
+	return t
+}
+
+// Text adds text content to the textarea element
+func (t *Textarea) Text(text string) *Textarea {
+	t.contents = append(t.contents, []byte(text))
+	return t
+}
+
+// Name sets the name attribute
+func (t *Textarea) Name(name string) *Textarea {
+	t.name = name
+	return t
+}
+
+// Form sets the form attribute
+func (t *Textarea) Form(form string) *Textarea {
+	t.form = form
+	return t
+}
+
+// Rows sets the rows attribute
+func (t *Textarea) Rows(rows string) *Textarea {
+	t.rows = rows
+	return t
+}
+
+// Cols sets the cols attribute
+func (t *Textarea) Cols(cols string) *Textarea {
+	t.cols = cols
+	return t
+}
+
+// Placeholder sets the placeholder attribute
+func (t *Textarea) Placeholder(placeholder string) *Textarea {
+	t.placeholder = placeholder
+	return t
+}
+
+// MaxLength sets the maxlength attribute
+func (t *Textarea) MaxLength(maxLength string) *Textarea {
+	t.maxLength = maxLength
+	return t
+}
+
+// MinLength sets the minlength attribute
+func (t *Textarea) MinLength(minLength string) *Textarea {
+	t.minLength = minLength
+	return t
+}
+
+// Wrap sets the wrap attribute
+func (t *Textarea) Wrap(wrap string) *Textarea {
+	t.wrap = wrap
+	return t
+}
+
+// Required sets the required attribute
+func (t *Textarea) Required(required bool) *Textarea {
+	t.required = required
+	return t
+}
+
+// Disabled sets the disabled attribute
+func (t *Textarea) Disabled(disabled bool) *Textarea {
+	t.disabled = disabled
+	return t
+}
+
+// Readonly sets the readonly attribute
+func (t *Textarea) Readonly(readonly bool) *Textarea {
+	t.readonly = readonly
+	return t
+}
+
+// Autofocus sets the autofocus attribute
+func (t *Textarea) Autofocus(autofocus bool) *Textarea {
+	t.autofocus = autofocus
+	return t
+}
+
+// AutoComplete sets the autocomplete attribute
+func (t *Textarea) AutoComplete(autoComplete string) *Textarea {
+	t.autoComplete = autoComplete
+	return t
+}
+
+// Spellcheck sets the spellcheck attribute
+func (t *Textarea) Spellcheck(spellcheck string) *Textarea {
+	t.spellcheck = spellcheck
+	return t
+}
+
+// AddStyle adds a single CSS property
+func (t *Textarea) AddStyle(k, v string) *Textarea {
+	t.style[k] = v
+	return t
+}
+
+// AddStyles adds multiple CSS properties
+func (t *Textarea) AddStyles(m map[string]string) *Textarea {
+	for k, v := range m {
+		t.style[k] = v
+	}
+	return t
+}
+
+// Style replaces all styles
+func (t *Textarea) Style(m map[string]string) *Textarea {
+	t.style = make(map[string]string)
+	for k, v := range m {
+		t.style[k] = v
+	}
+	return t
+}
