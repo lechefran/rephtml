@@ -998,3 +998,169 @@ func (b *Button) Style(m map[string]string) *Button {
 	}
 	return b
 }
+
+// Select represents the HTML select element for dropdown lists
+type Select struct {
+	buf        bytes.Buffer
+	style      map[string]string
+	contents   [][]byte
+	ttrack     int
+	name       string
+	form       string
+	size       string
+	multiple   bool
+	required   bool
+	disabled   bool
+	autofocus  bool
+	autoComplete string
+}
+
+// NewSelect creates a new Select element
+func NewSelect() *Select {
+	return &Select{
+		style: make(map[string]string),
+	}
+}
+
+// Bytes returns the buffer contents
+func (s *Select) Bytes() []byte {
+	return s.buf.Bytes()
+}
+
+// Prepare builds the HTML for the select element
+func (s *Select) Prepare() {
+	s.buf.WriteString("<select")
+	
+	if s.name != "" {
+		s.buf.WriteString(" name=\"" + s.name + "\"")
+	}
+	
+	if s.form != "" {
+		s.buf.WriteString(" form=\"" + s.form + "\"")
+	}
+	
+	if s.size != "" {
+		s.buf.WriteString(" size=\"" + s.size + "\"")
+	}
+	
+	if s.autoComplete != "" {
+		s.buf.WriteString(" autocomplete=\"" + s.autoComplete + "\"")
+	}
+	
+	if s.multiple {
+		s.buf.WriteString(" multiple")
+	}
+	
+	if s.required {
+		s.buf.WriteString(" required")
+	}
+	
+	if s.disabled {
+		s.buf.WriteString(" disabled")
+	}
+	
+	if s.autofocus {
+		s.buf.WriteString(" autofocus")
+	}
+	
+	if len(s.style) != 0 {
+		idx := 0
+		s.buf.WriteString(" style=\"")
+		for k, v := range s.style {
+			s.buf.WriteString(k + ": " + v + ";")
+			if idx != len(s.style)-1 {
+				s.buf.WriteByte(' ')
+			}
+			idx++
+		}
+		s.buf.WriteString("\"")
+	}
+	
+	s.buf.WriteByte('>')
+	
+	for _, content := range s.contents {
+		s.buf.Write(content)
+	}
+	
+	s.buf.WriteString("</select>")
+}
+
+// Add adds content to the select element
+func (s *Select) Add(e Elements) *Select {
+	if e != nil {
+		e.Prepare()
+		s.contents = append(s.contents, e.Bytes())
+	}
+	return s
+}
+
+// Name sets the name attribute
+func (s *Select) Name(name string) *Select {
+	s.name = name
+	return s
+}
+
+// Form sets the form attribute
+func (s *Select) Form(form string) *Select {
+	s.form = form
+	return s
+}
+
+// Size sets the size attribute
+func (s *Select) Size(size string) *Select {
+	s.size = size
+	return s
+}
+
+// Multiple sets the multiple attribute
+func (s *Select) Multiple(multiple bool) *Select {
+	s.multiple = multiple
+	return s
+}
+
+// Required sets the required attribute
+func (s *Select) Required(required bool) *Select {
+	s.required = required
+	return s
+}
+
+// Disabled sets the disabled attribute
+func (s *Select) Disabled(disabled bool) *Select {
+	s.disabled = disabled
+	return s
+}
+
+// Autofocus sets the autofocus attribute
+func (s *Select) Autofocus(autofocus bool) *Select {
+	s.autofocus = autofocus
+	return s
+}
+
+// AutoComplete sets the autocomplete attribute
+func (s *Select) AutoComplete(autoComplete string) *Select {
+	s.autoComplete = autoComplete
+	return s
+}
+
+// AddStyle adds a single CSS property
+func (s *Select) AddStyle(k, v string) *Select {
+	s.style[k] = v
+	return s
+}
+
+// AddStyles adds multiple CSS properties
+func (s *Select) AddStyles(m map[string]string) *Select {
+	for k, v := range m {
+		s.style[k] = v
+	}
+	return s
+}
+
+// Style replaces all styles
+func (s *Select) Style(m map[string]string) *Select {
+	s.style = make(map[string]string)
+	for k, v := range m {
+		s.style[k] = v
+	}
+	return s
+}

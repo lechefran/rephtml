@@ -143,7 +143,7 @@ html.WriteToFile("report.html") // create a file named report.html in the curren
 - [X] `<label>` - Form label
 - [X] `<input>` - Form input
 - [X] `<button>` - Button
-- [ ] `<select>` - Selection list
+- [X] `<select>` - Selection list
 - [ ] `<datalist>` - Data list options
 - [ ] `<optgroup>` - Option group
 - [ ] `<option>` - Option
