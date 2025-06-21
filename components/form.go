@@ -1164,3 +1164,320 @@ func (s *Select) Style(m map[string]string) *Select {
 	}
 	return s
 }
+
+// Datalist represents the HTML datalist element for predefined options
+type Datalist struct {
+	buf      bytes.Buffer
+	style    map[string]string
+	contents [][]byte
+	ttrack   int
+	id       string
+}
+
+// NewDatalist creates a new Datalist element
+func NewDatalist() *Datalist {
+	return &Datalist{
+		style: make(map[string]string),
+	}
+}
+
+// Bytes returns the buffer contents
+func (d *Datalist) Bytes() []byte {
+	return d.buf.Bytes()
+}
+
+// Prepare builds the HTML for the datalist element
+func (d *Datalist) Prepare() {
+	d.buf.WriteString("<datalist")
+	
+	if d.id != "" {
+		d.buf.WriteString(" id=\"" + d.id + "\"")
+	}
+	
+	if len(d.style) != 0 {
+		idx := 0
+		d.buf.WriteString(" style=\"")
+		for k, v := range d.style {
+			d.buf.WriteString(k + ": " + v + ";")
+			if idx != len(d.style)-1 {
+				d.buf.WriteByte(' ')
+			}
+			idx++
+		}
+		d.buf.WriteString("\"")
+	}
+	
+	d.buf.WriteByte('>')
+	
+	for _, content := range d.contents {
+		d.buf.Write(content)
+	}
+	
+	d.buf.WriteString("</datalist>")
+}
+
+// Add adds content to the datalist element
+func (d *Datalist) Add(e Elements) *Datalist {
+	if e != nil {
+		e.Prepare()
+		d.contents = append(d.contents, e.Bytes())
+	}
+	return d
+}
+
+// Id sets the id attribute
+func (d *Datalist) Id(id string) *Datalist {
+	d.id = id
+	return d
+}
+
+// AddStyle adds a single CSS property
+func (d *Datalist) AddStyle(k, v string) *Datalist {
+	d.style[k] = v
+	return d
+}
+
+// AddStyles adds multiple CSS properties
+func (d *Datalist) AddStyles(m map[string]string) *Datalist {
+	for k, v := range m {
+		d.style[k] = v
+	}
+	return d
+}
+
+// Style replaces all styles
+func (d *Datalist) Style(m map[string]string) *Datalist {
+	d.style = make(map[string]string)
+	for k, v := range m {
+		d.style[k] = v
+	}
+	return d
+}
+
+// Optgroup represents the HTML optgroup element for grouping options
+type Optgroup struct {
+	buf      bytes.Buffer
+	style    map[string]string
+	contents [][]byte
+	ttrack   int
+	label    string
+	disabled bool
+}
+
+// NewOptgroup creates a new Optgroup element
+func NewOptgroup() *Optgroup {
+	return &Optgroup{
+		style: make(map[string]string),
+	}
+}
+
+// Bytes returns the buffer contents
+func (o *Optgroup) Bytes() []byte {
+	return o.buf.Bytes()
+}
+
+// Prepare builds the HTML for the optgroup element
+func (o *Optgroup) Prepare() {
+	o.buf.WriteString("<optgroup")
+	
+	if o.label != "" {
+		o.buf.WriteString(" label=\"" + o.label + "\"")
+	}
+	
+	if o.disabled {
+		o.buf.WriteString(" disabled")
+	}
+	
+	if len(o.style) != 0 {
+		idx := 0
+		o.buf.WriteString(" style=\"")
+		for k, v := range o.style {
+			o.buf.WriteString(k + ": " + v + ";")
+			if idx != len(o.style)-1 {
+				o.buf.WriteByte(' ')
+			}
+			idx++
+		}
+		o.buf.WriteString("\"")
+	}
+	
+	o.buf.WriteByte('>')
+	
+	for _, content := range o.contents {
+		o.buf.Write(content)
+	}
+	
+	o.buf.WriteString("</optgroup>")
+}
+
+// Add adds content to the optgroup element
+func (o *Optgroup) Add(e Elements) *Optgroup {
+	if e != nil {
+		e.Prepare()
+		o.contents = append(o.contents, e.Bytes())
+	}
+	return o
+}
+
+// Label sets the label attribute
+func (o *Optgroup) Label(label string) *Optgroup {
+	o.label = label
+	return o
+}
+
+// Disabled sets the disabled attribute
+func (o *Optgroup) Disabled(disabled bool) *Optgroup {
+	o.disabled = disabled
+	return o
+}
+
+// AddStyle adds a single CSS property
+func (o *Optgroup) AddStyle(k, v string) *Optgroup {
+	o.style[k] = v
+	return o
+}
+
+// AddStyles adds multiple CSS properties
+func (o *Optgroup) AddStyles(m map[string]string) *Optgroup {
+	for k, v := range m {
+		o.style[k] = v
+	}
+	return o
+}
+
+// Style replaces all styles
+func (o *Optgroup) Style(m map[string]string) *Optgroup {
+	o.style = make(map[string]string)
+	for k, v := range m {
+		o.style[k] = v
+	}
+	return o
+}
+
+// Option represents the HTML option element for select options
+type Option struct {
+	buf      bytes.Buffer
+	style    map[string]string
+	contents [][]byte
+	ttrack   int
+	value    string
+	label    string
+	selected bool
+	disabled bool
+}
+
+// NewOption creates a new Option element
+func NewOption() *Option {
+	return &Option{
+		style: make(map[string]string),
+	}
+}
+
+// Bytes returns the buffer contents
+func (o *Option) Bytes() []byte {
+	return o.buf.Bytes()
+}
+
+// Prepare builds the HTML for the option element
+func (o *Option) Prepare() {
+	o.buf.WriteString("<option")
+	
+	if o.value != "" {
+		o.buf.WriteString(" value=\"" + o.value + "\"")
+	}
+	
+	if o.label != "" {
+		o.buf.WriteString(" label=\"" + o.label + "\"")
+	}
+	
+	if o.selected {
+		o.buf.WriteString(" selected")
+	}
+	
+	if o.disabled {
+		o.buf.WriteString(" disabled")
+	}
+	
+	if len(o.style) != 0 {
+		idx := 0
+		o.buf.WriteString(" style=\"")
+		for k, v := range o.style {
+			o.buf.WriteString(k + ": " + v + ";")
+			if idx != len(o.style)-1 {
+				o.buf.WriteByte(' ')
+			}
+			idx++
+		}
+		o.buf.WriteString("\"")
+	}
+	
+	o.buf.WriteByte('>')
+	
+	for _, content := range o.contents {
+		o.buf.Write(content)
+	}
+	
+	o.buf.WriteString("</option>")
+}
+
+// Add adds content to the option element
+func (o *Option) Add(e Elements) *Option {
+	if e != nil {
+		e.Prepare()
+		o.contents = append(o.contents, e.Bytes())
+	}
+	return o
+}
+
+// Text adds text content to the option element
+func (o *Option) Text(text string) *Option {
+	o.contents = append(o.contents, []byte(text))
+	return o
+}
+
+// Value sets the value attribute
+func (o *Option) Value(value string) *Option {
+	o.value = value
+	return o
+}
+
+// Label sets the label attribute
+func (o *Option) Label(label string) *Option {
+	o.label = label
+	return o
+}
+
+// Selected sets the selected attribute
+func (o *Option) Selected(selected bool) *Option {
+	o.selected = selected
+	return o
+}
+
+// Disabled sets the disabled attribute
+func (o *Option) Disabled(disabled bool) *Option {
+	o.disabled = disabled
+	return o
+}
+
+// AddStyle adds a single CSS property
+func (o *Option) AddStyle(k, v string) *Option {
+	o.style[k] = v
+	return o
+}
+
+// AddStyles adds multiple CSS properties
+func (o *Option) AddStyles(m map[string]string) *Option {
+	for k, v := range m {
+		o.style[k] = v
+	}
+	return o
+}
+
+// Style replaces all styles
+func (o *Option) Style(m map[string]string) *Option {
+	o.style = make(map[string]string)
+	for k, v := range m {
+		o.style[k] = v
+	}
+	return o
+}
