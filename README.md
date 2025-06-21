@@ -152,7 +152,7 @@ html.WriteToFile("report.html") // create a file named report.html in the curren
 - [X] `<progress>` - Progress indicator
 - [X] `<meter>` - Scalar measurement
 - [X] `<fieldset>` - Form field grouping
-- [ ] `<legend>` - Fieldset legend
+- [X] `<legend>` - Fieldset legend
 
 ### Interactive Elements
 - [X] `<details>` - Disclosure widget

@@ -1997,3 +1997,87 @@ func (m *Meter) Style(ma map[string]string) *Meter {
 	}
 	return m
 }
+
+// Legend represents the HTML legend element for fieldset captions
+type Legend struct {
+	buf      bytes.Buffer
+	style    map[string]string
+	contents [][]byte
+	ttrack   int
+}
+
+// NewLegend creates a new Legend element
+func NewLegend() *Legend {
+	return &Legend{
+		style: make(map[string]string),
+	}
+}
+
+// Bytes returns the buffer contents
+func (l *Legend) Bytes() []byte {
+	return l.buf.Bytes()
+}
+
+// Prepare builds the HTML for the legend element
+func (l *Legend) Prepare() {
+	l.buf.WriteString("<legend")
+	
+	if len(l.style) != 0 {
+		idx := 0
+		l.buf.WriteString(" style=\"")
+		for k, v := range l.style {
+			l.buf.WriteString(k + ": " + v + ";")
+			if idx != len(l.style)-1 {
+				l.buf.WriteByte(' ')
+			}
+			idx++
+		}
+		l.buf.WriteString("\"")
+	}
+	
+	l.buf.WriteByte('>')
+	
+	for _, content := range l.contents {
+		l.buf.Write(content)
+	}
+	
+	l.buf.WriteString("</legend>")
+}
+
+// Add adds content to the legend element
+func (l *Legend) Add(e Elements) *Legend {
+	if e != nil {
+		e.Prepare()
+		l.contents = append(l.contents, e.Bytes())
+	}
+	return l
+}
+
+// Text adds text content to the legend element
+func (l *Legend) Text(text string) *Legend {
+	l.contents = append(l.contents, []byte(text))
+	return l
+}
+
+// AddStyle adds a single CSS property
+func (l *Legend) AddStyle(k, v string) *Legend {
+	l.style[k] = v
+	return l
+}
+
+// AddStyles adds multiple CSS properties
+func (l *Legend) AddStyles(m map[string]string) *Legend {
+	for k, v := range m {
+		l.style[k] = v
+	}
+	return l
+}
+
+// Style replaces all styles
+func (l *Legend) Style(m map[string]string) *Legend {
+	l.style = make(map[string]string)
+	for k, v := range m {
+		l.style[k] = v
+	}
+	return l
+}
