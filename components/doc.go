@@ -4,25 +4,18 @@ import (
 	"bytes"
 	"log"
 	"os"
-	"strings"
 )
 
-const newline = "\n"
 const tab = "\t"
 
 type HtmlFile struct {
-	buf         bytes.Buffer
-	head        []byte
-	style, body [][]byte
-	lang        string
-	title       string
-	ttrack      int // tab tracker
-	base        Base
-	options     Options
-}
-
-type Base struct {
-	link, target string
+	buf               bytes.Buffer
+	head, body, style []byte
+	lang              string
+	title             string
+	ttrack            int // tab tracker
+	base              Base
+	options           Options
 }
 
 func NewHtmlFile() *HtmlFile {
@@ -46,194 +39,23 @@ func (h *HtmlFile) AddOptions(opts Options) *HtmlFile {
 	return h
 }
 
-func (h *HtmlFile) Base(b Base) *HtmlFile {
-	h.base = b
+// Element struct functions
+
+func (h *HtmlFile) AddToHead(e Elements) *HtmlFile {
+	h.head = append(h.head, e.Bytes()...)
 	return h
 }
 
-// vv element struct functions vv
-
-func (h *HtmlFile) Div(d *Div) *HtmlFile {
-	d.Tabs(h.ttrack)
-	h.body = append(h.body, d.Bytes())
+func (h *HtmlFile) AddToBody(e Elements) *HtmlFile {
+	h.body = append(h.body, e.Bytes()...)
 	return h
 }
-
-func (h *HtmlFile) Style(s *Style) *HtmlFile {
-	h.style = append(h.style, s.Bytes())
-	return h
-}
-
-func (h *HtmlFile) Table(t *Table) *HtmlFile {
-	h.body = append(h.body, t.Bytes())
-	return h
-}
-
-// vv element string functions vv
-
-func (h *HtmlFile) H1String(s string) *HtmlFile {
-	h.body = append(h.body, []byte("<h1>"+s+"</h1>"))
-	return h
-}
-
-func (h *HtmlFile) H2String(s string) *HtmlFile {
-	h.body = append(h.body, []byte("<h2>"+s+"</h2>"))
-	return h
-}
-
-func (h *HtmlFile) H3String(s string) *HtmlFile {
-	h.body = append(h.body, []byte("<h3>"+s+"</h3>"))
-	return h
-}
-
-func (h *HtmlFile) H4String(s string) *HtmlFile {
-	h.body = append(h.body, []byte("<h4>"+s+"</h4>"))
-	return h
-}
-
-func (h *HtmlFile) H5String(s string) *HtmlFile {
-	h.body = append(h.body, []byte("<h5>"+s+"</h5>"))
-	return h
-}
-
-func (h *HtmlFile) H6String(s string) *HtmlFile {
-	h.body = append(h.body, []byte("<h6>"+s+"</h6>"))
-	return h
-}
-
-/*
-PString
-
-Add a paragraph element to the HTML document with
-a string parameter as the assigned value
-*/
-func (h *HtmlFile) PString(s string) *HtmlFile {
-	h.body = append(h.body, []byte("<p>"+s+"</p>"))
-	return h
-}
-
-/*
-PStringWithStyle
-
-Add a paragraph element to the HTML document with
-a string parameter as the assigned value and a style value
-*/
-func (h *HtmlFile) PStringWithStyle(s, style string) *HtmlFile {
-	if style == "" {
-		h.body = append(h.body, []byte("<p>"+s+"</p>"))
-	} else {
-		h.body = append(h.body, []byte("<p style=\""+style+";\">"+s+"</p>"))
-	}
-	return h
-}
-
-/*
-P
-
-Add a paragraph element to the HTML document with
-a paragraph struct
-*/
-func (h *HtmlFile) P(p *P) *HtmlFile {
-	h.body = append(h.body, p.Bytes())
-	return h
-}
-
-func (h *HtmlFile) StyleString(s string) *HtmlFile {
-	fs := strings.ReplaceAll(s, ";", "; ")
-	h.style = append(h.style, []byte(fs))
-	return h
-}
-
-func (h *HtmlFile) TableString(harr []string, darr [][]string) *HtmlFile {
-	tbl := "<table>"
-
-	// write headers
-	tbl += "<tr>"
-	for _, h := range harr {
-		tbl += "<th>" + h + "</th>"
-	}
-	tbl += "</tr>"
-
-	// write rows
-	for _, d := range darr {
-		tbl += "<tr>"
-		for _, d1 := range d {
-			tbl += "<td>" + d1 + "</td>"
-		}
-		tbl += "</tr>"
-	}
-	tbl += "</table>"
-	h.body = append(h.body, []byte(tbl))
-	return h
-}
-
-// vv general functions vv
 
 func (h *HtmlFile) Bytes() []byte {
 	return h.buf.Bytes()
 }
 
 func (h *HtmlFile) Prepare() *HtmlFile {
-	t := tabs(h.ttrack)
-	if h.lang != "" {
-		h.buf.WriteString("<html>" + newline)
-	} else {
-		h.buf.WriteString("<html lang=\"" + h.lang + "\">" + newline)
-	}
-	h.buf.WriteString(t + "<head>" + newline)
-	h.ttrack++
-	t = tabs(h.ttrack)
-	if h.title != "" {
-		h.buf.WriteString("<title>" + h.title + "</title>" + newline)
-	}
-	if h.base.link != "" {
-		h.buf.WriteString("<base href=\"" + h.base.link)
-		if h.base.target != "" {
-			h.buf.WriteString("\" target=\"" + h.base.target)
-		}
-		h.buf.WriteString("\">" + newline)
-	}
-	if len(h.style) > 0 {
-		h.buf.WriteString(t + "<style>" + newline)
-		h.ttrack++
-		t = tabs(h.ttrack)
-		for i := 0; i < len(h.style); i++ {
-			if i != len(h.style)-1 {
-				h.buf.Write(h.formatStyle(h.style[i]))
-				h.buf.WriteString(newline)
-			} else {
-				h.buf.Write(h.formatStyle(h.style[i]))
-			}
-		}
-
-		h.ttrack--
-		t = tabs(h.ttrack)
-		h.buf.WriteString(t + "</style>" + newline)
-		h.ttrack--
-	}
-	t = tabs(h.ttrack)
-	h.buf.WriteString(t + "</head>" + newline)
-	h.buf.WriteString(t + "<body>" + newline)
-	h.ttrack++
-	t = tabs(h.ttrack)
-
-	for i := 0; i < len(h.body); i++ {
-		if bytes.Contains(h.body[i], []byte("<div")) &&
-			bytes.Contains(h.body[i], []byte(">")) {
-			h.buf.Write(h.formatDiv(h.body[i]))
-		} else if bytes.Contains(h.body[i], []byte("<table")) &&
-			bytes.Contains(h.body[i], []byte(">")) {
-			h.buf.Write(h.formatTable(h.body[i]))
-		} else {
-			h.buf.WriteString(t)
-			h.buf.Write(h.body[i])
-			h.buf.WriteString(newline)
-		}
-	}
-
-	h.ttrack--
-	h.buf.WriteString(tabs(h.ttrack) + "</body>" + newline)
-	h.buf.WriteString("</html>")
 	return h
 }
 
@@ -273,191 +95,349 @@ func (h *HtmlFile) WriteToFile(path string) {
 	}
 }
 
-// vv helper functions vv
-
-/*
-Internal parsing function to format div element and its contents
-*/
-func (h *HtmlFile) formatDiv(b []byte) []byte {
-	var fb bytes.Buffer
-
-	// split byte array by tags
-	var curr []byte
-	var sarr [][]byte
-	for i := 0; i < len(b)-1; i++ {
-		curr = append(curr, b[i])
-		if b[i] == '>' && b[i+1] == '<' {
-			sarr = append(sarr, curr)
-			curr = []byte{} // reset values of curr
-		}
-		if i+1 == len(b)-1 {
-			curr = append(curr, '>')
-			sarr = append(sarr, curr)
-		}
-	}
-
-	for _, s := range sarr {
-		if bytes.Contains(s, []byte("<div")) && bytes.Contains(s, []byte(">")) {
-			fb.WriteString(tabs(h.ttrack))
-			fb.Write(s)
-			h.ttrack++
-		} else if bytes.Equal(s, []byte("</div>")) {
-			h.ttrack--
-			fb.WriteByte('\n')
-			fb.WriteString(tabs(h.ttrack))
-			fb.Write(s)
-		} else {
-			fb.WriteByte('\n')
-			fb.WriteString(tabs(h.ttrack))
-			fb.Write(s)
-		}
-	}
-	fb.WriteByte('\n')
-	return fb.Bytes()
+// Head represents the HTML head element for document metadata
+type Head struct {
+	buf      bytes.Buffer
+	style    map[string]string
+	contents [][]byte
+	ttrack   int
 }
 
-/*
-Internal parsing function to format style attributes
-*/
-func (h *HtmlFile) formatStyle(b []byte) []byte {
-	var fb bytes.Buffer
-	nsb := strip(b) // remove all spaces
-
-	// get indexes for open and close braces
-	op, cls := bytes.Index(nsb, []byte("{"))+1, len(nsb)-1
-
-	// cut array into parts: opening, contents, and closing
-	opb, clsb := nsb[:op], nsb[cls]
-	contents := nsb[op:cls]
-
-	// add spacing between open values
-	var opbTmp []byte
-	for i := 0; i < len(opb); i++ {
-		if opb[i] == ',' {
-			opbTmp = append(opbTmp, opb[i])
-			opbTmp = append(opbTmp, ' ')
-		} else if opb[i] == '{' {
-			opbTmp = append(opbTmp, ' ')
-			opbTmp = append(opbTmp, opb[i])
-		} else {
-			opbTmp = append(opbTmp, opb[i])
-		}
+// NewHead creates a new Head element
+func NewHead() *Head {
+	return &Head{
+		style: make(map[string]string),
 	}
-	opbTmp = append(opbTmp, '\n')
-	opb = opbTmp
+}
 
-	// write opb to buffer
-	fb.WriteString(tabs(h.ttrack))
-	fb.Write(opb)
+// Bytes returns the buffer contents
+func (h *Head) Bytes() []byte {
+	return h.buf.Bytes()
+}
 
-	// next, process contents
-	contentsTmp := make([]byte, 0, len(contents))
-	for _, b := range contents {
-		if b == ';' {
-			contentsTmp = append(contentsTmp, ' ')
-		} else {
-			contentsTmp = append(contentsTmp, b)
-		}
-	}
-	contents = contentsTmp
+// Prepare builds the HTML for the head element
+func (h *Head) Prepare() {
+	h.buf.WriteString("<head")
 
-	// split contents
-	carr := bytes.Fields(contents)
-	carrTmp := make([][]byte, 0, len(carr))
-	for _, c := range carr {
-		cTmp := []byte{}
-		for i := 0; i < len(c); i++ {
-			if c[i] == ':' {
-				cTmp = append(cTmp, c[i])
-				cTmp = append(cTmp, ' ')
-			} else {
-				cTmp = append(cTmp, c[i])
+	if len(h.style) != 0 {
+		idx := 0
+		h.buf.WriteString(" style=\"")
+		for k, v := range h.style {
+			h.buf.WriteString(k + ": " + v + ";")
+			if idx != len(h.style)-1 {
+				h.buf.WriteByte(' ')
 			}
+			idx++
 		}
-		cTmp = append(cTmp, ';')
-		cTmp = append(cTmp, '\n')
-		carrTmp = append(carrTmp, cTmp)
+		h.buf.WriteString("\"")
 	}
-	carr = carrTmp
 
-	h.ttrack++
-	for _, c := range carr {
-		fb.WriteString(tabs(h.ttrack))
-		fb.Write(c)
+	h.buf.WriteByte('>')
+
+	for _, content := range h.contents {
+		h.buf.Write(content)
 	}
-	h.ttrack--
-	fb.WriteString(tabs(h.ttrack))
-	fb.WriteByte(clsb)
-	fb.WriteByte('\n')
-	return fb.Bytes()
+
+	h.buf.WriteString("</head>")
 }
 
-/*
-Internal parsing function to format table elements
-*/
-func (h *HtmlFile) formatTable(b []byte) []byte {
-	var fb bytes.Buffer
-
-	// see if open table tag has id and class values
-	var tmp bytes.Buffer
-	var opent []byte
-	for _, c := range b {
-		if c != '>' {
-			tmp.WriteByte(c)
-		} else {
-			tmp.WriteByte('>')
-			break
-		}
+// Add adds content to the head element
+func (h *Head) Add(e Elements) *Head {
+	if e != nil {
+		e.Prepare()
+		h.contents = append(h.contents, e.Bytes())
 	}
-	opent = tmp.Bytes()
-	b = b[bytes.IndexByte(b, '>')+1:]
-	nsb := strip(b) // remove all spaces
+	return h
+}
 
-	// split byte array by tags
-	var nsbsplit []byte
-	for i := 0; i < len(nsb)-1; i++ {
-		nsbsplit = append(nsbsplit, nsb[i])
-		if nsb[i] == '>' && nsb[i+1] == '<' {
-			nsbsplit = append(nsbsplit, ' ')
-		}
-		if i+1 == len(nsb)-1 {
-			nsbsplit = append(nsbsplit, '>')
-		}
+// AddStyle adds a single CSS property
+func (h *Head) AddStyle(k, v string) *Head {
+	h.style[k] = v
+	return h
+}
+
+// AddStyles adds multiple CSS properties
+func (h *Head) AddStyles(m map[string]string) *Head {
+	for k, v := range m {
+		h.style[k] = v
 	}
-	sarr := bytes.Fields(nsbsplit)
-	contents := sarr[:len(sarr)-1] // remove closing tag, and obtain contents
+	return h
+}
 
-	// write open tag to buffer
-	fb.WriteString(tabs(h.ttrack))
-	fb.Write(opent)
-	fb.WriteByte('\n')
-	h.ttrack++
+// Style replaces all styles
+func (h *Head) Style(m map[string]string) *Head {
+	h.style = make(map[string]string)
+	for k, v := range m {
+		h.style[k] = v
+	}
+	return h
+}
 
-	// loop through contents
-	for _, c := range contents {
-		if bytes.Equal(c, []byte("<tr>")) {
-			fb.WriteString(tabs(h.ttrack))
-			fb.Write(c)
-			fb.WriteByte('\n')
-			h.ttrack++
-		} else if bytes.Equal(c, []byte("</tr>")) {
-			h.ttrack--
-			fb.WriteString(tabs(h.ttrack))
-			fb.Write(c)
-			fb.WriteByte('\n')
-		} else {
-			fb.WriteString(tabs(h.ttrack))
-			fb.Write(c)
-			fb.WriteByte('\n')
-		}
+// Body represents the HTML body element for document content
+type Body struct {
+	buf      bytes.Buffer
+	style    map[string]string
+	contents [][]byte
+	ttrack   int
+	onLoad   string
+	onUnload string
+}
+
+// NewBody creates a new Body element
+func NewBody() *Body {
+	return &Body{
+		style: make(map[string]string),
+	}
+}
+
+// Bytes returns the buffer contents
+func (b *Body) Bytes() []byte {
+	return b.buf.Bytes()
+}
+
+// Prepare builds the HTML for the body element
+func (b *Body) Prepare() {
+	b.buf.WriteString("<body")
+
+	if b.onLoad != "" {
+		b.buf.WriteString(" onload=\"" + b.onLoad + "\"")
 	}
 
-	// write close tag to header
-	h.ttrack--
-	fb.WriteString(tabs(h.ttrack))
-	fb.Write(sarr[len(sarr)-1])
-	fb.WriteByte('\n')
-	return fb.Bytes()
+	if b.onUnload != "" {
+		b.buf.WriteString(" onunload=\"" + b.onUnload + "\"")
+	}
+
+	if len(b.style) != 0 {
+		idx := 0
+		b.buf.WriteString(" style=\"")
+		for k, v := range b.style {
+			b.buf.WriteString(k + ": " + v + ";")
+			if idx != len(b.style)-1 {
+				b.buf.WriteByte(' ')
+			}
+			idx++
+		}
+		b.buf.WriteString("\"")
+	}
+
+	b.buf.WriteByte('>')
+
+	for _, content := range b.contents {
+		b.buf.Write(content)
+	}
+
+	b.buf.WriteString("</body>")
+}
+
+// Add adds content to the body element
+func (b *Body) Add(e Elements) *Body {
+	if e != nil {
+		e.Prepare()
+		b.contents = append(b.contents, e.Bytes())
+	}
+	return b
+}
+
+// OnLoad sets the onload attribute
+func (b *Body) OnLoad(onLoad string) *Body {
+	b.onLoad = onLoad
+	return b
+}
+
+// OnUnload sets the onunload attribute
+func (b *Body) OnUnload(onUnload string) *Body {
+	b.onUnload = onUnload
+	return b
+}
+
+// AddStyle adds a single CSS property
+func (b *Body) AddStyle(k, v string) *Body {
+	b.style[k] = v
+	return b
+}
+
+// AddStyles adds multiple CSS properties
+func (b *Body) AddStyles(m map[string]string) *Body {
+	for k, v := range m {
+		b.style[k] = v
+	}
+	return b
+}
+
+// Style replaces all styles
+func (b *Body) Style(m map[string]string) *Body {
+	b.style = make(map[string]string)
+	for k, v := range m {
+		b.style[k] = v
+	}
+	return b
+}
+
+// Title represents the HTML title element for document title
+type Title struct {
+	buf      bytes.Buffer
+	style    map[string]string
+	contents [][]byte
+	ttrack   int
+}
+
+// NewTitle creates a new Title element
+func NewTitle() *Title {
+	return &Title{
+		style: make(map[string]string),
+	}
+}
+
+// Bytes returns the buffer contents
+func (t *Title) Bytes() []byte {
+	return t.buf.Bytes()
+}
+
+// Prepare builds the HTML for the title element
+func (t *Title) Prepare() {
+	t.buf.WriteString("<title")
+
+	if len(t.style) != 0 {
+		idx := 0
+		t.buf.WriteString(" style=\"")
+		for k, v := range t.style {
+			t.buf.WriteString(k + ": " + v + ";")
+			if idx != len(t.style)-1 {
+				t.buf.WriteByte(' ')
+			}
+			idx++
+		}
+		t.buf.WriteString("\"")
+	}
+
+	t.buf.WriteByte('>')
+
+	for _, content := range t.contents {
+		t.buf.Write(content)
+	}
+
+	t.buf.WriteString("</title>")
+}
+
+// Add adds content to the title element
+func (t *Title) Add(e Elements) *Title {
+	if e != nil {
+		e.Prepare()
+		t.contents = append(t.contents, e.Bytes())
+	}
+	return t
+}
+
+// Text adds text content to the title element
+func (t *Title) Text(text string) *Title {
+	t.contents = append(t.contents, []byte(text))
+	return t
+}
+
+// AddStyle adds a single CSS property
+func (t *Title) AddStyle(k, v string) *Title {
+	t.style[k] = v
+	return t
+}
+
+// AddStyles adds multiple CSS properties
+func (t *Title) AddStyles(m map[string]string) *Title {
+	for k, v := range m {
+		t.style[k] = v
+	}
+	return t
+}
+
+// Style replaces all styles
+func (t *Title) Style(m map[string]string) *Title {
+	t.style = make(map[string]string)
+	for k, v := range m {
+		t.style[k] = v
+	}
+	return t
+}
+
+// Base represents the HTML base element for document base URL
+type Base struct {
+	buf    bytes.Buffer
+	style  map[string]string
+	href   string
+	target string
+}
+
+// NewBase creates a new Base element
+func NewBase() *Base {
+	return &Base{
+		style: make(map[string]string),
+	}
+}
+
+// Bytes returns the buffer contents
+func (b *Base) Bytes() []byte {
+	return b.buf.Bytes()
+}
+
+// Prepare builds the HTML for the base element
+func (b *Base) Prepare() {
+	b.buf.WriteString("<base")
+
+	if b.href != "" {
+		b.buf.WriteString(" href=\"" + b.href + "\"")
+	}
+
+	if b.target != "" {
+		b.buf.WriteString(" target=\"" + b.target + "\"")
+	}
+
+	if len(b.style) != 0 {
+		idx := 0
+		b.buf.WriteString(" style=\"")
+		for k, v := range b.style {
+			b.buf.WriteString(k + ": " + v + ";")
+			if idx != len(b.style)-1 {
+				b.buf.WriteByte(' ')
+			}
+			idx++
+		}
+		b.buf.WriteString("\"")
+	}
+
+	b.buf.WriteString(">")
+}
+
+// Href sets the href attribute
+func (b *Base) Href(href string) *Base {
+	b.href = href
+	return b
+}
+
+// Target sets the target attribute
+func (b *Base) Target(target string) *Base {
+	b.target = target
+	return b
+}
+
+// AddStyle adds a single CSS property
+func (b *Base) AddStyle(k, v string) *Base {
+	b.style[k] = v
+	return b
+}
+
+// AddStyles adds multiple CSS properties
+func (b *Base) AddStyles(m map[string]string) *Base {
+	for k, v := range m {
+		b.style[k] = v
+	}
+	return b
+}
+
+// Style replaces all styles
+func (b *Base) Style(m map[string]string) *Base {
+	b.style = make(map[string]string)
+	for k, v := range m {
+		b.style[k] = v
+	}
+	return b
 }
 
 // Link represents the HTML link element for external resources
@@ -490,39 +470,30 @@ func (l *Link) Bytes() []byte {
 // Prepare builds the HTML for the link element
 func (l *Link) Prepare() {
 	l.buf.WriteString("<link")
-
 	if l.rel != "" {
 		l.buf.WriteString(" rel=\"" + l.rel + "\"")
 	}
-
 	if l.href != "" {
 		l.buf.WriteString(" href=\"" + l.href + "\"")
 	}
-
 	if l.linkType != "" {
 		l.buf.WriteString(" type=\"" + l.linkType + "\"")
 	}
-
 	if l.media != "" {
 		l.buf.WriteString(" media=\"" + l.media + "\"")
 	}
-
 	if l.sizes != "" {
 		l.buf.WriteString(" sizes=\"" + l.sizes + "\"")
 	}
-
 	if l.crossOrigin != "" {
 		l.buf.WriteString(" crossOrigin=\"" + l.crossOrigin + "\"")
 	}
-
 	if l.integrity != "" {
 		l.buf.WriteString(" integrity=\"" + l.integrity + "\"")
 	}
-
 	if l.referrerPolicy != "" {
 		l.buf.WriteString(" referrerPolicy=\"" + l.referrerPolicy + "\"")
 	}
-
 	if l.hreflang != "" {
 		l.buf.WriteString(" hreflang=\"" + l.hreflang + "\"")
 	}
@@ -539,7 +510,6 @@ func (l *Link) Prepare() {
 		}
 		l.buf.WriteString("\"")
 	}
-
 	l.buf.WriteString(">")
 }
 
@@ -573,7 +543,7 @@ func (l *Link) Sizes(sizes string) *Link {
 	return l
 }
 
-// Cross Origin sets the crossOrigin attribute
+// CrossOrigin Cross Origin sets the crossOrigin attribute
 func (l *Link) CrossOrigin(crossOrigin string) *Link {
 	l.crossOrigin = crossOrigin
 	return l
@@ -585,7 +555,7 @@ func (l *Link) Integrity(integrity string) *Link {
 	return l
 }
 
-// Referrer Policy sets the referrerPolicy attribute
+// ReferrerPolicy Referrer Policy sets the referrerPolicy attribute
 func (l *Link) ReferrerPolicy(referrerPolicy string) *Link {
 	l.referrerPolicy = referrerPolicy
 	return l

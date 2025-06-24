@@ -93,27 +93,6 @@ func main() {
 	d1.Prepare()
 
 	html := *rephtml.NewHtmlFile()
-	html.StyleString(`h1, h2, h3, h4, h5, h6, p {
-			font-family: Arial;
-			text-align: center;
-		}`)
-	html.StyleString(`th, td {
-			font-family: Arial;
-			padding: 10px;
-			text-align: center;
-		}`)
-	html.StyleString(`#myId1 {
-			font-size: 60px;
-		}`)
-	html.Style(tableStyle)
-	html.H1String("Test")
-	html.TableString([]string{"hdr1", "hdr2", "hdr3"}, [][]string{{"a1", "a2", "a3"}, {"b1", "b2", "b3"}})
-	html.PString("Test paragraph for testing purposes")
-	html.PStringWithStyle("Test style paragraph for testing purposes", "font-size: 30px")
-	html.P(pg)
-	html.Table(table)
-	html.Div(d)
-	html.Div(d1)
 	html.Prepare()
 	html.WriteToFile("report.html")
 
