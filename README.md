@@ -165,4 +165,4 @@ html.WriteToFile("report.html") // create a file named report.html in the curren
 
 ---
 
-**Total Elements:** 121 HTML elements (excluding deprecated ones)
+**Total Elements:** 116 HTML elements (excluding deprecated ones)

@@ -764,7 +764,7 @@ func (cg *Colgroup) Styles(m map[string]string) *Colgroup {
 	return cg
 }
 
-func (cg *Colgroup) Add(e Elements) *Colgroup {
+func (cg *Colgroup) Add(e Element) *Colgroup {
 	cg.contents = append(cg.contents, e.Bytes())
 	return cg
 }
@@ -981,7 +981,7 @@ func (td *Td) Styles(m map[string]string) *Td {
 	return td
 }
 
-func (td *Td) Add(e Elements) *Td {
+func (td *Td) Add(e Element) *Td {
 	td.contents = append(td.contents, e.Bytes())
 	return td
 }
@@ -1104,7 +1104,7 @@ func (th *Th) Styles(m map[string]string) *Th {
 	return th
 }
 
-func (th *Th) Add(e Elements) *Th {
+func (th *Th) Add(e Element) *Th {
 	th.contents = append(th.contents, e.Bytes())
 	return th
 }

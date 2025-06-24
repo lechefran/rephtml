@@ -1337,7 +1337,7 @@ func (r *Ruby) Style(m map[string]string) *Ruby {
 	return r
 }
 
-func (r *Ruby) Add(e Elements) *Ruby {
+func (r *Ruby) Add(e Element) *Ruby {
 	r.contents = append(r.contents, e.Bytes())
 	return r
 }
@@ -1507,7 +1507,7 @@ func (rtc *Rtc) Style(m map[string]string) *Rtc {
 	return rtc
 }
 
-func (rtc *Rtc) Add(e Elements) *Rtc {
+func (rtc *Rtc) Add(e Element) *Rtc {
 	rtc.contents = append(rtc.contents, e.Bytes())
 	return rtc
 }
@@ -2391,7 +2391,7 @@ func (m *Menu) Style(ms map[string]string) *Menu {
 	return m
 }
 
-func (m *Menu) Add(e Elements) *Menu {
+func (m *Menu) Add(e Element) *Menu {
 	m.contents = append(m.contents, e.Bytes())
 	return m
 }
@@ -2470,7 +2470,7 @@ func (o *Ol) Style(m map[string]string) *Ol {
 	return o
 }
 
-func (o *Ol) Add(e Elements) *Ol {
+func (o *Ol) Add(e Element) *Ol {
 	o.contents = append(o.contents, e.Bytes())
 	return o
 }
@@ -2556,7 +2556,7 @@ func (u *Ul) Style(m map[string]string) *Ul {
 	return u
 }
 
-func (u *Ul) Add(e Elements) *Ul {
+func (u *Ul) Add(e Element) *Ul {
 	u.contents = append(u.contents, e.Bytes())
 	return u
 }
@@ -2617,7 +2617,7 @@ func (l *Li) Style(m map[string]string) *Li {
 	return l
 }
 
-func (l *Li) Add(e Elements) *Li {
+func (l *Li) Add(e Element) *Li {
 	l.contents = append(l.contents, e.Bytes())
 	return l
 }
@@ -2687,7 +2687,7 @@ func (d *Dl) Style(m map[string]string) *Dl {
 	return d
 }
 
-func (d *Dl) Add(e Elements) *Dl {
+func (d *Dl) Add(e Element) *Dl {
 	d.contents = append(d.contents, e.Bytes())
 	return d
 }
@@ -2747,7 +2747,7 @@ func (d *Dt) Style(m map[string]string) *Dt {
 	return d
 }
 
-func (d *Dt) Add(e Elements) *Dt {
+func (d *Dt) Add(e Element) *Dt {
 	d.contents = append(d.contents, e.Bytes())
 	return d
 }
@@ -2807,7 +2807,7 @@ func (d *Dd) Style(m map[string]string) *Dd {
 	return d
 }
 
-func (d *Dd) Add(e Elements) *Dd {
+func (d *Dd) Add(e Element) *Dd {
 	d.contents = append(d.contents, e.Bytes())
 	return d
 }
@@ -2867,7 +2867,7 @@ func (f *Figure) Style(m map[string]string) *Figure {
 	return f
 }
 
-func (f *Figure) Add(e Elements) *Figure {
+func (f *Figure) Add(e Element) *Figure {
 	f.contents = append(f.contents, e.Bytes())
 	return f
 }
@@ -2927,7 +2927,7 @@ func (f *Figcaption) Style(m map[string]string) *Figcaption {
 	return f
 }
 
-func (f *Figcaption) Add(e Elements) *Figcaption {
+func (f *Figcaption) Add(e Element) *Figcaption {
 	f.contents = append(f.contents, e.Bytes())
 	return f
 }

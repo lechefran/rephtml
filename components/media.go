@@ -225,7 +225,7 @@ func (a *Audio) Style(m map[string]string) *Audio {
 	return a
 }
 
-func (a *Audio) Add(e Elements) *Audio {
+func (a *Audio) Add(e Element) *Audio {
 	a.contents = append(a.contents, e.Bytes())
 	return a
 }
@@ -428,7 +428,7 @@ func (m *Map) Style(ms map[string]string) *Map {
 	return m
 }
 
-func (m *Map) Add(e Elements) *Map {
+func (m *Map) Add(e Element) *Map {
 	m.contents = append(m.contents, e.Bytes())
 	return m
 }
@@ -505,7 +505,7 @@ func (v *Video) Style(m map[string]string) *Video {
 	return v
 }
 
-func (v *Video) Add(e Elements) *Video {
+func (v *Video) Add(e Element) *Video {
 	v.contents = append(v.contents, e.Bytes())
 	return v
 }

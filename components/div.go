@@ -22,7 +22,7 @@ func (d *Div) Tabs(i int) *Div {
 	return d
 }
 
-func (d *Div) Add(e Elements) *Div {
+func (d *Div) Add(e Element) *Div {
 	d.contents = append(d.contents, e.Bytes())
 	return d
 }

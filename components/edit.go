@@ -59,7 +59,7 @@ func (d *Del) Prepare() {
 }
 
 // Add adds content to the del element
-func (d *Del) Add(e Elements) *Del {
+func (d *Del) Add(e Element) *Del {
 	if e != nil {
 		e.Prepare()
 		d.contents = append(d.contents, e.Bytes())
@@ -159,7 +159,7 @@ func (i *Ins) Prepare() {
 }
 
 // Add adds content to the ins element
-func (i *Ins) Add(e Elements) *Ins {
+func (i *Ins) Add(e Element) *Ins {
 	if e != nil {
 		e.Prepare()
 		i.contents = append(i.contents, e.Bytes())

@@ -34,7 +34,7 @@ func (m *Math) Style(ms map[string]string) *Math {
 	return m
 }
 
-func (m *Math) Add(e Elements) *Math {
+func (m *Math) Add(e Element) *Math {
 	m.contents = append(m.contents, e.Bytes())
 	return m
 }
@@ -118,7 +118,7 @@ func (s *Svg) Style(m map[string]string) *Svg {
 	return s
 }
 
-func (s *Svg) Add(e Elements) *Svg {
+func (s *Svg) Add(e Element) *Svg {
 	s.contents = append(s.contents, e.Bytes())
 	return s
 }

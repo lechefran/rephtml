@@ -54,7 +54,7 @@ func (d *Details) Prepare() {
 }
 
 // Add adds content to the details element
-func (d *Details) Add(e Elements) *Details {
+func (d *Details) Add(e Element) *Details {
 	if e != nil {
 		e.Prepare()
 		d.contents = append(d.contents, e.Bytes())
@@ -143,7 +143,7 @@ func (d *Dialog) Prepare() {
 }
 
 // Add adds content to the dialog element
-func (d *Dialog) Add(e Elements) *Dialog {
+func (d *Dialog) Add(e Element) *Dialog {
 	if e != nil {
 		e.Prepare()
 		d.contents = append(d.contents, e.Bytes())
@@ -227,7 +227,7 @@ func (s *Summary) Prepare() {
 }
 
 // Add adds content to the summary element
-func (s *Summary) Add(e Elements) *Summary {
+func (s *Summary) Add(e Element) *Summary {
 	if e != nil {
 		e.Prepare()
 		s.contents = append(s.contents, e.Bytes())

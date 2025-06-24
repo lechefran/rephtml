@@ -262,7 +262,7 @@ func (o *Object) Style(m map[string]string) *Object {
 	return o
 }
 
-func (o *Object) Add(e Elements) *Object {
+func (o *Object) Add(e Element) *Object {
 	o.contents = append(o.contents, e.Bytes())
 	return o
 }
@@ -378,7 +378,7 @@ func (p *Picture) Style(m map[string]string) *Picture {
 	return p
 }
 
-func (p *Picture) Add(e Elements) *Picture {
+func (p *Picture) Add(e Element) *Picture {
 	p.contents = append(p.contents, e.Bytes())
 	return p
 }

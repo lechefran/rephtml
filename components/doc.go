@@ -41,12 +41,12 @@ func (h *HtmlFile) AddOptions(opts Options) *HtmlFile {
 
 // Element struct functions
 
-func (h *HtmlFile) AddToHead(e Elements) *HtmlFile {
+func (h *HtmlFile) AddToHead(e Element) *HtmlFile {
 	h.head = append(h.head, e.Bytes()...)
 	return h
 }
 
-func (h *HtmlFile) AddToBody(e Elements) *HtmlFile {
+func (h *HtmlFile) AddToBody(e Element) *HtmlFile {
 	h.body = append(h.body, e.Bytes()...)
 	return h
 }
@@ -142,7 +142,7 @@ func (h *Head) Prepare() {
 }
 
 // Add adds content to the head element
-func (h *Head) Add(e Elements) *Head {
+func (h *Head) Add(e Element) *Head {
 	if e != nil {
 		e.Prepare()
 		h.contents = append(h.contents, e.Bytes())
@@ -230,7 +230,7 @@ func (b *Body) Prepare() {
 }
 
 // Add adds content to the body element
-func (b *Body) Add(e Elements) *Body {
+func (b *Body) Add(e Element) *Body {
 	if e != nil {
 		e.Prepare()
 		b.contents = append(b.contents, e.Bytes())
@@ -320,7 +320,7 @@ func (t *Title) Prepare() {
 }
 
 // Add adds content to the title element
-func (t *Title) Add(e Elements) *Title {
+func (t *Title) Add(e Element) *Title {
 	if e != nil {
 		e.Prepare()
 		t.contents = append(t.contents, e.Bytes())
@@ -774,7 +774,7 @@ func (s *StyleElement) Prepare() {
 }
 
 // Add adds content to the style element
-func (s *StyleElement) Add(e Elements) *StyleElement {
+func (s *StyleElement) Add(e Element) *StyleElement {
 	if e != nil {
 		e.Prepare()
 		s.contents = append(s.contents, e.Bytes())

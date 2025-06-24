@@ -32,7 +32,7 @@ func (s *Slot) Style(m map[string]string) *Slot {
 	return s
 }
 
-func (s *Slot) Add(e Elements) *Slot {
+func (s *Slot) Add(e Element) *Slot {
 	s.contents = append(s.contents, e.Bytes())
 	return s
 }
@@ -101,7 +101,7 @@ func (t *Template) Style(m map[string]string) *Template {
 	return t
 }
 
-func (t *Template) Add(e Elements) *Template {
+func (t *Template) Add(e Element) *Template {
 	t.contents = append(t.contents, e.Bytes())
 	return t
 }

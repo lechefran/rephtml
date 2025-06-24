@@ -33,7 +33,7 @@ func (c *Canvas) Style(m map[string]string) *Canvas {
 	return c
 }
 
-func (c *Canvas) Add(e Elements) *Canvas {
+func (c *Canvas) Add(e Element) *Canvas {
 	c.contents = append(c.contents, e.Bytes())
 	return c
 }
@@ -109,7 +109,7 @@ func (n *Noscript) Style(m map[string]string) *Noscript {
 	return n
 }
 
-func (n *Noscript) Add(e Elements) *Noscript {
+func (n *Noscript) Add(e Element) *Noscript {
 	n.contents = append(n.contents, e.Bytes())
 	return n
 }

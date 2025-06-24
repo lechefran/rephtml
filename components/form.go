@@ -89,7 +89,7 @@ func (f *Form) Prepare() {
 }
 
 // Add adds content to the form element
-func (f *Form) Add(e Elements) *Form {
+func (f *Form) Add(e Element) *Form {
 	if e != nil {
 		e.Prepare()
 		f.contents = append(f.contents, e.Bytes())
@@ -225,7 +225,7 @@ func (l *Label) Prepare() {
 }
 
 // Add adds content to the label element
-func (l *Label) Add(e Elements) *Label {
+func (l *Label) Add(e Element) *Label {
 	if e != nil {
 		e.Prepare()
 		l.contents = append(l.contents, e.Bytes())
@@ -628,7 +628,7 @@ func (o *Output) Prepare() {
 }
 
 // Add adds content to the output element
-func (o *Output) Add(e Elements) *Output {
+func (o *Output) Add(e Element) *Output {
 	if e != nil {
 		e.Prepare()
 		o.contents = append(o.contents, e.Bytes())
@@ -745,7 +745,7 @@ func (f *Fieldset) Prepare() {
 }
 
 // Add adds content to the fieldset element
-func (f *Fieldset) Add(e Elements) *Fieldset {
+func (f *Fieldset) Add(e Element) *Fieldset {
 	if e != nil {
 		e.Prepare()
 		f.contents = append(f.contents, e.Bytes())
@@ -896,7 +896,7 @@ func (b *Button) Prepare() {
 }
 
 // Add adds content to the button element
-func (b *Button) Add(e Elements) *Button {
+func (b *Button) Add(e Element) *Button {
 	if e != nil {
 		e.Prepare()
 		b.contents = append(b.contents, e.Bytes())
@@ -1086,7 +1086,7 @@ func (s *Select) Prepare() {
 }
 
 // Add adds content to the select element
-func (s *Select) Add(e Elements) *Select {
+func (s *Select) Add(e Element) *Select {
 	if e != nil {
 		e.Prepare()
 		s.contents = append(s.contents, e.Bytes())
@@ -1217,7 +1217,7 @@ func (d *Datalist) Prepare() {
 }
 
 // Add adds content to the datalist element
-func (d *Datalist) Add(e Elements) *Datalist {
+func (d *Datalist) Add(e Element) *Datalist {
 	if e != nil {
 		e.Prepare()
 		d.contents = append(d.contents, e.Bytes())
@@ -1311,7 +1311,7 @@ func (o *Optgroup) Prepare() {
 }
 
 // Add adds content to the optgroup element
-func (o *Optgroup) Add(e Elements) *Optgroup {
+func (o *Optgroup) Add(e Element) *Optgroup {
 	if e != nil {
 		e.Prepare()
 		o.contents = append(o.contents, e.Bytes())
@@ -1421,7 +1421,7 @@ func (o *Option) Prepare() {
 }
 
 // Add adds content to the option element
-func (o *Option) Add(e Elements) *Option {
+func (o *Option) Add(e Element) *Option {
 	if e != nil {
 		e.Prepare()
 		o.contents = append(o.contents, e.Bytes())
@@ -1599,7 +1599,7 @@ func (t *Textarea) Prepare() {
 }
 
 // Add adds content to the textarea element
-func (t *Textarea) Add(e Elements) *Textarea {
+func (t *Textarea) Add(e Element) *Textarea {
 	if e != nil {
 		e.Prepare()
 		t.contents = append(t.contents, e.Bytes())
@@ -1782,7 +1782,7 @@ func (p *Progress) Prepare() {
 }
 
 // Add adds content to the progress element
-func (p *Progress) Add(e Elements) *Progress {
+func (p *Progress) Add(e Element) *Progress {
 	if e != nil {
 		e.Prepare()
 		p.contents = append(p.contents, e.Bytes())
@@ -1919,7 +1919,7 @@ func (m *Meter) Prepare() {
 }
 
 // Add adds content to the meter element
-func (m *Meter) Add(e Elements) *Meter {
+func (m *Meter) Add(e Element) *Meter {
 	if e != nil {
 		e.Prepare()
 		m.contents = append(m.contents, e.Bytes())
@@ -2045,7 +2045,7 @@ func (l *Legend) Prepare() {
 }
 
 // Add adds content to the legend element
-func (l *Legend) Add(e Elements) *Legend {
+func (l *Legend) Add(e Element) *Legend {
 	if e != nil {
 		e.Prepare()
 		l.contents = append(l.contents, e.Bytes())

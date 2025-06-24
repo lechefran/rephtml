@@ -31,7 +31,7 @@ func (h *Header) Style(m map[string]string) *Header {
 	return h
 }
 
-func (h *Header) Add(e Elements) *Header {
+func (h *Header) Add(e Element) *Header {
 	h.contents = append(h.contents, e.Bytes())
 	return h
 }
@@ -92,7 +92,7 @@ func (n *Nav) Style(m map[string]string) *Nav {
 	return n
 }
 
-func (n *Nav) Add(e Elements) *Nav {
+func (n *Nav) Add(e Element) *Nav {
 	n.contents = append(n.contents, e.Bytes())
 	return n
 }
@@ -161,7 +161,7 @@ func (s *Section) Style(m map[string]string) *Section {
 	return s
 }
 
-func (s *Section) Add(e Elements) *Section {
+func (s *Section) Add(e Element) *Section {
 	s.contents = append(s.contents, e.Bytes())
 	return s
 }
@@ -229,7 +229,7 @@ func (m *Main) Style(mp map[string]string) *Main {
 	return m
 }
 
-func (m *Main) Add(e Elements) *Main {
+func (m *Main) Add(e Element) *Main {
 	m.contents = append(m.contents, e.Bytes())
 	return m
 }
@@ -289,7 +289,7 @@ func (a *Article) Style(mp map[string]string) *Article {
 	return a
 }
 
-func (a *Article) Add(e Elements) *Article {
+func (a *Article) Add(e Element) *Article {
 	a.contents = append(a.contents, e.Bytes())
 	return a
 }
@@ -349,7 +349,7 @@ func (as *Aside) Style(mp map[string]string) *Aside {
 	return as
 }
 
-func (as *Aside) Add(e Elements) *Aside {
+func (as *Aside) Add(e Element) *Aside {
 	as.contents = append(as.contents, e.Bytes())
 	return as
 }
@@ -409,7 +409,7 @@ func (f *Footer) Style(mp map[string]string) *Footer {
 	return f
 }
 
-func (f *Footer) Add(e Elements) *Footer {
+func (f *Footer) Add(e Element) *Footer {
 	f.contents = append(f.contents, e.Bytes())
 	return f
 }
@@ -469,7 +469,7 @@ func (ad *Address) Style(mp map[string]string) *Address {
 	return ad
 }
 
-func (ad *Address) Add(e Elements) *Address {
+func (ad *Address) Add(e Element) *Address {
 	ad.contents = append(ad.contents, e.Bytes())
 	return ad
 }
