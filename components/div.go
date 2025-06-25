@@ -39,20 +39,12 @@ func (d *Div) Bytes() []byte {
 }
 
 func (d *Div) Prepare() {
+	d.buf.Reset()
+	d.buf.WriteString("<div")
 	if len(d.style) != 0 {
-		idx := 0
-		d.buf.WriteString("<div style=\"")
-		for k, v := range d.style {
-			d.buf.WriteString(k + ": " + v + ";")
-			if idx != len(d.style)-1 {
-				d.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		d.buf.WriteString("\">")
-	} else {
-		d.buf.WriteString("<div>")
+		parseStyle(&d.buf, d.style)
 	}
+	d.buf.WriteString(">")
 
 	for _, c := range d.contents {
 		if bytes.Contains(c, []byte("<table")) && bytes.Contains(c, []byte(">")) {

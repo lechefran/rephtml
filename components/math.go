@@ -54,6 +54,7 @@ func (m *Math) Bytes() []byte {
 }
 
 func (m *Math) Prepare() {
+	m.buf.Reset()
 	m.buf.WriteString("<math")
 	if m.xmlns != "" {
 		m.buf.WriteString(" xmlns=\"" + m.xmlns + "\"")
@@ -163,6 +164,7 @@ func (s *Svg) Bytes() []byte {
 }
 
 func (s *Svg) Prepare() {
+	s.buf.Reset()
 	s.buf.WriteString("<svg")
 	if s.xmlns != "" {
 		s.buf.WriteString(" xmlns=\"" + s.xmlns + "\"")

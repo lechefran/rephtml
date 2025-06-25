@@ -3,12 +3,12 @@ package rephtml
 import "bytes"
 
 type Embed struct {
-	buf    bytes.Buffer
-	style  map[string]string
-	src    string
+	buf       bytes.Buffer
+	style     map[string]string
+	src       string
 	embedType string
-	width  string
-	height string
+	width     string
+	height    string
 }
 
 func NewEmbed() *Embed {
@@ -59,6 +59,7 @@ func (e *Embed) Bytes() []byte {
 }
 
 func (e *Embed) Prepare() {
+	e.buf.Reset()
 	e.buf.WriteString("<embed")
 	if e.src != "" {
 		e.buf.WriteString(" src=\"" + e.src + "\"")
@@ -73,15 +74,7 @@ func (e *Embed) Prepare() {
 		e.buf.WriteString(" height=\"" + e.height + "\"")
 	}
 	if len(e.style) != 0 {
-		idx := 0
-		e.buf.WriteString(" style=\"")
-		for k, v := range e.style {
-			e.buf.WriteString(k + ": " + v + ";")
-			if idx != len(e.style)-1 {
-				e.buf.WriteByte(' ')
-			}
-			idx++
-		}
+		parseStyle(&e.buf, e.style)
 		e.buf.WriteString("\"")
 	}
 	e.buf.WriteString(">")
@@ -180,6 +173,7 @@ func (i *Iframe) Bytes() []byte {
 }
 
 func (i *Iframe) Prepare() {
+	i.buf.Reset()
 	i.buf.WriteString("<iframe")
 	if i.src != "" {
 		i.buf.WriteString(" src=\"" + i.src + "\"")
@@ -212,16 +206,7 @@ func (i *Iframe) Prepare() {
 		i.buf.WriteString(" srcdoc=\"" + i.srcdoc + "\"")
 	}
 	if len(i.style) != 0 {
-		idx := 0
-		i.buf.WriteString(" style=\"")
-		for k, v := range i.style {
-			i.buf.WriteString(k + ": " + v + ";")
-			if idx != len(i.style)-1 {
-				i.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		i.buf.WriteString("\"")
+		parseStyle(&i.buf, i.style)
 	}
 	i.buf.WriteString("></iframe>")
 }
@@ -307,6 +292,7 @@ func (o *Object) Bytes() []byte {
 }
 
 func (o *Object) Prepare() {
+	o.buf.Reset()
 	o.buf.WriteString("<object")
 	if o.data != "" {
 		o.buf.WriteString(" data=\"" + o.data + "\"")
@@ -330,16 +316,7 @@ func (o *Object) Prepare() {
 		o.buf.WriteString(" form=\"" + o.form + "\"")
 	}
 	if len(o.style) != 0 {
-		idx := 0
-		o.buf.WriteString(" style=\"")
-		for k, v := range o.style {
-			o.buf.WriteString(k + ": " + v + ";")
-			if idx != len(o.style)-1 {
-				o.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		o.buf.WriteString("\"")
+		parseStyle(&o.buf, o.style)
 	}
 	o.buf.WriteByte('>')
 
@@ -388,17 +365,9 @@ func (p *Picture) Bytes() []byte {
 }
 
 func (p *Picture) Prepare() {
+	p.buf.Reset()
 	if len(p.style) != 0 {
-		idx := 0
-		p.buf.WriteString("<picture style=\"")
-		for k, v := range p.style {
-			p.buf.WriteString(k + ": " + v + ";")
-			if idx != len(p.style)-1 {
-				p.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		p.buf.WriteString("\">")
+		parseStyle(&p.buf, p.style)
 	} else {
 		p.buf.WriteString("<picture>")
 	}
@@ -410,10 +379,10 @@ func (p *Picture) Prepare() {
 }
 
 type Portal struct {
-	buf             bytes.Buffer
-	style           map[string]string
-	src             string
-	referrerpolicy  string
+	buf            bytes.Buffer
+	style          map[string]string
+	src            string
+	referrerpolicy string
 }
 
 func NewPortal() *Portal {
@@ -454,6 +423,7 @@ func (p *Portal) Bytes() []byte {
 }
 
 func (p *Portal) Prepare() {
+	p.buf.Reset()
 	p.buf.WriteString("<portal")
 	if p.src != "" {
 		p.buf.WriteString(" src=\"" + p.src + "\"")
@@ -462,27 +432,18 @@ func (p *Portal) Prepare() {
 		p.buf.WriteString(" referrerpolicy=\"" + p.referrerpolicy + "\"")
 	}
 	if len(p.style) != 0 {
-		idx := 0
-		p.buf.WriteString(" style=\"")
-		for k, v := range p.style {
-			p.buf.WriteString(k + ": " + v + ";")
-			if idx != len(p.style)-1 {
-				p.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		p.buf.WriteString("\"")
+		parseStyle(&p.buf, p.style)
 	}
 	p.buf.WriteString("></portal>")
 }
 
 type Source struct {
-	buf    bytes.Buffer
-	style  map[string]string
-	src    string
-	srcset string
-	media  string
-	sizes  string
+	buf     bytes.Buffer
+	style   map[string]string
+	src     string
+	srcset  string
+	media   string
+	sizes   string
 	srcType string
 }
 
@@ -539,6 +500,7 @@ func (s *Source) Bytes() []byte {
 }
 
 func (s *Source) Prepare() {
+	s.buf.Reset()
 	s.buf.WriteString("<source")
 	if s.src != "" {
 		s.buf.WriteString(" src=\"" + s.src + "\"")
@@ -556,16 +518,7 @@ func (s *Source) Prepare() {
 		s.buf.WriteString(" type=\"" + s.srcType + "\"")
 	}
 	if len(s.style) != 0 {
-		idx := 0
-		s.buf.WriteString(" style=\"")
-		for k, v := range s.style {
-			s.buf.WriteString(k + ": " + v + ";")
-			if idx != len(s.style)-1 {
-				s.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		s.buf.WriteString("\"")
+		parseStyle(&s.buf, s.style)
 	}
 	s.buf.WriteString(">")
 }

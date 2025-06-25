@@ -122,6 +122,7 @@ func (t *Table) AddTr(tr *Tr) *Table {
 }
 
 func (t *Table) Prepare() {
+	t.buf.Reset()
 	// see if table has id, class, and style tags to add
 	t.buf.WriteString("<table")
 	if t.id != "" {
@@ -271,6 +272,7 @@ func (th *Thead) AddTr(tr *Tr) *Thead {
 }
 
 func (th *Thead) Prepare() {
+	th.buf.Reset()
 	th.buf.WriteString("<thead")
 	if th.id != "" {
 		th.buf.WriteString(" id=\"" + th.id + "\"")
@@ -371,6 +373,7 @@ func (tb *Tbody) AddTr(tr *Tr) *Tbody {
 }
 
 func (tb *Tbody) Prepare() {
+	tb.buf.Reset()
 	tb.buf.WriteString("<tbody")
 	if tb.id != "" {
 		tb.buf.WriteString(" id=\"" + tb.id + "\"")
@@ -471,6 +474,7 @@ func (tf *Tfoot) AddTr(tr *Tr) *Tfoot {
 }
 
 func (tf *Tfoot) Prepare() {
+	tf.buf.Reset()
 	tf.buf.WriteString("<tfoot")
 	if tf.id != "" {
 		tf.buf.WriteString(" id=\"" + tf.id + "\"")
@@ -571,6 +575,7 @@ func (c *Caption) Text(text string) *Caption {
 }
 
 func (c *Caption) Prepare() {
+	c.buf.Reset()
 	c.buf.WriteString("<caption")
 	if c.id != "" {
 		c.buf.WriteString(" id=\"" + c.id + "\"")
@@ -669,6 +674,7 @@ func (col *Col) Span(s int) *Col {
 }
 
 func (col *Col) Prepare() {
+	col.buf.Reset()
 	col.buf.WriteString("<col")
 	if col.id != "" {
 		col.buf.WriteString(" id=\"" + col.id + "\"")
@@ -775,6 +781,7 @@ func (cg *Colgroup) Span(s int) *Colgroup {
 }
 
 func (cg *Colgroup) Prepare() {
+	cg.buf.Reset()
 	cg.buf.WriteString("<colgroup")
 	if cg.id != "" {
 		cg.buf.WriteString(" id=\"" + cg.id + "\"")
@@ -885,6 +892,7 @@ func (tr *Tr) AddTd(td *Td) *Tr {
 }
 
 func (tr *Tr) Prepare() {
+	tr.buf.Reset()
 	tr.buf.WriteString("<tr")
 	if tr.id != "" {
 		tr.buf.WriteString(" id=\"" + tr.id + "\"")
@@ -997,6 +1005,7 @@ func (td *Td) Rowspan(r int) *Td {
 }
 
 func (td *Td) Prepare() {
+	td.buf.Reset()
 	td.buf.WriteString("<td")
 	if td.id != "" {
 		td.buf.WriteString(" id=\"" + td.id + "\"")
@@ -1125,6 +1134,7 @@ func (th *Th) Scope(s string) *Th {
 }
 
 func (th *Th) Prepare() {
+	th.buf.Reset()
 	th.buf.WriteString("<th")
 	if th.id != "" {
 		th.buf.WriteString(" id=\"" + th.id + "\"")

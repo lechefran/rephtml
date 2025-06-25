@@ -93,6 +93,7 @@ func main() {
 	d1.Prepare()
 
 	html := *rephtml.NewHtmlFile()
+	html.Add(d1)
 	html.Prepare()
 	html.WriteToFile("report.html")
 

@@ -26,35 +26,22 @@ func (d *Del) Bytes() []byte {
 
 // Prepare builds the HTML for the del element
 func (d *Del) Prepare() {
+	d.buf.Reset()
 	d.buf.WriteString("<del")
-	
 	if d.cite != "" {
 		d.buf.WriteString(" cite=\"" + d.cite + "\"")
 	}
-	
 	if d.datetime != "" {
 		d.buf.WriteString(" datetime=\"" + d.datetime + "\"")
 	}
-	
 	if len(d.style) != 0 {
-		idx := 0
-		d.buf.WriteString(" style=\"")
-		for k, v := range d.style {
-			d.buf.WriteString(k + ": " + v + ";")
-			if idx != len(d.style)-1 {
-				d.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		d.buf.WriteString("\"")
+		parseStyle(&d.buf, d.style)
 	}
-	
 	d.buf.WriteByte('>')
-	
+
 	for _, content := range d.contents {
 		d.buf.Write(content)
 	}
-	
 	d.buf.WriteString("</del>")
 }
 
@@ -126,35 +113,27 @@ func (i *Ins) Bytes() []byte {
 
 // Prepare builds the HTML for the ins element
 func (i *Ins) Prepare() {
+	i.buf.Reset()
 	i.buf.WriteString("<ins")
-	
+
 	if i.cite != "" {
 		i.buf.WriteString(" cite=\"" + i.cite + "\"")
 	}
-	
+
 	if i.datetime != "" {
 		i.buf.WriteString(" datetime=\"" + i.datetime + "\"")
 	}
-	
+
 	if len(i.style) != 0 {
-		idx := 0
-		i.buf.WriteString(" style=\"")
-		for k, v := range i.style {
-			i.buf.WriteString(k + ": " + v + ";")
-			if idx != len(i.style)-1 {
-				i.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		i.buf.WriteString("\"")
+		parseStyle(&i.buf, i.style)
 	}
-	
+
 	i.buf.WriteByte('>')
-	
+
 	for _, content := range i.contents {
 		i.buf.Write(content)
 	}
-	
+
 	i.buf.WriteString("</ins>")
 }
 

@@ -53,6 +53,7 @@ func (c *Canvas) Bytes() []byte {
 }
 
 func (c *Canvas) Prepare() {
+	c.buf.Reset()
 	c.buf.WriteString("<canvas")
 	if c.width != "" {
 		c.buf.WriteString(" width=\"" + c.width + "\"")
@@ -119,6 +120,7 @@ func (n *Noscript) Bytes() []byte {
 }
 
 func (n *Noscript) Prepare() {
+	n.buf.Reset()
 	if len(n.style) != 0 {
 		idx := 0
 		n.buf.WriteString("<noscript style=\"")
@@ -227,6 +229,7 @@ func (s *Script) Bytes() []byte {
 }
 
 func (s *Script) Prepare() {
+	s.buf.Reset()
 	s.buf.WriteString("<script")
 	if s.src != "" {
 		s.buf.WriteString(" src=\"" + s.src + "\"")

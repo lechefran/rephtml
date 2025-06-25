@@ -46,6 +46,7 @@ func (p *P) Bytes() []byte {
 }
 
 func (p *P) Prepare() {
+	p.buf.Reset()
 	if len(p.style) != 0 {
 		idx := 0
 		p.buf.WriteString("<p style=\"")
@@ -81,6 +82,7 @@ func (c *Comment) Bytes() []byte {
 }
 
 func (c *Comment) Prepare() {
+	c.buf.Reset()
 	c.buf.WriteString("<!--" + c.text + "-->")
 }
 
@@ -116,6 +118,7 @@ func (h *H1) Bytes() []byte {
 }
 
 func (h *H1) Prepare() {
+	h.buf.Reset()
 	if len(h.style) != 0 {
 		idx := 0
 		h.buf.WriteString("<h1 style=\"")
@@ -164,6 +167,7 @@ func (h *H2) Bytes() []byte {
 }
 
 func (h *H2) Prepare() {
+	h.buf.Reset()
 	if len(h.style) != 0 {
 		idx := 0
 		h.buf.WriteString("<h2 style=\"")
@@ -212,6 +216,7 @@ func (h *H3) Bytes() []byte {
 }
 
 func (h *H3) Prepare() {
+	h.buf.Reset()
 	if len(h.style) != 0 {
 		idx := 0
 		h.buf.WriteString("<h3 style=\"")
@@ -260,6 +265,7 @@ func (h *H4) Bytes() []byte {
 }
 
 func (h *H4) Prepare() {
+	h.buf.Reset()
 	if len(h.style) != 0 {
 		idx := 0
 		h.buf.WriteString("<h4 style=\"")
@@ -308,6 +314,7 @@ func (h *H5) Bytes() []byte {
 }
 
 func (h *H5) Prepare() {
+	h.buf.Reset()
 	if len(h.style) != 0 {
 		idx := 0
 		h.buf.WriteString("<h5 style=\"")
@@ -356,6 +363,7 @@ func (h *H6) Bytes() []byte {
 }
 
 func (h *H6) Prepare() {
+	h.buf.Reset()
 	if len(h.style) != 0 {
 		idx := 0
 		h.buf.WriteString("<h6 style=\"")
@@ -409,6 +417,7 @@ func (a *Anchor) Bytes() []byte {
 }
 
 func (a *Anchor) Prepare() {
+	a.buf.Reset()
 	if len(a.style) != 0 {
 		idx := 0
 		a.buf.WriteString("<a style=\"")
@@ -478,6 +487,7 @@ func (a *Abbr) Bytes() []byte {
 }
 
 func (a *Abbr) Prepare() {
+	a.buf.Reset()
 	if len(a.style) != 0 {
 		idx := 0
 		a.buf.WriteString("<abbr style=\"")
@@ -541,6 +551,7 @@ func (b *B) Bytes() []byte {
 }
 
 func (b *B) Prepare() {
+	b.buf.Reset()
 	if len(b.style) != 0 {
 		idx := 0
 		b.buf.WriteString("<b style=\"")
@@ -596,6 +607,7 @@ func (i *I) Bytes() []byte {
 }
 
 func (i *I) Prepare() {
+	i.buf.Reset()
 	if len(i.style) != 0 {
 		idx := 0
 		i.buf.WriteString("<i style=\"")
@@ -657,6 +669,7 @@ func (q *Q) Bytes() []byte {
 }
 
 func (q *Q) Prepare() {
+	q.buf.Reset()
 	if len(q.style) != 0 {
 		idx := 0
 		q.buf.WriteString("<q style=\"")
@@ -720,6 +733,7 @@ func (s *S) Bytes() []byte {
 }
 
 func (s *S) Prepare() {
+	s.buf.Reset()
 	if len(s.style) != 0 {
 		idx := 0
 		s.buf.WriteString("<s style=\"")
@@ -775,6 +789,7 @@ func (u *U) Bytes() []byte {
 }
 
 func (u *U) Prepare() {
+	u.buf.Reset()
 	if len(u.style) != 0 {
 		idx := 0
 		u.buf.WriteString("<u style=\"")
@@ -830,6 +845,7 @@ func (d *Dbi) Bytes() []byte {
 }
 
 func (d *Dbi) Prepare() {
+	d.buf.Reset()
 	if len(d.style) != 0 {
 		idx := 0
 		d.buf.WriteString("<dbi style=\"")
@@ -885,6 +901,7 @@ func (d *Dbo) Bytes() []byte {
 }
 
 func (d *Dbo) Prepare() {
+	d.buf.Reset()
 	if len(d.style) != 0 {
 		idx := 0
 		d.buf.WriteString("<dbo style=\"")
@@ -934,6 +951,7 @@ func (br *Br) Bytes() []byte {
 }
 
 func (br *Br) Prepare() {
+	br.buf.Reset()
 	if len(br.style) != 0 {
 		idx := 0
 		br.buf.WriteString("<br style=\"")
@@ -989,6 +1007,7 @@ func (c *Cite) Bytes() []byte {
 }
 
 func (c *Cite) Prepare() {
+	c.buf.Reset()
 	if len(c.style) != 0 {
 		idx := 0
 		c.buf.WriteString("<cite style=\"")
@@ -1044,6 +1063,7 @@ func (c *Code) Bytes() []byte {
 }
 
 func (c *Code) Prepare() {
+	c.buf.Reset()
 	if len(c.style) != 0 {
 		idx := 0
 		c.buf.WriteString("<code style=\"")
@@ -1105,6 +1125,7 @@ func (d *Data) Bytes() []byte {
 }
 
 func (d *Data) Prepare() {
+	d.buf.Reset()
 	if len(d.style) != 0 {
 		idx := 0
 		d.buf.WriteString("<data style=\"")
@@ -1174,6 +1195,7 @@ func (d *Dfn) Bytes() []byte {
 }
 
 func (d *Dfn) Prepare() {
+	d.buf.Reset()
 	if len(d.style) != 0 {
 		idx := 0
 		d.buf.WriteString("<dfn style=\"")
@@ -1237,6 +1259,7 @@ func (e *Elem) Bytes() []byte {
 }
 
 func (e *Elem) Prepare() {
+	e.buf.Reset()
 	if len(e.style) != 0 {
 		idx := 0
 		e.buf.WriteString("<elem style=\"")
@@ -1292,6 +1315,7 @@ func (m *Mark) Bytes() []byte {
 }
 
 func (m *Mark) Prepare() {
+	m.buf.Reset()
 	if len(m.style) != 0 {
 		idx := 0
 		m.buf.WriteString("<mark style=\"")
@@ -1347,6 +1371,7 @@ func (r *Ruby) Bytes() []byte {
 }
 
 func (r *Ruby) Prepare() {
+	r.buf.Reset()
 	if len(r.style) != 0 {
 		idx := 0
 		r.buf.WriteString("<ruby style=\"")
@@ -1407,6 +1432,7 @@ func (rb *Rb) Bytes() []byte {
 }
 
 func (rb *Rb) Prepare() {
+	rb.buf.Reset()
 	if len(rb.style) != 0 {
 		idx := 0
 		rb.buf.WriteString("<rb style=\"")
@@ -1462,6 +1488,7 @@ func (rt *Rt) Bytes() []byte {
 }
 
 func (rt *Rt) Prepare() {
+	rt.buf.Reset()
 	if len(rt.style) != 0 {
 		idx := 0
 		rt.buf.WriteString("<rt style=\"")
@@ -1517,6 +1544,7 @@ func (rtc *Rtc) Bytes() []byte {
 }
 
 func (rtc *Rtc) Prepare() {
+	rtc.buf.Reset()
 	if len(rtc.style) != 0 {
 		idx := 0
 		rtc.buf.WriteString("<rtc style=\"")
@@ -1577,6 +1605,7 @@ func (rp *Rp) Bytes() []byte {
 }
 
 func (rp *Rp) Prepare() {
+	rp.buf.Reset()
 	if len(rp.style) != 0 {
 		idx := 0
 		rp.buf.WriteString("<rp style=\"")
@@ -1632,6 +1661,7 @@ func (k *Kbd) Bytes() []byte {
 }
 
 func (k *Kbd) Prepare() {
+	k.buf.Reset()
 	if len(k.style) != 0 {
 		idx := 0
 		k.buf.WriteString("<kbd style=\"")
@@ -1687,6 +1717,7 @@ func (s *Sub) Bytes() []byte {
 }
 
 func (s *Sub) Prepare() {
+	s.buf.Reset()
 	if len(s.style) != 0 {
 		idx := 0
 		s.buf.WriteString("<sub style=\"")
@@ -1742,6 +1773,7 @@ func (s *Sup) Bytes() []byte {
 }
 
 func (s *Sup) Prepare() {
+	s.buf.Reset()
 	if len(s.style) != 0 {
 		idx := 0
 		s.buf.WriteString("<sup style=\"")
@@ -1797,6 +1829,7 @@ func (s *Samp) Bytes() []byte {
 }
 
 func (s *Samp) Prepare() {
+	s.buf.Reset()
 	if len(s.style) != 0 {
 		idx := 0
 		s.buf.WriteString("<samp style=\"")
@@ -1852,6 +1885,7 @@ func (s *Small) Bytes() []byte {
 }
 
 func (s *Small) Prepare() {
+	s.buf.Reset()
 	if len(s.style) != 0 {
 		idx := 0
 		s.buf.WriteString("<small style=\"")
@@ -1907,6 +1941,7 @@ func (s *Span) Bytes() []byte {
 }
 
 func (s *Span) Prepare() {
+	s.buf.Reset()
 	if len(s.style) != 0 {
 		idx := 0
 		s.buf.WriteString("<span style=\"")
@@ -1962,6 +1997,7 @@ func (s *Strong) Bytes() []byte {
 }
 
 func (s *Strong) Prepare() {
+	s.buf.Reset()
 	if len(s.style) != 0 {
 		idx := 0
 		s.buf.WriteString("<strong style=\"")
@@ -2069,6 +2105,7 @@ func (t *Time) Bytes() []byte {
 }
 
 func (t *Time) Prepare() {
+	t.buf.Reset()
 	t.buf.WriteString("<time")
 	if t.datetime != "" {
 		t.buf.WriteString(" datetime=\"" + t.datetime + "\"")
@@ -2127,6 +2164,7 @@ func (v *Var) Bytes() []byte {
 }
 
 func (v *Var) Prepare() {
+	v.buf.Reset()
 	if len(v.style) != 0 {
 		idx := 0
 		v.buf.WriteString("<var style=\"")
@@ -2176,6 +2214,7 @@ func (w *Wbr) Bytes() []byte {
 }
 
 func (w *Wbr) Prepare() {
+	w.buf.Reset()
 	if len(w.style) != 0 {
 		idx := 0
 		w.buf.WriteString("<wbr style=\"")
@@ -2225,6 +2264,7 @@ func (h *Hr) Bytes() []byte {
 }
 
 func (h *Hr) Prepare() {
+	h.buf.Reset()
 	if len(h.style) != 0 {
 		idx := 0
 		h.buf.WriteString("<hr style=\"")
@@ -2280,6 +2320,7 @@ func (p *Pre) Bytes() []byte {
 }
 
 func (p *Pre) Prepare() {
+	p.buf.Reset()
 	if len(p.style) != 0 {
 		idx := 0
 		p.buf.WriteString("<pre style=\"")
@@ -2341,6 +2382,7 @@ func (b *Blockquote) Bytes() []byte {
 }
 
 func (b *Blockquote) Prepare() {
+	b.buf.Reset()
 	b.buf.WriteString("<blockquote")
 	if b.cite != "" {
 		b.buf.WriteString(" cite=\"" + b.cite + "\"")
@@ -2411,6 +2453,7 @@ func (m *Menu) Bytes() []byte {
 }
 
 func (m *Menu) Prepare() {
+	m.buf.Reset()
 	m.buf.WriteString("<menu")
 	if m.menuType != "" {
 		m.buf.WriteString(" type=\"" + m.menuType + "\"")
@@ -2495,6 +2538,7 @@ func (o *Ol) Bytes() []byte {
 }
 
 func (o *Ol) Prepare() {
+	o.buf.Reset()
 	o.buf.WriteString("<ol")
 	if o.start > 0 {
 		o.buf.WriteString(" start=\"")
@@ -2566,6 +2610,7 @@ func (u *Ul) Bytes() []byte {
 }
 
 func (u *Ul) Prepare() {
+	u.buf.Reset()
 	if len(u.style) != 0 {
 		idx := 0
 		u.buf.WriteString("<ul style=\"")
@@ -2632,6 +2677,7 @@ func (l *Li) Bytes() []byte {
 }
 
 func (l *Li) Prepare() {
+	l.buf.Reset()
 	l.buf.WriteString("<li")
 	if l.value > 0 {
 		l.buf.WriteString(" value=\"")
@@ -2697,6 +2743,7 @@ func (d *Dl) Bytes() []byte {
 }
 
 func (d *Dl) Prepare() {
+	d.buf.Reset()
 	if len(d.style) != 0 {
 		idx := 0
 		d.buf.WriteString("<dl style=\"")
@@ -2757,6 +2804,7 @@ func (d *Dt) Bytes() []byte {
 }
 
 func (d *Dt) Prepare() {
+	d.buf.Reset()
 	if len(d.style) != 0 {
 		idx := 0
 		d.buf.WriteString("<dt style=\"")
@@ -2817,6 +2865,7 @@ func (d *Dd) Bytes() []byte {
 }
 
 func (d *Dd) Prepare() {
+	d.buf.Reset()
 	if len(d.style) != 0 {
 		idx := 0
 		d.buf.WriteString("<dd style=\"")
@@ -2877,6 +2926,7 @@ func (f *Figure) Bytes() []byte {
 }
 
 func (f *Figure) Prepare() {
+	f.buf.Reset()
 	if len(f.style) != 0 {
 		idx := 0
 		f.buf.WriteString("<figure style=\"")
@@ -2937,6 +2987,7 @@ func (f *Figcaption) Bytes() []byte {
 }
 
 func (f *Figcaption) Prepare() {
+	f.buf.Reset()
 	if len(f.style) != 0 {
 		idx := 0
 		f.buf.WriteString("<figcaption style=\"")

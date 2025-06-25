@@ -41,6 +41,7 @@ func (h *Header) Bytes() []byte {
 }
 
 func (h *Header) Prepare() {
+	h.buf.Reset()
 	h.buf.WriteString("<header")
 	if len(h.style) != 0 {
 		idx := 0
@@ -107,6 +108,7 @@ func (n *Nav) Bytes() []byte {
 }
 
 func (n *Nav) Prepare() {
+	n.buf.Reset()
 	n.buf.WriteString("<nav")
 	if n.role != "" {
 		n.buf.WriteString(" role=\"" + n.role + "\"")
@@ -176,6 +178,7 @@ func (s *Section) Bytes() []byte {
 }
 
 func (s *Section) Prepare() {
+	s.buf.Reset()
 	s.buf.WriteString("<section")
 	if s.ariaLabel != "" {
 		s.buf.WriteString(" aria-label=\"" + s.ariaLabel + "\"")
@@ -239,6 +242,7 @@ func (m *Main) Bytes() []byte {
 }
 
 func (m *Main) Prepare() {
+	m.buf.Reset()
 	m.buf.WriteString("<main")
 	if len(m.style) != 0 {
 		idx := 0
@@ -299,6 +303,7 @@ func (a *Article) Bytes() []byte {
 }
 
 func (a *Article) Prepare() {
+	a.buf.Reset()
 	a.buf.WriteString("<article")
 	if len(a.style) != 0 {
 		idx := 0
@@ -359,6 +364,7 @@ func (as *Aside) Bytes() []byte {
 }
 
 func (as *Aside) Prepare() {
+	as.buf.Reset()
 	as.buf.WriteString("<aside")
 	if len(as.style) != 0 {
 		idx := 0
@@ -419,6 +425,7 @@ func (f *Footer) Bytes() []byte {
 }
 
 func (f *Footer) Prepare() {
+	f.buf.Reset()
 	f.buf.WriteString("<footer")
 	if len(f.style) != 0 {
 		idx := 0
@@ -479,6 +486,7 @@ func (ad *Address) Bytes() []byte {
 }
 
 func (ad *Address) Prepare() {
+	ad.buf.Reset()
 	ad.buf.WriteString("<address")
 	if len(ad.style) != 0 {
 		idx := 0

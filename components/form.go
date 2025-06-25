@@ -32,6 +32,7 @@ func (f *Form) Bytes() []byte {
 
 // Prepare builds the HTML for the form element
 func (f *Form) Prepare() {
+	f.buf.Reset()
 	f.buf.WriteString("<form")
 	
 	if f.action != "" {
@@ -192,6 +193,7 @@ func (l *Label) Bytes() []byte {
 
 // Prepare builds the HTML for the label element
 func (l *Label) Prepare() {
+	l.buf.Reset()
 	l.buf.WriteString("<label")
 	
 	if l.forattr != "" {
@@ -315,6 +317,7 @@ func (i *Input) Bytes() []byte {
 
 // Prepare builds the HTML for the input element
 func (i *Input) Prepare() {
+	i.buf.Reset()
 	i.buf.WriteString("<input")
 	
 	if i.inputtype != "" {
@@ -591,6 +594,7 @@ func (o *Output) Bytes() []byte {
 
 // Prepare builds the HTML for the output element
 func (o *Output) Prepare() {
+	o.buf.Reset()
 	o.buf.WriteString("<output")
 	
 	if o.forattr != "" {
@@ -708,6 +712,7 @@ func (f *Fieldset) Bytes() []byte {
 
 // Prepare builds the HTML for the fieldset element
 func (f *Fieldset) Prepare() {
+	f.buf.Reset()
 	f.buf.WriteString("<fieldset")
 	
 	if f.form != "" {
@@ -827,6 +832,7 @@ func (b *Button) Bytes() []byte {
 
 // Prepare builds the HTML for the button element
 func (b *Button) Prepare() {
+	b.buf.Reset()
 	b.buf.WriteString("<button")
 	
 	if b.buttonType != "" {
@@ -1029,6 +1035,7 @@ func (s *Select) Bytes() []byte {
 
 // Prepare builds the HTML for the select element
 func (s *Select) Prepare() {
+	s.buf.Reset()
 	s.buf.WriteString("<select")
 	
 	if s.name != "" {
@@ -1188,6 +1195,7 @@ func (d *Datalist) Bytes() []byte {
 
 // Prepare builds the HTML for the datalist element
 func (d *Datalist) Prepare() {
+	d.buf.Reset()
 	d.buf.WriteString("<datalist")
 	
 	if d.id != "" {
@@ -1278,6 +1286,7 @@ func (o *Optgroup) Bytes() []byte {
 
 // Prepare builds the HTML for the optgroup element
 func (o *Optgroup) Prepare() {
+	o.buf.Reset()
 	o.buf.WriteString("<optgroup")
 	
 	if o.label != "" {
@@ -1380,6 +1389,7 @@ func (o *Option) Bytes() []byte {
 
 // Prepare builds the HTML for the option element
 func (o *Option) Prepare() {
+	o.buf.Reset()
 	o.buf.WriteString("<option")
 	
 	if o.value != "" {
@@ -1518,6 +1528,7 @@ func (t *Textarea) Bytes() []byte {
 
 // Prepare builds the HTML for the textarea element
 func (t *Textarea) Prepare() {
+	t.buf.Reset()
 	t.buf.WriteString("<textarea")
 	
 	if t.name != "" {
@@ -1745,6 +1756,7 @@ func (p *Progress) Bytes() []byte {
 
 // Prepare builds the HTML for the progress element
 func (p *Progress) Prepare() {
+	p.buf.Reset()
 	p.buf.WriteString("<progress")
 	
 	if p.value != "" {
@@ -1866,6 +1878,7 @@ func (m *Meter) Bytes() []byte {
 
 // Prepare builds the HTML for the meter element
 func (m *Meter) Prepare() {
+	m.buf.Reset()
 	m.buf.WriteString("<meter")
 	
 	if m.value != "" {
@@ -2020,6 +2033,7 @@ func (l *Legend) Bytes() []byte {
 
 // Prepare builds the HTML for the legend element
 func (l *Legend) Prepare() {
+	l.buf.Reset()
 	l.buf.WriteString("<legend")
 	
 	if len(l.style) != 0 {

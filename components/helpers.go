@@ -1,6 +1,25 @@
 package rephtml
 
-import "regexp"
+import (
+	"bytes"
+	"regexp"
+)
+
+/*
+Internal parsing function to handle style
+*/
+func parseStyle(buf *bytes.Buffer, style map[string]string) {
+	idx := 0
+	buf.WriteString(" style=\"")
+	for k, v := range style {
+		buf.WriteString(k + ": " + v + ";")
+		if idx != len(style)-1 {
+			buf.WriteByte(' ')
+		}
+		idx++
+	}
+	buf.WriteString("\"")
+}
 
 /*
 Internal parsing function to remove all spaces from a byte array

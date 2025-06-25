@@ -389,6 +389,7 @@ func (s *Style) Bytes() []byte {
 }
 
 func (s *Style) Prepare() {
+	s.buf.Reset()
 	res := ""
 	val := reflect.ValueOf(s.Props)
 	t := val.Type()

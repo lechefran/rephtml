@@ -47,6 +47,7 @@ func (s *Slot) Bytes() []byte {
 }
 
 func (s *Slot) Prepare() {
+	s.buf.Reset()
 	s.buf.WriteString("<slot")
 	if s.name != "" {
 		s.buf.WriteString(" name=\"" + s.name + "\"")
@@ -116,6 +117,7 @@ func (t *Template) Bytes() []byte {
 }
 
 func (t *Template) Prepare() {
+	t.buf.Reset()
 	t.buf.WriteString("<template")
 	if t.id != "" {
 		t.buf.WriteString(" id=\"" + t.id + "\"")

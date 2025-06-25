@@ -65,6 +65,7 @@ func (a *Area) Bytes() []byte {
 }
 
 func (a *Area) Prepare() {
+	a.buf.Reset()
 	a.buf.WriteString("<area")
 	if a.alt != "" {
 		a.buf.WriteString(" alt=\"" + a.alt + "\"")
@@ -159,6 +160,7 @@ func (i *Img) Bytes() []byte {
 }
 
 func (i *Img) Prepare() {
+	i.buf.Reset()
 	i.buf.WriteString("<img")
 	if i.src != "" {
 		i.buf.WriteString(" src=\"" + i.src + "\"")
@@ -265,6 +267,7 @@ func (a *Audio) Bytes() []byte {
 }
 
 func (a *Audio) Prepare() {
+	a.buf.Reset()
 	a.buf.WriteString("<audio")
 	if a.src != "" {
 		a.buf.WriteString(" src=\"" + a.src + "\"")
@@ -367,6 +370,7 @@ func (t *Track) Bytes() []byte {
 }
 
 func (t *Track) Prepare() {
+	t.buf.Reset()
 	t.buf.WriteString("<track")
 	if t.src != "" {
 		t.buf.WriteString(" src=\"" + t.src + "\"")
@@ -443,6 +447,7 @@ func (m *Map) Bytes() []byte {
 }
 
 func (m *Map) Prepare() {
+	m.buf.Reset()
 	m.buf.WriteString("<map")
 	if m.name != "" {
 		m.buf.WriteString(" name=\"" + m.name + "\"")
@@ -560,6 +565,7 @@ func (v *Video) Bytes() []byte {
 }
 
 func (v *Video) Prepare() {
+	v.buf.Reset()
 	v.buf.WriteString("<video")
 	if v.src != "" {
 		v.buf.WriteString(" src=\"" + v.src + "\"")

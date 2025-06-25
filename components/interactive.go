@@ -25,6 +25,7 @@ func (d *Details) Bytes() []byte {
 
 // Prepare builds the HTML for the details element
 func (d *Details) Prepare() {
+	d.buf.Reset()
 	d.buf.WriteString("<details")
 	
 	if d.open {
@@ -114,6 +115,7 @@ func (d *Dialog) Bytes() []byte {
 
 // Prepare builds the HTML for the dialog element
 func (d *Dialog) Prepare() {
+	d.buf.Reset()
 	d.buf.WriteString("<dialog")
 	
 	if d.open {
@@ -202,6 +204,7 @@ func (s *Summary) Bytes() []byte {
 
 // Prepare builds the HTML for the summary element
 func (s *Summary) Prepare() {
+	s.buf.Reset()
 	s.buf.WriteString("<summary")
 	
 	if len(s.style) != 0 {

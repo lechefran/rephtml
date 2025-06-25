@@ -8,59 +8,135 @@ import (
 
 const tab = "\t"
 
+// HtmlFile represents the HTML element for the document root
 type HtmlFile struct {
-	buf               bytes.Buffer
-	head, body, style []byte
-	lang              string
-	title             string
-	ttrack            int // tab tracker
-	base              Base
-	options           Options
+	buf         bytes.Buffer
+	style       map[string]string
+	contents    [][]byte
+	ttrack      int
+	lang        string
+	dir         string
+	xmlLang     string
+	xmlns       string
+	manifest    string
+	contextMenu string
 }
 
+// NewHtmlFile creates a new HtmlFile element
 func NewHtmlFile() *HtmlFile {
 	return &HtmlFile{
-		ttrack: 1,
+		style: make(map[string]string),
 	}
 }
 
+// Bytes returns the buffer contents
+func (h *HtmlFile) Bytes() []byte {
+	return h.buf.Bytes()
+}
+
+// Prepare builds the HTML for the html element
+func (h *HtmlFile) Prepare() {
+	h.buf.Reset()
+	h.buf.WriteString("<html")
+	if h.lang != "" {
+		h.buf.WriteString(" lang=\"" + h.lang + "\"")
+	}
+	if h.dir != "" {
+		h.buf.WriteString(" dir=\"" + h.dir + "\"")
+	}
+	if h.xmlLang != "" {
+		h.buf.WriteString(" xml:lang=\"" + h.xmlLang + "\"")
+	}
+	if h.xmlns != "" {
+		h.buf.WriteString(" xmlns=\"" + h.xmlns + "\"")
+	}
+	if h.manifest != "" {
+		h.buf.WriteString(" manifest=\"" + h.manifest + "\"")
+	}
+	if h.contextMenu != "" {
+		h.buf.WriteString(" contextmenu=\"" + h.contextMenu + "\"")
+	}
+	if len(h.style) != 0 {
+		parseStyle(&h.buf, h.style)
+	}
+	h.buf.WriteByte('>')
+
+	for _, content := range h.contents {
+		h.buf.Write(content)
+	}
+	h.buf.WriteString("</html>")
+}
+
+// Add adds content to the html element
+func (h *HtmlFile) Add(e Element) *HtmlFile {
+	if e != nil {
+		e.Prepare()
+		h.contents = append(h.contents, e.Bytes())
+	}
+	return h
+}
+
+// Lang sets the lang attribute
 func (h *HtmlFile) Lang(lang string) *HtmlFile {
 	h.lang = lang
 	return h
 }
 
-func (h *HtmlFile) Title(title string) *HtmlFile {
-	h.title = title
+// Dir sets the dir attribute
+func (h *HtmlFile) Dir(dir string) *HtmlFile {
+	h.dir = dir
 	return h
 }
 
-func (h *HtmlFile) AddOptions(opts Options) *HtmlFile {
-	h.options = opts
+// XmlLang sets the xml:lang attribute
+func (h *HtmlFile) XmlLang(xmlLang string) *HtmlFile {
+	h.xmlLang = xmlLang
 	return h
 }
 
-// Element struct functions
-
-func (h *HtmlFile) AddToHead(e Element) *HtmlFile {
-	h.head = append(h.head, e.Bytes()...)
+// Xmlns sets the xmlns attribute
+func (h *HtmlFile) Xmlns(xmlns string) *HtmlFile {
+	h.xmlns = xmlns
 	return h
 }
 
-func (h *HtmlFile) AddToBody(e Element) *HtmlFile {
-	h.body = append(h.body, e.Bytes()...)
+// Manifest sets the manifest attribute
+func (h *HtmlFile) Manifest(manifest string) *HtmlFile {
+	h.manifest = manifest
 	return h
 }
 
-func (h *HtmlFile) Bytes() []byte {
-	return h.buf.Bytes()
+// ContextMenu sets the contextmenu attribute
+func (h *HtmlFile) ContextMenu(contextMenu string) *HtmlFile {
+	h.contextMenu = contextMenu
+	return h
 }
 
-func (h *HtmlFile) Prepare() *HtmlFile {
+// AddStyle adds a single CSS property
+func (h *HtmlFile) AddStyle(k, v string) *HtmlFile {
+	h.style[k] = v
+	return h
+}
+
+// AddStyles adds multiple CSS properties
+func (h *HtmlFile) AddStyles(m map[string]string) *HtmlFile {
+	for k, v := range m {
+		h.style[k] = v
+	}
+	return h
+}
+
+// Style replaces all styles
+func (h *HtmlFile) Style(m map[string]string) *HtmlFile {
+	h.style = make(map[string]string)
+	for k, v := range m {
+		h.style[k] = v
+	}
 	return h
 }
 
 func (h *HtmlFile) WriteToFile(path string) {
-	if len(h.head) == 0 && len(h.body) == 0 && len(h.style) == 0 {
+	if len(h.contents) == 0 && len(h.style) == 0 {
 		log.Print("No values were appended to the HTML File. " + path + " will not be created")
 	}
 	if _, err := os.Stat(path); os.IsExist(err) {
@@ -117,27 +193,16 @@ func (h *Head) Bytes() []byte {
 
 // Prepare builds the HTML for the head element
 func (h *Head) Prepare() {
+	h.buf.Reset()
 	h.buf.WriteString("<head")
-
 	if len(h.style) != 0 {
-		idx := 0
-		h.buf.WriteString(" style=\"")
-		for k, v := range h.style {
-			h.buf.WriteString(k + ": " + v + ";")
-			if idx != len(h.style)-1 {
-				h.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		h.buf.WriteString("\"")
+		parseStyle(&h.buf, h.style)
 	}
-
 	h.buf.WriteByte('>')
 
 	for _, content := range h.contents {
 		h.buf.Write(content)
 	}
-
 	h.buf.WriteString("</head>")
 }
 
@@ -197,35 +262,22 @@ func (b *Body) Bytes() []byte {
 
 // Prepare builds the HTML for the body element
 func (b *Body) Prepare() {
+	b.buf.Reset()
 	b.buf.WriteString("<body")
-
 	if b.onLoad != "" {
 		b.buf.WriteString(" onload=\"" + b.onLoad + "\"")
 	}
-
 	if b.onUnload != "" {
 		b.buf.WriteString(" onunload=\"" + b.onUnload + "\"")
 	}
-
 	if len(b.style) != 0 {
-		idx := 0
-		b.buf.WriteString(" style=\"")
-		for k, v := range b.style {
-			b.buf.WriteString(k + ": " + v + ";")
-			if idx != len(b.style)-1 {
-				b.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		b.buf.WriteString("\"")
+		parseStyle(&b.buf, b.style)
 	}
-
 	b.buf.WriteByte('>')
 
 	for _, content := range b.contents {
 		b.buf.Write(content)
 	}
-
 	b.buf.WriteString("</body>")
 }
 
@@ -295,27 +347,16 @@ func (t *Title) Bytes() []byte {
 
 // Prepare builds the HTML for the title element
 func (t *Title) Prepare() {
+	t.buf.Reset()
 	t.buf.WriteString("<title")
-
 	if len(t.style) != 0 {
-		idx := 0
-		t.buf.WriteString(" style=\"")
-		for k, v := range t.style {
-			t.buf.WriteString(k + ": " + v + ";")
-			if idx != len(t.style)-1 {
-				t.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		t.buf.WriteString("\"")
+		parseStyle(&t.buf, t.style)
 	}
-
 	t.buf.WriteByte('>')
 
 	for _, content := range t.contents {
 		t.buf.Write(content)
 	}
-
 	t.buf.WriteString("</title>")
 }
 
@@ -379,29 +420,17 @@ func (b *Base) Bytes() []byte {
 
 // Prepare builds the HTML for the base element
 func (b *Base) Prepare() {
+	b.buf.Reset()
 	b.buf.WriteString("<base")
-
 	if b.href != "" {
 		b.buf.WriteString(" href=\"" + b.href + "\"")
 	}
-
 	if b.target != "" {
 		b.buf.WriteString(" target=\"" + b.target + "\"")
 	}
-
 	if len(b.style) != 0 {
-		idx := 0
-		b.buf.WriteString(" style=\"")
-		for k, v := range b.style {
-			b.buf.WriteString(k + ": " + v + ";")
-			if idx != len(b.style)-1 {
-				b.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		b.buf.WriteString("\"")
+		parseStyle(&b.buf, b.style)
 	}
-
 	b.buf.WriteString(">")
 }
 
@@ -469,6 +498,7 @@ func (l *Link) Bytes() []byte {
 
 // Prepare builds the HTML for the link element
 func (l *Link) Prepare() {
+	l.buf.Reset()
 	l.buf.WriteString("<link")
 	if l.rel != "" {
 		l.buf.WriteString(" rel=\"" + l.rel + "\"")
@@ -497,18 +527,8 @@ func (l *Link) Prepare() {
 	if l.hreflang != "" {
 		l.buf.WriteString(" hreflang=\"" + l.hreflang + "\"")
 	}
-
 	if len(l.style) != 0 {
-		idx := 0
-		l.buf.WriteString(" style=\"")
-		for k, v := range l.style {
-			l.buf.WriteString(k + ": " + v + ";")
-			if idx != len(l.style)-1 {
-				l.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		l.buf.WriteString("\"")
+		parseStyle(&l.buf, l.style)
 	}
 	l.buf.WriteString(">")
 }
@@ -616,45 +636,29 @@ func (m *Meta) Bytes() []byte {
 
 // Prepare builds the HTML for the meta element
 func (m *Meta) Prepare() {
+	m.buf.Reset()
 	m.buf.WriteString("<meta")
-
 	if m.name != "" {
 		m.buf.WriteString(" name=\"" + m.name + "\"")
 	}
-
 	if m.content != "" {
 		m.buf.WriteString(" content=\"" + m.content + "\"")
 	}
-
 	if m.charset != "" {
 		m.buf.WriteString(" charset=\"" + m.charset + "\"")
 	}
-
 	if m.property != "" {
 		m.buf.WriteString(" property=\"" + m.property + "\"")
 	}
-
 	if m.httpEquiv != "" {
 		m.buf.WriteString(" http-equiv=\"" + m.httpEquiv + "\"")
 	}
-
 	if m.scheme != "" {
 		m.buf.WriteString(" scheme=\"" + m.scheme + "\"")
 	}
-
 	if len(m.style) != 0 {
-		idx := 0
-		m.buf.WriteString(" style=\"")
-		for k, v := range m.style {
-			m.buf.WriteString(k + ": " + v + ";")
-			if idx != len(m.style)-1 {
-				m.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		m.buf.WriteString("\"")
+		parseStyle(&m.buf, m.style)
 	}
-
 	m.buf.WriteString(">")
 }
 
@@ -741,27 +745,16 @@ func (s *StyleElement) Bytes() []byte {
 
 // Prepare builds the HTML for the style element
 func (s *StyleElement) Prepare() {
+	s.buf.Reset()
 	s.buf.WriteString("<style")
-
 	if s.styleType != "" {
 		s.buf.WriteString(" type=\"" + s.styleType + "\"")
 	}
-
 	if s.media != "" {
 		s.buf.WriteString(" media=\"" + s.media + "\"")
 	}
-
 	if len(s.style) != 0 {
-		idx := 0
-		s.buf.WriteString(" style=\"")
-		for k, v := range s.style {
-			s.buf.WriteString(k + ": " + v + ";")
-			if idx != len(s.style)-1 {
-				s.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		s.buf.WriteString("\"")
+		parseStyle(&s.buf, s.style)
 	}
 
 	s.buf.WriteByte('>')
