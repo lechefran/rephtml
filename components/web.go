@@ -53,16 +53,7 @@ func (s *Slot) Prepare() {
 		s.buf.WriteString(" name=\"" + s.name + "\"")
 	}
 	if len(s.style) != 0 {
-		idx := 0
-		s.buf.WriteString(" style=\"")
-		for k, v := range s.style {
-			s.buf.WriteString(k + ": " + v + ";")
-			if idx != len(s.style)-1 {
-				s.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		s.buf.WriteString("\"")
+		parseStyle(&s.buf, s.style)
 	}
 	s.buf.WriteByte('>')
 
@@ -123,16 +114,7 @@ func (t *Template) Prepare() {
 		t.buf.WriteString(" id=\"" + t.id + "\"")
 	}
 	if len(t.style) != 0 {
-		idx := 0
-		t.buf.WriteString(" style=\"")
-		for k, v := range t.style {
-			t.buf.WriteString(k + ": " + v + ";")
-			if idx != len(t.style)-1 {
-				t.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		t.buf.WriteString("\"")
+		parseStyle(&t.buf, t.style)
 	}
 	t.buf.WriteByte('>')
 

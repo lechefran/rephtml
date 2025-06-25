@@ -33,16 +33,7 @@ func (d *Details) Prepare() {
 	}
 	
 	if len(d.style) != 0 {
-		idx := 0
-		d.buf.WriteString(" style=\"")
-		for k, v := range d.style {
-			d.buf.WriteString(k + ": " + v + ";")
-			if idx != len(d.style)-1 {
-				d.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		d.buf.WriteString("\"")
+		parseStyle(&d.buf, d.style)
 	}
 	
 	d.buf.WriteByte('>')
@@ -123,16 +114,7 @@ func (d *Dialog) Prepare() {
 	}
 	
 	if len(d.style) != 0 {
-		idx := 0
-		d.buf.WriteString(" style=\"")
-		for k, v := range d.style {
-			d.buf.WriteString(k + ": " + v + ";")
-			if idx != len(d.style)-1 {
-				d.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		d.buf.WriteString("\"")
+		parseStyle(&d.buf, d.style)
 	}
 	
 	d.buf.WriteByte('>')
@@ -208,16 +190,7 @@ func (s *Summary) Prepare() {
 	s.buf.WriteString("<summary")
 	
 	if len(s.style) != 0 {
-		idx := 0
-		s.buf.WriteString(" style=\"")
-		for k, v := range s.style {
-			s.buf.WriteString(k + ": " + v + ";")
-			if idx != len(s.style)-1 {
-				s.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		s.buf.WriteString("\"")
+		parseStyle(&s.buf, s.style)
 	}
 	
 	s.buf.WriteByte('>')

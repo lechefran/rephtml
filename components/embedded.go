@@ -75,7 +75,6 @@ func (e *Embed) Prepare() {
 	}
 	if len(e.style) != 0 {
 		parseStyle(&e.buf, e.style)
-		e.buf.WriteString("\"")
 	}
 	e.buf.WriteString(">")
 }
@@ -366,11 +365,11 @@ func (p *Picture) Bytes() []byte {
 
 func (p *Picture) Prepare() {
 	p.buf.Reset()
+	p.buf.WriteString("<picture")
 	if len(p.style) != 0 {
 		parseStyle(&p.buf, p.style)
-	} else {
-		p.buf.WriteString("<picture>")
 	}
+	p.buf.WriteByte('>')
 
 	for _, content := range p.contents {
 		p.buf.Write(content)

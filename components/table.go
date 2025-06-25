@@ -139,16 +139,7 @@ func (t *Table) Prepare() {
 		t.buf.WriteString("\"")
 	}
 	if len(t.style) != 0 {
-		idx := 0
-		t.buf.WriteString(" style=\"")
-		for k, v := range t.style {
-			t.buf.WriteString(k + ": " + v + ";")
-			if idx != len(t.style)-1 {
-				t.buf.WriteString(" ")
-			}
-			idx++
-		}
-		t.buf.WriteString("\"")
+		parseStyle(&t.buf, t.style)
 	}
 	t.buf.WriteByte('>')
 
@@ -288,16 +279,7 @@ func (th *Thead) Prepare() {
 		th.buf.WriteString("\"")
 	}
 	if len(th.style) != 0 {
-		idx := 0
-		th.buf.WriteString(" style=\"")
-		for k, v := range th.style {
-			th.buf.WriteString(k + ": " + v + ";")
-			if idx != len(th.style)-1 {
-				th.buf.WriteString(" ")
-			}
-			idx++
-		}
-		th.buf.WriteString("\"")
+		parseStyle(&th.buf, th.style)
 	}
 	th.buf.WriteByte('>')
 
@@ -389,16 +371,7 @@ func (tb *Tbody) Prepare() {
 		tb.buf.WriteString("\"")
 	}
 	if len(tb.style) != 0 {
-		idx := 0
-		tb.buf.WriteString(" style=\"")
-		for k, v := range tb.style {
-			tb.buf.WriteString(k + ": " + v + ";")
-			if idx != len(tb.style)-1 {
-				tb.buf.WriteString(" ")
-			}
-			idx++
-		}
-		tb.buf.WriteString("\"")
+		parseStyle(&tb.buf, tb.style)
 	}
 	tb.buf.WriteByte('>')
 
@@ -490,16 +463,7 @@ func (tf *Tfoot) Prepare() {
 		tf.buf.WriteString("\"")
 	}
 	if len(tf.style) != 0 {
-		idx := 0
-		tf.buf.WriteString(" style=\"")
-		for k, v := range tf.style {
-			tf.buf.WriteString(k + ": " + v + ";")
-			if idx != len(tf.style)-1 {
-				tf.buf.WriteString(" ")
-			}
-			idx++
-		}
-		tf.buf.WriteString("\"")
+		parseStyle(&tf.buf, tf.style)
 	}
 	tf.buf.WriteByte('>')
 
@@ -591,16 +555,7 @@ func (c *Caption) Prepare() {
 		c.buf.WriteString("\"")
 	}
 	if len(c.style) != 0 {
-		idx := 0
-		c.buf.WriteString(" style=\"")
-		for k, v := range c.style {
-			c.buf.WriteString(k + ": " + v + ";")
-			if idx != len(c.style)-1 {
-				c.buf.WriteString(" ")
-			}
-			idx++
-		}
-		c.buf.WriteString("\"")
+		parseStyle(&c.buf, c.style)
 	}
 	c.buf.WriteByte('>')
 
@@ -690,16 +645,7 @@ func (col *Col) Prepare() {
 		col.buf.WriteString("\"")
 	}
 	if len(col.style) != 0 {
-		idx := 0
-		col.buf.WriteString(" style=\"")
-		for k, v := range col.style {
-			col.buf.WriteString(k + ": " + v + ";")
-			if idx != len(col.style)-1 {
-				col.buf.WriteString(" ")
-			}
-			idx++
-		}
-		col.buf.WriteString("\"")
+		parseStyle(&col.buf, col.style)
 	}
 	if col.span > 0 {
 		col.buf.WriteString(" span=\"")
@@ -797,16 +743,7 @@ func (cg *Colgroup) Prepare() {
 		cg.buf.WriteString("\"")
 	}
 	if len(cg.style) != 0 {
-		idx := 0
-		cg.buf.WriteString(" style=\"")
-		for k, v := range cg.style {
-			cg.buf.WriteString(k + ": " + v + ";")
-			if idx != len(cg.style)-1 {
-				cg.buf.WriteString(" ")
-			}
-			idx++
-		}
-		cg.buf.WriteString("\"")
+		parseStyle(&cg.buf, cg.style)
 	}
 	if cg.span > 0 {
 		cg.buf.WriteString(" span=\"")
@@ -908,16 +845,7 @@ func (tr *Tr) Prepare() {
 		tr.buf.WriteString("\"")
 	}
 	if len(tr.style) != 0 {
-		idx := 0
-		tr.buf.WriteString(" style=\"")
-		for k, v := range tr.style {
-			tr.buf.WriteString(k + ": " + v + ";")
-			if idx != len(tr.style)-1 {
-				tr.buf.WriteString(" ")
-			}
-			idx++
-		}
-		tr.buf.WriteString("\"")
+		parseStyle(&tr.buf, tr.style)
 	}
 	tr.buf.WriteByte('>')
 
@@ -1021,16 +949,7 @@ func (td *Td) Prepare() {
 		td.buf.WriteString("\"")
 	}
 	if len(td.style) != 0 {
-		idx := 0
-		td.buf.WriteString(" style=\"")
-		for k, v := range td.style {
-			td.buf.WriteString(k + ": " + v + ";")
-			if idx != len(td.style)-1 {
-				td.buf.WriteString(" ")
-			}
-			idx++
-		}
-		td.buf.WriteString("\"")
+		parseStyle(&td.buf, td.style)
 	}
 	if td.colspan > 0 {
 		td.buf.WriteString(" colspan=\"")
@@ -1150,16 +1069,7 @@ func (th *Th) Prepare() {
 		th.buf.WriteString("\"")
 	}
 	if len(th.style) != 0 {
-		idx := 0
-		th.buf.WriteString(" style=\"")
-		for k, v := range th.style {
-			th.buf.WriteString(k + ": " + v + ";")
-			if idx != len(th.style)-1 {
-				th.buf.WriteString(" ")
-			}
-			idx++
-		}
-		th.buf.WriteString("\"")
+		parseStyle(&th.buf, th.style)
 	}
 	if th.colspan > 0 {
 		th.buf.WriteString(" colspan=\"")

@@ -68,16 +68,7 @@ func (f *Form) Prepare() {
 	}
 	
 	if len(f.style) != 0 {
-		idx := 0
-		f.buf.WriteString(" style=\"")
-		for k, v := range f.style {
-			f.buf.WriteString(k + ": " + v + ";")
-			if idx != len(f.style)-1 {
-				f.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		f.buf.WriteString("\"")
+		parseStyle(&f.buf, f.style)
 	}
 	
 	f.buf.WriteByte('>')
@@ -205,16 +196,7 @@ func (l *Label) Prepare() {
 	}
 	
 	if len(l.style) != 0 {
-		idx := 0
-		l.buf.WriteString(" style=\"")
-		for k, v := range l.style {
-			l.buf.WriteString(k + ": " + v + ";")
-			if idx != len(l.style)-1 {
-				l.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		l.buf.WriteString("\"")
+		parseStyle(&l.buf, l.style)
 	}
 	
 	l.buf.WriteByte('>')
@@ -405,16 +387,7 @@ func (i *Input) Prepare() {
 	}
 	
 	if len(i.style) != 0 {
-		idx := 0
-		i.buf.WriteString(" style=\"")
-		for k, v := range i.style {
-			i.buf.WriteString(k + ": " + v + ";")
-			if idx != len(i.style)-1 {
-				i.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		i.buf.WriteString("\"")
+		parseStyle(&i.buf, i.style)
 	}
 	
 	i.buf.WriteString(">")
@@ -610,16 +583,7 @@ func (o *Output) Prepare() {
 	}
 	
 	if len(o.style) != 0 {
-		idx := 0
-		o.buf.WriteString(" style=\"")
-		for k, v := range o.style {
-			o.buf.WriteString(k + ": " + v + ";")
-			if idx != len(o.style)-1 {
-				o.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		o.buf.WriteString("\"")
+		parseStyle(&o.buf, o.style)
 	}
 	
 	o.buf.WriteByte('>')
@@ -728,16 +692,7 @@ func (f *Fieldset) Prepare() {
 	}
 	
 	if len(f.style) != 0 {
-		idx := 0
-		f.buf.WriteString(" style=\"")
-		for k, v := range f.style {
-			f.buf.WriteString(k + ": " + v + ";")
-			if idx != len(f.style)-1 {
-				f.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		f.buf.WriteString("\"")
+		parseStyle(&f.buf, f.style)
 	}
 	
 	f.buf.WriteByte('>')
@@ -880,16 +835,7 @@ func (b *Button) Prepare() {
 	}
 	
 	if len(b.style) != 0 {
-		idx := 0
-		b.buf.WriteString(" style=\"")
-		for k, v := range b.style {
-			b.buf.WriteString(k + ": " + v + ";")
-			if idx != len(b.style)-1 {
-				b.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		b.buf.WriteString("\"")
+		parseStyle(&b.buf, b.style)
 	}
 	
 	b.buf.WriteByte('>')
@@ -1071,16 +1017,7 @@ func (s *Select) Prepare() {
 	}
 	
 	if len(s.style) != 0 {
-		idx := 0
-		s.buf.WriteString(" style=\"")
-		for k, v := range s.style {
-			s.buf.WriteString(k + ": " + v + ";")
-			if idx != len(s.style)-1 {
-				s.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		s.buf.WriteString("\"")
+		parseStyle(&s.buf, s.style)
 	}
 	
 	s.buf.WriteByte('>')
@@ -1203,16 +1140,7 @@ func (d *Datalist) Prepare() {
 	}
 	
 	if len(d.style) != 0 {
-		idx := 0
-		d.buf.WriteString(" style=\"")
-		for k, v := range d.style {
-			d.buf.WriteString(k + ": " + v + ";")
-			if idx != len(d.style)-1 {
-				d.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		d.buf.WriteString("\"")
+		parseStyle(&d.buf, d.style)
 	}
 	
 	d.buf.WriteByte('>')
@@ -1298,16 +1226,7 @@ func (o *Optgroup) Prepare() {
 	}
 	
 	if len(o.style) != 0 {
-		idx := 0
-		o.buf.WriteString(" style=\"")
-		for k, v := range o.style {
-			o.buf.WriteString(k + ": " + v + ";")
-			if idx != len(o.style)-1 {
-				o.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		o.buf.WriteString("\"")
+		parseStyle(&o.buf, o.style)
 	}
 	
 	o.buf.WriteByte('>')
@@ -1409,16 +1328,7 @@ func (o *Option) Prepare() {
 	}
 	
 	if len(o.style) != 0 {
-		idx := 0
-		o.buf.WriteString(" style=\"")
-		for k, v := range o.style {
-			o.buf.WriteString(k + ": " + v + ";")
-			if idx != len(o.style)-1 {
-				o.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		o.buf.WriteString("\"")
+		parseStyle(&o.buf, o.style)
 	}
 	
 	o.buf.WriteByte('>')
@@ -1588,16 +1498,7 @@ func (t *Textarea) Prepare() {
 	}
 	
 	if len(t.style) != 0 {
-		idx := 0
-		t.buf.WriteString(" style=\"")
-		for k, v := range t.style {
-			t.buf.WriteString(k + ": " + v + ";")
-			if idx != len(t.style)-1 {
-				t.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		t.buf.WriteString("\"")
+		parseStyle(&t.buf, t.style)
 	}
 	
 	t.buf.WriteByte('>')
@@ -1772,16 +1673,7 @@ func (p *Progress) Prepare() {
 	}
 	
 	if len(p.style) != 0 {
-		idx := 0
-		p.buf.WriteString(" style=\"")
-		for k, v := range p.style {
-			p.buf.WriteString(k + ": " + v + ";")
-			if idx != len(p.style)-1 {
-				p.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		p.buf.WriteString("\"")
+		parseStyle(&p.buf, p.style)
 	}
 	
 	p.buf.WriteByte('>')
@@ -1910,16 +1802,7 @@ func (m *Meter) Prepare() {
 	}
 	
 	if len(m.style) != 0 {
-		idx := 0
-		m.buf.WriteString(" style=\"")
-		for k, v := range m.style {
-			m.buf.WriteString(k + ": " + v + ";")
-			if idx != len(m.style)-1 {
-				m.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		m.buf.WriteString("\"")
+		parseStyle(&m.buf, m.style)
 	}
 	
 	m.buf.WriteByte('>')
@@ -2037,16 +1920,7 @@ func (l *Legend) Prepare() {
 	l.buf.WriteString("<legend")
 	
 	if len(l.style) != 0 {
-		idx := 0
-		l.buf.WriteString(" style=\"")
-		for k, v := range l.style {
-			l.buf.WriteString(k + ": " + v + ";")
-			if idx != len(l.style)-1 {
-				l.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		l.buf.WriteString("\"")
+		parseStyle(&l.buf, l.style)
 	}
 	
 	l.buf.WriteByte('>')

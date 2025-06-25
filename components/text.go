@@ -47,20 +47,11 @@ func (p *P) Bytes() []byte {
 
 func (p *P) Prepare() {
 	p.buf.Reset()
+	p.buf.WriteString("<p")
 	if len(p.style) != 0 {
-		idx := 0
-		p.buf.WriteString("<p style=\"")
-		for k, v := range p.style {
-			p.buf.WriteString(k + ": " + v + ";")
-			if idx != len(p.style)-1 {
-				p.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		p.buf.WriteString("\">" + p.text + "</p>")
-	} else {
-		p.buf.WriteString("<p>" + p.text + "</p>")
+		parseStyle(&p.buf, p.style)
 	}
+	p.buf.WriteString(">" + p.text + "</p>")
 }
 
 type Comment struct {
@@ -119,20 +110,11 @@ func (h *H1) Bytes() []byte {
 
 func (h *H1) Prepare() {
 	h.buf.Reset()
+	h.buf.WriteString("<h1")
 	if len(h.style) != 0 {
-		idx := 0
-		h.buf.WriteString("<h1 style=\"")
-		for k, v := range h.style {
-			h.buf.WriteString(k + ": " + v + ";")
-			if idx != len(h.style)-1 {
-				h.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		h.buf.WriteString("\">" + h.text + "</h1>")
-	} else {
-		h.buf.WriteString("<h1>" + h.text + "</h1>")
+		parseStyle(&h.buf, h.style)
 	}
+	h.buf.WriteString(">" + h.text + "</h1>")
 }
 
 type H2 struct {
@@ -168,20 +150,11 @@ func (h *H2) Bytes() []byte {
 
 func (h *H2) Prepare() {
 	h.buf.Reset()
+	h.buf.WriteString("<h2")
 	if len(h.style) != 0 {
-		idx := 0
-		h.buf.WriteString("<h2 style=\"")
-		for k, v := range h.style {
-			h.buf.WriteString(k + ": " + v + ";")
-			if idx != len(h.style)-1 {
-				h.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		h.buf.WriteString("\">" + h.text + "</h2>")
-	} else {
-		h.buf.WriteString("<h2>" + h.text + "</h2>")
+		parseStyle(&h.buf, h.style)
 	}
+	h.buf.WriteString(">" + h.text + "</h2>")
 }
 
 type H3 struct {
@@ -217,20 +190,11 @@ func (h *H3) Bytes() []byte {
 
 func (h *H3) Prepare() {
 	h.buf.Reset()
+	h.buf.WriteString("<h3")
 	if len(h.style) != 0 {
-		idx := 0
-		h.buf.WriteString("<h3 style=\"")
-		for k, v := range h.style {
-			h.buf.WriteString(k + ": " + v + ";")
-			if idx != len(h.style)-1 {
-				h.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		h.buf.WriteString("\">" + h.text + "</h3>")
-	} else {
-		h.buf.WriteString("<h3>" + h.text + "</h3>")
+		parseStyle(&h.buf, h.style)
 	}
+	h.buf.WriteString(">" + h.text + "</h3>")
 }
 
 type H4 struct {
@@ -266,20 +230,11 @@ func (h *H4) Bytes() []byte {
 
 func (h *H4) Prepare() {
 	h.buf.Reset()
+	h.buf.WriteString("<h4")
 	if len(h.style) != 0 {
-		idx := 0
-		h.buf.WriteString("<h4 style=\"")
-		for k, v := range h.style {
-			h.buf.WriteString(k + ": " + v + ";")
-			if idx != len(h.style)-1 {
-				h.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		h.buf.WriteString("\">" + h.text + "</h4>")
-	} else {
-		h.buf.WriteString("<h4>" + h.text + "</h4>")
+		parseStyle(&h.buf, h.style)
 	}
+	h.buf.WriteString(">" + h.text + "</h4>")
 }
 
 type H5 struct {
@@ -315,20 +270,11 @@ func (h *H5) Bytes() []byte {
 
 func (h *H5) Prepare() {
 	h.buf.Reset()
+	h.buf.WriteString("<h5")
 	if len(h.style) != 0 {
-		idx := 0
-		h.buf.WriteString("<h5 style=\"")
-		for k, v := range h.style {
-			h.buf.WriteString(k + ": " + v + ";")
-			if idx != len(h.style)-1 {
-				h.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		h.buf.WriteString("\">" + h.text + "</h5>")
-	} else {
-		h.buf.WriteString("<h5>" + h.text + "</h5>")
+		parseStyle(&h.buf, h.style)
 	}
+	h.buf.WriteString(">" + h.text + "</h5>")
 }
 
 type H6 struct {
@@ -364,20 +310,11 @@ func (h *H6) Bytes() []byte {
 
 func (h *H6) Prepare() {
 	h.buf.Reset()
+	h.buf.WriteString("<h6")
 	if len(h.style) != 0 {
-		idx := 0
-		h.buf.WriteString("<h6 style=\"")
-		for k, v := range h.style {
-			h.buf.WriteString(k + ": " + v + ";")
-			if idx != len(h.style)-1 {
-				h.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		h.buf.WriteString("\">" + h.text + "</h6>")
-	} else {
-		h.buf.WriteString("<h6>" + h.text + "</h6>")
+		parseStyle(&h.buf, h.style)
 	}
+	h.buf.WriteString(">" + h.text + "</h6>")
 }
 
 type Anchor struct {
@@ -418,28 +355,14 @@ func (a *Anchor) Bytes() []byte {
 
 func (a *Anchor) Prepare() {
 	a.buf.Reset()
+	a.buf.WriteString("<a")
 	if len(a.style) != 0 {
-		idx := 0
-		a.buf.WriteString("<a style=\"")
-		for k, v := range a.style {
-			a.buf.WriteString(k + ": " + v + ";")
-			if idx != len(a.style)-1 {
-				a.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		if a.link != "" {
-			a.buf.WriteString(" href=\"" + a.link + "\">" + a.text + "</a>")
-		} else {
-			a.buf.WriteString(">" + a.text + "</a>")
-		}
-	} else {
-		if a.link != "" {
-			a.buf.WriteString("<a href=\"" + a.link + "\">" + a.text + "</a>")
-		} else {
-			a.buf.WriteString("<a>" + a.text + "</a>")
-		}
+		parseStyle(&a.buf, a.style)
 	}
+	if a.link != "" {
+		a.buf.WriteString(" href=\"" + a.link + "\"")
+	}
+	a.buf.WriteString(">" + a.text + "</a>")
 }
 
 type Abbr struct {
@@ -488,28 +411,14 @@ func (a *Abbr) Bytes() []byte {
 
 func (a *Abbr) Prepare() {
 	a.buf.Reset()
+	a.buf.WriteString("<abbr")
 	if len(a.style) != 0 {
-		idx := 0
-		a.buf.WriteString("<abbr style=\"")
-		for k, v := range a.style {
-			a.buf.WriteString(k + ": " + v + ";")
-			if idx != len(a.style)-1 {
-				a.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		a.buf.WriteString("\"")
-		if a.title != "" {
-			a.buf.WriteString(" title=\"" + a.title + "\"")
-		}
-		a.buf.WriteString(">" + a.text + "</abbr>")
-	} else {
-		a.buf.WriteString("<abbr")
-		if a.title != "" {
-			a.buf.WriteString(" title=\"" + a.title + "\"")
-		}
-		a.buf.WriteString(">" + a.text + "</abbr>")
+		parseStyle(&a.buf, a.style)
 	}
+	if a.title != "" {
+		a.buf.WriteString(" title=\"" + a.title + "\"")
+	}
+	a.buf.WriteString(">" + a.text + "</abbr>")
 }
 
 type B struct {
@@ -552,20 +461,11 @@ func (b *B) Bytes() []byte {
 
 func (b *B) Prepare() {
 	b.buf.Reset()
+	b.buf.WriteString("<b")
 	if len(b.style) != 0 {
-		idx := 0
-		b.buf.WriteString("<b style=\"")
-		for k, v := range b.style {
-			b.buf.WriteString(k + ": " + v + ";")
-			if idx != len(b.style)-1 {
-				b.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		b.buf.WriteString("\">" + b.text + "</b>")
-	} else {
-		b.buf.WriteString("<b>" + b.text + "</b>")
+		parseStyle(&b.buf, b.style)
 	}
+	b.buf.WriteString(">" + b.text + "</b>")
 }
 
 type I struct {
@@ -608,20 +508,11 @@ func (i *I) Bytes() []byte {
 
 func (i *I) Prepare() {
 	i.buf.Reset()
+	i.buf.WriteString("<i")
 	if len(i.style) != 0 {
-		idx := 0
-		i.buf.WriteString("<i style=\"")
-		for k, v := range i.style {
-			i.buf.WriteString(k + ": " + v + ";")
-			if idx != len(i.style)-1 {
-				i.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		i.buf.WriteString("\">" + i.text + "</i>")
-	} else {
-		i.buf.WriteString("<i>" + i.text + "</i>")
+		parseStyle(&i.buf, i.style)
 	}
+	i.buf.WriteString(">" + i.text + "</i>")
 }
 
 type Q struct {
@@ -670,28 +561,14 @@ func (q *Q) Bytes() []byte {
 
 func (q *Q) Prepare() {
 	q.buf.Reset()
+	q.buf.WriteString("<q")
 	if len(q.style) != 0 {
-		idx := 0
-		q.buf.WriteString("<q style=\"")
-		for k, v := range q.style {
-			q.buf.WriteString(k + ": " + v + ";")
-			if idx != len(q.style)-1 {
-				q.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		q.buf.WriteString("\"")
-		if q.cite != "" {
-			q.buf.WriteString(" cite=\"" + q.cite + "\"")
-		}
-		q.buf.WriteString(">" + q.text + "</q>")
-	} else {
-		q.buf.WriteString("<q")
-		if q.cite != "" {
-			q.buf.WriteString(" cite=\"" + q.cite + "\"")
-		}
-		q.buf.WriteString(">" + q.text + "</q>")
+		parseStyle(&q.buf, q.style)
 	}
+	if q.cite != "" {
+		q.buf.WriteString(" cite=\"" + q.cite + "\"")
+	}
+	q.buf.WriteString(">" + q.text + "</q>")
 }
 
 type S struct {
@@ -734,20 +611,11 @@ func (s *S) Bytes() []byte {
 
 func (s *S) Prepare() {
 	s.buf.Reset()
+	s.buf.WriteString("<s")
 	if len(s.style) != 0 {
-		idx := 0
-		s.buf.WriteString("<s style=\"")
-		for k, v := range s.style {
-			s.buf.WriteString(k + ": " + v + ";")
-			if idx != len(s.style)-1 {
-				s.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		s.buf.WriteString("\">" + s.text + "</s>")
-	} else {
-		s.buf.WriteString("<s>" + s.text + "</s>")
+		parseStyle(&s.buf, s.style)
 	}
+	s.buf.WriteString(">" + s.text + "</s>")
 }
 
 type U struct {
@@ -790,20 +658,11 @@ func (u *U) Bytes() []byte {
 
 func (u *U) Prepare() {
 	u.buf.Reset()
+	u.buf.WriteString("<u")
 	if len(u.style) != 0 {
-		idx := 0
-		u.buf.WriteString("<u style=\"")
-		for k, v := range u.style {
-			u.buf.WriteString(k + ": " + v + ";")
-			if idx != len(u.style)-1 {
-				u.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		u.buf.WriteString("\">" + u.text + "</u>")
-	} else {
-		u.buf.WriteString("<u>" + u.text + "</u>")
+		parseStyle(&u.buf, u.style)
 	}
+	u.buf.WriteString(">" + u.text + "</u>")
 }
 
 type Dbi struct {
@@ -846,20 +705,11 @@ func (d *Dbi) Bytes() []byte {
 
 func (d *Dbi) Prepare() {
 	d.buf.Reset()
+	d.buf.WriteString("<dbi")
 	if len(d.style) != 0 {
-		idx := 0
-		d.buf.WriteString("<dbi style=\"")
-		for k, v := range d.style {
-			d.buf.WriteString(k + ": " + v + ";")
-			if idx != len(d.style)-1 {
-				d.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		d.buf.WriteString("\">" + d.text + "</dbi>")
-	} else {
-		d.buf.WriteString("<dbi>" + d.text + "</dbi>")
+		parseStyle(&d.buf, d.style)
 	}
+	d.buf.WriteString(">" + d.text + "</dbi>")
 }
 
 type Dbo struct {
@@ -902,20 +752,11 @@ func (d *Dbo) Bytes() []byte {
 
 func (d *Dbo) Prepare() {
 	d.buf.Reset()
+	d.buf.WriteString("<dbo")
 	if len(d.style) != 0 {
-		idx := 0
-		d.buf.WriteString("<dbo style=\"")
-		for k, v := range d.style {
-			d.buf.WriteString(k + ": " + v + ";")
-			if idx != len(d.style)-1 {
-				d.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		d.buf.WriteString("\">" + d.text + "</dbo>")
-	} else {
-		d.buf.WriteString("<dbo>" + d.text + "</dbo>")
+		parseStyle(&d.buf, d.style)
 	}
+	d.buf.WriteString(">" + d.text + "</dbo>")
 }
 
 type Br struct {
@@ -952,20 +793,11 @@ func (br *Br) Bytes() []byte {
 
 func (br *Br) Prepare() {
 	br.buf.Reset()
+	br.buf.WriteString("<br")
 	if len(br.style) != 0 {
-		idx := 0
-		br.buf.WriteString("<br style=\"")
-		for k, v := range br.style {
-			br.buf.WriteString(k + ": " + v + ";")
-			if idx != len(br.style)-1 {
-				br.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		br.buf.WriteString("\">")
-	} else {
-		br.buf.WriteString("<br>")
+		parseStyle(&br.buf, br.style)
 	}
+	br.buf.WriteByte('>')
 }
 
 type Cite struct {
@@ -1008,20 +840,11 @@ func (c *Cite) Bytes() []byte {
 
 func (c *Cite) Prepare() {
 	c.buf.Reset()
+	c.buf.WriteString("<cite")
 	if len(c.style) != 0 {
-		idx := 0
-		c.buf.WriteString("<cite style=\"")
-		for k, v := range c.style {
-			c.buf.WriteString(k + ": " + v + ";")
-			if idx != len(c.style)-1 {
-				c.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		c.buf.WriteString("\">" + c.text + "</cite>")
-	} else {
-		c.buf.WriteString("<cite>" + c.text + "</cite>")
+		parseStyle(&c.buf, c.style)
 	}
+	c.buf.WriteString(">" + c.text + "</cite>")
 }
 
 type Code struct {
@@ -1064,20 +887,11 @@ func (c *Code) Bytes() []byte {
 
 func (c *Code) Prepare() {
 	c.buf.Reset()
+	c.buf.WriteString("<code")
 	if len(c.style) != 0 {
-		idx := 0
-		c.buf.WriteString("<code style=\"")
-		for k, v := range c.style {
-			c.buf.WriteString(k + ": " + v + ";")
-			if idx != len(c.style)-1 {
-				c.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		c.buf.WriteString("\">" + c.text + "</code>")
-	} else {
-		c.buf.WriteString("<code>" + c.text + "</code>")
+		parseStyle(&c.buf, c.style)
 	}
+	c.buf.WriteString(">" + c.text + "</code>")
 }
 
 type Data struct {
@@ -1126,28 +940,14 @@ func (d *Data) Bytes() []byte {
 
 func (d *Data) Prepare() {
 	d.buf.Reset()
+	d.buf.WriteString("<data")
 	if len(d.style) != 0 {
-		idx := 0
-		d.buf.WriteString("<data style=\"")
-		for k, v := range d.style {
-			d.buf.WriteString(k + ": " + v + ";")
-			if idx != len(d.style)-1 {
-				d.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		d.buf.WriteString("\"")
-		if d.value != "" {
-			d.buf.WriteString(" value=\"" + d.value + "\"")
-		}
-		d.buf.WriteString(">" + d.text + "</data>")
-	} else {
-		d.buf.WriteString("<data")
-		if d.value != "" {
-			d.buf.WriteString(" value=\"" + d.value + "\"")
-		}
-		d.buf.WriteString(">" + d.text + "</data>")
+		parseStyle(&d.buf, d.style)
 	}
+	if d.value != "" {
+		d.buf.WriteString(" value=\"" + d.value + "\"")
+	}
+	d.buf.WriteString(">" + d.text + "</data>")
 }
 
 type Dfn struct {
@@ -1196,28 +996,14 @@ func (d *Dfn) Bytes() []byte {
 
 func (d *Dfn) Prepare() {
 	d.buf.Reset()
+	d.buf.WriteString("<dfn")
 	if len(d.style) != 0 {
-		idx := 0
-		d.buf.WriteString("<dfn style=\"")
-		for k, v := range d.style {
-			d.buf.WriteString(k + ": " + v + ";")
-			if idx != len(d.style)-1 {
-				d.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		d.buf.WriteString("\"")
-		if d.title != "" {
-			d.buf.WriteString(" title=\"" + d.title + "\"")
-		}
-		d.buf.WriteString(">" + d.text + "</dfn>")
-	} else {
-		d.buf.WriteString("<dfn")
-		if d.title != "" {
-			d.buf.WriteString(" title=\"" + d.title + "\"")
-		}
-		d.buf.WriteString(">" + d.text + "</dfn>")
+		parseStyle(&d.buf, d.style)
 	}
+	if d.title != "" {
+		d.buf.WriteString(" title=\"" + d.title + "\"")
+	}
+	d.buf.WriteString(">" + d.text + "</dfn>")
 }
 
 type Elem struct {
@@ -1260,20 +1046,11 @@ func (e *Elem) Bytes() []byte {
 
 func (e *Elem) Prepare() {
 	e.buf.Reset()
+	e.buf.WriteString("<elem")
 	if len(e.style) != 0 {
-		idx := 0
-		e.buf.WriteString("<elem style=\"")
-		for k, v := range e.style {
-			e.buf.WriteString(k + ": " + v + ";")
-			if idx != len(e.style)-1 {
-				e.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		e.buf.WriteString("\">" + e.text + "</elem>")
-	} else {
-		e.buf.WriteString("<elem>" + e.text + "</elem>")
+		parseStyle(&e.buf, e.style)
 	}
+	e.buf.WriteString(">" + e.text + "</elem>")
 }
 
 type Mark struct {
@@ -1316,20 +1093,11 @@ func (m *Mark) Bytes() []byte {
 
 func (m *Mark) Prepare() {
 	m.buf.Reset()
+	m.buf.WriteString("<mark")
 	if len(m.style) != 0 {
-		idx := 0
-		m.buf.WriteString("<mark style=\"")
-		for k, v := range m.style {
-			m.buf.WriteString(k + ": " + v + ";")
-			if idx != len(m.style)-1 {
-				m.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		m.buf.WriteString("\">" + m.text + "</mark>")
-	} else {
-		m.buf.WriteString("<mark>" + m.text + "</mark>")
+		parseStyle(&m.buf, m.style)
 	}
+	m.buf.WriteString(">" + m.text + "</mark>")
 }
 
 type Ruby struct {
@@ -1372,20 +1140,11 @@ func (r *Ruby) Bytes() []byte {
 
 func (r *Ruby) Prepare() {
 	r.buf.Reset()
+	r.buf.WriteString("<ruby")
 	if len(r.style) != 0 {
-		idx := 0
-		r.buf.WriteString("<ruby style=\"")
-		for k, v := range r.style {
-			r.buf.WriteString(k + ": " + v + ";")
-			if idx != len(r.style)-1 {
-				r.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		r.buf.WriteString("\">")
-	} else {
-		r.buf.WriteString("<ruby>")
+		parseStyle(&r.buf, r.style)
 	}
+	r.buf.WriteByte('>')
 
 	for _, content := range r.contents {
 		r.buf.Write(content)
@@ -1433,20 +1192,11 @@ func (rb *Rb) Bytes() []byte {
 
 func (rb *Rb) Prepare() {
 	rb.buf.Reset()
+	rb.buf.WriteString("<rb")
 	if len(rb.style) != 0 {
-		idx := 0
-		rb.buf.WriteString("<rb style=\"")
-		for k, v := range rb.style {
-			rb.buf.WriteString(k + ": " + v + ";")
-			if idx != len(rb.style)-1 {
-				rb.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		rb.buf.WriteString("\">" + rb.text + "</rb>")
-	} else {
-		rb.buf.WriteString("<rb>" + rb.text + "</rb>")
+		parseStyle(&rb.buf, rb.style)
 	}
+	rb.buf.WriteString(">" + rb.text + "</rb>")
 }
 
 type Rt struct {
@@ -1489,20 +1239,11 @@ func (rt *Rt) Bytes() []byte {
 
 func (rt *Rt) Prepare() {
 	rt.buf.Reset()
+	rt.buf.WriteString("<rt")
 	if len(rt.style) != 0 {
-		idx := 0
-		rt.buf.WriteString("<rt style=\"")
-		for k, v := range rt.style {
-			rt.buf.WriteString(k + ": " + v + ";")
-			if idx != len(rt.style)-1 {
-				rt.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		rt.buf.WriteString("\">" + rt.text + "</rt>")
-	} else {
-		rt.buf.WriteString("<rt>" + rt.text + "</rt>")
+		parseStyle(&rt.buf, rt.style)
 	}
+	rt.buf.WriteString(">" + rt.text + "</rt>")
 }
 
 type Rtc struct {
@@ -1545,20 +1286,11 @@ func (rtc *Rtc) Bytes() []byte {
 
 func (rtc *Rtc) Prepare() {
 	rtc.buf.Reset()
+	rtc.buf.WriteString("<rtc")
 	if len(rtc.style) != 0 {
-		idx := 0
-		rtc.buf.WriteString("<rtc style=\"")
-		for k, v := range rtc.style {
-			rtc.buf.WriteString(k + ": " + v + ";")
-			if idx != len(rtc.style)-1 {
-				rtc.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		rtc.buf.WriteString("\">")
-	} else {
-		rtc.buf.WriteString("<rtc>")
+		parseStyle(&rtc.buf, rtc.style)
 	}
+	rtc.buf.WriteByte('>')
 
 	for _, content := range rtc.contents {
 		rtc.buf.Write(content)
@@ -1606,20 +1338,11 @@ func (rp *Rp) Bytes() []byte {
 
 func (rp *Rp) Prepare() {
 	rp.buf.Reset()
+	rp.buf.WriteString("<rp")
 	if len(rp.style) != 0 {
-		idx := 0
-		rp.buf.WriteString("<rp style=\"")
-		for k, v := range rp.style {
-			rp.buf.WriteString(k + ": " + v + ";")
-			if idx != len(rp.style)-1 {
-				rp.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		rp.buf.WriteString("\">" + rp.text + "</rp>")
-	} else {
-		rp.buf.WriteString("<rp>" + rp.text + "</rp>")
+		parseStyle(&rp.buf, rp.style)
 	}
+	rp.buf.WriteString(">" + rp.text + "</rp>")
 }
 
 type Kbd struct {
@@ -1662,20 +1385,11 @@ func (k *Kbd) Bytes() []byte {
 
 func (k *Kbd) Prepare() {
 	k.buf.Reset()
+	k.buf.WriteString("<kbd")
 	if len(k.style) != 0 {
-		idx := 0
-		k.buf.WriteString("<kbd style=\"")
-		for key, v := range k.style {
-			k.buf.WriteString(key + ": " + v + ";")
-			if idx != len(k.style)-1 {
-				k.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		k.buf.WriteString("\">" + k.text + "</kbd>")
-	} else {
-		k.buf.WriteString("<kbd>" + k.text + "</kbd>")
+		parseStyle(&k.buf, k.style)
 	}
+	k.buf.WriteString(">" + k.text + "</kbd>")
 }
 
 type Sub struct {
@@ -1718,20 +1432,11 @@ func (s *Sub) Bytes() []byte {
 
 func (s *Sub) Prepare() {
 	s.buf.Reset()
+	s.buf.WriteString("<sub")
 	if len(s.style) != 0 {
-		idx := 0
-		s.buf.WriteString("<sub style=\"")
-		for k, v := range s.style {
-			s.buf.WriteString(k + ": " + v + ";")
-			if idx != len(s.style)-1 {
-				s.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		s.buf.WriteString("\">" + s.text + "</sub>")
-	} else {
-		s.buf.WriteString("<sub>" + s.text + "</sub>")
+		parseStyle(&s.buf, s.style)
 	}
+	s.buf.WriteString(">" + s.text + "</sub>")
 }
 
 type Sup struct {
@@ -1774,20 +1479,11 @@ func (s *Sup) Bytes() []byte {
 
 func (s *Sup) Prepare() {
 	s.buf.Reset()
+	s.buf.WriteString("<sup")
 	if len(s.style) != 0 {
-		idx := 0
-		s.buf.WriteString("<sup style=\"")
-		for k, v := range s.style {
-			s.buf.WriteString(k + ": " + v + ";")
-			if idx != len(s.style)-1 {
-				s.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		s.buf.WriteString("\">" + s.text + "</sup>")
-	} else {
-		s.buf.WriteString("<sup>" + s.text + "</sup>")
+		parseStyle(&s.buf, s.style)
 	}
+	s.buf.WriteString(">" + s.text + "</sup>")
 }
 
 type Samp struct {
@@ -1830,20 +1526,11 @@ func (s *Samp) Bytes() []byte {
 
 func (s *Samp) Prepare() {
 	s.buf.Reset()
+	s.buf.WriteString("<samp")
 	if len(s.style) != 0 {
-		idx := 0
-		s.buf.WriteString("<samp style=\"")
-		for k, v := range s.style {
-			s.buf.WriteString(k + ": " + v + ";")
-			if idx != len(s.style)-1 {
-				s.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		s.buf.WriteString("\">" + s.text + "</samp>")
-	} else {
-		s.buf.WriteString("<samp>" + s.text + "</samp>")
+		parseStyle(&s.buf, s.style)
 	}
+	s.buf.WriteString(">" + s.text + "</samp>")
 }
 
 type Small struct {
@@ -1886,20 +1573,11 @@ func (s *Small) Bytes() []byte {
 
 func (s *Small) Prepare() {
 	s.buf.Reset()
+	s.buf.WriteString("<small")
 	if len(s.style) != 0 {
-		idx := 0
-		s.buf.WriteString("<small style=\"")
-		for k, v := range s.style {
-			s.buf.WriteString(k + ": " + v + ";")
-			if idx != len(s.style)-1 {
-				s.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		s.buf.WriteString("\">" + s.text + "</small>")
-	} else {
-		s.buf.WriteString("<small>" + s.text + "</small>")
+		parseStyle(&s.buf, s.style)
 	}
+	s.buf.WriteString(">" + s.text + "</small>")
 }
 
 type Span struct {
@@ -1942,20 +1620,11 @@ func (s *Span) Bytes() []byte {
 
 func (s *Span) Prepare() {
 	s.buf.Reset()
+	s.buf.WriteString("<span")
 	if len(s.style) != 0 {
-		idx := 0
-		s.buf.WriteString("<span style=\"")
-		for k, v := range s.style {
-			s.buf.WriteString(k + ": " + v + ";")
-			if idx != len(s.style)-1 {
-				s.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		s.buf.WriteString("\">" + s.text + "</span>")
-	} else {
-		s.buf.WriteString("<span>" + s.text + "</span>")
+		parseStyle(&s.buf, s.style)
 	}
+	s.buf.WriteString(">" + s.text + "</span>")
 }
 
 type Strong struct {
@@ -1998,20 +1667,11 @@ func (s *Strong) Bytes() []byte {
 
 func (s *Strong) Prepare() {
 	s.buf.Reset()
+	s.buf.WriteString("<strong")
 	if len(s.style) != 0 {
-		idx := 0
-		s.buf.WriteString("<strong style=\"")
-		for k, v := range s.style {
-			s.buf.WriteString(k + ": " + v + ";")
-			if idx != len(s.style)-1 {
-				s.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		s.buf.WriteString("\">" + s.text + "</strong>")
-	} else {
-		s.buf.WriteString("<strong>" + s.text + "</strong>")
+		parseStyle(&s.buf, s.style)
 	}
+	s.buf.WriteString(">" + s.text + "</strong>")
 }
 
 type Time struct {
@@ -2111,16 +1771,7 @@ func (t *Time) Prepare() {
 		t.buf.WriteString(" datetime=\"" + t.datetime + "\"")
 	}
 	if len(t.style) != 0 {
-		idx := 0
-		t.buf.WriteString(" style=\"")
-		for k, v := range t.style {
-			t.buf.WriteString(k + ": " + v + ";")
-			if idx != len(t.style)-1 {
-				t.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		t.buf.WriteString("\"")
+		parseStyle(&t.buf, t.style)
 	}
 	t.buf.WriteString(">" + t.text + "</time>")
 }
@@ -2165,20 +1816,11 @@ func (v *Var) Bytes() []byte {
 
 func (v *Var) Prepare() {
 	v.buf.Reset()
+	v.buf.WriteString("<var")
 	if len(v.style) != 0 {
-		idx := 0
-		v.buf.WriteString("<var style=\"")
-		for k, val := range v.style {
-			v.buf.WriteString(k + ": " + val + ";")
-			if idx != len(v.style)-1 {
-				v.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		v.buf.WriteString("\">" + v.text + "</var>")
-	} else {
-		v.buf.WriteString("<var>" + v.text + "</var>")
+		parseStyle(&v.buf, v.style)
 	}
+	v.buf.WriteString(">" + v.text + "</var>")
 }
 
 type Wbr struct {
@@ -2215,20 +1857,11 @@ func (w *Wbr) Bytes() []byte {
 
 func (w *Wbr) Prepare() {
 	w.buf.Reset()
+	w.buf.WriteString("<wbr")
 	if len(w.style) != 0 {
-		idx := 0
-		w.buf.WriteString("<wbr style=\"")
-		for k, v := range w.style {
-			w.buf.WriteString(k + ": " + v + ";")
-			if idx != len(w.style)-1 {
-				w.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		w.buf.WriteString("\">")
-	} else {
-		w.buf.WriteString("<wbr>")
+		parseStyle(&w.buf, w.style)
 	}
+	w.buf.WriteByte('>')
 }
 
 type Hr struct {
@@ -2265,20 +1898,11 @@ func (h *Hr) Bytes() []byte {
 
 func (h *Hr) Prepare() {
 	h.buf.Reset()
+	h.buf.WriteString("<hr")
 	if len(h.style) != 0 {
-		idx := 0
-		h.buf.WriteString("<hr style=\"")
-		for k, v := range h.style {
-			h.buf.WriteString(k + ": " + v + ";")
-			if idx != len(h.style)-1 {
-				h.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		h.buf.WriteString("\">")
-	} else {
-		h.buf.WriteString("<hr>")
+		parseStyle(&h.buf, h.style)
 	}
+	h.buf.WriteByte('>')
 }
 
 type Pre struct {
@@ -2321,20 +1945,11 @@ func (p *Pre) Bytes() []byte {
 
 func (p *Pre) Prepare() {
 	p.buf.Reset()
+	p.buf.WriteString("<pre")
 	if len(p.style) != 0 {
-		idx := 0
-		p.buf.WriteString("<pre style=\"")
-		for k, v := range p.style {
-			p.buf.WriteString(k + ": " + v + ";")
-			if idx != len(p.style)-1 {
-				p.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		p.buf.WriteString("\">" + p.text + "</pre>")
-	} else {
-		p.buf.WriteString("<pre>" + p.text + "</pre>")
+		parseStyle(&p.buf, p.style)
 	}
+	p.buf.WriteString(">" + p.text + "</pre>")
 }
 
 type Blockquote struct {
@@ -2388,16 +2003,7 @@ func (b *Blockquote) Prepare() {
 		b.buf.WriteString(" cite=\"" + b.cite + "\"")
 	}
 	if len(b.style) != 0 {
-		idx := 0
-		b.buf.WriteString(" style=\"")
-		for k, v := range b.style {
-			b.buf.WriteString(k + ": " + v + ";")
-			if idx != len(b.style)-1 {
-				b.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		b.buf.WriteString("\"")
+		parseStyle(&b.buf, b.style)
 	}
 	b.buf.WriteString(">" + b.text + "</blockquote>")
 }
@@ -2462,16 +2068,7 @@ func (m *Menu) Prepare() {
 		m.buf.WriteString(" label=\"" + m.label + "\"")
 	}
 	if len(m.style) != 0 {
-		idx := 0
-		m.buf.WriteString(" style=\"")
-		for k, v := range m.style {
-			m.buf.WriteString(k + ": " + v + ";")
-			if idx != len(m.style)-1 {
-				m.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		m.buf.WriteString("\"")
+		parseStyle(&m.buf, m.style)
 	}
 	m.buf.WriteByte('>')
 
@@ -2552,16 +2149,7 @@ func (o *Ol) Prepare() {
 		o.buf.WriteString(" reversed")
 	}
 	if len(o.style) != 0 {
-		idx := 0
-		o.buf.WriteString(" style=\"")
-		for k, v := range o.style {
-			o.buf.WriteString(k + ": " + v + ";")
-			if idx != len(o.style)-1 {
-				o.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		o.buf.WriteString("\"")
+		parseStyle(&o.buf, o.style)
 	}
 	o.buf.WriteByte('>')
 
@@ -2611,20 +2199,11 @@ func (u *Ul) Bytes() []byte {
 
 func (u *Ul) Prepare() {
 	u.buf.Reset()
+	u.buf.WriteString("<ul")
 	if len(u.style) != 0 {
-		idx := 0
-		u.buf.WriteString("<ul style=\"")
-		for k, v := range u.style {
-			u.buf.WriteString(k + ": " + v + ";")
-			if idx != len(u.style)-1 {
-				u.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		u.buf.WriteString("\">")
-	} else {
-		u.buf.WriteString("<ul>")
+		parseStyle(&u.buf, u.style)
 	}
+	u.buf.WriteByte('>')
 
 	for _, content := range u.contents {
 		u.buf.Write(content)
@@ -2685,16 +2264,7 @@ func (l *Li) Prepare() {
 		l.buf.WriteString("\"")
 	}
 	if len(l.style) != 0 {
-		idx := 0
-		l.buf.WriteString(" style=\"")
-		for k, v := range l.style {
-			l.buf.WriteString(k + ": " + v + ";")
-			if idx != len(l.style)-1 {
-				l.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		l.buf.WriteString("\"")
+		parseStyle(&l.buf, l.style)
 	}
 	l.buf.WriteByte('>')
 
@@ -2744,20 +2314,11 @@ func (d *Dl) Bytes() []byte {
 
 func (d *Dl) Prepare() {
 	d.buf.Reset()
+	d.buf.WriteString("<dl")
 	if len(d.style) != 0 {
-		idx := 0
-		d.buf.WriteString("<dl style=\"")
-		for k, v := range d.style {
-			d.buf.WriteString(k + ": " + v + ";")
-			if idx != len(d.style)-1 {
-				d.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		d.buf.WriteString("\">")
-	} else {
-		d.buf.WriteString("<dl>")
+		parseStyle(&d.buf, d.style)
 	}
+	d.buf.WriteByte('>')
 
 	for _, content := range d.contents {
 		d.buf.Write(content)
@@ -2805,20 +2366,11 @@ func (d *Dt) Bytes() []byte {
 
 func (d *Dt) Prepare() {
 	d.buf.Reset()
+	d.buf.WriteString("<dt")
 	if len(d.style) != 0 {
-		idx := 0
-		d.buf.WriteString("<dt style=\"")
-		for k, v := range d.style {
-			d.buf.WriteString(k + ": " + v + ";")
-			if idx != len(d.style)-1 {
-				d.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		d.buf.WriteString("\">")
-	} else {
-		d.buf.WriteString("<dt>")
+		parseStyle(&d.buf, d.style)
 	}
+	d.buf.WriteByte('>')
 
 	for _, content := range d.contents {
 		d.buf.Write(content)
@@ -2866,20 +2418,11 @@ func (d *Dd) Bytes() []byte {
 
 func (d *Dd) Prepare() {
 	d.buf.Reset()
+	d.buf.WriteString("<dd")
 	if len(d.style) != 0 {
-		idx := 0
-		d.buf.WriteString("<dd style=\"")
-		for k, v := range d.style {
-			d.buf.WriteString(k + ": " + v + ";")
-			if idx != len(d.style)-1 {
-				d.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		d.buf.WriteString("\">")
-	} else {
-		d.buf.WriteString("<dd>")
+		parseStyle(&d.buf, d.style)
 	}
+	d.buf.WriteByte('>')
 
 	for _, content := range d.contents {
 		d.buf.Write(content)
@@ -2927,20 +2470,11 @@ func (f *Figure) Bytes() []byte {
 
 func (f *Figure) Prepare() {
 	f.buf.Reset()
+	f.buf.WriteString("<figure")
 	if len(f.style) != 0 {
-		idx := 0
-		f.buf.WriteString("<figure style=\"")
-		for k, v := range f.style {
-			f.buf.WriteString(k + ": " + v + ";")
-			if idx != len(f.style)-1 {
-				f.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		f.buf.WriteString("\">")
-	} else {
-		f.buf.WriteString("<figure>")
+		parseStyle(&f.buf, f.style)
 	}
+	f.buf.WriteByte('>')
 
 	for _, content := range f.contents {
 		f.buf.Write(content)
@@ -2988,20 +2522,11 @@ func (f *Figcaption) Bytes() []byte {
 
 func (f *Figcaption) Prepare() {
 	f.buf.Reset()
+	f.buf.WriteString("<figcaption")
 	if len(f.style) != 0 {
-		idx := 0
-		f.buf.WriteString("<figcaption style=\"")
-		for k, v := range f.style {
-			f.buf.WriteString(k + ": " + v + ";")
-			if idx != len(f.style)-1 {
-				f.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		f.buf.WriteString("\">")
-	} else {
-		f.buf.WriteString("<figcaption>")
+		parseStyle(&f.buf, f.style)
 	}
+	f.buf.WriteByte('>')
 
 	for _, content := range f.contents {
 		f.buf.Write(content)

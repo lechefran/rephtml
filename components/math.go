@@ -63,16 +63,7 @@ func (m *Math) Prepare() {
 		m.buf.WriteString(" display=\"" + m.display + "\"")
 	}
 	if len(m.style) != 0 {
-		idx := 0
-		m.buf.WriteString(" style=\"")
-		for k, v := range m.style {
-			m.buf.WriteString(k + ": " + v + ";")
-			if idx != len(m.style)-1 {
-				m.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		m.buf.WriteString("\"")
+		parseStyle(&m.buf, m.style)
 	}
 	m.buf.WriteByte('>')
 
@@ -188,16 +179,7 @@ func (s *Svg) Prepare() {
 		s.buf.WriteString(" preserveAspectRatio=\"" + s.preserveAspectRatio + "\"")
 	}
 	if len(s.style) != 0 {
-		idx := 0
-		s.buf.WriteString(" style=\"")
-		for k, v := range s.style {
-			s.buf.WriteString(k + ": " + v + ";")
-			if idx != len(s.style)-1 {
-				s.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		s.buf.WriteString("\"")
+		parseStyle(&s.buf, s.style)
 	}
 	s.buf.WriteByte('>')
 

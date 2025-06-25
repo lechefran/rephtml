@@ -44,16 +44,7 @@ func (h *Header) Prepare() {
 	h.buf.Reset()
 	h.buf.WriteString("<header")
 	if len(h.style) != 0 {
-		idx := 0
-		h.buf.WriteString(" style=\"")
-		for k, v := range h.style {
-			h.buf.WriteString(k + ": " + v + ";")
-			if idx != len(h.style)-1 {
-				h.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		h.buf.WriteString("\"")
+		parseStyle(&h.buf, h.style)
 	}
 	h.buf.WriteByte('>')
 
@@ -114,16 +105,7 @@ func (n *Nav) Prepare() {
 		n.buf.WriteString(" role=\"" + n.role + "\"")
 	}
 	if len(n.style) != 0 {
-		idx := 0
-		n.buf.WriteString(" style=\"")
-		for k, v := range n.style {
-			n.buf.WriteString(k + ": " + v + ";")
-			if idx != len(n.style)-1 {
-				n.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		n.buf.WriteString("\"")
+		parseStyle(&n.buf, n.style)
 	}
 	n.buf.WriteByte('>')
 
@@ -184,16 +166,7 @@ func (s *Section) Prepare() {
 		s.buf.WriteString(" aria-label=\"" + s.ariaLabel + "\"")
 	}
 	if len(s.style) != 0 {
-		idx := 0
-		s.buf.WriteString(" style=\"")
-		for k, v := range s.style {
-			s.buf.WriteString(k + ": " + v + ";")
-			if idx != len(s.style)-1 {
-				s.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		s.buf.WriteString("\"")
+		parseStyle(&s.buf, s.style)
 	}
 	s.buf.WriteByte('>')
 
@@ -245,16 +218,7 @@ func (m *Main) Prepare() {
 	m.buf.Reset()
 	m.buf.WriteString("<main")
 	if len(m.style) != 0 {
-		idx := 0
-		m.buf.WriteString(" style=\"")
-		for k, v := range m.style {
-			m.buf.WriteString(k + ": " + v + ";")
-			if idx != len(m.style)-1 {
-				m.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		m.buf.WriteString("\"")
+		parseStyle(&m.buf, m.style)
 	}
 	m.buf.WriteByte('>')
 
@@ -306,16 +270,7 @@ func (a *Article) Prepare() {
 	a.buf.Reset()
 	a.buf.WriteString("<article")
 	if len(a.style) != 0 {
-		idx := 0
-		a.buf.WriteString(" style=\"")
-		for k, v := range a.style {
-			a.buf.WriteString(k + ": " + v + ";")
-			if idx != len(a.style)-1 {
-				a.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		a.buf.WriteString("\"")
+		parseStyle(&a.buf, a.style)
 	}
 	a.buf.WriteByte('>')
 
@@ -367,16 +322,7 @@ func (as *Aside) Prepare() {
 	as.buf.Reset()
 	as.buf.WriteString("<aside")
 	if len(as.style) != 0 {
-		idx := 0
-		as.buf.WriteString(" style=\"")
-		for k, v := range as.style {
-			as.buf.WriteString(k + ": " + v + ";")
-			if idx != len(as.style)-1 {
-				as.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		as.buf.WriteString("\"")
+		parseStyle(&as.buf, as.style)
 	}
 	as.buf.WriteByte('>')
 
@@ -428,16 +374,7 @@ func (f *Footer) Prepare() {
 	f.buf.Reset()
 	f.buf.WriteString("<footer")
 	if len(f.style) != 0 {
-		idx := 0
-		f.buf.WriteString(" style=\"")
-		for k, v := range f.style {
-			f.buf.WriteString(k + ": " + v + ";")
-			if idx != len(f.style)-1 {
-				f.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		f.buf.WriteString("\"")
+		parseStyle(&f.buf, f.style)
 	}
 	f.buf.WriteByte('>')
 
@@ -489,16 +426,7 @@ func (ad *Address) Prepare() {
 	ad.buf.Reset()
 	ad.buf.WriteString("<address")
 	if len(ad.style) != 0 {
-		idx := 0
-		ad.buf.WriteString(" style=\"")
-		for k, v := range ad.style {
-			ad.buf.WriteString(k + ": " + v + ";")
-			if idx != len(ad.style)-1 {
-				ad.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		ad.buf.WriteString("\"")
+		parseStyle(&ad.buf, ad.style)
 	}
 	ad.buf.WriteByte('>')
 

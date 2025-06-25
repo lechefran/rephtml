@@ -83,16 +83,7 @@ func (a *Area) Prepare() {
 		a.buf.WriteString(" target=\"" + a.target + "\"")
 	}
 	if len(a.style) != 0 {
-		idx := 0
-		a.buf.WriteString(" style=\"")
-		for k, v := range a.style {
-			a.buf.WriteString(k + ": " + v + ";")
-			if idx != len(a.style)-1 {
-				a.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		a.buf.WriteString("\"")
+		parseStyle(&a.buf, a.style)
 	}
 	a.buf.WriteString(">")
 }
@@ -178,16 +169,7 @@ func (i *Img) Prepare() {
 		i.buf.WriteString(" title=\"" + i.title + "\"")
 	}
 	if len(i.style) != 0 {
-		idx := 0
-		i.buf.WriteString(" style=\"")
-		for k, v := range i.style {
-			i.buf.WriteString(k + ": " + v + ";")
-			if idx != len(i.style)-1 {
-				i.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		i.buf.WriteString("\"")
+		parseStyle(&i.buf, i.style)
 	}
 	i.buf.WriteString(">")
 }
@@ -288,16 +270,7 @@ func (a *Audio) Prepare() {
 		a.buf.WriteString(" preload=\"" + a.preload + "\"")
 	}
 	if len(a.style) != 0 {
-		idx := 0
-		a.buf.WriteString(" style=\"")
-		for k, v := range a.style {
-			a.buf.WriteString(k + ": " + v + ";")
-			if idx != len(a.style)-1 {
-				a.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		a.buf.WriteString("\"")
+		parseStyle(&a.buf, a.style)
 	}
 	a.buf.WriteByte('>')
 
@@ -388,16 +361,7 @@ func (t *Track) Prepare() {
 		t.buf.WriteString(" default")
 	}
 	if len(t.style) != 0 {
-		idx := 0
-		t.buf.WriteString(" style=\"")
-		for k, v := range t.style {
-			t.buf.WriteString(k + ": " + v + ";")
-			if idx != len(t.style)-1 {
-				t.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		t.buf.WriteString("\"")
+		parseStyle(&t.buf, t.style)
 	}
 	t.buf.WriteString(">")
 }
@@ -453,16 +417,7 @@ func (m *Map) Prepare() {
 		m.buf.WriteString(" name=\"" + m.name + "\"")
 	}
 	if len(m.style) != 0 {
-		idx := 0
-		m.buf.WriteString(" style=\"")
-		for k, v := range m.style {
-			m.buf.WriteString(k + ": " + v + ";")
-			if idx != len(m.style)-1 {
-				m.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		m.buf.WriteString("\"")
+		parseStyle(&m.buf, m.style)
 	}
 	m.buf.WriteByte('>')
 
@@ -595,16 +550,7 @@ func (v *Video) Prepare() {
 		v.buf.WriteString(" poster=\"" + v.poster + "\"")
 	}
 	if len(v.style) != 0 {
-		idx := 0
-		v.buf.WriteString(" style=\"")
-		for k, val := range v.style {
-			v.buf.WriteString(k + ": " + val + ";")
-			if idx != len(v.style)-1 {
-				v.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		v.buf.WriteString("\"")
+		parseStyle(&v.buf, v.style)
 	}
 	v.buf.WriteByte('>')
 

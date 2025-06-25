@@ -62,16 +62,7 @@ func (c *Canvas) Prepare() {
 		c.buf.WriteString(" height=\"" + c.height + "\"")
 	}
 	if len(c.style) != 0 {
-		idx := 0
-		c.buf.WriteString(" style=\"")
-		for k, v := range c.style {
-			c.buf.WriteString(k + ": " + v + ";")
-			if idx != len(c.style)-1 {
-				c.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		c.buf.WriteString("\"")
+		parseStyle(&c.buf, c.style)
 	}
 	c.buf.WriteByte('>')
 
@@ -121,20 +112,11 @@ func (n *Noscript) Bytes() []byte {
 
 func (n *Noscript) Prepare() {
 	n.buf.Reset()
+	n.buf.WriteString("<noscript")
 	if len(n.style) != 0 {
-		idx := 0
-		n.buf.WriteString("<noscript style=\"")
-		for k, v := range n.style {
-			n.buf.WriteString(k + ": " + v + ";")
-			if idx != len(n.style)-1 {
-				n.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		n.buf.WriteString("\">")
-	} else {
-		n.buf.WriteString("<noscript>")
+		parseStyle(&n.buf, n.style)
 	}
+	n.buf.WriteByte('>')
 
 	for _, content := range n.contents {
 		n.buf.Write(content)
@@ -256,16 +238,7 @@ func (s *Script) Prepare() {
 		s.buf.WriteString(" referrerpolicy=\"" + s.referrerPolicy + "\"")
 	}
 	if len(s.style) != 0 {
-		idx := 0
-		s.buf.WriteString(" style=\"")
-		for k, v := range s.style {
-			s.buf.WriteString(k + ": " + v + ";")
-			if idx != len(s.style)-1 {
-				s.buf.WriteByte(' ')
-			}
-			idx++
-		}
-		s.buf.WriteString("\"")
+		parseStyle(&s.buf, s.style)
 	}
 	s.buf.WriteByte('>')
 
