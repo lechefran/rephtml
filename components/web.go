@@ -76,6 +76,9 @@ func NewTemplate() *Template {
 	}
 }
 
+// IsHeadElement implements HeadElement interface
+func (t *Template) IsHeadElement() {}
+
 func (t *Template) AddStyle(k, v string) *Template {
 	t.style[k] = v
 	return t
@@ -123,3 +126,4 @@ func (t *Template) Prepare() {
 	}
 	t.buf.WriteString("</template>")
 }
+

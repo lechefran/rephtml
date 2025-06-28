@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"log"
 	"os"
+	"reflect"
 )
 
 const tab = "\t"
@@ -20,6 +21,7 @@ type HtmlFile struct {
 	xmlns       string
 	manifest    string
 	contextMenu string
+	Opts        Options
 }
 
 // NewHtmlFile creates a new HtmlFile element
@@ -70,9 +72,48 @@ func (h *HtmlFile) Prepare() {
 // Add adds content to the html element
 func (h *HtmlFile) Add(e Element) *HtmlFile {
 	if e != nil {
-		e.Prepare()
+		if len(e.Bytes()) == 0 {
+			e.Prepare()
+		}
 		h.contents = append(h.contents, e.Bytes())
 	}
+	return h
+}
+
+func (h *HtmlFile) AddToHead(e Element) *HtmlFile {
+	if e != nil {
+		constitution := h.Opts.Constitution
+		if constitution == DEFAULT {
+			if _, ok := e.(HeadElement); !ok {
+				log.Printf("%s is not a valid head element but will be added to the head element\n",
+					reflect.TypeOf(e).Elem().Name())
+			}
+		} else if constitution == STRICT {
+			if _, ok := e.(HeadElement); !ok {
+				log.Fatalf("Cannot add %s to head element\n", reflect.TypeOf(e).Elem().Name())
+			}
+		}
+
+		if len(e.Bytes()) == 0 {
+			e.Prepare()
+		}
+		h.contents = append(h.contents, e.Bytes())
+	}
+	return h
+}
+
+func (h *HtmlFile) AddToBody(e Element) *HtmlFile {
+	if e != nil {
+		if len(e.Bytes()) == 0 {
+			e.Prepare()
+		}
+		h.contents = append(h.contents, e.Bytes())
+	}
+	return h
+}
+
+func (h *HtmlFile) AddOptions(o Options) *HtmlFile {
+	h.Opts = o
 	return h
 }
 
@@ -369,6 +410,9 @@ func (t *Title) Add(e Element) *Title {
 	return t
 }
 
+// IsHeadElement implements HeadElement interface
+func (t *Title) IsHeadElement() {}
+
 // Text adds text content to the title element
 func (t *Title) Text(text string) *Title {
 	t.contents = append(t.contents, []byte(text))
@@ -433,6 +477,9 @@ func (b *Base) Prepare() {
 	}
 	b.buf.WriteString(">")
 }
+
+// IsHeadElement implements HeadElement interface
+func (b *Base) IsHeadElement() {}
 
 // Href sets the href attribute
 func (b *Base) Href(href string) *Base {
@@ -532,6 +579,9 @@ func (l *Link) Prepare() {
 	}
 	l.buf.WriteString(">")
 }
+
+// IsHeadElement implements HeadElement interface
+func (l *Link) IsHeadElement() {}
 
 // Rel sets the rel attribute
 func (l *Link) Rel(rel string) *Link {
@@ -721,6 +771,9 @@ func (m *Meta) Style(m2 map[string]string) *Meta {
 	return m
 }
 
+// IsHeadElement implements HeadElement interface
+func (m *Meta) IsHeadElement() {}
+
 // StyleElement represents the HTML style element for CSS styles
 type StyleElement struct {
 	buf       bytes.Buffer
@@ -815,3 +868,6 @@ func (s *StyleElement) Style(m map[string]string) *StyleElement {
 	}
 	return s
 }
+
+// IsHeadElement implements HeadElement interface
+func (s *StyleElement) IsHeadElement() {}

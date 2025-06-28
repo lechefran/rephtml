@@ -42,6 +42,10 @@ func main() {
 	tableStyle.PropMap(pmap)
 	tableStyle.Prepare()
 
+	head := rephtml.NewHead()
+	head.Add(tableStyle)
+	head.Prepare()
+
 	// create table
 	table := rephtml.NewTable()
 	table.Id("myId1")
@@ -93,7 +97,10 @@ func main() {
 	d1.Prepare()
 
 	html := *rephtml.NewHtmlFile()
+	html.Add(head)
 	html.Add(d1)
+	html.AddStyles(dStyles)
+	html.Add(table)
 	html.Prepare()
 	html.WriteToFile("report.html")
 

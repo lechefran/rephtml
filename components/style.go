@@ -399,8 +399,13 @@ func (s *Style) Prepare() {
 			res += s.pmap.pmap[k] + ":" + v.String() + ";"
 		}
 	}
+	s.buf.WriteString("<style>")
 	s.buf.WriteString(formatStringArray(s.Tags) + "{" + res + "}")
+	s.buf.WriteString("</style>")
 }
+
+// IsHeadElement implements HeadElement interface
+func (s *Style) IsHeadElement() {}
 
 func formatStringArray(sarr []string) string {
 	res := ""

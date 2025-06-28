@@ -84,6 +84,9 @@ func NewNoscript() *Noscript {
 	}
 }
 
+// IsHeadElement implements HeadElement interface
+func (n *Noscript) IsHeadElement() {}
+
 func (n *Noscript) AddStyle(k, v string) *Noscript {
 	n.style[k] = v
 	return n
@@ -143,6 +146,9 @@ func NewScript() *Script {
 		style: make(map[string]string),
 	}
 }
+
+// IsHeadElement implements HeadElement interface
+func (s *Script) IsHeadElement() {}
 
 func (s *Script) AddStyle(k, v string) *Script {
 	s.style[k] = v
@@ -247,3 +253,4 @@ func (s *Script) Prepare() {
 	}
 	s.buf.WriteString("</script>")
 }
+
