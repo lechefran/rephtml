@@ -58,6 +58,9 @@ func (e *Embed) Bytes() []byte {
 	return e.buf.Bytes()
 }
 
+// IsBodyElement implements BodyElement interface
+func (e *Embed) IsBodyElement() {}
+
 func (e *Embed) Prepare() {
 	e.buf.Reset()
 	e.buf.WriteString("<embed")
@@ -170,6 +173,9 @@ func (i *Iframe) Srcdoc(srcdoc string) *Iframe {
 func (i *Iframe) Bytes() []byte {
 	return i.buf.Bytes()
 }
+
+// IsBodyElement implements BodyElement interface
+func (i *Iframe) IsBodyElement() {}
 
 func (i *Iframe) Prepare() {
 	i.buf.Reset()
@@ -290,6 +296,9 @@ func (o *Object) Bytes() []byte {
 	return o.buf.Bytes()
 }
 
+// IsBodyElement implements BodyElement interface
+func (o *Object) IsBodyElement() {}
+
 func (o *Object) Prepare() {
 	o.buf.Reset()
 	o.buf.WriteString("<object")
@@ -363,6 +372,9 @@ func (p *Picture) Bytes() []byte {
 	return p.buf.Bytes()
 }
 
+// IsBodyElement implements BodyElement interface
+func (p *Picture) IsBodyElement() {}
+
 func (p *Picture) Prepare() {
 	p.buf.Reset()
 	p.buf.WriteString("<picture")
@@ -420,6 +432,9 @@ func (p *Portal) Referrerpolicy(referrerpolicy string) *Portal {
 func (p *Portal) Bytes() []byte {
 	return p.buf.Bytes()
 }
+
+// IsBodyElement implements BodyElement interface
+func (p *Portal) IsBodyElement() {}
 
 func (p *Portal) Prepare() {
 	p.buf.Reset()
@@ -497,6 +512,9 @@ func (s *Source) Type(srcType string) *Source {
 func (s *Source) Bytes() []byte {
 	return s.buf.Bytes()
 }
+
+// IsBodyElement implements BodyElement interface
+func (s *Source) IsBodyElement() {}
 
 func (s *Source) Prepare() {
 	s.buf.Reset()

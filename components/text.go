@@ -45,6 +45,9 @@ func (p *P) Bytes() []byte {
 	return p.buf.Bytes()
 }
 
+// IsBodyElement implements BodyElement interface
+func (p *P) IsBodyElement() {}
+
 func (p *P) Prepare() {
 	p.buf.Reset()
 	p.buf.WriteString("<p")
@@ -71,6 +74,9 @@ func (c *Comment) Text(s string) *Comment {
 func (c *Comment) Bytes() []byte {
 	return c.buf.Bytes()
 }
+
+// IsBodyElement implements BodyElement interface
+func (c *Comment) IsBodyElement() {}
 
 func (c *Comment) Prepare() {
 	c.buf.Reset()
@@ -107,6 +113,9 @@ func (h *H1) Text(s string) *H1 {
 func (h *H1) Bytes() []byte {
 	return h.buf.Bytes()
 }
+
+// IsBodyElement implements BodyElement interface
+func (h *H1) IsBodyElement() {}
 
 func (h *H1) Prepare() {
 	h.buf.Reset()
@@ -148,6 +157,9 @@ func (h *H2) Bytes() []byte {
 	return h.buf.Bytes()
 }
 
+// IsBodyElement implements BodyElement interface
+func (h *H2) IsBodyElement() {}
+
 func (h *H2) Prepare() {
 	h.buf.Reset()
 	h.buf.WriteString("<h2")
@@ -187,6 +199,9 @@ func (h *H3) Text(s string) *H3 {
 func (h *H3) Bytes() []byte {
 	return h.buf.Bytes()
 }
+
+// IsBodyElement implements BodyElement interface
+func (h *H3) IsBodyElement() {}
 
 func (h *H3) Prepare() {
 	h.buf.Reset()
@@ -228,6 +243,9 @@ func (h *H4) Bytes() []byte {
 	return h.buf.Bytes()
 }
 
+// IsBodyElement implements BodyElement interface
+func (h *H4) IsBodyElement() {}
+
 func (h *H4) Prepare() {
 	h.buf.Reset()
 	h.buf.WriteString("<h4")
@@ -268,6 +286,9 @@ func (h *H5) Bytes() []byte {
 	return h.buf.Bytes()
 }
 
+// IsBodyElement implements BodyElement interface
+func (h *H5) IsBodyElement() {}
+
 func (h *H5) Prepare() {
 	h.buf.Reset()
 	h.buf.WriteString("<h5")
@@ -307,6 +328,9 @@ func (h *H6) Text(s string) *H6 {
 func (h *H6) Bytes() []byte {
 	return h.buf.Bytes()
 }
+
+// IsBodyElement implements BodyElement interface
+func (h *H6) IsBodyElement() {}
 
 func (h *H6) Prepare() {
 	h.buf.Reset()
@@ -352,6 +376,9 @@ func (a *Anchor) Link(s string) *Anchor {
 func (a *Anchor) Bytes() []byte {
 	return a.buf.Bytes()
 }
+
+// IsBodyElement implements BodyElement interface
+func (a *Anchor) IsBodyElement() {}
 
 func (a *Anchor) Prepare() {
 	a.buf.Reset()
@@ -409,6 +436,9 @@ func (a *Abbr) Bytes() []byte {
 	return a.buf.Bytes()
 }
 
+// IsBodyElement implements BodyElement interface
+func (a *Abbr) IsBodyElement() {}
+
 func (a *Abbr) Prepare() {
 	a.buf.Reset()
 	a.buf.WriteString("<abbr")
@@ -459,6 +489,9 @@ func (b *B) Bytes() []byte {
 	return b.buf.Bytes()
 }
 
+// IsBodyElement implements BodyElement interface
+func (b *B) IsBodyElement() {}
+
 func (b *B) Prepare() {
 	b.buf.Reset()
 	b.buf.WriteString("<b")
@@ -505,6 +538,9 @@ func (i *I) Text(s string) *I {
 func (i *I) Bytes() []byte {
 	return i.buf.Bytes()
 }
+
+// IsBodyElement implements BodyElement interface
+func (i *I) IsBodyElement() {}
 
 func (i *I) Prepare() {
 	i.buf.Reset()
@@ -559,6 +595,9 @@ func (q *Q) Bytes() []byte {
 	return q.buf.Bytes()
 }
 
+// IsBodyElement implements BodyElement interface
+func (q *Q) IsBodyElement() {}
+
 func (q *Q) Prepare() {
 	q.buf.Reset()
 	q.buf.WriteString("<q")
@@ -609,6 +648,9 @@ func (s *S) Bytes() []byte {
 	return s.buf.Bytes()
 }
 
+// IsBodyElement implements BodyElement interface
+func (s *S) IsBodyElement() {}
+
 func (s *S) Prepare() {
 	s.buf.Reset()
 	s.buf.WriteString("<s")
@@ -655,6 +697,9 @@ func (u *U) Text(s string) *U {
 func (u *U) Bytes() []byte {
 	return u.buf.Bytes()
 }
+
+// IsBodyElement implements BodyElement interface
+func (u *U) IsBodyElement() {}
 
 func (u *U) Prepare() {
 	u.buf.Reset()
@@ -703,6 +748,9 @@ func (d *Dbi) Bytes() []byte {
 	return d.buf.Bytes()
 }
 
+// IsBodyElement implements BodyElement interface
+func (d *Dbi) IsBodyElement() {}
+
 func (d *Dbi) Prepare() {
 	d.buf.Reset()
 	d.buf.WriteString("<dbi")
@@ -750,6 +798,9 @@ func (d *Dbo) Bytes() []byte {
 	return d.buf.Bytes()
 }
 
+// IsBodyElement implements BodyElement interface
+func (d *Dbo) IsBodyElement() {}
+
 func (d *Dbo) Prepare() {
 	d.buf.Reset()
 	d.buf.WriteString("<dbo")
@@ -790,6 +841,9 @@ func (br *Br) Style(m map[string]string) *Br {
 func (br *Br) Bytes() []byte {
 	return br.buf.Bytes()
 }
+
+// IsBodyElement implements BodyElement interface
+func (br *Br) IsBodyElement() {}
 
 func (br *Br) Prepare() {
 	br.buf.Reset()
@@ -838,6 +892,9 @@ func (c *Cite) Bytes() []byte {
 	return c.buf.Bytes()
 }
 
+// IsBodyElement implements BodyElement interface
+func (c *Cite) IsBodyElement() {}
+
 func (c *Cite) Prepare() {
 	c.buf.Reset()
 	c.buf.WriteString("<cite")
@@ -884,6 +941,9 @@ func (c *Code) Text(s string) *Code {
 func (c *Code) Bytes() []byte {
 	return c.buf.Bytes()
 }
+
+// IsBodyElement implements BodyElement interface
+func (c *Code) IsBodyElement() {}
 
 func (c *Code) Prepare() {
 	c.buf.Reset()
@@ -937,6 +997,9 @@ func (d *Data) Value(s string) *Data {
 func (d *Data) Bytes() []byte {
 	return d.buf.Bytes()
 }
+
+// IsBodyElement implements BodyElement interface
+func (d *Data) IsBodyElement() {}
 
 func (d *Data) Prepare() {
 	d.buf.Reset()
@@ -994,6 +1057,9 @@ func (d *Dfn) Bytes() []byte {
 	return d.buf.Bytes()
 }
 
+// IsBodyElement implements BodyElement interface
+func (d *Dfn) IsBodyElement() {}
+
 func (d *Dfn) Prepare() {
 	d.buf.Reset()
 	d.buf.WriteString("<dfn")
@@ -1044,6 +1110,9 @@ func (e *Elem) Bytes() []byte {
 	return e.buf.Bytes()
 }
 
+// IsBodyElement implements BodyElement interface
+func (e *Elem) IsBodyElement() {}
+
 func (e *Elem) Prepare() {
 	e.buf.Reset()
 	e.buf.WriteString("<elem")
@@ -1091,6 +1160,9 @@ func (m *Mark) Bytes() []byte {
 	return m.buf.Bytes()
 }
 
+// IsBodyElement implements BodyElement interface
+func (m *Mark) IsBodyElement() {}
+
 func (m *Mark) Prepare() {
 	m.buf.Reset()
 	m.buf.WriteString("<mark")
@@ -1137,6 +1209,9 @@ func (r *Ruby) Add(e Element) *Ruby {
 func (r *Ruby) Bytes() []byte {
 	return r.buf.Bytes()
 }
+
+// IsBodyElement implements BodyElement interface
+func (r *Ruby) IsBodyElement() {}
 
 func (r *Ruby) Prepare() {
 	r.buf.Reset()
@@ -1190,6 +1265,9 @@ func (rb *Rb) Bytes() []byte {
 	return rb.buf.Bytes()
 }
 
+// IsBodyElement implements BodyElement interface
+func (rb *Rb) IsBodyElement() {}
+
 func (rb *Rb) Prepare() {
 	rb.buf.Reset()
 	rb.buf.WriteString("<rb")
@@ -1237,6 +1315,9 @@ func (rt *Rt) Bytes() []byte {
 	return rt.buf.Bytes()
 }
 
+// IsBodyElement implements BodyElement interface
+func (rt *Rt) IsBodyElement() {}
+
 func (rt *Rt) Prepare() {
 	rt.buf.Reset()
 	rt.buf.WriteString("<rt")
@@ -1283,6 +1364,9 @@ func (rtc *Rtc) Add(e Element) *Rtc {
 func (rtc *Rtc) Bytes() []byte {
 	return rtc.buf.Bytes()
 }
+
+// IsBodyElement implements BodyElement interface
+func (rtc *Rtc) IsBodyElement() {}
 
 func (rtc *Rtc) Prepare() {
 	rtc.buf.Reset()
@@ -1336,6 +1420,9 @@ func (rp *Rp) Bytes() []byte {
 	return rp.buf.Bytes()
 }
 
+// IsBodyElement implements BodyElement interface
+func (rp *Rp) IsBodyElement() {}
+
 func (rp *Rp) Prepare() {
 	rp.buf.Reset()
 	rp.buf.WriteString("<rp")
@@ -1382,6 +1469,9 @@ func (k *Kbd) Text(s string) *Kbd {
 func (k *Kbd) Bytes() []byte {
 	return k.buf.Bytes()
 }
+
+// IsBodyElement implements BodyElement interface
+func (k *Kbd) IsBodyElement() {}
 
 func (k *Kbd) Prepare() {
 	k.buf.Reset()
@@ -1430,6 +1520,9 @@ func (s *Sub) Bytes() []byte {
 	return s.buf.Bytes()
 }
 
+// IsBodyElement implements BodyElement interface
+func (s *Sub) IsBodyElement() {}
+
 func (s *Sub) Prepare() {
 	s.buf.Reset()
 	s.buf.WriteString("<sub")
@@ -1476,6 +1569,9 @@ func (s *Sup) Text(str string) *Sup {
 func (s *Sup) Bytes() []byte {
 	return s.buf.Bytes()
 }
+
+// IsBodyElement implements BodyElement interface
+func (s *Sup) IsBodyElement() {}
 
 func (s *Sup) Prepare() {
 	s.buf.Reset()
@@ -1524,6 +1620,9 @@ func (s *Samp) Bytes() []byte {
 	return s.buf.Bytes()
 }
 
+// IsBodyElement implements BodyElement interface
+func (s *Samp) IsBodyElement() {}
+
 func (s *Samp) Prepare() {
 	s.buf.Reset()
 	s.buf.WriteString("<samp")
@@ -1570,6 +1669,9 @@ func (s *Small) Text(str string) *Small {
 func (s *Small) Bytes() []byte {
 	return s.buf.Bytes()
 }
+
+// IsBodyElement implements BodyElement interface
+func (s *Small) IsBodyElement() {}
 
 func (s *Small) Prepare() {
 	s.buf.Reset()
@@ -1618,6 +1720,9 @@ func (s *Span) Bytes() []byte {
 	return s.buf.Bytes()
 }
 
+// IsBodyElement implements BodyElement interface
+func (s *Span) IsBodyElement() {}
+
 func (s *Span) Prepare() {
 	s.buf.Reset()
 	s.buf.WriteString("<span")
@@ -1664,6 +1769,9 @@ func (s *Strong) Text(str string) *Strong {
 func (s *Strong) Bytes() []byte {
 	return s.buf.Bytes()
 }
+
+// IsBodyElement implements BodyElement interface
+func (s *Strong) IsBodyElement() {}
 
 func (s *Strong) Prepare() {
 	s.buf.Reset()
@@ -1764,6 +1872,9 @@ func (t *Time) Bytes() []byte {
 	return t.buf.Bytes()
 }
 
+// IsBodyElement implements BodyElement interface
+func (t *Time) IsBodyElement() {}
+
 func (t *Time) Prepare() {
 	t.buf.Reset()
 	t.buf.WriteString("<time")
@@ -1814,6 +1925,9 @@ func (v *Var) Bytes() []byte {
 	return v.buf.Bytes()
 }
 
+// IsBodyElement implements BodyElement interface
+func (v *Var) IsBodyElement() {}
+
 func (v *Var) Prepare() {
 	v.buf.Reset()
 	v.buf.WriteString("<var")
@@ -1855,6 +1969,9 @@ func (w *Wbr) Bytes() []byte {
 	return w.buf.Bytes()
 }
 
+// IsBodyElement implements BodyElement interface
+func (w *Wbr) IsBodyElement() {}
+
 func (w *Wbr) Prepare() {
 	w.buf.Reset()
 	w.buf.WriteString("<wbr")
@@ -1895,6 +2012,9 @@ func (h *Hr) Style(m map[string]string) *Hr {
 func (h *Hr) Bytes() []byte {
 	return h.buf.Bytes()
 }
+
+// IsBodyElement implements BodyElement interface
+func (h *Hr) IsBodyElement() {}
 
 func (h *Hr) Prepare() {
 	h.buf.Reset()
@@ -1942,6 +2062,9 @@ func (p *Pre) Text(str string) *Pre {
 func (p *Pre) Bytes() []byte {
 	return p.buf.Bytes()
 }
+
+// IsBodyElement implements BodyElement interface
+func (p *Pre) IsBodyElement() {}
 
 func (p *Pre) Prepare() {
 	p.buf.Reset()
@@ -1995,6 +2118,9 @@ func (b *Blockquote) Cite(c string) *Blockquote {
 func (b *Blockquote) Bytes() []byte {
 	return b.buf.Bytes()
 }
+
+// IsBodyElement implements BodyElement interface
+func (b *Blockquote) IsBodyElement() {}
 
 func (b *Blockquote) Prepare() {
 	b.buf.Reset()
@@ -2057,6 +2183,9 @@ func (m *Menu) Label(l string) *Menu {
 func (m *Menu) Bytes() []byte {
 	return m.buf.Bytes()
 }
+
+// IsBodyElement implements BodyElement interface
+func (m *Menu) IsBodyElement() {}
 
 func (m *Menu) Prepare() {
 	m.buf.Reset()
@@ -2134,6 +2263,9 @@ func (o *Ol) Bytes() []byte {
 	return o.buf.Bytes()
 }
 
+// IsBodyElement implements BodyElement interface
+func (o *Ol) IsBodyElement() {}
+
 func (o *Ol) Prepare() {
 	o.buf.Reset()
 	o.buf.WriteString("<ol")
@@ -2197,6 +2329,9 @@ func (u *Ul) Bytes() []byte {
 	return u.buf.Bytes()
 }
 
+// IsBodyElement implements BodyElement interface
+func (u *Ul) IsBodyElement() {}
+
 func (u *Ul) Prepare() {
 	u.buf.Reset()
 	u.buf.WriteString("<ul")
@@ -2255,6 +2390,9 @@ func (l *Li) Bytes() []byte {
 	return l.buf.Bytes()
 }
 
+// IsBodyElement implements BodyElement interface
+func (l *Li) IsBodyElement() {}
+
 func (l *Li) Prepare() {
 	l.buf.Reset()
 	l.buf.WriteString("<li")
@@ -2312,6 +2450,9 @@ func (d *Dl) Bytes() []byte {
 	return d.buf.Bytes()
 }
 
+// IsBodyElement implements BodyElement interface
+func (d *Dl) IsBodyElement() {}
+
 func (d *Dl) Prepare() {
 	d.buf.Reset()
 	d.buf.WriteString("<dl")
@@ -2363,6 +2504,9 @@ func (d *Dt) Add(e Element) *Dt {
 func (d *Dt) Bytes() []byte {
 	return d.buf.Bytes()
 }
+
+// IsBodyElement implements BodyElement interface
+func (d *Dt) IsBodyElement() {}
 
 func (d *Dt) Prepare() {
 	d.buf.Reset()
@@ -2416,6 +2560,9 @@ func (d *Dd) Bytes() []byte {
 	return d.buf.Bytes()
 }
 
+// IsBodyElement implements BodyElement interface
+func (d *Dd) IsBodyElement() {}
+
 func (d *Dd) Prepare() {
 	d.buf.Reset()
 	d.buf.WriteString("<dd")
@@ -2468,6 +2615,9 @@ func (f *Figure) Bytes() []byte {
 	return f.buf.Bytes()
 }
 
+// IsBodyElement implements BodyElement interface
+func (f *Figure) IsBodyElement() {}
+
 func (f *Figure) Prepare() {
 	f.buf.Reset()
 	f.buf.WriteString("<figure")
@@ -2519,6 +2669,9 @@ func (f *Figcaption) Add(e Element) *Figcaption {
 func (f *Figcaption) Bytes() []byte {
 	return f.buf.Bytes()
 }
+
+// IsBodyElement implements BodyElement interface
+func (f *Figcaption) IsBodyElement() {}
 
 func (f *Figcaption) Prepare() {
 	f.buf.Reset()

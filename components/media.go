@@ -64,6 +64,9 @@ func (a *Area) Bytes() []byte {
 	return a.buf.Bytes()
 }
 
+// IsBodyElement implements BodyElement interface
+func (a *Area) IsBodyElement() {}
+
 func (a *Area) Prepare() {
 	a.buf.Reset()
 	a.buf.WriteString("<area")
@@ -149,6 +152,9 @@ func (i *Img) Title(title string) *Img {
 func (i *Img) Bytes() []byte {
 	return i.buf.Bytes()
 }
+
+// IsBodyElement implements BodyElement interface
+func (i *Img) IsBodyElement() {}
 
 func (i *Img) Prepare() {
 	i.buf.Reset()
@@ -248,6 +254,9 @@ func (a *Audio) Bytes() []byte {
 	return a.buf.Bytes()
 }
 
+// IsBodyElement implements BodyElement interface
+func (a *Audio) IsBodyElement() {}
+
 func (a *Audio) Prepare() {
 	a.buf.Reset()
 	a.buf.WriteString("<audio")
@@ -342,6 +351,9 @@ func (t *Track) Bytes() []byte {
 	return t.buf.Bytes()
 }
 
+// IsBodyElement implements BodyElement interface
+func (t *Track) IsBodyElement() {}
+
 func (t *Track) Prepare() {
 	t.buf.Reset()
 	t.buf.WriteString("<track")
@@ -409,6 +421,9 @@ func (m *Map) Name(name string) *Map {
 func (m *Map) Bytes() []byte {
 	return m.buf.Bytes()
 }
+
+// IsBodyElement implements BodyElement interface
+func (m *Map) IsBodyElement() {}
 
 func (m *Map) Prepare() {
 	m.buf.Reset()
@@ -518,6 +533,9 @@ func (v *Video) Poster(poster string) *Video {
 func (v *Video) Bytes() []byte {
 	return v.buf.Bytes()
 }
+
+// IsBodyElement implements BodyElement interface
+func (v *Video) IsBodyElement() {}
 
 func (v *Video) Prepare() {
 	v.buf.Reset()

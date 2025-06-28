@@ -301,6 +301,9 @@ func (b *Body) Bytes() []byte {
 	return b.buf.Bytes()
 }
 
+// IsBodyElement implements BodyElement interface
+func (b *Body) IsBodyElement() {}
+
 // Prepare builds the HTML for the body element
 func (b *Body) Prepare() {
 	b.buf.Reset()
@@ -871,3 +874,6 @@ func (s *StyleElement) Style(m map[string]string) *StyleElement {
 
 // IsHeadElement implements HeadElement interface
 func (s *StyleElement) IsHeadElement() {}
+
+// IsBodyElement implements BodyElement interface
+func (s *StyleElement) IsBodyElement() {}

@@ -53,6 +53,9 @@ func (m *Math) Bytes() []byte {
 	return m.buf.Bytes()
 }
 
+// IsBodyElement implements BodyElement interface
+func (m *Math) IsBodyElement() {}
+
 func (m *Math) Prepare() {
 	m.buf.Reset()
 	m.buf.WriteString("<math")
@@ -153,6 +156,9 @@ func (s *Svg) PreserveAspectRatio(preserveAspectRatio string) *Svg {
 func (s *Svg) Bytes() []byte {
 	return s.buf.Bytes()
 }
+
+// IsBodyElement implements BodyElement interface
+func (s *Svg) IsBodyElement() {}
 
 func (s *Svg) Prepare() {
 	s.buf.Reset()

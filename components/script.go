@@ -52,6 +52,9 @@ func (c *Canvas) Bytes() []byte {
 	return c.buf.Bytes()
 }
 
+// IsBodyElement implements BodyElement interface
+func (c *Canvas) IsBodyElement() {}
+
 func (c *Canvas) Prepare() {
 	c.buf.Reset()
 	c.buf.WriteString("<canvas")
@@ -86,6 +89,9 @@ func NewNoscript() *Noscript {
 
 // IsHeadElement implements HeadElement interface
 func (n *Noscript) IsHeadElement() {}
+
+// IsBodyElement implements BodyElement interface
+func (n *Noscript) IsBodyElement() {}
 
 func (n *Noscript) AddStyle(k, v string) *Noscript {
 	n.style[k] = v
@@ -149,6 +155,9 @@ func NewScript() *Script {
 
 // IsHeadElement implements HeadElement interface
 func (s *Script) IsHeadElement() {}
+
+// IsBodyElement implements BodyElement interface
+func (s *Script) IsBodyElement() {}
 
 func (s *Script) AddStyle(k, v string) *Script {
 	s.style[k] = v

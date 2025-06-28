@@ -46,6 +46,9 @@ func (s *Slot) Bytes() []byte {
 	return s.buf.Bytes()
 }
 
+// IsBodyElement implements BodyElement interface
+func (s *Slot) IsBodyElement() {}
+
 func (s *Slot) Prepare() {
 	s.buf.Reset()
 	s.buf.WriteString("<slot")
@@ -78,6 +81,9 @@ func NewTemplate() *Template {
 
 // IsHeadElement implements HeadElement interface
 func (t *Template) IsHeadElement() {}
+
+// IsBodyElement implements BodyElement interface
+func (t *Template) IsBodyElement() {}
 
 func (t *Template) AddStyle(k, v string) *Template {
 	t.style[k] = v

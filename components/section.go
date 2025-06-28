@@ -40,6 +40,9 @@ func (h *Header) Bytes() []byte {
 	return h.buf.Bytes()
 }
 
+// IsBodyElement implements BodyElement interface
+func (h *Header) IsBodyElement() {}
+
 func (h *Header) Prepare() {
 	h.buf.Reset()
 	h.buf.WriteString("<header")
@@ -97,6 +100,9 @@ func (n *Nav) Role(r string) *Nav {
 func (n *Nav) Bytes() []byte {
 	return n.buf.Bytes()
 }
+
+// IsBodyElement implements BodyElement interface
+func (n *Nav) IsBodyElement() {}
 
 func (n *Nav) Prepare() {
 	n.buf.Reset()
@@ -159,6 +165,9 @@ func (s *Section) Bytes() []byte {
 	return s.buf.Bytes()
 }
 
+// IsBodyElement implements BodyElement interface
+func (s *Section) IsBodyElement() {}
+
 func (s *Section) Prepare() {
 	s.buf.Reset()
 	s.buf.WriteString("<section")
@@ -214,6 +223,9 @@ func (m *Main) Bytes() []byte {
 	return m.buf.Bytes()
 }
 
+// IsBodyElement implements BodyElement interface
+func (m *Main) IsBodyElement() {}
+
 func (m *Main) Prepare() {
 	m.buf.Reset()
 	m.buf.WriteString("<main")
@@ -265,6 +277,9 @@ func (a *Article) Add(e Element) *Article {
 func (a *Article) Bytes() []byte {
 	return a.buf.Bytes()
 }
+
+// IsBodyElement implements BodyElement interface
+func (a *Article) IsBodyElement() {}
 
 func (a *Article) Prepare() {
 	a.buf.Reset()
@@ -318,6 +333,9 @@ func (as *Aside) Bytes() []byte {
 	return as.buf.Bytes()
 }
 
+// IsBodyElement implements BodyElement interface
+func (as *Aside) IsBodyElement() {}
+
 func (as *Aside) Prepare() {
 	as.buf.Reset()
 	as.buf.WriteString("<aside")
@@ -370,6 +388,9 @@ func (f *Footer) Bytes() []byte {
 	return f.buf.Bytes()
 }
 
+// IsBodyElement implements BodyElement interface
+func (f *Footer) IsBodyElement() {}
+
 func (f *Footer) Prepare() {
 	f.buf.Reset()
 	f.buf.WriteString("<footer")
@@ -421,6 +442,9 @@ func (ad *Address) Add(e Element) *Address {
 func (ad *Address) Bytes() []byte {
 	return ad.buf.Bytes()
 }
+
+// IsBodyElement implements BodyElement interface
+func (ad *Address) IsBodyElement() {}
 
 func (ad *Address) Prepare() {
 	ad.buf.Reset()

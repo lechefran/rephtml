@@ -201,6 +201,9 @@ func (t *Table) Bytes() []byte {
 	return t.buf.Bytes()
 }
 
+// IsBodyElement implements BodyElement interface
+func (t *Table) IsBodyElement() {}
+
 type Thead struct {
 	buf      bytes.Buffer
 	class    []string
@@ -292,6 +295,9 @@ func (th *Thead) Prepare() {
 func (th *Thead) Bytes() []byte {
 	return th.buf.Bytes()
 }
+
+// IsBodyElement implements BodyElement interface
+func (th *Thead) IsBodyElement() {}
 
 type Tbody struct {
 	buf      bytes.Buffer
@@ -385,6 +391,9 @@ func (tb *Tbody) Bytes() []byte {
 	return tb.buf.Bytes()
 }
 
+// IsBodyElement implements BodyElement interface
+func (tb *Tbody) IsBodyElement() {}
+
 type Tfoot struct {
 	buf      bytes.Buffer
 	class    []string
@@ -477,6 +486,9 @@ func (tf *Tfoot) Bytes() []byte {
 	return tf.buf.Bytes()
 }
 
+// IsBodyElement implements BodyElement interface
+func (tf *Tfoot) IsBodyElement() {}
+
 type Caption struct {
 	buf   bytes.Buffer
 	class []string
@@ -566,6 +578,9 @@ func (c *Caption) Prepare() {
 func (c *Caption) Bytes() []byte {
 	return c.buf.Bytes()
 }
+
+// IsBodyElement implements BodyElement interface
+func (c *Caption) IsBodyElement() {}
 
 type Col struct {
 	buf   bytes.Buffer
@@ -658,6 +673,9 @@ func (col *Col) Prepare() {
 func (col *Col) Bytes() []byte {
 	return col.buf.Bytes()
 }
+
+// IsBodyElement implements BodyElement interface
+func (col *Col) IsBodyElement() {}
 
 type Colgroup struct {
 	buf      bytes.Buffer
@@ -762,6 +780,9 @@ func (cg *Colgroup) Bytes() []byte {
 	return cg.buf.Bytes()
 }
 
+// IsBodyElement implements BodyElement interface
+func (cg *Colgroup) IsBodyElement() {}
+
 type Tr struct {
 	buf      bytes.Buffer
 	class    []string
@@ -858,6 +879,9 @@ func (tr *Tr) Prepare() {
 func (tr *Tr) Bytes() []byte {
 	return tr.buf.Bytes()
 }
+
+// IsBodyElement implements BodyElement interface
+func (tr *Tr) IsBodyElement() {}
 
 type Td struct {
 	buf      bytes.Buffer
@@ -972,6 +996,9 @@ func (td *Td) Prepare() {
 func (td *Td) Bytes() []byte {
 	return td.buf.Bytes()
 }
+
+// IsBodyElement implements BodyElement interface
+func (td *Td) IsBodyElement() {}
 
 type Th struct {
 	buf      bytes.Buffer
@@ -1095,3 +1122,6 @@ func (th *Th) Prepare() {
 func (th *Th) Bytes() []byte {
 	return th.buf.Bytes()
 }
+
+// IsBodyElement implements BodyElement interface
+func (th *Th) IsBodyElement() {}

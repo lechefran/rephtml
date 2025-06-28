@@ -38,6 +38,9 @@ func (d *Div) Bytes() []byte {
 	return d.buf.Bytes()
 }
 
+// IsBodyElement implements BodyElement interface
+func (d *Div) IsBodyElement() {}
+
 func (d *Div) Prepare() {
 	d.buf.Reset()
 	d.buf.WriteString("<div")

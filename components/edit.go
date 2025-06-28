@@ -24,6 +24,9 @@ func (d *Del) Bytes() []byte {
 	return d.buf.Bytes()
 }
 
+// IsBodyElement implements BodyElement interface
+func (d *Del) IsBodyElement() {}
+
 // Prepare builds the HTML for the del element
 func (d *Del) Prepare() {
 	d.buf.Reset()
@@ -110,6 +113,9 @@ func NewIns() *Ins {
 func (i *Ins) Bytes() []byte {
 	return i.buf.Bytes()
 }
+
+// IsBodyElement implements BodyElement interface
+func (i *Ins) IsBodyElement() {}
 
 // Prepare builds the HTML for the ins element
 func (i *Ins) Prepare() {

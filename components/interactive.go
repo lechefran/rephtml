@@ -23,6 +23,9 @@ func (d *Details) Bytes() []byte {
 	return d.buf.Bytes()
 }
 
+// IsBodyElement implements BodyElement interface
+func (d *Details) IsBodyElement() {}
+
 // Prepare builds the HTML for the details element
 func (d *Details) Prepare() {
 	d.buf.Reset()
@@ -104,6 +107,9 @@ func (d *Dialog) Bytes() []byte {
 	return d.buf.Bytes()
 }
 
+// IsBodyElement implements BodyElement interface
+func (d *Dialog) IsBodyElement() {}
+
 // Prepare builds the HTML for the dialog element
 func (d *Dialog) Prepare() {
 	d.buf.Reset()
@@ -183,6 +189,9 @@ func NewSummary() *Summary {
 func (s *Summary) Bytes() []byte {
 	return s.buf.Bytes()
 }
+
+// IsBodyElement implements BodyElement interface
+func (s *Summary) IsBodyElement() {}
 
 // Prepare builds the HTML for the summary element
 func (s *Summary) Prepare() {

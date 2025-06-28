@@ -30,6 +30,9 @@ func (f *Form) Bytes() []byte {
 	return f.buf.Bytes()
 }
 
+// IsBodyElement implements BodyElement interface
+func (f *Form) IsBodyElement() {}
+
 // Prepare builds the HTML for the form element
 func (f *Form) Prepare() {
 	f.buf.Reset()
@@ -182,6 +185,9 @@ func (l *Label) Bytes() []byte {
 	return l.buf.Bytes()
 }
 
+// IsBodyElement implements BodyElement interface
+func (l *Label) IsBodyElement() {}
+
 // Prepare builds the HTML for the label element
 func (l *Label) Prepare() {
 	l.buf.Reset()
@@ -296,6 +302,9 @@ func NewInput() *Input {
 func (i *Input) Bytes() []byte {
 	return i.buf.Bytes()
 }
+
+// IsBodyElement implements BodyElement interface
+func (i *Input) IsBodyElement() {}
 
 // Prepare builds the HTML for the input element
 func (i *Input) Prepare() {
@@ -565,6 +574,9 @@ func (o *Output) Bytes() []byte {
 	return o.buf.Bytes()
 }
 
+// IsBodyElement implements BodyElement interface
+func (o *Output) IsBodyElement() {}
+
 // Prepare builds the HTML for the output element
 func (o *Output) Prepare() {
 	o.buf.Reset()
@@ -673,6 +685,9 @@ func NewFieldset() *Fieldset {
 func (f *Fieldset) Bytes() []byte {
 	return f.buf.Bytes()
 }
+
+// IsBodyElement implements BodyElement interface
+func (f *Fieldset) IsBodyElement() {}
 
 // Prepare builds the HTML for the fieldset element
 func (f *Fieldset) Prepare() {
@@ -784,6 +799,9 @@ func NewButton() *Button {
 func (b *Button) Bytes() []byte {
 	return b.buf.Bytes()
 }
+
+// IsBodyElement implements BodyElement interface
+func (b *Button) IsBodyElement() {}
 
 // Prepare builds the HTML for the button element
 func (b *Button) Prepare() {
@@ -979,6 +997,9 @@ func (s *Select) Bytes() []byte {
 	return s.buf.Bytes()
 }
 
+// IsBodyElement implements BodyElement interface
+func (s *Select) IsBodyElement() {}
+
 // Prepare builds the HTML for the select element
 func (s *Select) Prepare() {
 	s.buf.Reset()
@@ -1130,6 +1151,9 @@ func (d *Datalist) Bytes() []byte {
 	return d.buf.Bytes()
 }
 
+// IsBodyElement implements BodyElement interface
+func (d *Datalist) IsBodyElement() {}
+
 // Prepare builds the HTML for the datalist element
 func (d *Datalist) Prepare() {
 	d.buf.Reset()
@@ -1211,6 +1235,9 @@ func NewOptgroup() *Optgroup {
 func (o *Optgroup) Bytes() []byte {
 	return o.buf.Bytes()
 }
+
+// IsBodyElement implements BodyElement interface
+func (o *Optgroup) IsBodyElement() {}
 
 // Prepare builds the HTML for the optgroup element
 func (o *Optgroup) Prepare() {
@@ -1305,6 +1332,9 @@ func NewOption() *Option {
 func (o *Option) Bytes() []byte {
 	return o.buf.Bytes()
 }
+
+// IsBodyElement implements BodyElement interface
+func (o *Option) IsBodyElement() {}
 
 // Prepare builds the HTML for the option element
 func (o *Option) Prepare() {
@@ -1435,6 +1465,9 @@ func NewTextarea() *Textarea {
 func (t *Textarea) Bytes() []byte {
 	return t.buf.Bytes()
 }
+
+// IsBodyElement implements BodyElement interface
+func (t *Textarea) IsBodyElement() {}
 
 // Prepare builds the HTML for the textarea element
 func (t *Textarea) Prepare() {
@@ -1655,6 +1688,9 @@ func (p *Progress) Bytes() []byte {
 	return p.buf.Bytes()
 }
 
+// IsBodyElement implements BodyElement interface
+func (p *Progress) IsBodyElement() {}
+
 // Prepare builds the HTML for the progress element
 func (p *Progress) Prepare() {
 	p.buf.Reset()
@@ -1767,6 +1803,9 @@ func NewMeter() *Meter {
 func (m *Meter) Bytes() []byte {
 	return m.buf.Bytes()
 }
+
+// IsBodyElement implements BodyElement interface
+func (m *Meter) IsBodyElement() {}
 
 // Prepare builds the HTML for the meter element
 func (m *Meter) Prepare() {
@@ -1913,6 +1952,9 @@ func NewLegend() *Legend {
 func (l *Legend) Bytes() []byte {
 	return l.buf.Bytes()
 }
+
+// IsBodyElement implements BodyElement interface
+func (l *Legend) IsBodyElement() {}
 
 // Prepare builds the HTML for the legend element
 func (l *Legend) Prepare() {
