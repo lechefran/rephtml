@@ -1,9 +1,9 @@
 package rephtml
 
-type Constitution string
+type Strictness string
 
 const (
-	DEFAULT Constitution = "default"
-	LAZY    Constitution = "lazy"
-	STRICT  Constitution = "strict"
+	DEFAULT Strictness = "default"
+	LAZY    Strictness = "lazy"
+	STRICT  Strictness = "strict"
 )

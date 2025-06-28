@@ -82,13 +82,13 @@ func (h *HtmlFile) Add(e Element) *HtmlFile {
 
 func (h *HtmlFile) AddToHead(e Element) *HtmlFile {
 	if e != nil {
-		constitution := h.Opts.Constitution
-		if constitution == DEFAULT {
+		v := h.Opts.Validation
+		if v == DEFAULT {
 			if _, ok := e.(HeadElement); !ok {
 				log.Printf("%s is not a valid head element but will be added to the head element\n",
 					reflect.TypeOf(e).Elem().Name())
 			}
-		} else if constitution == STRICT {
+		} else if v == STRICT {
 			if _, ok := e.(HeadElement); !ok {
 				log.Fatalf("Cannot add %s to head element\n", reflect.TypeOf(e).Elem().Name())
 			}
@@ -104,6 +104,18 @@ func (h *HtmlFile) AddToHead(e Element) *HtmlFile {
 
 func (h *HtmlFile) AddToBody(e Element) *HtmlFile {
 	if e != nil {
+		v := h.Opts.Validation
+		if v == DEFAULT {
+			if _, ok := e.(BodyElement); !ok {
+				log.Fatalf("%s is not a valid body element but will be added to body element\n",
+					reflect.TypeOf(e).Elem().Name())
+			}
+		} else if v == STRICT {
+			if _, ok := e.(BodyElement); !ok {
+				log.Fatalf("Cannot add %s to body element\n", reflect.TypeOf(e).Elem().Name())
+			}
+		}
+
 		if len(e.Bytes()) == 0 {
 			e.Prepare()
 		}
