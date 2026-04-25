@@ -1,0 +1,516 @@
+package rephtml
+
+import "bytes"
+
+type Header struct {
+	buf      bytes.Buffer
+	style    map[string]string
+	contents [][]byte
+}
+
+func NewHeader() *Header {
+	return &Header{
+		style: make(map[string]string),
+	}
+}
+
+func (h *Header) AddStyle(k, v string) *Header {
+	h.style[k] = v
+	return h
+}
+
+func (h *Header) AddStyles(m map[string]string) *Header {
+	for k, v := range m {
+		h.style[k] = v
+	}
+	return h
+}
+
+func (h *Header) Style(m map[string]string) *Header {
+	h.style = m
+	return h
+}
+
+func (h *Header) Add(e Element) *Header {
+	h.contents = append(h.contents, e.Bytes())
+	return h
+}
+
+func (h *Header) Bytes() []byte {
+	return h.buf.Bytes()
+}
+
+// IsBodyElement implements BodyElement interface
+func (h *Header) IsBodyElement() {}
+
+func (h *Header) Prepare() {
+	h.buf.Reset()
+	h.buf.WriteString("<header")
+	if len(h.style) != 0 {
+		parseStyle(&h.buf, h.style)
+	}
+	h.buf.WriteByte('>')
+
+	for _, content := range h.contents {
+		h.buf.Write(content)
+	}
+	h.buf.WriteString("</header>")
+}
+
+type Nav struct {
+	buf      bytes.Buffer
+	style    map[string]string
+	contents [][]byte
+	role     string
+}
+
+func NewNav() *Nav {
+	return &Nav{
+		style: make(map[string]string),
+	}
+}
+
+func (n *Nav) AddStyle(k, v string) *Nav {
+	n.style[k] = v
+	return n
+}
+
+func (n *Nav) AddStyles(m map[string]string) *Nav {
+	for k, v := range m {
+		n.style[k] = v
+	}
+	return n
+}
+
+func (n *Nav) Style(m map[string]string) *Nav {
+	n.style = m
+	return n
+}
+
+func (n *Nav) Add(e Element) *Nav {
+	n.contents = append(n.contents, e.Bytes())
+	return n
+}
+
+func (n *Nav) Role(r string) *Nav {
+	n.role = r
+	return n
+}
+
+func (n *Nav) Bytes() []byte {
+	return n.buf.Bytes()
+}
+
+// IsBodyElement implements BodyElement interface
+func (n *Nav) IsBodyElement() {}
+
+func (n *Nav) Prepare() {
+	n.buf.Reset()
+	n.buf.WriteString("<nav")
+	if n.role != "" {
+		n.buf.WriteString(" role=\"" + n.role + "\"")
+	}
+	if len(n.style) != 0 {
+		parseStyle(&n.buf, n.style)
+	}
+	n.buf.WriteByte('>')
+
+	for _, content := range n.contents {
+		n.buf.Write(content)
+	}
+	n.buf.WriteString("</nav>")
+}
+
+type Section struct {
+	buf       bytes.Buffer
+	style     map[string]string
+	contents  [][]byte
+	ariaLabel string
+}
+
+func NewSection() *Section {
+	return &Section{
+		style: make(map[string]string),
+	}
+}
+
+func (s *Section) AddStyle(k, v string) *Section {
+	s.style[k] = v
+	return s
+}
+
+func (s *Section) AddStyles(m map[string]string) *Section {
+	for k, v := range m {
+		s.style[k] = v
+	}
+	return s
+}
+
+func (s *Section) Style(m map[string]string) *Section {
+	s.style = m
+	return s
+}
+
+func (s *Section) Add(e Element) *Section {
+	s.contents = append(s.contents, e.Bytes())
+	return s
+}
+
+func (s *Section) AriaLabel(label string) *Section {
+	s.ariaLabel = label
+	return s
+}
+
+func (s *Section) Bytes() []byte {
+	return s.buf.Bytes()
+}
+
+// IsBodyElement implements BodyElement interface
+func (s *Section) IsBodyElement() {}
+
+func (s *Section) Prepare() {
+	s.buf.Reset()
+	s.buf.WriteString("<section")
+	if s.ariaLabel != "" {
+		s.buf.WriteString(" aria-label=\"" + s.ariaLabel + "\"")
+	}
+	if len(s.style) != 0 {
+		parseStyle(&s.buf, s.style)
+	}
+	s.buf.WriteByte('>')
+
+	for _, content := range s.contents {
+		s.buf.Write(content)
+	}
+	s.buf.WriteString("</section>")
+}
+
+type Hgroup struct {
+	buf      bytes.Buffer
+	style    map[string]string
+	contents [][]byte
+}
+
+func NewHgroup() *Hgroup {
+	return &Hgroup{
+		style: make(map[string]string),
+	}
+}
+
+func (h *Hgroup) AddStyle(k, v string) *Hgroup {
+	h.style[k] = v
+	return h
+}
+
+func (h *Hgroup) AddStyles(m map[string]string) *Hgroup {
+	for k, v := range m {
+		h.style[k] = v
+	}
+	return h
+}
+
+func (h *Hgroup) Style(m map[string]string) *Hgroup {
+	h.style = m
+	return h
+}
+
+func (h *Hgroup) Add(e Element) *Hgroup {
+	h.contents = append(h.contents, e.Bytes())
+	return h
+}
+
+func (h *Hgroup) Bytes() []byte {
+	return h.buf.Bytes()
+}
+
+// IsBodyElement implements BodyElement interface
+func (h *Hgroup) IsBodyElement() {}
+
+func (h *Hgroup) Prepare() {
+	h.buf.Reset()
+	h.buf.WriteString("<hgroup")
+	if len(h.style) != 0 {
+		parseStyle(&h.buf, h.style)
+	}
+	h.buf.WriteByte('>')
+
+	for _, content := range h.contents {
+		h.buf.Write(content)
+	}
+	h.buf.WriteString("</hgroup>")
+}
+
+type Main struct {
+	buf      bytes.Buffer
+	style    map[string]string
+	contents [][]byte
+}
+
+func NewMain() *Main {
+	return &Main{
+		style: make(map[string]string),
+	}
+}
+
+func (m *Main) AddStyle(k, v string) *Main {
+	m.style[k] = v
+	return m
+}
+
+func (m *Main) AddStyles(mp map[string]string) *Main {
+	for k, v := range mp {
+		m.style[k] = v
+	}
+	return m
+}
+
+func (m *Main) Style(mp map[string]string) *Main {
+	m.style = mp
+	return m
+}
+
+func (m *Main) Add(e Element) *Main {
+	m.contents = append(m.contents, e.Bytes())
+	return m
+}
+
+func (m *Main) Bytes() []byte {
+	return m.buf.Bytes()
+}
+
+// IsBodyElement implements BodyElement interface
+func (m *Main) IsBodyElement() {}
+
+func (m *Main) Prepare() {
+	m.buf.Reset()
+	m.buf.WriteString("<main")
+	if len(m.style) != 0 {
+		parseStyle(&m.buf, m.style)
+	}
+	m.buf.WriteByte('>')
+
+	for _, content := range m.contents {
+		m.buf.Write(content)
+	}
+	m.buf.WriteString("</main>")
+}
+
+type Article struct {
+	buf      bytes.Buffer
+	style    map[string]string
+	contents [][]byte
+}
+
+func NewArticle() *Article {
+	return &Article{
+		style: make(map[string]string),
+	}
+}
+
+func (a *Article) AddStyle(k, v string) *Article {
+	a.style[k] = v
+	return a
+}
+
+func (a *Article) AddStyles(mp map[string]string) *Article {
+	for k, v := range mp {
+		a.style[k] = v
+	}
+	return a
+}
+
+func (a *Article) Style(mp map[string]string) *Article {
+	a.style = mp
+	return a
+}
+
+func (a *Article) Add(e Element) *Article {
+	a.contents = append(a.contents, e.Bytes())
+	return a
+}
+
+func (a *Article) Bytes() []byte {
+	return a.buf.Bytes()
+}
+
+// IsBodyElement implements BodyElement interface
+func (a *Article) IsBodyElement() {}
+
+func (a *Article) Prepare() {
+	a.buf.Reset()
+	a.buf.WriteString("<article")
+	if len(a.style) != 0 {
+		parseStyle(&a.buf, a.style)
+	}
+	a.buf.WriteByte('>')
+
+	for _, content := range a.contents {
+		a.buf.Write(content)
+	}
+	a.buf.WriteString("</article>")
+}
+
+type Aside struct {
+	buf      bytes.Buffer
+	style    map[string]string
+	contents [][]byte
+}
+
+func NewAside() *Aside {
+	return &Aside{
+		style: make(map[string]string),
+	}
+}
+
+func (as *Aside) AddStyle(k, v string) *Aside {
+	as.style[k] = v
+	return as
+}
+
+func (as *Aside) AddStyles(mp map[string]string) *Aside {
+	for k, v := range mp {
+		as.style[k] = v
+	}
+	return as
+}
+
+func (as *Aside) Style(mp map[string]string) *Aside {
+	as.style = mp
+	return as
+}
+
+func (as *Aside) Add(e Element) *Aside {
+	as.contents = append(as.contents, e.Bytes())
+	return as
+}
+
+func (as *Aside) Bytes() []byte {
+	return as.buf.Bytes()
+}
+
+// IsBodyElement implements BodyElement interface
+func (as *Aside) IsBodyElement() {}
+
+func (as *Aside) Prepare() {
+	as.buf.Reset()
+	as.buf.WriteString("<aside")
+	if len(as.style) != 0 {
+		parseStyle(&as.buf, as.style)
+	}
+	as.buf.WriteByte('>')
+
+	for _, content := range as.contents {
+		as.buf.Write(content)
+	}
+	as.buf.WriteString("</aside>")
+}
+
+type Footer struct {
+	buf      bytes.Buffer
+	style    map[string]string
+	contents [][]byte
+}
+
+func NewFooter() *Footer {
+	return &Footer{
+		style: make(map[string]string),
+	}
+}
+
+func (f *Footer) AddStyle(k, v string) *Footer {
+	f.style[k] = v
+	return f
+}
+
+func (f *Footer) AddStyles(mp map[string]string) *Footer {
+	for k, v := range mp {
+		f.style[k] = v
+	}
+	return f
+}
+
+func (f *Footer) Style(mp map[string]string) *Footer {
+	f.style = mp
+	return f
+}
+
+func (f *Footer) Add(e Element) *Footer {
+	f.contents = append(f.contents, e.Bytes())
+	return f
+}
+
+func (f *Footer) Bytes() []byte {
+	return f.buf.Bytes()
+}
+
+// IsBodyElement implements BodyElement interface
+func (f *Footer) IsBodyElement() {}
+
+func (f *Footer) Prepare() {
+	f.buf.Reset()
+	f.buf.WriteString("<footer")
+	if len(f.style) != 0 {
+		parseStyle(&f.buf, f.style)
+	}
+	f.buf.WriteByte('>')
+
+	for _, content := range f.contents {
+		f.buf.Write(content)
+	}
+	f.buf.WriteString("</footer>")
+}
+
+type Address struct {
+	buf      bytes.Buffer
+	style    map[string]string
+	contents [][]byte
+}
+
+func NewAddress() *Address {
+	return &Address{
+		style: make(map[string]string),
+	}
+}
+
+func (ad *Address) AddStyle(k, v string) *Address {
+	ad.style[k] = v
+	return ad
+}
+
+func (ad *Address) AddStyles(mp map[string]string) *Address {
+	for k, v := range mp {
+		ad.style[k] = v
+	}
+	return ad
+}
+
+func (ad *Address) Style(mp map[string]string) *Address {
+	ad.style = mp
+	return ad
+}
+
+func (ad *Address) Add(e Element) *Address {
+	ad.contents = append(ad.contents, e.Bytes())
+	return ad
+}
+
+func (ad *Address) Bytes() []byte {
+	return ad.buf.Bytes()
+}
+
+// IsBodyElement implements BodyElement interface
+func (ad *Address) IsBodyElement() {}
+
+func (ad *Address) Prepare() {
+	ad.buf.Reset()
+	ad.buf.WriteString("<address")
+	if len(ad.style) != 0 {
+		parseStyle(&ad.buf, ad.style)
+	}
+	ad.buf.WriteByte('>')
+
+	for _, content := range ad.contents {
+		ad.buf.Write(content)
+	}
+	ad.buf.WriteString("</address>")
+}

@@ -1,0 +1,6 @@
+# ignore all html files
+./*.html
+
+# ignore local agent/skill instruction files anywhere in the tree
+skills.md
+agents.md
