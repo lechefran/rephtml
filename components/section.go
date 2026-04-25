@@ -117,6 +117,59 @@ func (n *Nav) Prepare() {
 	n.buf.WriteString("</nav>")
 }
 
+type Main struct {
+	buf      bytes.Buffer
+	style    map[string]string
+	contents []Element
+}
+
+func NewMain() *Main {
+	return &Main{
+		style: make(map[string]string),
+	}
+}
+
+func (m *Main) AddStyle(k, v string) *Main {
+	m.style[k] = v
+	return m
+}
+
+func (m *Main) AddStyles(mp map[string]string) *Main {
+	for k, v := range mp {
+		m.style[k] = v
+	}
+	return m
+}
+
+func (m *Main) Style(mp map[string]string) *Main {
+	m.style = mp
+	return m
+}
+
+func (m *Main) Add(e Element) *Main {
+	m.contents = appendElement(m.contents, e)
+	return m
+}
+
+func (m *Main) Bytes() []byte {
+	return cloneBytes(m.buf.Bytes())
+}
+
+// IsBodyElement implements BodyElement interface
+func (m *Main) IsBodyElement() {}
+
+func (m *Main) Prepare() {
+	m.buf.Reset()
+	m.buf.WriteString("<main")
+	if len(m.style) != 0 {
+		parseStyle(&m.buf, m.style)
+	}
+	m.buf.WriteByte('>')
+
+	writeElements(&m.buf, m.contents)
+	m.buf.WriteString("</main>")
+}
+
 type Section struct {
 	buf       bytes.Buffer
 	style     map[string]string
@@ -177,112 +230,6 @@ func (s *Section) Prepare() {
 
 	writeElements(&s.buf, s.contents)
 	s.buf.WriteString("</section>")
-}
-
-type Hgroup struct {
-	buf      bytes.Buffer
-	style    map[string]string
-	contents []Element
-}
-
-func NewHgroup() *Hgroup {
-	return &Hgroup{
-		style: make(map[string]string),
-	}
-}
-
-func (h *Hgroup) AddStyle(k, v string) *Hgroup {
-	h.style[k] = v
-	return h
-}
-
-func (h *Hgroup) AddStyles(m map[string]string) *Hgroup {
-	for k, v := range m {
-		h.style[k] = v
-	}
-	return h
-}
-
-func (h *Hgroup) Style(m map[string]string) *Hgroup {
-	h.style = m
-	return h
-}
-
-func (h *Hgroup) Add(e Element) *Hgroup {
-	h.contents = appendElement(h.contents, e)
-	return h
-}
-
-func (h *Hgroup) Bytes() []byte {
-	return cloneBytes(h.buf.Bytes())
-}
-
-// IsBodyElement implements BodyElement interface
-func (h *Hgroup) IsBodyElement() {}
-
-func (h *Hgroup) Prepare() {
-	h.buf.Reset()
-	h.buf.WriteString("<hgroup")
-	if len(h.style) != 0 {
-		parseStyle(&h.buf, h.style)
-	}
-	h.buf.WriteByte('>')
-
-	writeElements(&h.buf, h.contents)
-	h.buf.WriteString("</hgroup>")
-}
-
-type Main struct {
-	buf      bytes.Buffer
-	style    map[string]string
-	contents []Element
-}
-
-func NewMain() *Main {
-	return &Main{
-		style: make(map[string]string),
-	}
-}
-
-func (m *Main) AddStyle(k, v string) *Main {
-	m.style[k] = v
-	return m
-}
-
-func (m *Main) AddStyles(mp map[string]string) *Main {
-	for k, v := range mp {
-		m.style[k] = v
-	}
-	return m
-}
-
-func (m *Main) Style(mp map[string]string) *Main {
-	m.style = mp
-	return m
-}
-
-func (m *Main) Add(e Element) *Main {
-	m.contents = appendElement(m.contents, e)
-	return m
-}
-
-func (m *Main) Bytes() []byte {
-	return cloneBytes(m.buf.Bytes())
-}
-
-// IsBodyElement implements BodyElement interface
-func (m *Main) IsBodyElement() {}
-
-func (m *Main) Prepare() {
-	m.buf.Reset()
-	m.buf.WriteString("<main")
-	if len(m.style) != 0 {
-		parseStyle(&m.buf, m.style)
-	}
-	m.buf.WriteByte('>')
-
-	writeElements(&m.buf, m.contents)
-	m.buf.WriteString("</main>")
 }
 
 type Article struct {
