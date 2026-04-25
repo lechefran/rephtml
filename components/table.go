@@ -198,7 +198,7 @@ func (t *Table) Prepare() {
 }
 
 func (t *Table) Bytes() []byte {
-	return t.buf.Bytes()
+	return cloneBytes(t.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -209,7 +209,7 @@ type Thead struct {
 	class    []string
 	id       string
 	style    map[string]string
-	contents [][]byte
+	contents []Element
 }
 
 func NewThead() *Thead {
@@ -261,7 +261,7 @@ func (th *Thead) Styles(m map[string]string) *Thead {
 }
 
 func (th *Thead) AddTr(tr *Tr) *Thead {
-	th.contents = append(th.contents, tr.Bytes())
+	th.contents = appendElement(th.contents, tr)
 	return th
 }
 
@@ -286,14 +286,12 @@ func (th *Thead) Prepare() {
 	}
 	th.buf.WriteByte('>')
 
-	for _, c := range th.contents {
-		th.buf.Write(c)
-	}
+	writeElements(&th.buf, th.contents)
 	th.buf.WriteString("</thead>")
 }
 
 func (th *Thead) Bytes() []byte {
-	return th.buf.Bytes()
+	return cloneBytes(th.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -304,7 +302,7 @@ type Tbody struct {
 	class    []string
 	id       string
 	style    map[string]string
-	contents [][]byte
+	contents []Element
 }
 
 func NewTbody() *Tbody {
@@ -356,7 +354,7 @@ func (tb *Tbody) Styles(m map[string]string) *Tbody {
 }
 
 func (tb *Tbody) AddTr(tr *Tr) *Tbody {
-	tb.contents = append(tb.contents, tr.Bytes())
+	tb.contents = appendElement(tb.contents, tr)
 	return tb
 }
 
@@ -381,14 +379,12 @@ func (tb *Tbody) Prepare() {
 	}
 	tb.buf.WriteByte('>')
 
-	for _, c := range tb.contents {
-		tb.buf.Write(c)
-	}
+	writeElements(&tb.buf, tb.contents)
 	tb.buf.WriteString("</tbody>")
 }
 
 func (tb *Tbody) Bytes() []byte {
-	return tb.buf.Bytes()
+	return cloneBytes(tb.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -399,7 +395,7 @@ type Tfoot struct {
 	class    []string
 	id       string
 	style    map[string]string
-	contents [][]byte
+	contents []Element
 }
 
 func NewTfoot() *Tfoot {
@@ -451,7 +447,7 @@ func (tf *Tfoot) Styles(m map[string]string) *Tfoot {
 }
 
 func (tf *Tfoot) AddTr(tr *Tr) *Tfoot {
-	tf.contents = append(tf.contents, tr.Bytes())
+	tf.contents = appendElement(tf.contents, tr)
 	return tf
 }
 
@@ -476,14 +472,12 @@ func (tf *Tfoot) Prepare() {
 	}
 	tf.buf.WriteByte('>')
 
-	for _, c := range tf.contents {
-		tf.buf.Write(c)
-	}
+	writeElements(&tf.buf, tf.contents)
 	tf.buf.WriteString("</tfoot>")
 }
 
 func (tf *Tfoot) Bytes() []byte {
-	return tf.buf.Bytes()
+	return cloneBytes(tf.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -576,7 +570,7 @@ func (c *Caption) Prepare() {
 }
 
 func (c *Caption) Bytes() []byte {
-	return c.buf.Bytes()
+	return cloneBytes(c.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -671,7 +665,7 @@ func (col *Col) Prepare() {
 }
 
 func (col *Col) Bytes() []byte {
-	return col.buf.Bytes()
+	return cloneBytes(col.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -682,7 +676,7 @@ type Colgroup struct {
 	class    []string
 	id       string
 	style    map[string]string
-	contents [][]byte
+	contents []Element
 	span     int
 }
 
@@ -735,7 +729,7 @@ func (cg *Colgroup) Styles(m map[string]string) *Colgroup {
 }
 
 func (cg *Colgroup) Add(e Element) *Colgroup {
-	cg.contents = append(cg.contents, e.Bytes())
+	cg.contents = appendElement(cg.contents, e)
 	return cg
 }
 
@@ -770,14 +764,12 @@ func (cg *Colgroup) Prepare() {
 	}
 	cg.buf.WriteByte('>')
 
-	for _, cont := range cg.contents {
-		cg.buf.Write(cont)
-	}
+	writeElements(&cg.buf, cg.contents)
 	cg.buf.WriteString("</colgroup>")
 }
 
 func (cg *Colgroup) Bytes() []byte {
-	return cg.buf.Bytes()
+	return cloneBytes(cg.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -788,7 +780,7 @@ type Tr struct {
 	class    []string
 	id       string
 	style    map[string]string
-	contents [][]byte
+	contents []Element
 }
 
 func NewTr() *Tr {
@@ -840,12 +832,12 @@ func (tr *Tr) Styles(m map[string]string) *Tr {
 }
 
 func (tr *Tr) AddTh(th *Th) *Tr {
-	tr.contents = append(tr.contents, th.Bytes())
+	tr.contents = appendElement(tr.contents, th)
 	return tr
 }
 
 func (tr *Tr) AddTd(td *Td) *Tr {
-	tr.contents = append(tr.contents, td.Bytes())
+	tr.contents = appendElement(tr.contents, td)
 	return tr
 }
 
@@ -870,14 +862,12 @@ func (tr *Tr) Prepare() {
 	}
 	tr.buf.WriteByte('>')
 
-	for _, cont := range tr.contents {
-		tr.buf.Write(cont)
-	}
+	writeElements(&tr.buf, tr.contents)
 	tr.buf.WriteString("</tr>")
 }
 
 func (tr *Tr) Bytes() []byte {
-	return tr.buf.Bytes()
+	return cloneBytes(tr.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -888,7 +878,7 @@ type Td struct {
 	class    []string
 	id       string
 	style    map[string]string
-	contents [][]byte
+	contents []Element
 	colspan  int
 	rowspan  int
 }
@@ -942,7 +932,7 @@ func (td *Td) Styles(m map[string]string) *Td {
 }
 
 func (td *Td) Add(e Element) *Td {
-	td.contents = append(td.contents, e.Bytes())
+	td.contents = appendElement(td.contents, e)
 	return td
 }
 
@@ -987,14 +977,12 @@ func (td *Td) Prepare() {
 	}
 	td.buf.WriteByte('>')
 
-	for _, cont := range td.contents {
-		td.buf.Write(cont)
-	}
+	writeElements(&td.buf, td.contents)
 	td.buf.WriteString("</td>")
 }
 
 func (td *Td) Bytes() []byte {
-	return td.buf.Bytes()
+	return cloneBytes(td.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -1005,7 +993,7 @@ type Th struct {
 	class    []string
 	id       string
 	style    map[string]string
-	contents [][]byte
+	contents []Element
 	colspan  int
 	rowspan  int
 	scope    string
@@ -1060,7 +1048,7 @@ func (th *Th) Styles(m map[string]string) *Th {
 }
 
 func (th *Th) Add(e Element) *Th {
-	th.contents = append(th.contents, e.Bytes())
+	th.contents = appendElement(th.contents, e)
 	return th
 }
 
@@ -1113,14 +1101,12 @@ func (th *Th) Prepare() {
 	}
 	th.buf.WriteByte('>')
 
-	for _, cont := range th.contents {
-		th.buf.Write(cont)
-	}
+	writeElements(&th.buf, th.contents)
 	th.buf.WriteString("</th>")
 }
 
 func (th *Th) Bytes() []byte {
-	return th.buf.Bytes()
+	return cloneBytes(th.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface

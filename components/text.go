@@ -42,7 +42,7 @@ func (p *P) Text(s string) *P {
 }
 
 func (p *P) Bytes() []byte {
-	return p.buf.Bytes()
+	return cloneBytes(p.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -72,7 +72,7 @@ func (c *Comment) Text(s string) *Comment {
 }
 
 func (c *Comment) Bytes() []byte {
-	return c.buf.Bytes()
+	return cloneBytes(c.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -111,7 +111,7 @@ func (h *H1) Text(s string) *H1 {
 }
 
 func (h *H1) Bytes() []byte {
-	return h.buf.Bytes()
+	return cloneBytes(h.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -154,7 +154,7 @@ func (h *H2) Text(s string) *H2 {
 }
 
 func (h *H2) Bytes() []byte {
-	return h.buf.Bytes()
+	return cloneBytes(h.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -197,7 +197,7 @@ func (h *H3) Text(s string) *H3 {
 }
 
 func (h *H3) Bytes() []byte {
-	return h.buf.Bytes()
+	return cloneBytes(h.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -240,7 +240,7 @@ func (h *H4) Text(s string) *H4 {
 }
 
 func (h *H4) Bytes() []byte {
-	return h.buf.Bytes()
+	return cloneBytes(h.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -283,7 +283,7 @@ func (h *H5) Text(s string) *H5 {
 }
 
 func (h *H5) Bytes() []byte {
-	return h.buf.Bytes()
+	return cloneBytes(h.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -326,7 +326,7 @@ func (h *H6) Text(s string) *H6 {
 }
 
 func (h *H6) Bytes() []byte {
-	return h.buf.Bytes()
+	return cloneBytes(h.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -374,7 +374,7 @@ func (a *Anchor) Link(s string) *Anchor {
 }
 
 func (a *Anchor) Bytes() []byte {
-	return a.buf.Bytes()
+	return cloneBytes(a.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -433,7 +433,7 @@ func (a *Abbr) Title(s string) *Abbr {
 }
 
 func (a *Abbr) Bytes() []byte {
-	return a.buf.Bytes()
+	return cloneBytes(a.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -486,7 +486,7 @@ func (b *B) Text(s string) *B {
 }
 
 func (b *B) Bytes() []byte {
-	return b.buf.Bytes()
+	return cloneBytes(b.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -536,7 +536,7 @@ func (i *I) Text(s string) *I {
 }
 
 func (i *I) Bytes() []byte {
-	return i.buf.Bytes()
+	return cloneBytes(i.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -592,7 +592,7 @@ func (q *Q) Cite(s string) *Q {
 }
 
 func (q *Q) Bytes() []byte {
-	return q.buf.Bytes()
+	return cloneBytes(q.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -645,7 +645,7 @@ func (s *S) Text(str string) *S {
 }
 
 func (s *S) Bytes() []byte {
-	return s.buf.Bytes()
+	return cloneBytes(s.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -695,7 +695,7 @@ func (u *U) Text(s string) *U {
 }
 
 func (u *U) Bytes() []byte {
-	return u.buf.Bytes()
+	return cloneBytes(u.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -745,7 +745,7 @@ func (d *Dbi) Text(s string) *Dbi {
 }
 
 func (d *Dbi) Bytes() []byte {
-	return d.buf.Bytes()
+	return cloneBytes(d.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -795,7 +795,7 @@ func (d *Dbo) Text(s string) *Dbo {
 }
 
 func (d *Dbo) Bytes() []byte {
-	return d.buf.Bytes()
+	return cloneBytes(d.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -839,7 +839,7 @@ func (br *Br) Style(m map[string]string) *Br {
 }
 
 func (br *Br) Bytes() []byte {
-	return br.buf.Bytes()
+	return cloneBytes(br.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -889,7 +889,7 @@ func (c *Cite) Text(s string) *Cite {
 }
 
 func (c *Cite) Bytes() []byte {
-	return c.buf.Bytes()
+	return cloneBytes(c.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -939,7 +939,7 @@ func (c *Code) Text(s string) *Code {
 }
 
 func (c *Code) Bytes() []byte {
-	return c.buf.Bytes()
+	return cloneBytes(c.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -995,7 +995,7 @@ func (d *Data) Value(s string) *Data {
 }
 
 func (d *Data) Bytes() []byte {
-	return d.buf.Bytes()
+	return cloneBytes(d.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -1054,7 +1054,7 @@ func (d *Dfn) Title(s string) *Dfn {
 }
 
 func (d *Dfn) Bytes() []byte {
-	return d.buf.Bytes()
+	return cloneBytes(d.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -1107,7 +1107,7 @@ func (e *Elem) Text(s string) *Elem {
 }
 
 func (e *Elem) Bytes() []byte {
-	return e.buf.Bytes()
+	return cloneBytes(e.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -1157,7 +1157,7 @@ func (m *Mark) Text(s string) *Mark {
 }
 
 func (m *Mark) Bytes() []byte {
-	return m.buf.Bytes()
+	return cloneBytes(m.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -1175,7 +1175,7 @@ func (m *Mark) Prepare() {
 type Ruby struct {
 	buf      bytes.Buffer
 	style    map[string]string
-	contents [][]byte
+	contents []Element
 }
 
 func NewRuby() *Ruby {
@@ -1202,12 +1202,12 @@ func (r *Ruby) Style(m map[string]string) *Ruby {
 }
 
 func (r *Ruby) Add(e Element) *Ruby {
-	r.contents = append(r.contents, e.Bytes())
+	r.contents = appendElement(r.contents, e)
 	return r
 }
 
 func (r *Ruby) Bytes() []byte {
-	return r.buf.Bytes()
+	return cloneBytes(r.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -1221,9 +1221,7 @@ func (r *Ruby) Prepare() {
 	}
 	r.buf.WriteByte('>')
 
-	for _, content := range r.contents {
-		r.buf.Write(content)
-	}
+	writeElements(&r.buf, r.contents)
 	r.buf.WriteString("</ruby>")
 }
 
@@ -1262,7 +1260,7 @@ func (rb *Rb) Text(s string) *Rb {
 }
 
 func (rb *Rb) Bytes() []byte {
-	return rb.buf.Bytes()
+	return cloneBytes(rb.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -1312,7 +1310,7 @@ func (rt *Rt) Text(s string) *Rt {
 }
 
 func (rt *Rt) Bytes() []byte {
-	return rt.buf.Bytes()
+	return cloneBytes(rt.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -1330,7 +1328,7 @@ func (rt *Rt) Prepare() {
 type Rtc struct {
 	buf      bytes.Buffer
 	style    map[string]string
-	contents [][]byte
+	contents []Element
 }
 
 func NewRtc() *Rtc {
@@ -1357,12 +1355,12 @@ func (rtc *Rtc) Style(m map[string]string) *Rtc {
 }
 
 func (rtc *Rtc) Add(e Element) *Rtc {
-	rtc.contents = append(rtc.contents, e.Bytes())
+	rtc.contents = appendElement(rtc.contents, e)
 	return rtc
 }
 
 func (rtc *Rtc) Bytes() []byte {
-	return rtc.buf.Bytes()
+	return cloneBytes(rtc.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -1376,9 +1374,7 @@ func (rtc *Rtc) Prepare() {
 	}
 	rtc.buf.WriteByte('>')
 
-	for _, content := range rtc.contents {
-		rtc.buf.Write(content)
-	}
+	writeElements(&rtc.buf, rtc.contents)
 	rtc.buf.WriteString("</rtc>")
 }
 
@@ -1417,7 +1413,7 @@ func (rp *Rp) Text(s string) *Rp {
 }
 
 func (rp *Rp) Bytes() []byte {
-	return rp.buf.Bytes()
+	return cloneBytes(rp.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -1467,7 +1463,7 @@ func (k *Kbd) Text(s string) *Kbd {
 }
 
 func (k *Kbd) Bytes() []byte {
-	return k.buf.Bytes()
+	return cloneBytes(k.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -1517,7 +1513,7 @@ func (s *Sub) Text(str string) *Sub {
 }
 
 func (s *Sub) Bytes() []byte {
-	return s.buf.Bytes()
+	return cloneBytes(s.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -1567,7 +1563,7 @@ func (s *Sup) Text(str string) *Sup {
 }
 
 func (s *Sup) Bytes() []byte {
-	return s.buf.Bytes()
+	return cloneBytes(s.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -1617,7 +1613,7 @@ func (s *Samp) Text(str string) *Samp {
 }
 
 func (s *Samp) Bytes() []byte {
-	return s.buf.Bytes()
+	return cloneBytes(s.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -1667,7 +1663,7 @@ func (s *Small) Text(str string) *Small {
 }
 
 func (s *Small) Bytes() []byte {
-	return s.buf.Bytes()
+	return cloneBytes(s.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -1717,7 +1713,7 @@ func (s *Span) Text(str string) *Span {
 }
 
 func (s *Span) Bytes() []byte {
-	return s.buf.Bytes()
+	return cloneBytes(s.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -1767,7 +1763,7 @@ func (s *Strong) Text(str string) *Strong {
 }
 
 func (s *Strong) Bytes() []byte {
-	return s.buf.Bytes()
+	return cloneBytes(s.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -1869,7 +1865,7 @@ func isValidDatetime(dt string) bool {
 }
 
 func (t *Time) Bytes() []byte {
-	return t.buf.Bytes()
+	return cloneBytes(t.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -1922,7 +1918,7 @@ func (v *Var) Text(str string) *Var {
 }
 
 func (v *Var) Bytes() []byte {
-	return v.buf.Bytes()
+	return cloneBytes(v.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -1966,7 +1962,7 @@ func (w *Wbr) Style(m map[string]string) *Wbr {
 }
 
 func (w *Wbr) Bytes() []byte {
-	return w.buf.Bytes()
+	return cloneBytes(w.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -2010,7 +2006,7 @@ func (h *Hr) Style(m map[string]string) *Hr {
 }
 
 func (h *Hr) Bytes() []byte {
-	return h.buf.Bytes()
+	return cloneBytes(h.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -2060,7 +2056,7 @@ func (p *Pre) Text(str string) *Pre {
 }
 
 func (p *Pre) Bytes() []byte {
-	return p.buf.Bytes()
+	return cloneBytes(p.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -2116,7 +2112,7 @@ func (b *Blockquote) Cite(c string) *Blockquote {
 }
 
 func (b *Blockquote) Bytes() []byte {
-	return b.buf.Bytes()
+	return cloneBytes(b.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -2137,7 +2133,7 @@ func (b *Blockquote) Prepare() {
 type Menu struct {
 	buf      bytes.Buffer
 	style    map[string]string
-	contents [][]byte
+	contents []Element
 	menuType string
 	label    string
 }
@@ -2166,7 +2162,7 @@ func (m *Menu) Style(ms map[string]string) *Menu {
 }
 
 func (m *Menu) Add(e Element) *Menu {
-	m.contents = append(m.contents, e.Bytes())
+	m.contents = appendElement(m.contents, e)
 	return m
 }
 
@@ -2181,7 +2177,7 @@ func (m *Menu) Label(l string) *Menu {
 }
 
 func (m *Menu) Bytes() []byte {
-	return m.buf.Bytes()
+	return cloneBytes(m.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -2201,16 +2197,14 @@ func (m *Menu) Prepare() {
 	}
 	m.buf.WriteByte('>')
 
-	for _, content := range m.contents {
-		m.buf.Write(content)
-	}
+	writeElements(&m.buf, m.contents)
 	m.buf.WriteString("</menu>")
 }
 
 type Ol struct {
 	buf      bytes.Buffer
 	style    map[string]string
-	contents [][]byte
+	contents []Element
 	start    int
 	listType string
 	reversed bool
@@ -2240,7 +2234,7 @@ func (o *Ol) Style(m map[string]string) *Ol {
 }
 
 func (o *Ol) Add(e Element) *Ol {
-	o.contents = append(o.contents, e.Bytes())
+	o.contents = appendElement(o.contents, e)
 	return o
 }
 
@@ -2260,7 +2254,7 @@ func (o *Ol) Reversed(r bool) *Ol {
 }
 
 func (o *Ol) Bytes() []byte {
-	return o.buf.Bytes()
+	return cloneBytes(o.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -2285,16 +2279,14 @@ func (o *Ol) Prepare() {
 	}
 	o.buf.WriteByte('>')
 
-	for _, content := range o.contents {
-		o.buf.Write(content)
-	}
+	writeElements(&o.buf, o.contents)
 	o.buf.WriteString("</ol>")
 }
 
 type Ul struct {
 	buf      bytes.Buffer
 	style    map[string]string
-	contents [][]byte
+	contents []Element
 }
 
 func NewUl() *Ul {
@@ -2321,12 +2313,12 @@ func (u *Ul) Style(m map[string]string) *Ul {
 }
 
 func (u *Ul) Add(e Element) *Ul {
-	u.contents = append(u.contents, e.Bytes())
+	u.contents = appendElement(u.contents, e)
 	return u
 }
 
 func (u *Ul) Bytes() []byte {
-	return u.buf.Bytes()
+	return cloneBytes(u.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -2340,16 +2332,14 @@ func (u *Ul) Prepare() {
 	}
 	u.buf.WriteByte('>')
 
-	for _, content := range u.contents {
-		u.buf.Write(content)
-	}
+	writeElements(&u.buf, u.contents)
 	u.buf.WriteString("</ul>")
 }
 
 type Li struct {
 	buf      bytes.Buffer
 	style    map[string]string
-	contents [][]byte
+	contents []Element
 	value    int
 }
 
@@ -2377,7 +2367,7 @@ func (l *Li) Style(m map[string]string) *Li {
 }
 
 func (l *Li) Add(e Element) *Li {
-	l.contents = append(l.contents, e.Bytes())
+	l.contents = appendElement(l.contents, e)
 	return l
 }
 
@@ -2387,7 +2377,7 @@ func (l *Li) Value(v int) *Li {
 }
 
 func (l *Li) Bytes() []byte {
-	return l.buf.Bytes()
+	return cloneBytes(l.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -2406,16 +2396,14 @@ func (l *Li) Prepare() {
 	}
 	l.buf.WriteByte('>')
 
-	for _, content := range l.contents {
-		l.buf.Write(content)
-	}
+	writeElements(&l.buf, l.contents)
 	l.buf.WriteString("</li>")
 }
 
 type Dl struct {
 	buf      bytes.Buffer
 	style    map[string]string
-	contents [][]byte
+	contents []Element
 }
 
 func NewDl() *Dl {
@@ -2442,12 +2430,12 @@ func (d *Dl) Style(m map[string]string) *Dl {
 }
 
 func (d *Dl) Add(e Element) *Dl {
-	d.contents = append(d.contents, e.Bytes())
+	d.contents = appendElement(d.contents, e)
 	return d
 }
 
 func (d *Dl) Bytes() []byte {
-	return d.buf.Bytes()
+	return cloneBytes(d.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -2461,16 +2449,14 @@ func (d *Dl) Prepare() {
 	}
 	d.buf.WriteByte('>')
 
-	for _, content := range d.contents {
-		d.buf.Write(content)
-	}
+	writeElements(&d.buf, d.contents)
 	d.buf.WriteString("</dl>")
 }
 
 type Dt struct {
 	buf      bytes.Buffer
 	style    map[string]string
-	contents [][]byte
+	contents []Element
 }
 
 func NewDt() *Dt {
@@ -2497,12 +2483,12 @@ func (d *Dt) Style(m map[string]string) *Dt {
 }
 
 func (d *Dt) Add(e Element) *Dt {
-	d.contents = append(d.contents, e.Bytes())
+	d.contents = appendElement(d.contents, e)
 	return d
 }
 
 func (d *Dt) Bytes() []byte {
-	return d.buf.Bytes()
+	return cloneBytes(d.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -2516,16 +2502,14 @@ func (d *Dt) Prepare() {
 	}
 	d.buf.WriteByte('>')
 
-	for _, content := range d.contents {
-		d.buf.Write(content)
-	}
+	writeElements(&d.buf, d.contents)
 	d.buf.WriteString("</dt>")
 }
 
 type Dd struct {
 	buf      bytes.Buffer
 	style    map[string]string
-	contents [][]byte
+	contents []Element
 }
 
 func NewDd() *Dd {
@@ -2552,12 +2536,12 @@ func (d *Dd) Style(m map[string]string) *Dd {
 }
 
 func (d *Dd) Add(e Element) *Dd {
-	d.contents = append(d.contents, e.Bytes())
+	d.contents = appendElement(d.contents, e)
 	return d
 }
 
 func (d *Dd) Bytes() []byte {
-	return d.buf.Bytes()
+	return cloneBytes(d.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -2571,16 +2555,14 @@ func (d *Dd) Prepare() {
 	}
 	d.buf.WriteByte('>')
 
-	for _, content := range d.contents {
-		d.buf.Write(content)
-	}
+	writeElements(&d.buf, d.contents)
 	d.buf.WriteString("</dd>")
 }
 
 type Figure struct {
 	buf      bytes.Buffer
 	style    map[string]string
-	contents [][]byte
+	contents []Element
 }
 
 func NewFigure() *Figure {
@@ -2607,12 +2589,12 @@ func (f *Figure) Style(m map[string]string) *Figure {
 }
 
 func (f *Figure) Add(e Element) *Figure {
-	f.contents = append(f.contents, e.Bytes())
+	f.contents = appendElement(f.contents, e)
 	return f
 }
 
 func (f *Figure) Bytes() []byte {
-	return f.buf.Bytes()
+	return cloneBytes(f.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -2626,16 +2608,14 @@ func (f *Figure) Prepare() {
 	}
 	f.buf.WriteByte('>')
 
-	for _, content := range f.contents {
-		f.buf.Write(content)
-	}
+	writeElements(&f.buf, f.contents)
 	f.buf.WriteString("</figure>")
 }
 
 type Figcaption struct {
 	buf      bytes.Buffer
 	style    map[string]string
-	contents [][]byte
+	contents []Element
 }
 
 func NewFigcaption() *Figcaption {
@@ -2662,12 +2642,12 @@ func (f *Figcaption) Style(m map[string]string) *Figcaption {
 }
 
 func (f *Figcaption) Add(e Element) *Figcaption {
-	f.contents = append(f.contents, e.Bytes())
+	f.contents = appendElement(f.contents, e)
 	return f
 }
 
 func (f *Figcaption) Bytes() []byte {
-	return f.buf.Bytes()
+	return cloneBytes(f.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -2681,16 +2661,14 @@ func (f *Figcaption) Prepare() {
 	}
 	f.buf.WriteByte('>')
 
-	for _, content := range f.contents {
-		f.buf.Write(content)
-	}
+	writeElements(&f.buf, f.contents)
 	f.buf.WriteString("</figcaption>")
 }
 
 type Search struct {
 	buf      bytes.Buffer
 	style    map[string]string
-	contents [][]byte
+	contents []Element
 }
 
 func NewSearch() *Search {
@@ -2717,12 +2695,12 @@ func (s *Search) Style(m map[string]string) *Search {
 }
 
 func (s *Search) Add(e Element) *Search {
-	s.contents = append(s.contents, e.Bytes())
+	s.contents = appendElement(s.contents, e)
 	return s
 }
 
 func (s *Search) Bytes() []byte {
-	return s.buf.Bytes()
+	return cloneBytes(s.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -2736,8 +2714,6 @@ func (s *Search) Prepare() {
 	}
 	s.buf.WriteByte('>')
 
-	for _, content := range s.contents {
-		s.buf.Write(content)
-	}
+	writeElements(&s.buf, s.contents)
 	s.buf.WriteString("</search>")
 }

@@ -61,7 +61,7 @@ func (a *Area) Target(target string) *Area {
 }
 
 func (a *Area) Bytes() []byte {
-	return a.buf.Bytes()
+	return cloneBytes(a.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -150,7 +150,7 @@ func (i *Img) Title(title string) *Img {
 }
 
 func (i *Img) Bytes() []byte {
-	return i.buf.Bytes()
+	return cloneBytes(i.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -183,7 +183,7 @@ func (i *Img) Prepare() {
 type Audio struct {
 	buf      bytes.Buffer
 	style    map[string]string
-	contents [][]byte
+	contents []Element
 	src      string
 	controls bool
 	autoplay bool
@@ -216,7 +216,7 @@ func (a *Audio) Style(m map[string]string) *Audio {
 }
 
 func (a *Audio) Add(e Element) *Audio {
-	a.contents = append(a.contents, e.Bytes())
+	a.contents = appendElement(a.contents, e)
 	return a
 }
 
@@ -251,7 +251,7 @@ func (a *Audio) Preload(preload string) *Audio {
 }
 
 func (a *Audio) Bytes() []byte {
-	return a.buf.Bytes()
+	return cloneBytes(a.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -283,9 +283,7 @@ func (a *Audio) Prepare() {
 	}
 	a.buf.WriteByte('>')
 
-	for _, content := range a.contents {
-		a.buf.Write(content)
-	}
+	writeElements(&a.buf, a.contents)
 	a.buf.WriteString("</audio>")
 }
 
@@ -348,7 +346,7 @@ func (t *Track) Default(def bool) *Track {
 }
 
 func (t *Track) Bytes() []byte {
-	return t.buf.Bytes()
+	return cloneBytes(t.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -381,7 +379,7 @@ func (t *Track) Prepare() {
 type Map struct {
 	buf      bytes.Buffer
 	style    map[string]string
-	contents [][]byte
+	contents []Element
 	name     string
 }
 
@@ -409,7 +407,7 @@ func (m *Map) Style(ms map[string]string) *Map {
 }
 
 func (m *Map) Add(e Element) *Map {
-	m.contents = append(m.contents, e.Bytes())
+	m.contents = appendElement(m.contents, e)
 	return m
 }
 
@@ -419,7 +417,7 @@ func (m *Map) Name(name string) *Map {
 }
 
 func (m *Map) Bytes() []byte {
-	return m.buf.Bytes()
+	return cloneBytes(m.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -436,16 +434,14 @@ func (m *Map) Prepare() {
 	}
 	m.buf.WriteByte('>')
 
-	for _, content := range m.contents {
-		m.buf.Write(content)
-	}
+	writeElements(&m.buf, m.contents)
 	m.buf.WriteString("</map>")
 }
 
 type Video struct {
 	buf      bytes.Buffer
 	style    map[string]string
-	contents [][]byte
+	contents []Element
 	src      string
 	controls bool
 	autoplay bool
@@ -481,7 +477,7 @@ func (v *Video) Style(m map[string]string) *Video {
 }
 
 func (v *Video) Add(e Element) *Video {
-	v.contents = append(v.contents, e.Bytes())
+	v.contents = appendElement(v.contents, e)
 	return v
 }
 
@@ -531,7 +527,7 @@ func (v *Video) Poster(poster string) *Video {
 }
 
 func (v *Video) Bytes() []byte {
-	return v.buf.Bytes()
+	return cloneBytes(v.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -572,8 +568,6 @@ func (v *Video) Prepare() {
 	}
 	v.buf.WriteByte('>')
 
-	for _, content := range v.contents {
-		v.buf.Write(content)
-	}
+	writeElements(&v.buf, v.contents)
 	v.buf.WriteString("</video>")
 }

@@ -5,7 +5,7 @@ import "bytes"
 type Slot struct {
 	buf      bytes.Buffer
 	style    map[string]string
-	contents [][]byte
+	contents []Element
 	name     string
 }
 
@@ -33,7 +33,7 @@ func (s *Slot) Style(m map[string]string) *Slot {
 }
 
 func (s *Slot) Add(e Element) *Slot {
-	s.contents = append(s.contents, e.Bytes())
+	s.contents = appendElement(s.contents, e)
 	return s
 }
 
@@ -43,7 +43,7 @@ func (s *Slot) Name(n string) *Slot {
 }
 
 func (s *Slot) Bytes() []byte {
-	return s.buf.Bytes()
+	return cloneBytes(s.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -60,16 +60,14 @@ func (s *Slot) Prepare() {
 	}
 	s.buf.WriteByte('>')
 
-	for _, content := range s.contents {
-		s.buf.Write(content)
-	}
+	writeElements(&s.buf, s.contents)
 	s.buf.WriteString("</slot>")
 }
 
 type Template struct {
 	buf      bytes.Buffer
 	style    map[string]string
-	contents [][]byte
+	contents []Element
 	id       string
 }
 
@@ -103,7 +101,7 @@ func (t *Template) Style(m map[string]string) *Template {
 }
 
 func (t *Template) Add(e Element) *Template {
-	t.contents = append(t.contents, e.Bytes())
+	t.contents = appendElement(t.contents, e)
 	return t
 }
 
@@ -113,7 +111,7 @@ func (t *Template) Id(i string) *Template {
 }
 
 func (t *Template) Bytes() []byte {
-	return t.buf.Bytes()
+	return cloneBytes(t.buf.Bytes())
 }
 
 func (t *Template) Prepare() {
@@ -127,9 +125,6 @@ func (t *Template) Prepare() {
 	}
 	t.buf.WriteByte('>')
 
-	for _, content := range t.contents {
-		t.buf.Write(content)
-	}
+	writeElements(&t.buf, t.contents)
 	t.buf.WriteString("</template>")
 }
-

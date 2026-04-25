@@ -385,7 +385,7 @@ type Style struct {
 }
 
 func (s *Style) Bytes() []byte {
-	return s.buf.Bytes()
+	return cloneBytes(s.buf.Bytes())
 }
 
 func (s *Style) Prepare() {

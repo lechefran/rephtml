@@ -55,7 +55,7 @@ func (e *Embed) Height(height string) *Embed {
 }
 
 func (e *Embed) Bytes() []byte {
-	return e.buf.Bytes()
+	return cloneBytes(e.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -171,7 +171,7 @@ func (i *Iframe) Srcdoc(srcdoc string) *Iframe {
 }
 
 func (i *Iframe) Bytes() []byte {
-	return i.buf.Bytes()
+	return cloneBytes(i.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -219,7 +219,7 @@ func (i *Iframe) Prepare() {
 type Object struct {
 	buf      bytes.Buffer
 	style    map[string]string
-	contents [][]byte
+	contents []Element
 	data     string
 	objType  string
 	width    string
@@ -253,7 +253,7 @@ func (o *Object) Style(m map[string]string) *Object {
 }
 
 func (o *Object) Add(e Element) *Object {
-	o.contents = append(o.contents, e.Bytes())
+	o.contents = appendElement(o.contents, e)
 	return o
 }
 
@@ -293,7 +293,7 @@ func (o *Object) Form(form string) *Object {
 }
 
 func (o *Object) Bytes() []byte {
-	return o.buf.Bytes()
+	return cloneBytes(o.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -328,16 +328,14 @@ func (o *Object) Prepare() {
 	}
 	o.buf.WriteByte('>')
 
-	for _, content := range o.contents {
-		o.buf.Write(content)
-	}
+	writeElements(&o.buf, o.contents)
 	o.buf.WriteString("</object>")
 }
 
 type Picture struct {
 	buf      bytes.Buffer
 	style    map[string]string
-	contents [][]byte
+	contents []Element
 }
 
 func NewPicture() *Picture {
@@ -364,12 +362,12 @@ func (p *Picture) Style(m map[string]string) *Picture {
 }
 
 func (p *Picture) Add(e Element) *Picture {
-	p.contents = append(p.contents, e.Bytes())
+	p.contents = appendElement(p.contents, e)
 	return p
 }
 
 func (p *Picture) Bytes() []byte {
-	return p.buf.Bytes()
+	return cloneBytes(p.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -383,9 +381,7 @@ func (p *Picture) Prepare() {
 	}
 	p.buf.WriteByte('>')
 
-	for _, content := range p.contents {
-		p.buf.Write(content)
-	}
+	writeElements(&p.buf, p.contents)
 	p.buf.WriteString("</picture>")
 }
 
@@ -430,7 +426,7 @@ func (p *Portal) Referrerpolicy(referrerpolicy string) *Portal {
 }
 
 func (p *Portal) Bytes() []byte {
-	return p.buf.Bytes()
+	return cloneBytes(p.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -510,7 +506,7 @@ func (s *Source) Type(srcType string) *Source {
 }
 
 func (s *Source) Bytes() []byte {
-	return s.buf.Bytes()
+	return cloneBytes(s.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface

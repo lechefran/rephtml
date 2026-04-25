@@ -14,9 +14,9 @@ const tab = "\t"
 type HtmlFile struct {
 	buf         bytes.Buffer
 	style       map[string]string
-	contents    [][]byte
-	headContent [][]byte
-	bodyContent [][]byte
+	contents    []Element
+	headContent []Element
+	bodyContent []Element
 	ttrack      int
 	lang        string
 	dir         string
@@ -36,7 +36,7 @@ func NewHtmlFile() *HtmlFile {
 
 // Bytes returns the buffer contents
 func (h *HtmlFile) Bytes() []byte {
-	return h.buf.Bytes()
+	return cloneBytes(h.buf.Bytes())
 }
 
 // Prepare builds the HTML for the html element
@@ -70,9 +70,7 @@ func (h *HtmlFile) Prepare() {
 		h.writeContentElement("head", h.headContent)
 	}
 
-	for _, content := range h.contents {
-		h.buf.Write(content)
-	}
+	writeElements(&h.buf, h.contents)
 
 	if len(h.bodyContent) != 0 {
 		h.writeContentElement("body", h.bodyContent)
@@ -84,10 +82,7 @@ func (h *HtmlFile) Prepare() {
 // Add adds content to the html element
 func (h *HtmlFile) Add(e Element) *HtmlFile {
 	if e != nil {
-		if len(e.Bytes()) == 0 {
-			e.Prepare()
-		}
-		h.contents = append(h.contents, e.Bytes())
+		h.contents = appendElement(h.contents, e)
 	}
 	return h
 }
@@ -106,10 +101,7 @@ func (h *HtmlFile) AddToHead(e Element) *HtmlFile {
 			}
 		}
 
-		if len(e.Bytes()) == 0 {
-			e.Prepare()
-		}
-		h.headContent = append(h.headContent, e.Bytes())
+		h.headContent = appendElement(h.headContent, e)
 	}
 	return h
 }
@@ -128,10 +120,7 @@ func (h *HtmlFile) AddToBody(e Element) *HtmlFile {
 			}
 		}
 
-		if len(e.Bytes()) == 0 {
-			e.Prepare()
-		}
-		h.bodyContent = append(h.bodyContent, e.Bytes())
+		h.bodyContent = appendElement(h.bodyContent, e)
 	}
 	return h
 }
@@ -222,11 +211,9 @@ func (h *HtmlFile) WriteToFile(path string) {
 	}
 }
 
-func (h *HtmlFile) writeContentElement(tag string, contents [][]byte) {
+func (h *HtmlFile) writeContentElement(tag string, contents []Element) {
 	h.buf.WriteString("<" + tag + ">")
-	for _, content := range contents {
-		h.buf.Write(content)
-	}
+	writeElements(&h.buf, contents)
 	h.buf.WriteString("</" + tag + ">")
 }
 
@@ -421,7 +408,7 @@ func isRawTextElement(tag string) bool {
 type Head struct {
 	buf      bytes.Buffer
 	style    map[string]string
-	contents [][]byte
+	contents []Element
 	ttrack   int
 }
 
@@ -434,7 +421,7 @@ func NewHead() *Head {
 
 // Bytes returns the buffer contents
 func (h *Head) Bytes() []byte {
-	return h.buf.Bytes()
+	return cloneBytes(h.buf.Bytes())
 }
 
 // Prepare builds the HTML for the head element
@@ -446,17 +433,14 @@ func (h *Head) Prepare() {
 	}
 	h.buf.WriteByte('>')
 
-	for _, content := range h.contents {
-		h.buf.Write(content)
-	}
+	writeElements(&h.buf, h.contents)
 	h.buf.WriteString("</head>")
 }
 
 // Add adds content to the head element
 func (h *Head) Add(e Element) *Head {
 	if e != nil {
-		e.Prepare()
-		h.contents = append(h.contents, e.Bytes())
+		h.contents = appendElement(h.contents, e)
 	}
 	return h
 }
@@ -488,7 +472,7 @@ func (h *Head) Style(m map[string]string) *Head {
 type Body struct {
 	buf      bytes.Buffer
 	style    map[string]string
-	contents [][]byte
+	contents []Element
 	ttrack   int
 	onLoad   string
 	onUnload string
@@ -503,7 +487,7 @@ func NewBody() *Body {
 
 // Bytes returns the buffer contents
 func (b *Body) Bytes() []byte {
-	return b.buf.Bytes()
+	return cloneBytes(b.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -524,17 +508,14 @@ func (b *Body) Prepare() {
 	}
 	b.buf.WriteByte('>')
 
-	for _, content := range b.contents {
-		b.buf.Write(content)
-	}
+	writeElements(&b.buf, b.contents)
 	b.buf.WriteString("</body>")
 }
 
 // Add adds content to the body element
 func (b *Body) Add(e Element) *Body {
 	if e != nil {
-		e.Prepare()
-		b.contents = append(b.contents, e.Bytes())
+		b.contents = appendElement(b.contents, e)
 	}
 	return b
 }
@@ -578,7 +559,7 @@ func (b *Body) Style(m map[string]string) *Body {
 type Title struct {
 	buf      bytes.Buffer
 	style    map[string]string
-	contents [][]byte
+	contents []Element
 	ttrack   int
 }
 
@@ -591,7 +572,7 @@ func NewTitle() *Title {
 
 // Bytes returns the buffer contents
 func (t *Title) Bytes() []byte {
-	return t.buf.Bytes()
+	return cloneBytes(t.buf.Bytes())
 }
 
 // Prepare builds the HTML for the title element
@@ -603,17 +584,14 @@ func (t *Title) Prepare() {
 	}
 	t.buf.WriteByte('>')
 
-	for _, content := range t.contents {
-		t.buf.Write(content)
-	}
+	writeElements(&t.buf, t.contents)
 	t.buf.WriteString("</title>")
 }
 
 // Add adds content to the title element
 func (t *Title) Add(e Element) *Title {
 	if e != nil {
-		e.Prepare()
-		t.contents = append(t.contents, e.Bytes())
+		t.contents = appendElement(t.contents, e)
 	}
 	return t
 }
@@ -623,7 +601,7 @@ func (t *Title) IsHeadElement() {}
 
 // Text adds text content to the title element
 func (t *Title) Text(text string) *Title {
-	t.contents = append(t.contents, []byte(text))
+	t.contents = appendElement(t.contents, rawText(text))
 	return t
 }
 
@@ -667,7 +645,7 @@ func NewBase() *Base {
 
 // Bytes returns the buffer contents
 func (b *Base) Bytes() []byte {
-	return b.buf.Bytes()
+	return cloneBytes(b.buf.Bytes())
 }
 
 // Prepare builds the HTML for the base element
@@ -748,7 +726,7 @@ func NewLink() *Link {
 
 // Bytes returns the buffer contents
 func (l *Link) Bytes() []byte {
-	return l.buf.Bytes()
+	return cloneBytes(l.buf.Bytes())
 }
 
 // Prepare builds the HTML for the link element
@@ -889,7 +867,7 @@ func NewMeta() *Meta {
 
 // Bytes returns the buffer contents
 func (m *Meta) Bytes() []byte {
-	return m.buf.Bytes()
+	return cloneBytes(m.buf.Bytes())
 }
 
 // Prepare builds the HTML for the meta element
@@ -986,7 +964,7 @@ func (m *Meta) IsHeadElement() {}
 type StyleElement struct {
 	buf       bytes.Buffer
 	style     map[string]string
-	contents  [][]byte
+	contents  []Element
 	ttrack    int
 	styleType string
 	media     string
@@ -1001,7 +979,7 @@ func NewStyleElement() *StyleElement {
 
 // Bytes returns the buffer contents
 func (s *StyleElement) Bytes() []byte {
-	return s.buf.Bytes()
+	return cloneBytes(s.buf.Bytes())
 }
 
 // Prepare builds the HTML for the style element
@@ -1020,9 +998,7 @@ func (s *StyleElement) Prepare() {
 
 	s.buf.WriteByte('>')
 
-	for _, content := range s.contents {
-		s.buf.Write(content)
-	}
+	writeElements(&s.buf, s.contents)
 
 	s.buf.WriteString("</style>")
 }
@@ -1030,15 +1006,14 @@ func (s *StyleElement) Prepare() {
 // Add adds content to the style element
 func (s *StyleElement) Add(e Element) *StyleElement {
 	if e != nil {
-		e.Prepare()
-		s.contents = append(s.contents, e.Bytes())
+		s.contents = appendElement(s.contents, e)
 	}
 	return s
 }
 
 // Text adds CSS text content to the style element
 func (s *StyleElement) Text(text string) *StyleElement {
-	s.contents = append(s.contents, []byte(text))
+	s.contents = appendElement(s.contents, rawText(text))
 	return s
 }
 

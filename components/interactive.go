@@ -6,7 +6,7 @@ import "bytes"
 type Details struct {
 	buf      bytes.Buffer
 	style    map[string]string
-	contents [][]byte
+	contents []Element
 	ttrack   int
 	open     bool
 }
@@ -20,7 +20,7 @@ func NewDetails() *Details {
 
 // Bytes returns the buffer contents
 func (d *Details) Bytes() []byte {
-	return d.buf.Bytes()
+	return cloneBytes(d.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -30,29 +30,26 @@ func (d *Details) IsBodyElement() {}
 func (d *Details) Prepare() {
 	d.buf.Reset()
 	d.buf.WriteString("<details")
-	
+
 	if d.open {
 		d.buf.WriteString(" open")
 	}
-	
+
 	if len(d.style) != 0 {
 		parseStyle(&d.buf, d.style)
 	}
-	
+
 	d.buf.WriteByte('>')
-	
-	for _, content := range d.contents {
-		d.buf.Write(content)
-	}
-	
+
+	writeElements(&d.buf, d.contents)
+
 	d.buf.WriteString("</details>")
 }
 
 // Add adds content to the details element
 func (d *Details) Add(e Element) *Details {
 	if e != nil {
-		e.Prepare()
-		d.contents = append(d.contents, e.Bytes())
+		d.contents = appendElement(d.contents, e)
 	}
 	return d
 }
@@ -90,7 +87,7 @@ func (d *Details) Style(m map[string]string) *Details {
 type Dialog struct {
 	buf      bytes.Buffer
 	style    map[string]string
-	contents [][]byte
+	contents []Element
 	ttrack   int
 	open     bool
 }
@@ -104,7 +101,7 @@ func NewDialog() *Dialog {
 
 // Bytes returns the buffer contents
 func (d *Dialog) Bytes() []byte {
-	return d.buf.Bytes()
+	return cloneBytes(d.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -114,29 +111,26 @@ func (d *Dialog) IsBodyElement() {}
 func (d *Dialog) Prepare() {
 	d.buf.Reset()
 	d.buf.WriteString("<dialog")
-	
+
 	if d.open {
 		d.buf.WriteString(" open")
 	}
-	
+
 	if len(d.style) != 0 {
 		parseStyle(&d.buf, d.style)
 	}
-	
+
 	d.buf.WriteByte('>')
-	
-	for _, content := range d.contents {
-		d.buf.Write(content)
-	}
-	
+
+	writeElements(&d.buf, d.contents)
+
 	d.buf.WriteString("</dialog>")
 }
 
 // Add adds content to the dialog element
 func (d *Dialog) Add(e Element) *Dialog {
 	if e != nil {
-		e.Prepare()
-		d.contents = append(d.contents, e.Bytes())
+		d.contents = appendElement(d.contents, e)
 	}
 	return d
 }
@@ -174,7 +168,7 @@ func (d *Dialog) Style(m map[string]string) *Dialog {
 type Summary struct {
 	buf      bytes.Buffer
 	style    map[string]string
-	contents [][]byte
+	contents []Element
 	ttrack   int
 }
 
@@ -187,7 +181,7 @@ func NewSummary() *Summary {
 
 // Bytes returns the buffer contents
 func (s *Summary) Bytes() []byte {
-	return s.buf.Bytes()
+	return cloneBytes(s.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -197,25 +191,22 @@ func (s *Summary) IsBodyElement() {}
 func (s *Summary) Prepare() {
 	s.buf.Reset()
 	s.buf.WriteString("<summary")
-	
+
 	if len(s.style) != 0 {
 		parseStyle(&s.buf, s.style)
 	}
-	
+
 	s.buf.WriteByte('>')
-	
-	for _, content := range s.contents {
-		s.buf.Write(content)
-	}
-	
+
+	writeElements(&s.buf, s.contents)
+
 	s.buf.WriteString("</summary>")
 }
 
 // Add adds content to the summary element
 func (s *Summary) Add(e Element) *Summary {
 	if e != nil {
-		e.Prepare()
-		s.contents = append(s.contents, e.Bytes())
+		s.contents = appendElement(s.contents, e)
 	}
 	return s
 }

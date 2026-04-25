@@ -5,7 +5,7 @@ import "bytes"
 type Header struct {
 	buf      bytes.Buffer
 	style    map[string]string
-	contents [][]byte
+	contents []Element
 }
 
 func NewHeader() *Header {
@@ -32,12 +32,12 @@ func (h *Header) Style(m map[string]string) *Header {
 }
 
 func (h *Header) Add(e Element) *Header {
-	h.contents = append(h.contents, e.Bytes())
+	h.contents = appendElement(h.contents, e)
 	return h
 }
 
 func (h *Header) Bytes() []byte {
-	return h.buf.Bytes()
+	return cloneBytes(h.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -51,16 +51,14 @@ func (h *Header) Prepare() {
 	}
 	h.buf.WriteByte('>')
 
-	for _, content := range h.contents {
-		h.buf.Write(content)
-	}
+	writeElements(&h.buf, h.contents)
 	h.buf.WriteString("</header>")
 }
 
 type Nav struct {
 	buf      bytes.Buffer
 	style    map[string]string
-	contents [][]byte
+	contents []Element
 	role     string
 }
 
@@ -88,7 +86,7 @@ func (n *Nav) Style(m map[string]string) *Nav {
 }
 
 func (n *Nav) Add(e Element) *Nav {
-	n.contents = append(n.contents, e.Bytes())
+	n.contents = appendElement(n.contents, e)
 	return n
 }
 
@@ -98,7 +96,7 @@ func (n *Nav) Role(r string) *Nav {
 }
 
 func (n *Nav) Bytes() []byte {
-	return n.buf.Bytes()
+	return cloneBytes(n.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -115,16 +113,14 @@ func (n *Nav) Prepare() {
 	}
 	n.buf.WriteByte('>')
 
-	for _, content := range n.contents {
-		n.buf.Write(content)
-	}
+	writeElements(&n.buf, n.contents)
 	n.buf.WriteString("</nav>")
 }
 
 type Section struct {
 	buf       bytes.Buffer
 	style     map[string]string
-	contents  [][]byte
+	contents  []Element
 	ariaLabel string
 }
 
@@ -152,7 +148,7 @@ func (s *Section) Style(m map[string]string) *Section {
 }
 
 func (s *Section) Add(e Element) *Section {
-	s.contents = append(s.contents, e.Bytes())
+	s.contents = appendElement(s.contents, e)
 	return s
 }
 
@@ -162,7 +158,7 @@ func (s *Section) AriaLabel(label string) *Section {
 }
 
 func (s *Section) Bytes() []byte {
-	return s.buf.Bytes()
+	return cloneBytes(s.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -179,16 +175,14 @@ func (s *Section) Prepare() {
 	}
 	s.buf.WriteByte('>')
 
-	for _, content := range s.contents {
-		s.buf.Write(content)
-	}
+	writeElements(&s.buf, s.contents)
 	s.buf.WriteString("</section>")
 }
 
 type Hgroup struct {
 	buf      bytes.Buffer
 	style    map[string]string
-	contents [][]byte
+	contents []Element
 }
 
 func NewHgroup() *Hgroup {
@@ -215,12 +209,12 @@ func (h *Hgroup) Style(m map[string]string) *Hgroup {
 }
 
 func (h *Hgroup) Add(e Element) *Hgroup {
-	h.contents = append(h.contents, e.Bytes())
+	h.contents = appendElement(h.contents, e)
 	return h
 }
 
 func (h *Hgroup) Bytes() []byte {
-	return h.buf.Bytes()
+	return cloneBytes(h.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -234,16 +228,14 @@ func (h *Hgroup) Prepare() {
 	}
 	h.buf.WriteByte('>')
 
-	for _, content := range h.contents {
-		h.buf.Write(content)
-	}
+	writeElements(&h.buf, h.contents)
 	h.buf.WriteString("</hgroup>")
 }
 
 type Main struct {
 	buf      bytes.Buffer
 	style    map[string]string
-	contents [][]byte
+	contents []Element
 }
 
 func NewMain() *Main {
@@ -270,12 +262,12 @@ func (m *Main) Style(mp map[string]string) *Main {
 }
 
 func (m *Main) Add(e Element) *Main {
-	m.contents = append(m.contents, e.Bytes())
+	m.contents = appendElement(m.contents, e)
 	return m
 }
 
 func (m *Main) Bytes() []byte {
-	return m.buf.Bytes()
+	return cloneBytes(m.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -289,16 +281,14 @@ func (m *Main) Prepare() {
 	}
 	m.buf.WriteByte('>')
 
-	for _, content := range m.contents {
-		m.buf.Write(content)
-	}
+	writeElements(&m.buf, m.contents)
 	m.buf.WriteString("</main>")
 }
 
 type Article struct {
 	buf      bytes.Buffer
 	style    map[string]string
-	contents [][]byte
+	contents []Element
 }
 
 func NewArticle() *Article {
@@ -325,12 +315,12 @@ func (a *Article) Style(mp map[string]string) *Article {
 }
 
 func (a *Article) Add(e Element) *Article {
-	a.contents = append(a.contents, e.Bytes())
+	a.contents = appendElement(a.contents, e)
 	return a
 }
 
 func (a *Article) Bytes() []byte {
-	return a.buf.Bytes()
+	return cloneBytes(a.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -344,16 +334,14 @@ func (a *Article) Prepare() {
 	}
 	a.buf.WriteByte('>')
 
-	for _, content := range a.contents {
-		a.buf.Write(content)
-	}
+	writeElements(&a.buf, a.contents)
 	a.buf.WriteString("</article>")
 }
 
 type Aside struct {
 	buf      bytes.Buffer
 	style    map[string]string
-	contents [][]byte
+	contents []Element
 }
 
 func NewAside() *Aside {
@@ -380,12 +368,12 @@ func (as *Aside) Style(mp map[string]string) *Aside {
 }
 
 func (as *Aside) Add(e Element) *Aside {
-	as.contents = append(as.contents, e.Bytes())
+	as.contents = appendElement(as.contents, e)
 	return as
 }
 
 func (as *Aside) Bytes() []byte {
-	return as.buf.Bytes()
+	return cloneBytes(as.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -399,16 +387,14 @@ func (as *Aside) Prepare() {
 	}
 	as.buf.WriteByte('>')
 
-	for _, content := range as.contents {
-		as.buf.Write(content)
-	}
+	writeElements(&as.buf, as.contents)
 	as.buf.WriteString("</aside>")
 }
 
 type Footer struct {
 	buf      bytes.Buffer
 	style    map[string]string
-	contents [][]byte
+	contents []Element
 }
 
 func NewFooter() *Footer {
@@ -435,12 +421,12 @@ func (f *Footer) Style(mp map[string]string) *Footer {
 }
 
 func (f *Footer) Add(e Element) *Footer {
-	f.contents = append(f.contents, e.Bytes())
+	f.contents = appendElement(f.contents, e)
 	return f
 }
 
 func (f *Footer) Bytes() []byte {
-	return f.buf.Bytes()
+	return cloneBytes(f.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -454,16 +440,14 @@ func (f *Footer) Prepare() {
 	}
 	f.buf.WriteByte('>')
 
-	for _, content := range f.contents {
-		f.buf.Write(content)
-	}
+	writeElements(&f.buf, f.contents)
 	f.buf.WriteString("</footer>")
 }
 
 type Address struct {
 	buf      bytes.Buffer
 	style    map[string]string
-	contents [][]byte
+	contents []Element
 }
 
 func NewAddress() *Address {
@@ -490,12 +474,12 @@ func (ad *Address) Style(mp map[string]string) *Address {
 }
 
 func (ad *Address) Add(e Element) *Address {
-	ad.contents = append(ad.contents, e.Bytes())
+	ad.contents = appendElement(ad.contents, e)
 	return ad
 }
 
 func (ad *Address) Bytes() []byte {
-	return ad.buf.Bytes()
+	return cloneBytes(ad.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -509,8 +493,6 @@ func (ad *Address) Prepare() {
 	}
 	ad.buf.WriteByte('>')
 
-	for _, content := range ad.contents {
-		ad.buf.Write(content)
-	}
+	writeElements(&ad.buf, ad.contents)
 	ad.buf.WriteString("</address>")
 }

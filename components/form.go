@@ -4,18 +4,18 @@ import "bytes"
 
 // Form represents the HTML form element for user input
 type Form struct {
-	buf              bytes.Buffer
-	style            map[string]string
-	contents         [][]byte
-	ttrack           int
-	action           string
-	method           string
-	enctype          string
-	name             string
-	target           string
-	autocomplete     string
-	novalidate       bool
-	acceptcharset    string
+	buf           bytes.Buffer
+	style         map[string]string
+	contents      []Element
+	ttrack        int
+	action        string
+	method        string
+	enctype       string
+	name          string
+	target        string
+	autocomplete  string
+	novalidate    bool
+	acceptcharset string
 }
 
 // NewForm creates a new Form element
@@ -27,7 +27,7 @@ func NewForm() *Form {
 
 // Bytes returns the buffer contents
 func (f *Form) Bytes() []byte {
-	return f.buf.Bytes()
+	return cloneBytes(f.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -37,57 +37,54 @@ func (f *Form) IsBodyElement() {}
 func (f *Form) Prepare() {
 	f.buf.Reset()
 	f.buf.WriteString("<form")
-	
+
 	if f.action != "" {
 		f.buf.WriteString(" action=\"" + f.action + "\"")
 	}
-	
+
 	if f.method != "" {
 		f.buf.WriteString(" method=\"" + f.method + "\"")
 	}
-	
+
 	if f.enctype != "" {
 		f.buf.WriteString(" enctype=\"" + f.enctype + "\"")
 	}
-	
+
 	if f.name != "" {
 		f.buf.WriteString(" name=\"" + f.name + "\"")
 	}
-	
+
 	if f.target != "" {
 		f.buf.WriteString(" target=\"" + f.target + "\"")
 	}
-	
+
 	if f.autocomplete != "" {
 		f.buf.WriteString(" autocomplete=\"" + f.autocomplete + "\"")
 	}
-	
+
 	if f.acceptcharset != "" {
 		f.buf.WriteString(" accept-charset=\"" + f.acceptcharset + "\"")
 	}
-	
+
 	if f.novalidate {
 		f.buf.WriteString(" novalidate")
 	}
-	
+
 	if len(f.style) != 0 {
 		parseStyle(&f.buf, f.style)
 	}
-	
+
 	f.buf.WriteByte('>')
-	
-	for _, content := range f.contents {
-		f.buf.Write(content)
-	}
-	
+
+	writeElements(&f.buf, f.contents)
+
 	f.buf.WriteString("</form>")
 }
 
 // Add adds content to the form element
 func (f *Form) Add(e Element) *Form {
 	if e != nil {
-		e.Prepare()
-		f.contents = append(f.contents, e.Bytes())
+		f.contents = appendElement(f.contents, e)
 	}
 	return f
 }
@@ -167,7 +164,7 @@ func (f *Form) Style(m map[string]string) *Form {
 type Label struct {
 	buf      bytes.Buffer
 	style    map[string]string
-	contents [][]byte
+	contents []Element
 	ttrack   int
 	forattr  string
 	form     string
@@ -182,7 +179,7 @@ func NewLabel() *Label {
 
 // Bytes returns the buffer contents
 func (l *Label) Bytes() []byte {
-	return l.buf.Bytes()
+	return cloneBytes(l.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -192,40 +189,37 @@ func (l *Label) IsBodyElement() {}
 func (l *Label) Prepare() {
 	l.buf.Reset()
 	l.buf.WriteString("<label")
-	
+
 	if l.forattr != "" {
 		l.buf.WriteString(" for=\"" + l.forattr + "\"")
 	}
-	
+
 	if l.form != "" {
 		l.buf.WriteString(" form=\"" + l.form + "\"")
 	}
-	
+
 	if len(l.style) != 0 {
 		parseStyle(&l.buf, l.style)
 	}
-	
+
 	l.buf.WriteByte('>')
-	
-	for _, content := range l.contents {
-		l.buf.Write(content)
-	}
-	
+
+	writeElements(&l.buf, l.contents)
+
 	l.buf.WriteString("</label>")
 }
 
 // Add adds content to the label element
 func (l *Label) Add(e Element) *Label {
 	if e != nil {
-		e.Prepare()
-		l.contents = append(l.contents, e.Bytes())
+		l.contents = appendElement(l.contents, e)
 	}
 	return l
 }
 
 // Text adds text content to the label element
 func (l *Label) Text(text string) *Label {
-	l.contents = append(l.contents, []byte(text))
+	l.contents = appendElement(l.contents, rawText(text))
 	return l
 }
 
@@ -300,7 +294,7 @@ func NewInput() *Input {
 
 // Bytes returns the buffer contents
 func (i *Input) Bytes() []byte {
-	return i.buf.Bytes()
+	return cloneBytes(i.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -310,95 +304,95 @@ func (i *Input) IsBodyElement() {}
 func (i *Input) Prepare() {
 	i.buf.Reset()
 	i.buf.WriteString("<input")
-	
+
 	if i.inputtype != "" {
 		i.buf.WriteString(" type=\"" + i.inputtype + "\"")
 	}
-	
+
 	if i.name != "" {
 		i.buf.WriteString(" name=\"" + i.name + "\"")
 	}
-	
+
 	if i.value != "" {
 		i.buf.WriteString(" value=\"" + i.value + "\"")
 	}
-	
+
 	if i.placeholder != "" {
 		i.buf.WriteString(" placeholder=\"" + i.placeholder + "\"")
 	}
-	
+
 	if i.id != "" {
 		i.buf.WriteString(" id=\"" + i.id + "\"")
 	}
-	
+
 	if i.form != "" {
 		i.buf.WriteString(" form=\"" + i.form + "\"")
 	}
-	
+
 	if i.autocomplete != "" {
 		i.buf.WriteString(" autocomplete=\"" + i.autocomplete + "\"")
 	}
-	
+
 	if i.min != "" {
 		i.buf.WriteString(" min=\"" + i.min + "\"")
 	}
-	
+
 	if i.max != "" {
 		i.buf.WriteString(" max=\"" + i.max + "\"")
 	}
-	
+
 	if i.step != "" {
 		i.buf.WriteString(" step=\"" + i.step + "\"")
 	}
-	
+
 	if i.pattern != "" {
 		i.buf.WriteString(" pattern=\"" + i.pattern + "\"")
 	}
-	
+
 	if i.size != "" {
 		i.buf.WriteString(" size=\"" + i.size + "\"")
 	}
-	
+
 	if i.maxlength != "" {
 		i.buf.WriteString(" maxlength=\"" + i.maxlength + "\"")
 	}
-	
+
 	if i.minlength != "" {
 		i.buf.WriteString(" minlength=\"" + i.minlength + "\"")
 	}
-	
+
 	if i.accept != "" {
 		i.buf.WriteString(" accept=\"" + i.accept + "\"")
 	}
-	
+
 	if i.required {
 		i.buf.WriteString(" required")
 	}
-	
+
 	if i.disabled {
 		i.buf.WriteString(" disabled")
 	}
-	
+
 	if i.readonly {
 		i.buf.WriteString(" readonly")
 	}
-	
+
 	if i.autofocus {
 		i.buf.WriteString(" autofocus")
 	}
-	
+
 	if i.multiple {
 		i.buf.WriteString(" multiple")
 	}
-	
+
 	if i.checked {
 		i.buf.WriteString(" checked")
 	}
-	
+
 	if len(i.style) != 0 {
 		parseStyle(&i.buf, i.style)
 	}
-	
+
 	i.buf.WriteString(">")
 }
 
@@ -555,7 +549,7 @@ func (i *Input) Style(m map[string]string) *Input {
 type Output struct {
 	buf      bytes.Buffer
 	style    map[string]string
-	contents [][]byte
+	contents []Element
 	ttrack   int
 	forattr  string
 	name     string
@@ -571,7 +565,7 @@ func NewOutput() *Output {
 
 // Bytes returns the buffer contents
 func (o *Output) Bytes() []byte {
-	return o.buf.Bytes()
+	return cloneBytes(o.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -581,44 +575,41 @@ func (o *Output) IsBodyElement() {}
 func (o *Output) Prepare() {
 	o.buf.Reset()
 	o.buf.WriteString("<output")
-	
+
 	if o.forattr != "" {
 		o.buf.WriteString(" for=\"" + o.forattr + "\"")
 	}
-	
+
 	if o.name != "" {
 		o.buf.WriteString(" name=\"" + o.name + "\"")
 	}
-	
+
 	if o.form != "" {
 		o.buf.WriteString(" form=\"" + o.form + "\"")
 	}
-	
+
 	if len(o.style) != 0 {
 		parseStyle(&o.buf, o.style)
 	}
-	
+
 	o.buf.WriteByte('>')
-	
-	for _, content := range o.contents {
-		o.buf.Write(content)
-	}
-	
+
+	writeElements(&o.buf, o.contents)
+
 	o.buf.WriteString("</output>")
 }
 
 // Add adds content to the output element
 func (o *Output) Add(e Element) *Output {
 	if e != nil {
-		e.Prepare()
-		o.contents = append(o.contents, e.Bytes())
+		o.contents = appendElement(o.contents, e)
 	}
 	return o
 }
 
 // Text adds text content to the output element
 func (o *Output) Text(text string) *Output {
-	o.contents = append(o.contents, []byte(text))
+	o.contents = appendElement(o.contents, rawText(text))
 	return o
 }
 
@@ -667,7 +658,7 @@ func (o *Output) Style(m map[string]string) *Output {
 type Fieldset struct {
 	buf      bytes.Buffer
 	style    map[string]string
-	contents [][]byte
+	contents []Element
 	ttrack   int
 	form     string
 	name     string
@@ -683,7 +674,7 @@ func NewFieldset() *Fieldset {
 
 // Bytes returns the buffer contents
 func (f *Fieldset) Bytes() []byte {
-	return f.buf.Bytes()
+	return cloneBytes(f.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -693,37 +684,34 @@ func (f *Fieldset) IsBodyElement() {}
 func (f *Fieldset) Prepare() {
 	f.buf.Reset()
 	f.buf.WriteString("<fieldset")
-	
+
 	if f.form != "" {
 		f.buf.WriteString(" form=\"" + f.form + "\"")
 	}
-	
+
 	if f.name != "" {
 		f.buf.WriteString(" name=\"" + f.name + "\"")
 	}
-	
+
 	if f.disabled {
 		f.buf.WriteString(" disabled")
 	}
-	
+
 	if len(f.style) != 0 {
 		parseStyle(&f.buf, f.style)
 	}
-	
+
 	f.buf.WriteByte('>')
-	
-	for _, content := range f.contents {
-		f.buf.Write(content)
-	}
-	
+
+	writeElements(&f.buf, f.contents)
+
 	f.buf.WriteString("</fieldset>")
 }
 
 // Add adds content to the fieldset element
 func (f *Fieldset) Add(e Element) *Fieldset {
 	if e != nil {
-		e.Prepare()
-		f.contents = append(f.contents, e.Bytes())
+		f.contents = appendElement(f.contents, e)
 	}
 	return f
 }
@@ -773,7 +761,7 @@ func (f *Fieldset) Style(m map[string]string) *Fieldset {
 type Button struct {
 	buf            bytes.Buffer
 	style          map[string]string
-	contents       [][]byte
+	contents       []Element
 	ttrack         int
 	buttonType     string
 	name           string
@@ -797,7 +785,7 @@ func NewButton() *Button {
 
 // Bytes returns the buffer contents
 func (b *Button) Bytes() []byte {
-	return b.buf.Bytes()
+	return cloneBytes(b.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -807,76 +795,73 @@ func (b *Button) IsBodyElement() {}
 func (b *Button) Prepare() {
 	b.buf.Reset()
 	b.buf.WriteString("<button")
-	
+
 	if b.buttonType != "" {
 		b.buf.WriteString(" type=\"" + b.buttonType + "\"")
 	}
-	
+
 	if b.name != "" {
 		b.buf.WriteString(" name=\"" + b.name + "\"")
 	}
-	
+
 	if b.value != "" {
 		b.buf.WriteString(" value=\"" + b.value + "\"")
 	}
-	
+
 	if b.form != "" {
 		b.buf.WriteString(" form=\"" + b.form + "\"")
 	}
-	
+
 	if b.formAction != "" {
 		b.buf.WriteString(" formaction=\"" + b.formAction + "\"")
 	}
-	
+
 	if b.formEnctype != "" {
 		b.buf.WriteString(" formenctype=\"" + b.formEnctype + "\"")
 	}
-	
+
 	if b.formMethod != "" {
 		b.buf.WriteString(" formmethod=\"" + b.formMethod + "\"")
 	}
-	
+
 	if b.formTarget != "" {
 		b.buf.WriteString(" formtarget=\"" + b.formTarget + "\"")
 	}
-	
+
 	if b.formNovalidate {
 		b.buf.WriteString(" formnovalidate")
 	}
-	
+
 	if b.disabled {
 		b.buf.WriteString(" disabled")
 	}
-	
+
 	if b.autofocus {
 		b.buf.WriteString(" autofocus")
 	}
-	
+
 	if len(b.style) != 0 {
 		parseStyle(&b.buf, b.style)
 	}
-	
+
 	b.buf.WriteByte('>')
-	
-	for _, content := range b.contents {
-		b.buf.Write(content)
-	}
-	
+
+	writeElements(&b.buf, b.contents)
+
 	b.buf.WriteString("</button>")
 }
 
 // Add adds content to the button element
 func (b *Button) Add(e Element) *Button {
 	if e != nil {
-		e.Prepare()
-		b.contents = append(b.contents, e.Bytes())
+		b.contents = appendElement(b.contents, e)
 	}
 	return b
 }
 
 // Text adds text content to the button element
 func (b *Button) Text(text string) *Button {
-	b.contents = append(b.contents, []byte(text))
+	b.contents = appendElement(b.contents, rawText(text))
 	return b
 }
 
@@ -971,17 +956,17 @@ func (b *Button) Style(m map[string]string) *Button {
 
 // Select represents the HTML select element for dropdown lists
 type Select struct {
-	buf        bytes.Buffer
-	style      map[string]string
-	contents   [][]byte
-	ttrack     int
-	name       string
-	form       string
-	size       string
-	multiple   bool
-	required   bool
-	disabled   bool
-	autofocus  bool
+	buf          bytes.Buffer
+	style        map[string]string
+	contents     []Element
+	ttrack       int
+	name         string
+	form         string
+	size         string
+	multiple     bool
+	required     bool
+	disabled     bool
+	autofocus    bool
 	autoComplete string
 }
 
@@ -994,7 +979,7 @@ func NewSelect() *Select {
 
 // Bytes returns the buffer contents
 func (s *Select) Bytes() []byte {
-	return s.buf.Bytes()
+	return cloneBytes(s.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -1004,57 +989,54 @@ func (s *Select) IsBodyElement() {}
 func (s *Select) Prepare() {
 	s.buf.Reset()
 	s.buf.WriteString("<select")
-	
+
 	if s.name != "" {
 		s.buf.WriteString(" name=\"" + s.name + "\"")
 	}
-	
+
 	if s.form != "" {
 		s.buf.WriteString(" form=\"" + s.form + "\"")
 	}
-	
+
 	if s.size != "" {
 		s.buf.WriteString(" size=\"" + s.size + "\"")
 	}
-	
+
 	if s.autoComplete != "" {
 		s.buf.WriteString(" autocomplete=\"" + s.autoComplete + "\"")
 	}
-	
+
 	if s.multiple {
 		s.buf.WriteString(" multiple")
 	}
-	
+
 	if s.required {
 		s.buf.WriteString(" required")
 	}
-	
+
 	if s.disabled {
 		s.buf.WriteString(" disabled")
 	}
-	
+
 	if s.autofocus {
 		s.buf.WriteString(" autofocus")
 	}
-	
+
 	if len(s.style) != 0 {
 		parseStyle(&s.buf, s.style)
 	}
-	
+
 	s.buf.WriteByte('>')
-	
-	for _, content := range s.contents {
-		s.buf.Write(content)
-	}
-	
+
+	writeElements(&s.buf, s.contents)
+
 	s.buf.WriteString("</select>")
 }
 
 // Add adds content to the select element
 func (s *Select) Add(e Element) *Select {
 	if e != nil {
-		e.Prepare()
-		s.contents = append(s.contents, e.Bytes())
+		s.contents = appendElement(s.contents, e)
 	}
 	return s
 }
@@ -1134,7 +1116,7 @@ func (s *Select) Style(m map[string]string) *Select {
 type Datalist struct {
 	buf      bytes.Buffer
 	style    map[string]string
-	contents [][]byte
+	contents []Element
 	ttrack   int
 	id       string
 }
@@ -1148,7 +1130,7 @@ func NewDatalist() *Datalist {
 
 // Bytes returns the buffer contents
 func (d *Datalist) Bytes() []byte {
-	return d.buf.Bytes()
+	return cloneBytes(d.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -1158,29 +1140,26 @@ func (d *Datalist) IsBodyElement() {}
 func (d *Datalist) Prepare() {
 	d.buf.Reset()
 	d.buf.WriteString("<datalist")
-	
+
 	if d.id != "" {
 		d.buf.WriteString(" id=\"" + d.id + "\"")
 	}
-	
+
 	if len(d.style) != 0 {
 		parseStyle(&d.buf, d.style)
 	}
-	
+
 	d.buf.WriteByte('>')
-	
-	for _, content := range d.contents {
-		d.buf.Write(content)
-	}
-	
+
+	writeElements(&d.buf, d.contents)
+
 	d.buf.WriteString("</datalist>")
 }
 
 // Add adds content to the datalist element
 func (d *Datalist) Add(e Element) *Datalist {
 	if e != nil {
-		e.Prepare()
-		d.contents = append(d.contents, e.Bytes())
+		d.contents = appendElement(d.contents, e)
 	}
 	return d
 }
@@ -1218,7 +1197,7 @@ func (d *Datalist) Style(m map[string]string) *Datalist {
 type Optgroup struct {
 	buf      bytes.Buffer
 	style    map[string]string
-	contents [][]byte
+	contents []Element
 	ttrack   int
 	label    string
 	disabled bool
@@ -1233,7 +1212,7 @@ func NewOptgroup() *Optgroup {
 
 // Bytes returns the buffer contents
 func (o *Optgroup) Bytes() []byte {
-	return o.buf.Bytes()
+	return cloneBytes(o.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -1243,33 +1222,30 @@ func (o *Optgroup) IsBodyElement() {}
 func (o *Optgroup) Prepare() {
 	o.buf.Reset()
 	o.buf.WriteString("<optgroup")
-	
+
 	if o.label != "" {
 		o.buf.WriteString(" label=\"" + o.label + "\"")
 	}
-	
+
 	if o.disabled {
 		o.buf.WriteString(" disabled")
 	}
-	
+
 	if len(o.style) != 0 {
 		parseStyle(&o.buf, o.style)
 	}
-	
+
 	o.buf.WriteByte('>')
-	
-	for _, content := range o.contents {
-		o.buf.Write(content)
-	}
-	
+
+	writeElements(&o.buf, o.contents)
+
 	o.buf.WriteString("</optgroup>")
 }
 
 // Add adds content to the optgroup element
 func (o *Optgroup) Add(e Element) *Optgroup {
 	if e != nil {
-		e.Prepare()
-		o.contents = append(o.contents, e.Bytes())
+		o.contents = appendElement(o.contents, e)
 	}
 	return o
 }
@@ -1313,7 +1289,7 @@ func (o *Optgroup) Style(m map[string]string) *Optgroup {
 type Option struct {
 	buf      bytes.Buffer
 	style    map[string]string
-	contents [][]byte
+	contents []Element
 	ttrack   int
 	value    string
 	label    string
@@ -1330,7 +1306,7 @@ func NewOption() *Option {
 
 // Bytes returns the buffer contents
 func (o *Option) Bytes() []byte {
-	return o.buf.Bytes()
+	return cloneBytes(o.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -1340,48 +1316,45 @@ func (o *Option) IsBodyElement() {}
 func (o *Option) Prepare() {
 	o.buf.Reset()
 	o.buf.WriteString("<option")
-	
+
 	if o.value != "" {
 		o.buf.WriteString(" value=\"" + o.value + "\"")
 	}
-	
+
 	if o.label != "" {
 		o.buf.WriteString(" label=\"" + o.label + "\"")
 	}
-	
+
 	if o.selected {
 		o.buf.WriteString(" selected")
 	}
-	
+
 	if o.disabled {
 		o.buf.WriteString(" disabled")
 	}
-	
+
 	if len(o.style) != 0 {
 		parseStyle(&o.buf, o.style)
 	}
-	
+
 	o.buf.WriteByte('>')
-	
-	for _, content := range o.contents {
-		o.buf.Write(content)
-	}
-	
+
+	writeElements(&o.buf, o.contents)
+
 	o.buf.WriteString("</option>")
 }
 
 // Add adds content to the option element
 func (o *Option) Add(e Element) *Option {
 	if e != nil {
-		e.Prepare()
-		o.contents = append(o.contents, e.Bytes())
+		o.contents = appendElement(o.contents, e)
 	}
 	return o
 }
 
 // Text adds text content to the option element
 func (o *Option) Text(text string) *Option {
-	o.contents = append(o.contents, []byte(text))
+	o.contents = appendElement(o.contents, rawText(text))
 	return o
 }
 
@@ -1436,7 +1409,7 @@ func (o *Option) Style(m map[string]string) *Option {
 type Textarea struct {
 	buf          bytes.Buffer
 	style        map[string]string
-	contents     [][]byte
+	contents     []Element
 	ttrack       int
 	name         string
 	form         string
@@ -1463,7 +1436,7 @@ func NewTextarea() *Textarea {
 
 // Bytes returns the buffer contents
 func (t *Textarea) Bytes() []byte {
-	return t.buf.Bytes()
+	return cloneBytes(t.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -1473,88 +1446,85 @@ func (t *Textarea) IsBodyElement() {}
 func (t *Textarea) Prepare() {
 	t.buf.Reset()
 	t.buf.WriteString("<textarea")
-	
+
 	if t.name != "" {
 		t.buf.WriteString(" name=\"" + t.name + "\"")
 	}
-	
+
 	if t.form != "" {
 		t.buf.WriteString(" form=\"" + t.form + "\"")
 	}
-	
+
 	if t.rows != "" {
 		t.buf.WriteString(" rows=\"" + t.rows + "\"")
 	}
-	
+
 	if t.cols != "" {
 		t.buf.WriteString(" cols=\"" + t.cols + "\"")
 	}
-	
+
 	if t.placeholder != "" {
 		t.buf.WriteString(" placeholder=\"" + t.placeholder + "\"")
 	}
-	
+
 	if t.maxLength != "" {
 		t.buf.WriteString(" maxlength=\"" + t.maxLength + "\"")
 	}
-	
+
 	if t.minLength != "" {
 		t.buf.WriteString(" minlength=\"" + t.minLength + "\"")
 	}
-	
+
 	if t.wrap != "" {
 		t.buf.WriteString(" wrap=\"" + t.wrap + "\"")
 	}
-	
+
 	if t.autoComplete != "" {
 		t.buf.WriteString(" autocomplete=\"" + t.autoComplete + "\"")
 	}
-	
+
 	if t.spellcheck != "" {
 		t.buf.WriteString(" spellcheck=\"" + t.spellcheck + "\"")
 	}
-	
+
 	if t.required {
 		t.buf.WriteString(" required")
 	}
-	
+
 	if t.disabled {
 		t.buf.WriteString(" disabled")
 	}
-	
+
 	if t.readonly {
 		t.buf.WriteString(" readonly")
 	}
-	
+
 	if t.autofocus {
 		t.buf.WriteString(" autofocus")
 	}
-	
+
 	if len(t.style) != 0 {
 		parseStyle(&t.buf, t.style)
 	}
-	
+
 	t.buf.WriteByte('>')
-	
-	for _, content := range t.contents {
-		t.buf.Write(content)
-	}
-	
+
+	writeElements(&t.buf, t.contents)
+
 	t.buf.WriteString("</textarea>")
 }
 
 // Add adds content to the textarea element
 func (t *Textarea) Add(e Element) *Textarea {
 	if e != nil {
-		e.Prepare()
-		t.contents = append(t.contents, e.Bytes())
+		t.contents = appendElement(t.contents, e)
 	}
 	return t
 }
 
 // Text adds text content to the textarea element
 func (t *Textarea) Text(text string) *Textarea {
-	t.contents = append(t.contents, []byte(text))
+	t.contents = appendElement(t.contents, rawText(text))
 	return t
 }
 
@@ -1669,7 +1639,7 @@ func (t *Textarea) Style(m map[string]string) *Textarea {
 type Progress struct {
 	buf      bytes.Buffer
 	style    map[string]string
-	contents [][]byte
+	contents []Element
 	ttrack   int
 	value    string
 	max      string
@@ -1685,7 +1655,7 @@ func NewProgress() *Progress {
 
 // Bytes returns the buffer contents
 func (p *Progress) Bytes() []byte {
-	return p.buf.Bytes()
+	return cloneBytes(p.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -1695,44 +1665,41 @@ func (p *Progress) IsBodyElement() {}
 func (p *Progress) Prepare() {
 	p.buf.Reset()
 	p.buf.WriteString("<progress")
-	
+
 	if p.value != "" {
 		p.buf.WriteString(" value=\"" + p.value + "\"")
 	}
-	
+
 	if p.max != "" {
 		p.buf.WriteString(" max=\"" + p.max + "\"")
 	}
-	
+
 	if p.form != "" {
 		p.buf.WriteString(" form=\"" + p.form + "\"")
 	}
-	
+
 	if len(p.style) != 0 {
 		parseStyle(&p.buf, p.style)
 	}
-	
+
 	p.buf.WriteByte('>')
-	
-	for _, content := range p.contents {
-		p.buf.Write(content)
-	}
-	
+
+	writeElements(&p.buf, p.contents)
+
 	p.buf.WriteString("</progress>")
 }
 
 // Add adds content to the progress element
 func (p *Progress) Add(e Element) *Progress {
 	if e != nil {
-		e.Prepare()
-		p.contents = append(p.contents, e.Bytes())
+		p.contents = appendElement(p.contents, e)
 	}
 	return p
 }
 
 // Text adds text content to the progress element (fallback for non-supporting browsers)
 func (p *Progress) Text(text string) *Progress {
-	p.contents = append(p.contents, []byte(text))
+	p.contents = appendElement(p.contents, rawText(text))
 	return p
 }
 
@@ -1781,7 +1748,7 @@ func (p *Progress) Style(m map[string]string) *Progress {
 type Meter struct {
 	buf      bytes.Buffer
 	style    map[string]string
-	contents [][]byte
+	contents []Element
 	ttrack   int
 	value    string
 	min      string
@@ -1801,7 +1768,7 @@ func NewMeter() *Meter {
 
 // Bytes returns the buffer contents
 func (m *Meter) Bytes() []byte {
-	return m.buf.Bytes()
+	return cloneBytes(m.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -1811,60 +1778,57 @@ func (m *Meter) IsBodyElement() {}
 func (m *Meter) Prepare() {
 	m.buf.Reset()
 	m.buf.WriteString("<meter")
-	
+
 	if m.value != "" {
 		m.buf.WriteString(" value=\"" + m.value + "\"")
 	}
-	
+
 	if m.min != "" {
 		m.buf.WriteString(" min=\"" + m.min + "\"")
 	}
-	
+
 	if m.max != "" {
 		m.buf.WriteString(" max=\"" + m.max + "\"")
 	}
-	
+
 	if m.low != "" {
 		m.buf.WriteString(" low=\"" + m.low + "\"")
 	}
-	
+
 	if m.high != "" {
 		m.buf.WriteString(" high=\"" + m.high + "\"")
 	}
-	
+
 	if m.optimum != "" {
 		m.buf.WriteString(" optimum=\"" + m.optimum + "\"")
 	}
-	
+
 	if m.form != "" {
 		m.buf.WriteString(" form=\"" + m.form + "\"")
 	}
-	
+
 	if len(m.style) != 0 {
 		parseStyle(&m.buf, m.style)
 	}
-	
+
 	m.buf.WriteByte('>')
-	
-	for _, content := range m.contents {
-		m.buf.Write(content)
-	}
-	
+
+	writeElements(&m.buf, m.contents)
+
 	m.buf.WriteString("</meter>")
 }
 
 // Add adds content to the meter element
 func (m *Meter) Add(e Element) *Meter {
 	if e != nil {
-		e.Prepare()
-		m.contents = append(m.contents, e.Bytes())
+		m.contents = appendElement(m.contents, e)
 	}
 	return m
 }
 
 // Text adds text content to the meter element (fallback for non-supporting browsers)
 func (m *Meter) Text(text string) *Meter {
-	m.contents = append(m.contents, []byte(text))
+	m.contents = appendElement(m.contents, rawText(text))
 	return m
 }
 
@@ -1937,7 +1901,7 @@ func (m *Meter) Style(ma map[string]string) *Meter {
 type Legend struct {
 	buf      bytes.Buffer
 	style    map[string]string
-	contents [][]byte
+	contents []Element
 	ttrack   int
 }
 
@@ -1950,7 +1914,7 @@ func NewLegend() *Legend {
 
 // Bytes returns the buffer contents
 func (l *Legend) Bytes() []byte {
-	return l.buf.Bytes()
+	return cloneBytes(l.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -1960,32 +1924,29 @@ func (l *Legend) IsBodyElement() {}
 func (l *Legend) Prepare() {
 	l.buf.Reset()
 	l.buf.WriteString("<legend")
-	
+
 	if len(l.style) != 0 {
 		parseStyle(&l.buf, l.style)
 	}
-	
+
 	l.buf.WriteByte('>')
-	
-	for _, content := range l.contents {
-		l.buf.Write(content)
-	}
-	
+
+	writeElements(&l.buf, l.contents)
+
 	l.buf.WriteString("</legend>")
 }
 
 // Add adds content to the legend element
 func (l *Legend) Add(e Element) *Legend {
 	if e != nil {
-		e.Prepare()
-		l.contents = append(l.contents, e.Bytes())
+		l.contents = appendElement(l.contents, e)
 	}
 	return l
 }
 
 // Text adds text content to the legend element
 func (l *Legend) Text(text string) *Legend {
-	l.contents = append(l.contents, []byte(text))
+	l.contents = appendElement(l.contents, rawText(text))
 	return l
 }
 

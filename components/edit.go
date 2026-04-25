@@ -6,7 +6,7 @@ import "bytes"
 type Del struct {
 	buf      bytes.Buffer
 	style    map[string]string
-	contents [][]byte
+	contents []Element
 	ttrack   int
 	cite     string
 	datetime string
@@ -21,7 +21,7 @@ func NewDel() *Del {
 
 // Bytes returns the buffer contents
 func (d *Del) Bytes() []byte {
-	return d.buf.Bytes()
+	return cloneBytes(d.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -42,17 +42,14 @@ func (d *Del) Prepare() {
 	}
 	d.buf.WriteByte('>')
 
-	for _, content := range d.contents {
-		d.buf.Write(content)
-	}
+	writeElements(&d.buf, d.contents)
 	d.buf.WriteString("</del>")
 }
 
 // Add adds content to the del element
 func (d *Del) Add(e Element) *Del {
 	if e != nil {
-		e.Prepare()
-		d.contents = append(d.contents, e.Bytes())
+		d.contents = appendElement(d.contents, e)
 	}
 	return d
 }
@@ -96,7 +93,7 @@ func (d *Del) Style(m map[string]string) *Del {
 type Ins struct {
 	buf      bytes.Buffer
 	style    map[string]string
-	contents [][]byte
+	contents []Element
 	ttrack   int
 	cite     string
 	datetime string
@@ -111,7 +108,7 @@ func NewIns() *Ins {
 
 // Bytes returns the buffer contents
 func (i *Ins) Bytes() []byte {
-	return i.buf.Bytes()
+	return cloneBytes(i.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -136,9 +133,7 @@ func (i *Ins) Prepare() {
 
 	i.buf.WriteByte('>')
 
-	for _, content := range i.contents {
-		i.buf.Write(content)
-	}
+	writeElements(&i.buf, i.contents)
 
 	i.buf.WriteString("</ins>")
 }
@@ -146,8 +141,7 @@ func (i *Ins) Prepare() {
 // Add adds content to the ins element
 func (i *Ins) Add(e Element) *Ins {
 	if e != nil {
-		e.Prepare()
-		i.contents = append(i.contents, e.Bytes())
+		i.contents = appendElement(i.contents, e)
 	}
 	return i
 }

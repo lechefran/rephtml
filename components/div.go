@@ -6,7 +6,7 @@ import (
 
 type Div struct {
 	buf      bytes.Buffer
-	contents [][]byte
+	contents []Element
 	ttrack   int
 	style    map[string]string
 }
@@ -23,7 +23,7 @@ func (d *Div) Tabs(i int) *Div {
 }
 
 func (d *Div) Add(e Element) *Div {
-	d.contents = append(d.contents, e.Bytes())
+	d.contents = appendElement(d.contents, e)
 	return d
 }
 
@@ -35,7 +35,7 @@ func (d *Div) AddStyles(m map[string]string) *Div {
 }
 
 func (d *Div) Bytes() []byte {
-	return d.buf.Bytes()
+	return cloneBytes(d.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -49,7 +49,12 @@ func (d *Div) Prepare() {
 	}
 	d.buf.WriteString(">")
 
-	for _, c := range d.contents {
+	for _, content := range d.contents {
+		if content == nil {
+			continue
+		}
+		content.Prepare()
+		c := content.Bytes()
 		if bytes.Contains(c, []byte("<table")) && bytes.Contains(c, []byte(">")) {
 			d.buf.Write(d.formatTable(c))
 		} else {

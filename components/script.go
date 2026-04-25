@@ -5,7 +5,7 @@ import "bytes"
 type Canvas struct {
 	buf      bytes.Buffer
 	style    map[string]string
-	contents [][]byte
+	contents []Element
 	width    string
 	height   string
 }
@@ -34,7 +34,7 @@ func (c *Canvas) Style(m map[string]string) *Canvas {
 }
 
 func (c *Canvas) Add(e Element) *Canvas {
-	c.contents = append(c.contents, e.Bytes())
+	c.contents = appendElement(c.contents, e)
 	return c
 }
 
@@ -49,7 +49,7 @@ func (c *Canvas) Height(height string) *Canvas {
 }
 
 func (c *Canvas) Bytes() []byte {
-	return c.buf.Bytes()
+	return cloneBytes(c.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -69,16 +69,14 @@ func (c *Canvas) Prepare() {
 	}
 	c.buf.WriteByte('>')
 
-	for _, content := range c.contents {
-		c.buf.Write(content)
-	}
+	writeElements(&c.buf, c.contents)
 	c.buf.WriteString("</canvas>")
 }
 
 type Noscript struct {
 	buf      bytes.Buffer
 	style    map[string]string
-	contents [][]byte
+	contents []Element
 }
 
 func NewNoscript() *Noscript {
@@ -111,12 +109,12 @@ func (n *Noscript) Style(m map[string]string) *Noscript {
 }
 
 func (n *Noscript) Add(e Element) *Noscript {
-	n.contents = append(n.contents, e.Bytes())
+	n.contents = appendElement(n.contents, e)
 	return n
 }
 
 func (n *Noscript) Bytes() []byte {
-	return n.buf.Bytes()
+	return cloneBytes(n.buf.Bytes())
 }
 
 func (n *Noscript) Prepare() {
@@ -127,9 +125,7 @@ func (n *Noscript) Prepare() {
 	}
 	n.buf.WriteByte('>')
 
-	for _, content := range n.contents {
-		n.buf.Write(content)
-	}
+	writeElements(&n.buf, n.contents)
 	n.buf.WriteString("</noscript>")
 }
 
@@ -222,7 +218,7 @@ func (s *Script) Text(text string) *Script {
 }
 
 func (s *Script) Bytes() []byte {
-	return s.buf.Bytes()
+	return cloneBytes(s.buf.Bytes())
 }
 
 func (s *Script) Prepare() {
@@ -262,4 +258,3 @@ func (s *Script) Prepare() {
 	}
 	s.buf.WriteString("</script>")
 }
-

@@ -5,7 +5,7 @@ import "bytes"
 type Math struct {
 	buf      bytes.Buffer
 	style    map[string]string
-	contents [][]byte
+	contents []Element
 	display  string
 	xmlns    string
 }
@@ -35,7 +35,7 @@ func (m *Math) Style(ms map[string]string) *Math {
 }
 
 func (m *Math) Add(e Element) *Math {
-	m.contents = append(m.contents, e.Bytes())
+	m.contents = appendElement(m.contents, e)
 	return m
 }
 
@@ -50,7 +50,7 @@ func (m *Math) Xmlns(xmlns string) *Math {
 }
 
 func (m *Math) Bytes() []byte {
-	return m.buf.Bytes()
+	return cloneBytes(m.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -70,22 +70,20 @@ func (m *Math) Prepare() {
 	}
 	m.buf.WriteByte('>')
 
-	for _, content := range m.contents {
-		m.buf.Write(content)
-	}
+	writeElements(&m.buf, m.contents)
 	m.buf.WriteString("</math>")
 }
 
 type Svg struct {
-	buf       bytes.Buffer
-	style     map[string]string
-	contents  [][]byte
-	width     string
-	height    string
-	viewBox   string
-	xmlns     string
-	version   string
-	baseProfile string
+	buf                 bytes.Buffer
+	style               map[string]string
+	contents            []Element
+	width               string
+	height              string
+	viewBox             string
+	xmlns               string
+	version             string
+	baseProfile         string
 	preserveAspectRatio string
 }
 
@@ -114,7 +112,7 @@ func (s *Svg) Style(m map[string]string) *Svg {
 }
 
 func (s *Svg) Add(e Element) *Svg {
-	s.contents = append(s.contents, e.Bytes())
+	s.contents = appendElement(s.contents, e)
 	return s
 }
 
@@ -154,7 +152,7 @@ func (s *Svg) PreserveAspectRatio(preserveAspectRatio string) *Svg {
 }
 
 func (s *Svg) Bytes() []byte {
-	return s.buf.Bytes()
+	return cloneBytes(s.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
@@ -189,8 +187,6 @@ func (s *Svg) Prepare() {
 	}
 	s.buf.WriteByte('>')
 
-	for _, content := range s.contents {
-		s.buf.Write(content)
-	}
+	writeElements(&s.buf, s.contents)
 	s.buf.WriteString("</svg>")
 }
