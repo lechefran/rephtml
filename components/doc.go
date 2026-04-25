@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"reflect"
+	"strings"
 )
 
 const tab = "\t"
@@ -14,6 +15,8 @@ type HtmlFile struct {
 	buf         bytes.Buffer
 	style       map[string]string
 	contents    [][]byte
+	headContent [][]byte
+	bodyContent [][]byte
 	ttrack      int
 	lang        string
 	dir         string
@@ -63,9 +66,18 @@ func (h *HtmlFile) Prepare() {
 	}
 	h.buf.WriteByte('>')
 
+	if len(h.headContent) != 0 {
+		h.writeContentElement("head", h.headContent)
+	}
+
 	for _, content := range h.contents {
 		h.buf.Write(content)
 	}
+
+	if len(h.bodyContent) != 0 {
+		h.writeContentElement("body", h.bodyContent)
+	}
+
 	h.buf.WriteString("</html>")
 }
 
@@ -97,7 +109,7 @@ func (h *HtmlFile) AddToHead(e Element) *HtmlFile {
 		if len(e.Bytes()) == 0 {
 			e.Prepare()
 		}
-		h.contents = append(h.contents, e.Bytes())
+		h.headContent = append(h.headContent, e.Bytes())
 	}
 	return h
 }
@@ -107,7 +119,7 @@ func (h *HtmlFile) AddToBody(e Element) *HtmlFile {
 		v := h.Opts.Validation
 		if v == DEFAULT {
 			if _, ok := e.(BodyElement); !ok {
-				log.Fatalf("%s is not a valid body element but will be added to body element\n",
+				log.Printf("%s is not a valid body element but will be added to body element\n",
 					reflect.TypeOf(e).Elem().Name())
 			}
 		} else if v == STRICT {
@@ -119,7 +131,7 @@ func (h *HtmlFile) AddToBody(e Element) *HtmlFile {
 		if len(e.Bytes()) == 0 {
 			e.Prepare()
 		}
-		h.contents = append(h.contents, e.Bytes())
+		h.bodyContent = append(h.bodyContent, e.Bytes())
 	}
 	return h
 }
@@ -189,38 +201,219 @@ func (h *HtmlFile) Style(m map[string]string) *HtmlFile {
 }
 
 func (h *HtmlFile) WriteToFile(path string) {
-	if len(h.contents) == 0 && len(h.style) == 0 {
+	if len(h.contents) == 0 && len(h.headContent) == 0 && len(h.bodyContent) == 0 && len(h.style) == 0 {
 		log.Print("No values were appended to the HTML File. " + path + " will not be created")
 	}
-	if _, err := os.Stat(path); os.IsExist(err) {
-		if err := os.Remove(path); err != nil {
+
+	h.Prepare()
+
+	file, err := os.Create(path)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer func(file *os.File) {
+		if err := file.Close(); err != nil {
 			log.Fatal(err)
 		}
-		file, err := os.Create(path)
-		if err != nil {
-			log.Fatal(err)
-		}
-		defer func(file *os.File) {
-			if err := file.Close(); err != nil {
-				log.Fatal(err)
+	}(file)
+
+	if _, err := file.Write(formatHTML(h.buf.Bytes())); err != nil {
+		log.Fatal(err)
+	}
+}
+
+func (h *HtmlFile) writeContentElement(tag string, contents [][]byte) {
+	h.buf.WriteString("<" + tag + ">")
+	for _, content := range contents {
+		h.buf.Write(content)
+	}
+	h.buf.WriteString("</" + tag + ">")
+}
+
+type htmlToken struct {
+	kind string
+	name string
+	text string
+}
+
+func formatHTML(src []byte) []byte {
+	tokens := tokenizeHTML(string(src))
+	if len(tokens) == 0 {
+		return src
+	}
+
+	var buf bytes.Buffer
+	indent := 0
+
+	for i := 0; i < len(tokens); i++ {
+		token := tokens[i]
+		switch token.kind {
+		case "start":
+			if i+1 < len(tokens) && tokens[i+1].kind == "end" && tokens[i+1].name == token.name {
+				writeFormattedLine(&buf, indent, token.text+tokens[i+1].text)
+				i++
+				continue
 			}
-		}(file)
-		if _, err := file.Write(h.buf.Bytes()); err != nil {
-			log.Fatal(err)
-		}
-	} else {
-		file, err := os.Create(path)
-		if err != nil {
-			log.Fatal(err)
-		}
-		defer func(file *os.File) {
-			if err := file.Close(); err != nil {
-				log.Fatal(err)
+			if i+2 < len(tokens) && tokens[i+1].kind == "text" && tokens[i+2].kind == "end" &&
+				tokens[i+2].name == token.name && !isRawTextElement(token.name) && !strings.Contains(tokens[i+1].text, "\n") {
+				writeFormattedLine(&buf, indent, token.text+tokens[i+1].text+tokens[i+2].text)
+				i += 2
+				continue
 			}
-		}(file)
-		if _, err := file.Write(h.buf.Bytes()); err != nil {
-			log.Fatal(err)
+			writeFormattedLine(&buf, indent, token.text)
+			indent++
+		case "end":
+			if indent > 0 {
+				indent--
+			}
+			writeFormattedLine(&buf, indent, token.text)
+		case "void", "comment":
+			writeFormattedLine(&buf, indent, token.text)
+		case "text":
+			writeFormattedText(&buf, indent, token.text)
 		}
+	}
+
+	return buf.Bytes()
+}
+
+func tokenizeHTML(input string) []htmlToken {
+	tokens := []htmlToken{}
+	for i := 0; i < len(input); {
+		if input[i] != '<' {
+			next := strings.IndexByte(input[i:], '<')
+			if next == -1 {
+				tokens = appendTextToken(tokens, input[i:])
+				break
+			}
+			tokens = appendTextToken(tokens, input[i:i+next])
+			i += next
+			continue
+		}
+
+		if strings.HasPrefix(input[i:], "<!--") {
+			end := strings.Index(input[i:], "-->")
+			if end == -1 {
+				tokens = append(tokens, htmlToken{kind: "comment", text: input[i:]})
+				break
+			}
+			end += len("-->")
+			tokens = append(tokens, htmlToken{kind: "comment", text: input[i : i+end]})
+			i += end
+			continue
+		}
+
+		end := strings.IndexByte(input[i:], '>')
+		if end == -1 {
+			tokens = appendTextToken(tokens, input[i:])
+			break
+		}
+		end += i
+
+		tag := input[i : end+1]
+		name := tagName(tag)
+		if name == "" {
+			tokens = appendTextToken(tokens, tag)
+			i = end + 1
+			continue
+		}
+
+		switch {
+		case isEndTag(tag):
+			tokens = append(tokens, htmlToken{kind: "end", name: name, text: tag})
+		case isVoidTag(name) || isSelfClosingTag(tag):
+			tokens = append(tokens, htmlToken{kind: "void", name: name, text: tag})
+		default:
+			tokens = append(tokens, htmlToken{kind: "start", name: name, text: tag})
+			if isRawTextElement(name) {
+				rawStart := end + 1
+				closeTag := "</" + name + ">"
+				closeAt := strings.Index(strings.ToLower(input[rawStart:]), closeTag)
+				if closeAt != -1 {
+					rawEnd := rawStart + closeAt
+					tokens = appendTextToken(tokens, input[rawStart:rawEnd])
+					tokens = append(tokens, htmlToken{
+						kind: "end",
+						name: name,
+						text: input[rawEnd : rawEnd+len(closeTag)],
+					})
+					i = rawEnd + len(closeTag)
+					continue
+				}
+			}
+		}
+
+		i = end + 1
+	}
+	return tokens
+}
+
+func appendTextToken(tokens []htmlToken, text string) []htmlToken {
+	if text == "" {
+		return tokens
+	}
+	if strings.TrimSpace(text) == "" {
+		return tokens
+	}
+	return append(tokens, htmlToken{kind: "text", text: text})
+}
+
+func writeFormattedLine(buf *bytes.Buffer, indent int, line string) {
+	buf.WriteString(tabs(indent))
+	buf.WriteString(line)
+	buf.WriteByte('\n')
+}
+
+func writeFormattedText(buf *bytes.Buffer, indent int, text string) {
+	for _, line := range strings.Split(text, "\n") {
+		line = strings.TrimSpace(line)
+		if line == "" {
+			continue
+		}
+		writeFormattedLine(buf, indent, line)
+	}
+}
+
+func tagName(tag string) string {
+	tag = strings.TrimSpace(tag)
+	tag = strings.TrimPrefix(tag, "<")
+	tag = strings.TrimPrefix(tag, "/")
+	tag = strings.TrimSuffix(tag, ">")
+	tag = strings.TrimSpace(tag)
+	if tag == "" || strings.HasPrefix(tag, "!") {
+		return ""
+	}
+	if idx := strings.IndexAny(tag, " \t\r\n/"); idx != -1 {
+		tag = tag[:idx]
+	}
+	return strings.ToLower(tag)
+}
+
+func isEndTag(tag string) bool {
+	return strings.HasPrefix(strings.TrimSpace(tag), "</")
+}
+
+func isSelfClosingTag(tag string) bool {
+	tag = strings.TrimSpace(tag)
+	tag = strings.TrimSuffix(tag, ">")
+	return strings.HasSuffix(strings.TrimSpace(tag), "/")
+}
+
+func isVoidTag(tag string) bool {
+	switch tag {
+	case "area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "source", "track", "wbr":
+		return true
+	default:
+		return false
+	}
+}
+
+func isRawTextElement(tag string) bool {
+	switch tag {
+	case "script", "style", "pre", "textarea":
+		return true
+	default:
+		return false
 	}
 }
 
