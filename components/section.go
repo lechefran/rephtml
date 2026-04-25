@@ -122,9 +122,9 @@ func (n *Nav) Prepare() {
 }
 
 type Section struct {
-	buf      bytes.Buffer
-	style    map[string]string
-	contents [][]byte
+	buf       bytes.Buffer
+	style     map[string]string
+	contents  [][]byte
 	ariaLabel string
 }
 
@@ -183,6 +183,61 @@ func (s *Section) Prepare() {
 		s.buf.Write(content)
 	}
 	s.buf.WriteString("</section>")
+}
+
+type Hgroup struct {
+	buf      bytes.Buffer
+	style    map[string]string
+	contents [][]byte
+}
+
+func NewHgroup() *Hgroup {
+	return &Hgroup{
+		style: make(map[string]string),
+	}
+}
+
+func (h *Hgroup) AddStyle(k, v string) *Hgroup {
+	h.style[k] = v
+	return h
+}
+
+func (h *Hgroup) AddStyles(m map[string]string) *Hgroup {
+	for k, v := range m {
+		h.style[k] = v
+	}
+	return h
+}
+
+func (h *Hgroup) Style(m map[string]string) *Hgroup {
+	h.style = m
+	return h
+}
+
+func (h *Hgroup) Add(e Element) *Hgroup {
+	h.contents = append(h.contents, e.Bytes())
+	return h
+}
+
+func (h *Hgroup) Bytes() []byte {
+	return h.buf.Bytes()
+}
+
+// IsBodyElement implements BodyElement interface
+func (h *Hgroup) IsBodyElement() {}
+
+func (h *Hgroup) Prepare() {
+	h.buf.Reset()
+	h.buf.WriteString("<hgroup")
+	if len(h.style) != 0 {
+		parseStyle(&h.buf, h.style)
+	}
+	h.buf.WriteByte('>')
+
+	for _, content := range h.contents {
+		h.buf.Write(content)
+	}
+	h.buf.WriteString("</hgroup>")
 }
 
 type Main struct {

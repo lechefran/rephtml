@@ -47,6 +47,7 @@ html.WriteToFile("report.html") // create a file named report.html in the curren
 - [X] `<footer>` - Footer section
 - [X] `<address>` - Contact information
 - [X] `<h1>` through `<h6>` - Headings
+- [X] `<hgroup>` - Heading group
 
 ### Text Content
 - [X] `<div>` - Generic container
@@ -63,6 +64,7 @@ html.WriteToFile("report.html") // create a file named report.html in the curren
 - [X] `<dd>` - Description details
 - [X] `<figure>` - Figure with caption
 - [X] `<figcaption>` - Figure caption
+- [X] `<search>` - Search section
 
 ### Inline Text Semantics
 - [X] `<a>` - Anchor/link
@@ -165,4 +167,4 @@ html.WriteToFile("report.html") // create a file named report.html in the curren
 
 ---
 
-**Total Elements:** 116 HTML elements (excluding deprecated ones)
+**Total Elements:** 118 HTML elements (excluding deprecated ones)

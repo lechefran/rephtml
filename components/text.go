@@ -2686,3 +2686,58 @@ func (f *Figcaption) Prepare() {
 	}
 	f.buf.WriteString("</figcaption>")
 }
+
+type Search struct {
+	buf      bytes.Buffer
+	style    map[string]string
+	contents [][]byte
+}
+
+func NewSearch() *Search {
+	return &Search{
+		style: make(map[string]string),
+	}
+}
+
+func (s *Search) AddStyle(k, v string) *Search {
+	s.style[k] = v
+	return s
+}
+
+func (s *Search) AddStyles(m map[string]string) *Search {
+	for k, v := range m {
+		s.style[k] = v
+	}
+	return s
+}
+
+func (s *Search) Style(m map[string]string) *Search {
+	s.style = m
+	return s
+}
+
+func (s *Search) Add(e Element) *Search {
+	s.contents = append(s.contents, e.Bytes())
+	return s
+}
+
+func (s *Search) Bytes() []byte {
+	return s.buf.Bytes()
+}
+
+// IsBodyElement implements BodyElement interface
+func (s *Search) IsBodyElement() {}
+
+func (s *Search) Prepare() {
+	s.buf.Reset()
+	s.buf.WriteString("<search")
+	if len(s.style) != 0 {
+		parseStyle(&s.buf, s.style)
+	}
+	s.buf.WriteByte('>')
+
+	for _, content := range s.contents {
+		s.buf.Write(content)
+	}
+	s.buf.WriteString("</search>")
+}
