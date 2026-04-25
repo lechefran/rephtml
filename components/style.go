@@ -384,23 +384,21 @@ type Style struct {
 	Tags  []string
 }
 
+func NewStyle(tags ...string) *Style {
+	return &Style{
+		pmap: NewPropMap(),
+		Tags: append([]string(nil), tags...),
+	}
+}
+
 func (s *Style) Bytes() []byte {
 	return cloneBytes(s.buf.Bytes())
 }
 
 func (s *Style) Prepare() {
 	s.buf.Reset()
-	res := ""
-	val := reflect.ValueOf(s.Props)
-	t := val.Type()
-	for i := 0; i < val.NumField(); i++ {
-		k, v := t.Field(i).Name, val.Field(i)
-		if k != "" && v.String() != "" {
-			res += s.pmap.pmap[k] + ":" + v.String() + ";"
-		}
-	}
 	s.buf.WriteString("<style>")
-	s.buf.WriteString(formatStringArray(s.Tags) + "{" + res + "}")
+	s.buf.WriteString(formatStyleRule(s.Tags, s.Props, s.pmap))
 	s.buf.WriteString("</style>")
 }
 
@@ -422,6 +420,66 @@ func formatStringArray(sarr []string) string {
 func (s *Style) PropMap(p *PropMap) *Style {
 	s.pmap = p
 	return s
+}
+
+type StyleRule struct {
+	buf   bytes.Buffer
+	pmap  *PropMap
+	Props CssProps
+	Tags  []string
+}
+
+func NewStyleRule(tags ...string) *StyleRule {
+	return &StyleRule{
+		pmap: NewPropMap(),
+		Tags: append([]string(nil), tags...),
+	}
+}
+
+func (s *StyleRule) Bytes() []byte {
+	return cloneBytes(s.buf.Bytes())
+}
+
+func (s *StyleRule) Prepare() {
+	s.buf.Reset()
+	s.buf.WriteString(formatStyleRule(s.Tags, s.Props, s.pmap))
+}
+
+func (s *StyleRule) PropMap(p *PropMap) *StyleRule {
+	s.pmap = p
+	return s
+}
+
+func formatStyleRule(tags []string, props CssProps, pmap *PropMap) string {
+	if pmap == nil {
+		pmap = NewPropMap()
+	}
+
+	var buf bytes.Buffer
+	buf.WriteByte('\n')
+	buf.WriteString(formatStringArray(tags))
+	buf.WriteString(" {\n")
+
+	val := reflect.ValueOf(props)
+	t := val.Type()
+	for i := 0; i < val.NumField(); i++ {
+		k, v := t.Field(i).Name, val.Field(i)
+		if k == "" || v.String() == "" {
+			continue
+		}
+		prop, ok := pmap.pmap[k]
+		if !ok {
+			continue
+		}
+		buf.WriteByte('\t')
+		buf.WriteString(prop)
+		buf.WriteString(": ")
+		buf.WriteString(v.String())
+		buf.WriteString(";\n")
+	}
+
+	buf.WriteString("}\n")
+	return buf.String()
 }
 
 type PropMap struct {

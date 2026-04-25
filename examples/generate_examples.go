@@ -10,6 +10,7 @@ func main() {
 	writeReportExample()
 	writeFormExample()
 	writeMediaExample()
+	writeStyleRuleExample()
 }
 
 func writeReportExample() {
@@ -176,6 +177,50 @@ figcaption {
 
 	html.AddToBody(rephtml.NewMain().Add(figure))
 	write(html, "examples/output/media.html")
+}
+
+func writeStyleRuleExample() {
+	html := rephtml.NewHtmlFile().Lang("en")
+	html.AddToHead(rephtml.NewTitle().Text("Style Rules"))
+
+	bodyRule := rephtml.NewStyleRule("body")
+	bodyRule.Props = rephtml.CssProps{
+		Background: "#f7f7fb",
+		Color:      "#1f2937",
+		FontFamily: "Arial, sans-serif",
+		Margin:     "0",
+	}
+
+	cardRule := rephtml.NewStyleRule("section")
+	cardRule.Props = rephtml.CssProps{
+		Background:   "#ffffff",
+		Border:       "1px solid #d8dee9",
+		BorderRadius: "6px",
+		BoxShadow:    "0 1px 3px rgba(15, 23, 42, 0.08)",
+		Margin:       "48px auto",
+		MaxWidth:     "520px",
+		Padding:      "24px",
+	}
+
+	headingRule := rephtml.NewStyleRule("section h1")
+	headingRule.Props = rephtml.CssProps{
+		FontSize: "24px",
+		Margin:   "0 0 8px",
+	}
+
+	html.AddToHead(rephtml.NewStyleElement().
+		Type("text/css").
+		AddRule(bodyRule).
+		AddRule(cardRule).
+		AddRule(headingRule))
+
+	html.AddToBody(rephtml.NewMain().Add(
+		rephtml.NewSection().
+			Add(rephtml.NewH1().Text("StyleElement with CSS rules")).
+			Add(rephtml.NewP().Text("This page builds CSS through StyleRule elements instead of StyleElement.Text.")),
+	))
+
+	write(html, "examples/output/style-rules.html")
 }
 
 func write(html *rephtml.HtmlFile, path string) {

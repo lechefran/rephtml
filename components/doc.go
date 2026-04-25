@@ -1069,6 +1069,13 @@ func (s *StyleElement) Add(e Element) *StyleElement {
 	return s
 }
 
+func (s *StyleElement) AddRule(rule *StyleRule) *StyleElement {
+	if rule != nil {
+		s.contents = appendElement(s.contents, rule)
+	}
+	return s
+}
+
 // Text adds CSS text content to the style element
 func (s *StyleElement) Text(text string) *StyleElement {
 	s.contents = appendElement(s.contents, rawText(text))
