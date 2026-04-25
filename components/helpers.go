@@ -24,9 +24,9 @@ func parseStyle(buf *bytes.Buffer, style map[string]string) {
 /*
 Internal parsing function to remove all spaces from a byte array
 */
-func strip(bytes []byte) []byte {
-	re := regexp.MustCompile(`\\s+`)
-	return re.ReplaceAll(bytes, nil)
+func strip(b []byte) []byte {
+	re := regexp.MustCompile(`\s+`)
+	return re.ReplaceAll(b, nil)
 }
 
 /*
