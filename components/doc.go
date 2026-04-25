@@ -235,6 +235,8 @@ func formatHTML(src []byte) []byte {
 	for i := 0; i < len(tokens); i++ {
 		token := tokens[i]
 		switch token.kind {
+		case "raw":
+			writeRawBlock(&buf, indent, token.text)
 		case "start":
 			if i+1 < len(tokens) && tokens[i+1].kind == "end" && tokens[i+1].name == token.name {
 				writeFormattedLine(&buf, indent, token.text+tokens[i+1].text)
@@ -267,14 +269,14 @@ func formatHTML(src []byte) []byte {
 func tokenizeHTML(input string) []htmlToken {
 	tokens := []htmlToken{}
 	for i := 0; i < len(input); {
-		if input[i] != '<' {
-			next := strings.IndexByte(input[i:], '<')
+		if input[i] != '<' || !isHTMLTagStart(input, i) {
+			next := nextHTMLTagStart(input, i+1)
 			if next == -1 {
 				tokens = appendTextToken(tokens, input[i:])
 				break
 			}
-			tokens = appendTextToken(tokens, input[i:i+next])
-			i += next
+			tokens = appendTextToken(tokens, input[i:next])
+			i = next
 			continue
 		}
 
@@ -290,12 +292,11 @@ func tokenizeHTML(input string) []htmlToken {
 			continue
 		}
 
-		end := strings.IndexByte(input[i:], '>')
+		end := findTagEnd(input, i)
 		if end == -1 {
 			tokens = appendTextToken(tokens, input[i:])
 			break
 		}
-		end += i
 
 		tag := input[i : end+1]
 		name := tagName(tag)
@@ -311,23 +312,22 @@ func tokenizeHTML(input string) []htmlToken {
 		case isVoidTag(name) || isSelfClosingTag(tag):
 			tokens = append(tokens, htmlToken{kind: "void", name: name, text: tag})
 		default:
-			tokens = append(tokens, htmlToken{kind: "start", name: name, text: tag})
 			if isRawTextElement(name) {
 				rawStart := end + 1
 				closeTag := "</" + name + ">"
 				closeAt := strings.Index(strings.ToLower(input[rawStart:]), closeTag)
 				if closeAt != -1 {
 					rawEnd := rawStart + closeAt
-					tokens = appendTextToken(tokens, input[rawStart:rawEnd])
 					tokens = append(tokens, htmlToken{
-						kind: "end",
+						kind: "raw",
 						name: name,
-						text: input[rawEnd : rawEnd+len(closeTag)],
+						text: input[i : rawEnd+len(closeTag)],
 					})
 					i = rawEnd + len(closeTag)
 					continue
 				}
 			}
+			tokens = append(tokens, htmlToken{kind: "start", name: name, text: tag})
 		}
 
 		i = end + 1
@@ -353,11 +353,18 @@ func writeFormattedLine(buf *bytes.Buffer, indent int, line string) {
 
 func writeFormattedText(buf *bytes.Buffer, indent int, text string) {
 	for _, line := range strings.Split(text, "\n") {
-		line = strings.TrimSpace(line)
 		if line == "" {
 			continue
 		}
 		writeFormattedLine(buf, indent, line)
+	}
+}
+
+func writeRawBlock(buf *bytes.Buffer, indent int, text string) {
+	buf.WriteString(tabs(indent))
+	buf.WriteString(text)
+	if !strings.HasSuffix(text, "\n") {
+		buf.WriteByte('\n')
 	}
 }
 
@@ -402,6 +409,57 @@ func isRawTextElement(tag string) bool {
 	default:
 		return false
 	}
+}
+
+func nextHTMLTagStart(input string, from int) int {
+	for i := from; i < len(input); i++ {
+		if input[i] == '<' && isHTMLTagStart(input, i) {
+			return i
+		}
+	}
+	return -1
+}
+
+func isHTMLTagStart(input string, idx int) bool {
+	if idx+1 >= len(input) || input[idx] != '<' {
+		return false
+	}
+	if strings.HasPrefix(input[idx:], "<!--") {
+		return true
+	}
+
+	next := input[idx+1]
+	if next == '/' {
+		return idx+2 < len(input) && isTagNameStart(input[idx+2])
+	}
+	if next == '!' {
+		return strings.HasPrefix(strings.ToLower(input[idx:]), "<!doctype")
+	}
+	return isTagNameStart(next)
+}
+
+func isTagNameStart(c byte) bool {
+	return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')
+}
+
+func findTagEnd(input string, start int) int {
+	var quote byte
+	for i := start + 1; i < len(input); i++ {
+		c := input[i]
+		if quote != 0 {
+			if c == quote {
+				quote = 0
+			}
+			continue
+		}
+		switch c {
+		case '\'', '"':
+			quote = c
+		case '>':
+			return i
+		}
+	}
+	return -1
 }
 
 // Head represents the HTML head element for document metadata
