@@ -60,10 +60,10 @@ func (m *Math) Prepare() {
 	m.buf.Reset()
 	m.buf.WriteString("<math")
 	if m.xmlns != "" {
-		m.buf.WriteString(" xmlns=\"" + m.xmlns + "\"")
+		writeAttr(&m.buf, "xmlns", m.xmlns)
 	}
 	if m.display != "" {
-		m.buf.WriteString(" display=\"" + m.display + "\"")
+		writeAttr(&m.buf, "display", m.display)
 	}
 	if len(m.style) != 0 {
 		parseStyle(&m.buf, m.style)
@@ -162,25 +162,25 @@ func (s *Svg) Prepare() {
 	s.buf.Reset()
 	s.buf.WriteString("<svg")
 	if s.xmlns != "" {
-		s.buf.WriteString(" xmlns=\"" + s.xmlns + "\"")
+		writeAttr(&s.buf, "xmlns", s.xmlns)
 	}
 	if s.width != "" {
-		s.buf.WriteString(" width=\"" + s.width + "\"")
+		writeAttr(&s.buf, "width", s.width)
 	}
 	if s.height != "" {
-		s.buf.WriteString(" height=\"" + s.height + "\"")
+		writeAttr(&s.buf, "height", s.height)
 	}
 	if s.viewBox != "" {
-		s.buf.WriteString(" viewBox=\"" + s.viewBox + "\"")
+		writeAttr(&s.buf, "viewBox", s.viewBox)
 	}
 	if s.version != "" {
-		s.buf.WriteString(" version=\"" + s.version + "\"")
+		writeAttr(&s.buf, "version", s.version)
 	}
 	if s.baseProfile != "" {
-		s.buf.WriteString(" baseProfile=\"" + s.baseProfile + "\"")
+		writeAttr(&s.buf, "baseProfile", s.baseProfile)
 	}
 	if s.preserveAspectRatio != "" {
-		s.buf.WriteString(" preserveAspectRatio=\"" + s.preserveAspectRatio + "\"")
+		writeAttr(&s.buf, "preserveAspectRatio", s.preserveAspectRatio)
 	}
 	if len(s.style) != 0 {
 		parseStyle(&s.buf, s.style)

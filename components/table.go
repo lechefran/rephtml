@@ -126,17 +126,10 @@ func (t *Table) Prepare() {
 	// see if table has id, class, and style tags to add
 	t.buf.WriteString("<table")
 	if t.id != "" {
-		t.buf.WriteString(" id=\"" + t.id + "\"")
+		writeAttr(&t.buf, "id", t.id)
 	}
 	if len(t.class) != 0 {
-		t.buf.WriteString(" class=\"")
-		for i := 0; i < len(t.class); i++ {
-			t.buf.WriteString(t.class[i])
-			if i != len(t.class)-1 {
-				t.buf.WriteString(" ")
-			}
-		}
-		t.buf.WriteString("\"")
+		writeClassAttr(&t.buf, t.class)
 	}
 	if len(t.style) != 0 {
 		parseStyle(&t.buf, t.style)
@@ -179,7 +172,7 @@ func (t *Table) Prepare() {
 		if len(t.headers) > 0 {
 			t.buf.WriteString("<tr>")
 			for _, h := range t.headers {
-				t.buf.WriteString("<th>" + h + "</th>")
+				t.buf.WriteString("<th>" + escapeText(h) + "</th>")
 			}
 			t.buf.WriteString("</tr>")
 		}
@@ -188,7 +181,7 @@ func (t *Table) Prepare() {
 		for i := 0; i < len(t.rows); i++ {
 			t.buf.WriteString("<tr>")
 			for j := 0; j < len(t.rows[i]); j++ {
-				t.buf.WriteString("<td>" + t.rows[i][j] + "</td>")
+				t.buf.WriteString("<td>" + escapeText(t.rows[i][j]) + "</td>")
 			}
 			t.buf.WriteString("</tr>")
 		}
@@ -269,17 +262,10 @@ func (th *Thead) Prepare() {
 	th.buf.Reset()
 	th.buf.WriteString("<thead")
 	if th.id != "" {
-		th.buf.WriteString(" id=\"" + th.id + "\"")
+		writeAttr(&th.buf, "id", th.id)
 	}
 	if len(th.class) != 0 {
-		th.buf.WriteString(" class=\"")
-		for i := 0; i < len(th.class); i++ {
-			th.buf.WriteString(th.class[i])
-			if i != len(th.class)-1 {
-				th.buf.WriteString(" ")
-			}
-		}
-		th.buf.WriteString("\"")
+		writeClassAttr(&th.buf, th.class)
 	}
 	if len(th.style) != 0 {
 		parseStyle(&th.buf, th.style)
@@ -362,17 +348,10 @@ func (tb *Tbody) Prepare() {
 	tb.buf.Reset()
 	tb.buf.WriteString("<tbody")
 	if tb.id != "" {
-		tb.buf.WriteString(" id=\"" + tb.id + "\"")
+		writeAttr(&tb.buf, "id", tb.id)
 	}
 	if len(tb.class) != 0 {
-		tb.buf.WriteString(" class=\"")
-		for i := 0; i < len(tb.class); i++ {
-			tb.buf.WriteString(tb.class[i])
-			if i != len(tb.class)-1 {
-				tb.buf.WriteString(" ")
-			}
-		}
-		tb.buf.WriteString("\"")
+		writeClassAttr(&tb.buf, tb.class)
 	}
 	if len(tb.style) != 0 {
 		parseStyle(&tb.buf, tb.style)
@@ -455,17 +434,10 @@ func (tf *Tfoot) Prepare() {
 	tf.buf.Reset()
 	tf.buf.WriteString("<tfoot")
 	if tf.id != "" {
-		tf.buf.WriteString(" id=\"" + tf.id + "\"")
+		writeAttr(&tf.buf, "id", tf.id)
 	}
 	if len(tf.class) != 0 {
-		tf.buf.WriteString(" class=\"")
-		for i := 0; i < len(tf.class); i++ {
-			tf.buf.WriteString(tf.class[i])
-			if i != len(tf.class)-1 {
-				tf.buf.WriteString(" ")
-			}
-		}
-		tf.buf.WriteString("\"")
+		writeClassAttr(&tf.buf, tf.class)
 	}
 	if len(tf.style) != 0 {
 		parseStyle(&tf.buf, tf.style)
@@ -548,24 +520,17 @@ func (c *Caption) Prepare() {
 	c.buf.Reset()
 	c.buf.WriteString("<caption")
 	if c.id != "" {
-		c.buf.WriteString(" id=\"" + c.id + "\"")
+		writeAttr(&c.buf, "id", c.id)
 	}
 	if len(c.class) != 0 {
-		c.buf.WriteString(" class=\"")
-		for i := 0; i < len(c.class); i++ {
-			c.buf.WriteString(c.class[i])
-			if i != len(c.class)-1 {
-				c.buf.WriteString(" ")
-			}
-		}
-		c.buf.WriteString("\"")
+		writeClassAttr(&c.buf, c.class)
 	}
 	if len(c.style) != 0 {
 		parseStyle(&c.buf, c.style)
 	}
 	c.buf.WriteByte('>')
 
-	c.buf.WriteString(c.text)
+	c.buf.WriteString(escapeText(c.text))
 	c.buf.WriteString("</caption>")
 }
 
@@ -641,25 +606,16 @@ func (col *Col) Prepare() {
 	col.buf.Reset()
 	col.buf.WriteString("<col")
 	if col.id != "" {
-		col.buf.WriteString(" id=\"" + col.id + "\"")
+		writeAttr(&col.buf, "id", col.id)
 	}
 	if len(col.class) != 0 {
-		col.buf.WriteString(" class=\"")
-		for i := 0; i < len(col.class); i++ {
-			col.buf.WriteString(col.class[i])
-			if i != len(col.class)-1 {
-				col.buf.WriteString(" ")
-			}
-		}
-		col.buf.WriteString("\"")
+		writeClassAttr(&col.buf, col.class)
 	}
 	if len(col.style) != 0 {
 		parseStyle(&col.buf, col.style)
 	}
 	if col.span > 0 {
-		col.buf.WriteString(" span=\"")
-		col.buf.WriteString(string(rune(col.span + '0')))
-		col.buf.WriteString("\"")
+		writeIntAttr(&col.buf, "span", col.span)
 	}
 	col.buf.WriteString(">")
 }
@@ -742,25 +698,16 @@ func (cg *Colgroup) Prepare() {
 	cg.buf.Reset()
 	cg.buf.WriteString("<colgroup")
 	if cg.id != "" {
-		cg.buf.WriteString(" id=\"" + cg.id + "\"")
+		writeAttr(&cg.buf, "id", cg.id)
 	}
 	if len(cg.class) != 0 {
-		cg.buf.WriteString(" class=\"")
-		for i := 0; i < len(cg.class); i++ {
-			cg.buf.WriteString(cg.class[i])
-			if i != len(cg.class)-1 {
-				cg.buf.WriteString(" ")
-			}
-		}
-		cg.buf.WriteString("\"")
+		writeClassAttr(&cg.buf, cg.class)
 	}
 	if len(cg.style) != 0 {
 		parseStyle(&cg.buf, cg.style)
 	}
 	if cg.span > 0 {
-		cg.buf.WriteString(" span=\"")
-		cg.buf.WriteString(string(rune(cg.span + '0')))
-		cg.buf.WriteString("\"")
+		writeIntAttr(&cg.buf, "span", cg.span)
 	}
 	cg.buf.WriteByte('>')
 
@@ -845,17 +792,10 @@ func (tr *Tr) Prepare() {
 	tr.buf.Reset()
 	tr.buf.WriteString("<tr")
 	if tr.id != "" {
-		tr.buf.WriteString(" id=\"" + tr.id + "\"")
+		writeAttr(&tr.buf, "id", tr.id)
 	}
 	if len(tr.class) != 0 {
-		tr.buf.WriteString(" class=\"")
-		for i := 0; i < len(tr.class); i++ {
-			tr.buf.WriteString(tr.class[i])
-			if i != len(tr.class)-1 {
-				tr.buf.WriteString(" ")
-			}
-		}
-		tr.buf.WriteString("\"")
+		writeClassAttr(&tr.buf, tr.class)
 	}
 	if len(tr.style) != 0 {
 		parseStyle(&tr.buf, tr.style)
@@ -950,30 +890,19 @@ func (td *Td) Prepare() {
 	td.buf.Reset()
 	td.buf.WriteString("<td")
 	if td.id != "" {
-		td.buf.WriteString(" id=\"" + td.id + "\"")
+		writeAttr(&td.buf, "id", td.id)
 	}
 	if len(td.class) != 0 {
-		td.buf.WriteString(" class=\"")
-		for i := 0; i < len(td.class); i++ {
-			td.buf.WriteString(td.class[i])
-			if i != len(td.class)-1 {
-				td.buf.WriteString(" ")
-			}
-		}
-		td.buf.WriteString("\"")
+		writeClassAttr(&td.buf, td.class)
 	}
 	if len(td.style) != 0 {
 		parseStyle(&td.buf, td.style)
 	}
 	if td.colspan > 0 {
-		td.buf.WriteString(" colspan=\"")
-		td.buf.WriteString(string(rune(td.colspan + '0')))
-		td.buf.WriteString("\"")
+		writeIntAttr(&td.buf, "colspan", td.colspan)
 	}
 	if td.rowspan > 0 {
-		td.buf.WriteString(" rowspan=\"")
-		td.buf.WriteString(string(rune(td.rowspan + '0')))
-		td.buf.WriteString("\"")
+		writeIntAttr(&td.buf, "rowspan", td.rowspan)
 	}
 	td.buf.WriteByte('>')
 
@@ -1071,33 +1000,22 @@ func (th *Th) Prepare() {
 	th.buf.Reset()
 	th.buf.WriteString("<th")
 	if th.id != "" {
-		th.buf.WriteString(" id=\"" + th.id + "\"")
+		writeAttr(&th.buf, "id", th.id)
 	}
 	if len(th.class) != 0 {
-		th.buf.WriteString(" class=\"")
-		for i := 0; i < len(th.class); i++ {
-			th.buf.WriteString(th.class[i])
-			if i != len(th.class)-1 {
-				th.buf.WriteString(" ")
-			}
-		}
-		th.buf.WriteString("\"")
+		writeClassAttr(&th.buf, th.class)
 	}
 	if len(th.style) != 0 {
 		parseStyle(&th.buf, th.style)
 	}
 	if th.colspan > 0 {
-		th.buf.WriteString(" colspan=\"")
-		th.buf.WriteString(string(rune(th.colspan + '0')))
-		th.buf.WriteString("\"")
+		writeIntAttr(&th.buf, "colspan", th.colspan)
 	}
 	if th.rowspan > 0 {
-		th.buf.WriteString(" rowspan=\"")
-		th.buf.WriteString(string(rune(th.rowspan + '0')))
-		th.buf.WriteString("\"")
+		writeIntAttr(&th.buf, "rowspan", th.rowspan)
 	}
 	if th.scope != "" {
-		th.buf.WriteString(" scope=\"" + th.scope + "\"")
+		writeAttr(&th.buf, "scope", th.scope)
 	}
 	th.buf.WriteByte('>')
 

@@ -95,7 +95,7 @@ func (h *H1) Prepare() {
 	if len(h.style) != 0 {
 		parseStyle(&h.buf, h.style)
 	}
-	h.buf.WriteString(">" + h.text + "</h1>")
+	h.buf.WriteString(">" + escapeText(h.text) + "</h1>")
 }
 
 type H2 struct {
@@ -138,7 +138,7 @@ func (h *H2) Prepare() {
 	if len(h.style) != 0 {
 		parseStyle(&h.buf, h.style)
 	}
-	h.buf.WriteString(">" + h.text + "</h2>")
+	h.buf.WriteString(">" + escapeText(h.text) + "</h2>")
 }
 
 type H3 struct {
@@ -181,7 +181,7 @@ func (h *H3) Prepare() {
 	if len(h.style) != 0 {
 		parseStyle(&h.buf, h.style)
 	}
-	h.buf.WriteString(">" + h.text + "</h3>")
+	h.buf.WriteString(">" + escapeText(h.text) + "</h3>")
 }
 
 type H4 struct {
@@ -224,7 +224,7 @@ func (h *H4) Prepare() {
 	if len(h.style) != 0 {
 		parseStyle(&h.buf, h.style)
 	}
-	h.buf.WriteString(">" + h.text + "</h4>")
+	h.buf.WriteString(">" + escapeText(h.text) + "</h4>")
 }
 
 type H5 struct {
@@ -267,7 +267,7 @@ func (h *H5) Prepare() {
 	if len(h.style) != 0 {
 		parseStyle(&h.buf, h.style)
 	}
-	h.buf.WriteString(">" + h.text + "</h5>")
+	h.buf.WriteString(">" + escapeText(h.text) + "</h5>")
 }
 
 type H6 struct {
@@ -310,5 +310,5 @@ func (h *H6) Prepare() {
 	if len(h.style) != 0 {
 		parseStyle(&h.buf, h.style)
 	}
-	h.buf.WriteString(">" + h.text + "</h6>")
+	h.buf.WriteString(">" + escapeText(h.text) + "</h6>")
 }

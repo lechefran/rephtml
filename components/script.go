@@ -59,10 +59,10 @@ func (c *Canvas) Prepare() {
 	c.buf.Reset()
 	c.buf.WriteString("<canvas")
 	if c.width != "" {
-		c.buf.WriteString(" width=\"" + c.width + "\"")
+		writeAttr(&c.buf, "width", c.width)
 	}
 	if c.height != "" {
-		c.buf.WriteString(" height=\"" + c.height + "\"")
+		writeAttr(&c.buf, "height", c.height)
 	}
 	if len(c.style) != 0 {
 		parseStyle(&c.buf, c.style)
@@ -225,10 +225,10 @@ func (s *Script) Prepare() {
 	s.buf.Reset()
 	s.buf.WriteString("<script")
 	if s.src != "" {
-		s.buf.WriteString(" src=\"" + s.src + "\"")
+		writeAttr(&s.buf, "src", s.src)
 	}
 	if s.scriptType != "" {
-		s.buf.WriteString(" type=\"" + s.scriptType + "\"")
+		writeAttr(&s.buf, "type", s.scriptType)
 	}
 	if s.async {
 		s.buf.WriteString(" async")
@@ -237,16 +237,16 @@ func (s *Script) Prepare() {
 		s.buf.WriteString(" defer")
 	}
 	if s.crossOrigin != "" {
-		s.buf.WriteString(" crossorigin=\"" + s.crossOrigin + "\"")
+		writeAttr(&s.buf, "crossorigin", s.crossOrigin)
 	}
 	if s.integrity != "" {
-		s.buf.WriteString(" integrity=\"" + s.integrity + "\"")
+		writeAttr(&s.buf, "integrity", s.integrity)
 	}
 	if s.noModule {
 		s.buf.WriteString(" nomodule")
 	}
 	if s.referrerPolicy != "" {
-		s.buf.WriteString(" referrerpolicy=\"" + s.referrerPolicy + "\"")
+		writeAttr(&s.buf, "referrerpolicy", s.referrerPolicy)
 	}
 	if len(s.style) != 0 {
 		parseStyle(&s.buf, s.style)

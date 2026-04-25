@@ -71,19 +71,19 @@ func (a *Area) Prepare() {
 	a.buf.Reset()
 	a.buf.WriteString("<area")
 	if a.alt != "" {
-		a.buf.WriteString(" alt=\"" + a.alt + "\"")
+		writeAttr(&a.buf, "alt", a.alt)
 	}
 	if a.coords != "" {
-		a.buf.WriteString(" coords=\"" + a.coords + "\"")
+		writeAttr(&a.buf, "coords", a.coords)
 	}
 	if a.href != "" {
-		a.buf.WriteString(" href=\"" + a.href + "\"")
+		writeAttr(&a.buf, "href", a.href)
 	}
 	if a.shape != "" {
-		a.buf.WriteString(" shape=\"" + a.shape + "\"")
+		writeAttr(&a.buf, "shape", a.shape)
 	}
 	if a.target != "" {
-		a.buf.WriteString(" target=\"" + a.target + "\"")
+		writeAttr(&a.buf, "target", a.target)
 	}
 	if len(a.style) != 0 {
 		parseStyle(&a.buf, a.style)
@@ -160,19 +160,19 @@ func (i *Img) Prepare() {
 	i.buf.Reset()
 	i.buf.WriteString("<img")
 	if i.src != "" {
-		i.buf.WriteString(" src=\"" + i.src + "\"")
+		writeAttr(&i.buf, "src", i.src)
 	}
 	if i.alt != "" {
-		i.buf.WriteString(" alt=\"" + i.alt + "\"")
+		writeAttr(&i.buf, "alt", i.alt)
 	}
 	if i.width != "" {
-		i.buf.WriteString(" width=\"" + i.width + "\"")
+		writeAttr(&i.buf, "width", i.width)
 	}
 	if i.height != "" {
-		i.buf.WriteString(" height=\"" + i.height + "\"")
+		writeAttr(&i.buf, "height", i.height)
 	}
 	if i.title != "" {
-		i.buf.WriteString(" title=\"" + i.title + "\"")
+		writeAttr(&i.buf, "title", i.title)
 	}
 	if len(i.style) != 0 {
 		parseStyle(&i.buf, i.style)
@@ -261,7 +261,7 @@ func (a *Audio) Prepare() {
 	a.buf.Reset()
 	a.buf.WriteString("<audio")
 	if a.src != "" {
-		a.buf.WriteString(" src=\"" + a.src + "\"")
+		writeAttr(&a.buf, "src", a.src)
 	}
 	if a.controls {
 		a.buf.WriteString(" controls")
@@ -276,7 +276,7 @@ func (a *Audio) Prepare() {
 		a.buf.WriteString(" muted")
 	}
 	if a.preload != "" {
-		a.buf.WriteString(" preload=\"" + a.preload + "\"")
+		writeAttr(&a.buf, "preload", a.preload)
 	}
 	if len(a.style) != 0 {
 		parseStyle(&a.buf, a.style)
@@ -356,16 +356,16 @@ func (t *Track) Prepare() {
 	t.buf.Reset()
 	t.buf.WriteString("<track")
 	if t.src != "" {
-		t.buf.WriteString(" src=\"" + t.src + "\"")
+		writeAttr(&t.buf, "src", t.src)
 	}
 	if t.kind != "" {
-		t.buf.WriteString(" kind=\"" + t.kind + "\"")
+		writeAttr(&t.buf, "kind", t.kind)
 	}
 	if t.srclang != "" {
-		t.buf.WriteString(" srclang=\"" + t.srclang + "\"")
+		writeAttr(&t.buf, "srclang", t.srclang)
 	}
 	if t.label != "" {
-		t.buf.WriteString(" label=\"" + t.label + "\"")
+		writeAttr(&t.buf, "label", t.label)
 	}
 	if t.defaultVal {
 		t.buf.WriteString(" default")
@@ -427,7 +427,7 @@ func (m *Map) Prepare() {
 	m.buf.Reset()
 	m.buf.WriteString("<map")
 	if m.name != "" {
-		m.buf.WriteString(" name=\"" + m.name + "\"")
+		writeAttr(&m.buf, "name", m.name)
 	}
 	if len(m.style) != 0 {
 		parseStyle(&m.buf, m.style)
@@ -537,7 +537,7 @@ func (v *Video) Prepare() {
 	v.buf.Reset()
 	v.buf.WriteString("<video")
 	if v.src != "" {
-		v.buf.WriteString(" src=\"" + v.src + "\"")
+		writeAttr(&v.buf, "src", v.src)
 	}
 	if v.controls {
 		v.buf.WriteString(" controls")
@@ -552,16 +552,16 @@ func (v *Video) Prepare() {
 		v.buf.WriteString(" muted")
 	}
 	if v.preload != "" {
-		v.buf.WriteString(" preload=\"" + v.preload + "\"")
+		writeAttr(&v.buf, "preload", v.preload)
 	}
 	if v.width != "" {
-		v.buf.WriteString(" width=\"" + v.width + "\"")
+		writeAttr(&v.buf, "width", v.width)
 	}
 	if v.height != "" {
-		v.buf.WriteString(" height=\"" + v.height + "\"")
+		writeAttr(&v.buf, "height", v.height)
 	}
 	if v.poster != "" {
-		v.buf.WriteString(" poster=\"" + v.poster + "\"")
+		writeAttr(&v.buf, "poster", v.poster)
 	}
 	if len(v.style) != 0 {
 		parseStyle(&v.buf, v.style)

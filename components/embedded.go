@@ -65,16 +65,16 @@ func (e *Embed) Prepare() {
 	e.buf.Reset()
 	e.buf.WriteString("<embed")
 	if e.src != "" {
-		e.buf.WriteString(" src=\"" + e.src + "\"")
+		writeAttr(&e.buf, "src", e.src)
 	}
 	if e.embedType != "" {
-		e.buf.WriteString(" type=\"" + e.embedType + "\"")
+		writeAttr(&e.buf, "type", e.embedType)
 	}
 	if e.width != "" {
-		e.buf.WriteString(" width=\"" + e.width + "\"")
+		writeAttr(&e.buf, "width", e.width)
 	}
 	if e.height != "" {
-		e.buf.WriteString(" height=\"" + e.height + "\"")
+		writeAttr(&e.buf, "height", e.height)
 	}
 	if len(e.style) != 0 {
 		parseStyle(&e.buf, e.style)
@@ -181,34 +181,34 @@ func (i *Iframe) Prepare() {
 	i.buf.Reset()
 	i.buf.WriteString("<iframe")
 	if i.src != "" {
-		i.buf.WriteString(" src=\"" + i.src + "\"")
+		writeAttr(&i.buf, "src", i.src)
 	}
 	if i.width != "" {
-		i.buf.WriteString(" width=\"" + i.width + "\"")
+		writeAttr(&i.buf, "width", i.width)
 	}
 	if i.height != "" {
-		i.buf.WriteString(" height=\"" + i.height + "\"")
+		writeAttr(&i.buf, "height", i.height)
 	}
 	if i.name != "" {
-		i.buf.WriteString(" name=\"" + i.name + "\"")
+		writeAttr(&i.buf, "name", i.name)
 	}
 	if i.sandbox != "" {
-		i.buf.WriteString(" sandbox=\"" + i.sandbox + "\"")
+		writeAttr(&i.buf, "sandbox", i.sandbox)
 	}
 	if i.allow != "" {
-		i.buf.WriteString(" allow=\"" + i.allow + "\"")
+		writeAttr(&i.buf, "allow", i.allow)
 	}
 	if i.allowfullscreen {
 		i.buf.WriteString(" allowfullscreen")
 	}
 	if i.loading != "" {
-		i.buf.WriteString(" loading=\"" + i.loading + "\"")
+		writeAttr(&i.buf, "loading", i.loading)
 	}
 	if i.referrerpolicy != "" {
-		i.buf.WriteString(" referrerpolicy=\"" + i.referrerpolicy + "\"")
+		writeAttr(&i.buf, "referrerpolicy", i.referrerpolicy)
 	}
 	if i.srcdoc != "" {
-		i.buf.WriteString(" srcdoc=\"" + i.srcdoc + "\"")
+		writeAttr(&i.buf, "srcdoc", i.srcdoc)
 	}
 	if len(i.style) != 0 {
 		parseStyle(&i.buf, i.style)
@@ -303,25 +303,25 @@ func (o *Object) Prepare() {
 	o.buf.Reset()
 	o.buf.WriteString("<object")
 	if o.data != "" {
-		o.buf.WriteString(" data=\"" + o.data + "\"")
+		writeAttr(&o.buf, "data", o.data)
 	}
 	if o.objType != "" {
-		o.buf.WriteString(" type=\"" + o.objType + "\"")
+		writeAttr(&o.buf, "type", o.objType)
 	}
 	if o.width != "" {
-		o.buf.WriteString(" width=\"" + o.width + "\"")
+		writeAttr(&o.buf, "width", o.width)
 	}
 	if o.height != "" {
-		o.buf.WriteString(" height=\"" + o.height + "\"")
+		writeAttr(&o.buf, "height", o.height)
 	}
 	if o.name != "" {
-		o.buf.WriteString(" name=\"" + o.name + "\"")
+		writeAttr(&o.buf, "name", o.name)
 	}
 	if o.usemap != "" {
-		o.buf.WriteString(" usemap=\"" + o.usemap + "\"")
+		writeAttr(&o.buf, "usemap", o.usemap)
 	}
 	if o.form != "" {
-		o.buf.WriteString(" form=\"" + o.form + "\"")
+		writeAttr(&o.buf, "form", o.form)
 	}
 	if len(o.style) != 0 {
 		parseStyle(&o.buf, o.style)
@@ -436,10 +436,10 @@ func (p *Portal) Prepare() {
 	p.buf.Reset()
 	p.buf.WriteString("<portal")
 	if p.src != "" {
-		p.buf.WriteString(" src=\"" + p.src + "\"")
+		writeAttr(&p.buf, "src", p.src)
 	}
 	if p.referrerpolicy != "" {
-		p.buf.WriteString(" referrerpolicy=\"" + p.referrerpolicy + "\"")
+		writeAttr(&p.buf, "referrerpolicy", p.referrerpolicy)
 	}
 	if len(p.style) != 0 {
 		parseStyle(&p.buf, p.style)
@@ -516,19 +516,19 @@ func (s *Source) Prepare() {
 	s.buf.Reset()
 	s.buf.WriteString("<source")
 	if s.src != "" {
-		s.buf.WriteString(" src=\"" + s.src + "\"")
+		writeAttr(&s.buf, "src", s.src)
 	}
 	if s.srcset != "" {
-		s.buf.WriteString(" srcset=\"" + s.srcset + "\"")
+		writeAttr(&s.buf, "srcset", s.srcset)
 	}
 	if s.media != "" {
-		s.buf.WriteString(" media=\"" + s.media + "\"")
+		writeAttr(&s.buf, "media", s.media)
 	}
 	if s.sizes != "" {
-		s.buf.WriteString(" sizes=\"" + s.sizes + "\"")
+		writeAttr(&s.buf, "sizes", s.sizes)
 	}
 	if s.srcType != "" {
-		s.buf.WriteString(" type=\"" + s.srcType + "\"")
+		writeAttr(&s.buf, "type", s.srcType)
 	}
 	if len(s.style) != 0 {
 		parseStyle(&s.buf, s.style)

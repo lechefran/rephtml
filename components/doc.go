@@ -44,22 +44,22 @@ func (h *HtmlFile) Prepare() {
 	h.buf.Reset()
 	h.buf.WriteString("<html")
 	if h.lang != "" {
-		h.buf.WriteString(" lang=\"" + h.lang + "\"")
+		writeAttr(&h.buf, "lang", h.lang)
 	}
 	if h.dir != "" {
-		h.buf.WriteString(" dir=\"" + h.dir + "\"")
+		writeAttr(&h.buf, "dir", h.dir)
 	}
 	if h.xmlLang != "" {
-		h.buf.WriteString(" xml:lang=\"" + h.xmlLang + "\"")
+		writeAttr(&h.buf, "xml:lang", h.xmlLang)
 	}
 	if h.xmlns != "" {
-		h.buf.WriteString(" xmlns=\"" + h.xmlns + "\"")
+		writeAttr(&h.buf, "xmlns", h.xmlns)
 	}
 	if h.manifest != "" {
-		h.buf.WriteString(" manifest=\"" + h.manifest + "\"")
+		writeAttr(&h.buf, "manifest", h.manifest)
 	}
 	if h.contextMenu != "" {
-		h.buf.WriteString(" contextmenu=\"" + h.contextMenu + "\"")
+		writeAttr(&h.buf, "contextmenu", h.contextMenu)
 	}
 	if len(h.style) != 0 {
 		parseStyle(&h.buf, h.style)
@@ -556,10 +556,10 @@ func (b *Body) Prepare() {
 	b.buf.Reset()
 	b.buf.WriteString("<body")
 	if b.onLoad != "" {
-		b.buf.WriteString(" onload=\"" + b.onLoad + "\"")
+		writeAttr(&b.buf, "onload", b.onLoad)
 	}
 	if b.onUnload != "" {
-		b.buf.WriteString(" onunload=\"" + b.onUnload + "\"")
+		writeAttr(&b.buf, "onunload", b.onUnload)
 	}
 	if len(b.style) != 0 {
 		parseStyle(&b.buf, b.style)
@@ -659,7 +659,7 @@ func (t *Title) IsHeadElement() {}
 
 // Text adds text content to the title element
 func (t *Title) Text(text string) *Title {
-	t.contents = appendElement(t.contents, rawText(text))
+	t.contents = appendElement(t.contents, escapedText(text))
 	return t
 }
 
@@ -711,10 +711,10 @@ func (b *Base) Prepare() {
 	b.buf.Reset()
 	b.buf.WriteString("<base")
 	if b.href != "" {
-		b.buf.WriteString(" href=\"" + b.href + "\"")
+		writeAttr(&b.buf, "href", b.href)
 	}
 	if b.target != "" {
-		b.buf.WriteString(" target=\"" + b.target + "\"")
+		writeAttr(&b.buf, "target", b.target)
 	}
 	if len(b.style) != 0 {
 		parseStyle(&b.buf, b.style)
@@ -792,31 +792,31 @@ func (l *Link) Prepare() {
 	l.buf.Reset()
 	l.buf.WriteString("<link")
 	if l.rel != "" {
-		l.buf.WriteString(" rel=\"" + l.rel + "\"")
+		writeAttr(&l.buf, "rel", l.rel)
 	}
 	if l.href != "" {
-		l.buf.WriteString(" href=\"" + l.href + "\"")
+		writeAttr(&l.buf, "href", l.href)
 	}
 	if l.linkType != "" {
-		l.buf.WriteString(" type=\"" + l.linkType + "\"")
+		writeAttr(&l.buf, "type", l.linkType)
 	}
 	if l.media != "" {
-		l.buf.WriteString(" media=\"" + l.media + "\"")
+		writeAttr(&l.buf, "media", l.media)
 	}
 	if l.sizes != "" {
-		l.buf.WriteString(" sizes=\"" + l.sizes + "\"")
+		writeAttr(&l.buf, "sizes", l.sizes)
 	}
 	if l.crossOrigin != "" {
-		l.buf.WriteString(" crossOrigin=\"" + l.crossOrigin + "\"")
+		writeAttr(&l.buf, "crossOrigin", l.crossOrigin)
 	}
 	if l.integrity != "" {
-		l.buf.WriteString(" integrity=\"" + l.integrity + "\"")
+		writeAttr(&l.buf, "integrity", l.integrity)
 	}
 	if l.referrerPolicy != "" {
-		l.buf.WriteString(" referrerPolicy=\"" + l.referrerPolicy + "\"")
+		writeAttr(&l.buf, "referrerPolicy", l.referrerPolicy)
 	}
 	if l.hreflang != "" {
-		l.buf.WriteString(" hreflang=\"" + l.hreflang + "\"")
+		writeAttr(&l.buf, "hreflang", l.hreflang)
 	}
 	if len(l.style) != 0 {
 		parseStyle(&l.buf, l.style)
@@ -933,22 +933,22 @@ func (m *Meta) Prepare() {
 	m.buf.Reset()
 	m.buf.WriteString("<meta")
 	if m.name != "" {
-		m.buf.WriteString(" name=\"" + m.name + "\"")
+		writeAttr(&m.buf, "name", m.name)
 	}
 	if m.content != "" {
-		m.buf.WriteString(" content=\"" + m.content + "\"")
+		writeAttr(&m.buf, "content", m.content)
 	}
 	if m.charset != "" {
-		m.buf.WriteString(" charset=\"" + m.charset + "\"")
+		writeAttr(&m.buf, "charset", m.charset)
 	}
 	if m.property != "" {
-		m.buf.WriteString(" property=\"" + m.property + "\"")
+		writeAttr(&m.buf, "property", m.property)
 	}
 	if m.httpEquiv != "" {
-		m.buf.WriteString(" http-equiv=\"" + m.httpEquiv + "\"")
+		writeAttr(&m.buf, "http-equiv", m.httpEquiv)
 	}
 	if m.scheme != "" {
-		m.buf.WriteString(" scheme=\"" + m.scheme + "\"")
+		writeAttr(&m.buf, "scheme", m.scheme)
 	}
 	if len(m.style) != 0 {
 		parseStyle(&m.buf, m.style)
@@ -1045,10 +1045,10 @@ func (s *StyleElement) Prepare() {
 	s.buf.Reset()
 	s.buf.WriteString("<style")
 	if s.styleType != "" {
-		s.buf.WriteString(" type=\"" + s.styleType + "\"")
+		writeAttr(&s.buf, "type", s.styleType)
 	}
 	if s.media != "" {
-		s.buf.WriteString(" media=\"" + s.media + "\"")
+		writeAttr(&s.buf, "media", s.media)
 	}
 	if len(s.style) != 0 {
 		parseStyle(&s.buf, s.style)

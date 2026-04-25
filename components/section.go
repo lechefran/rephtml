@@ -106,7 +106,7 @@ func (n *Nav) Prepare() {
 	n.buf.Reset()
 	n.buf.WriteString("<nav")
 	if n.role != "" {
-		n.buf.WriteString(" role=\"" + n.role + "\"")
+		writeAttr(&n.buf, "role", n.role)
 	}
 	if len(n.style) != 0 {
 		parseStyle(&n.buf, n.style)
@@ -221,7 +221,7 @@ func (s *Section) Prepare() {
 	s.buf.Reset()
 	s.buf.WriteString("<section")
 	if s.ariaLabel != "" {
-		s.buf.WriteString(" aria-label=\"" + s.ariaLabel + "\"")
+		writeAttr(&s.buf, "aria-label", s.ariaLabel)
 	}
 	if len(s.style) != 0 {
 		parseStyle(&s.buf, s.style)

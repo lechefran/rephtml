@@ -39,31 +39,31 @@ func (f *Form) Prepare() {
 	f.buf.WriteString("<form")
 
 	if f.action != "" {
-		f.buf.WriteString(" action=\"" + f.action + "\"")
+		writeAttr(&f.buf, "action", f.action)
 	}
 
 	if f.method != "" {
-		f.buf.WriteString(" method=\"" + f.method + "\"")
+		writeAttr(&f.buf, "method", f.method)
 	}
 
 	if f.enctype != "" {
-		f.buf.WriteString(" enctype=\"" + f.enctype + "\"")
+		writeAttr(&f.buf, "enctype", f.enctype)
 	}
 
 	if f.name != "" {
-		f.buf.WriteString(" name=\"" + f.name + "\"")
+		writeAttr(&f.buf, "name", f.name)
 	}
 
 	if f.target != "" {
-		f.buf.WriteString(" target=\"" + f.target + "\"")
+		writeAttr(&f.buf, "target", f.target)
 	}
 
 	if f.autocomplete != "" {
-		f.buf.WriteString(" autocomplete=\"" + f.autocomplete + "\"")
+		writeAttr(&f.buf, "autocomplete", f.autocomplete)
 	}
 
 	if f.acceptcharset != "" {
-		f.buf.WriteString(" accept-charset=\"" + f.acceptcharset + "\"")
+		writeAttr(&f.buf, "accept-charset", f.acceptcharset)
 	}
 
 	if f.novalidate {
@@ -191,11 +191,11 @@ func (l *Label) Prepare() {
 	l.buf.WriteString("<label")
 
 	if l.forattr != "" {
-		l.buf.WriteString(" for=\"" + l.forattr + "\"")
+		writeAttr(&l.buf, "for", l.forattr)
 	}
 
 	if l.form != "" {
-		l.buf.WriteString(" form=\"" + l.form + "\"")
+		writeAttr(&l.buf, "form", l.form)
 	}
 
 	if len(l.style) != 0 {
@@ -219,7 +219,7 @@ func (l *Label) Add(e Element) *Label {
 
 // Text adds text content to the label element
 func (l *Label) Text(text string) *Label {
-	l.contents = appendElement(l.contents, rawText(text))
+	l.contents = appendElement(l.contents, escapedText(text))
 	return l
 }
 
@@ -306,63 +306,63 @@ func (i *Input) Prepare() {
 	i.buf.WriteString("<input")
 
 	if i.inputtype != "" {
-		i.buf.WriteString(" type=\"" + i.inputtype + "\"")
+		writeAttr(&i.buf, "type", i.inputtype)
 	}
 
 	if i.name != "" {
-		i.buf.WriteString(" name=\"" + i.name + "\"")
+		writeAttr(&i.buf, "name", i.name)
 	}
 
 	if i.value != "" {
-		i.buf.WriteString(" value=\"" + i.value + "\"")
+		writeAttr(&i.buf, "value", i.value)
 	}
 
 	if i.placeholder != "" {
-		i.buf.WriteString(" placeholder=\"" + i.placeholder + "\"")
+		writeAttr(&i.buf, "placeholder", i.placeholder)
 	}
 
 	if i.id != "" {
-		i.buf.WriteString(" id=\"" + i.id + "\"")
+		writeAttr(&i.buf, "id", i.id)
 	}
 
 	if i.form != "" {
-		i.buf.WriteString(" form=\"" + i.form + "\"")
+		writeAttr(&i.buf, "form", i.form)
 	}
 
 	if i.autocomplete != "" {
-		i.buf.WriteString(" autocomplete=\"" + i.autocomplete + "\"")
+		writeAttr(&i.buf, "autocomplete", i.autocomplete)
 	}
 
 	if i.min != "" {
-		i.buf.WriteString(" min=\"" + i.min + "\"")
+		writeAttr(&i.buf, "min", i.min)
 	}
 
 	if i.max != "" {
-		i.buf.WriteString(" max=\"" + i.max + "\"")
+		writeAttr(&i.buf, "max", i.max)
 	}
 
 	if i.step != "" {
-		i.buf.WriteString(" step=\"" + i.step + "\"")
+		writeAttr(&i.buf, "step", i.step)
 	}
 
 	if i.pattern != "" {
-		i.buf.WriteString(" pattern=\"" + i.pattern + "\"")
+		writeAttr(&i.buf, "pattern", i.pattern)
 	}
 
 	if i.size != "" {
-		i.buf.WriteString(" size=\"" + i.size + "\"")
+		writeAttr(&i.buf, "size", i.size)
 	}
 
 	if i.maxlength != "" {
-		i.buf.WriteString(" maxlength=\"" + i.maxlength + "\"")
+		writeAttr(&i.buf, "maxlength", i.maxlength)
 	}
 
 	if i.minlength != "" {
-		i.buf.WriteString(" minlength=\"" + i.minlength + "\"")
+		writeAttr(&i.buf, "minlength", i.minlength)
 	}
 
 	if i.accept != "" {
-		i.buf.WriteString(" accept=\"" + i.accept + "\"")
+		writeAttr(&i.buf, "accept", i.accept)
 	}
 
 	if i.required {
@@ -577,15 +577,15 @@ func (o *Output) Prepare() {
 	o.buf.WriteString("<output")
 
 	if o.forattr != "" {
-		o.buf.WriteString(" for=\"" + o.forattr + "\"")
+		writeAttr(&o.buf, "for", o.forattr)
 	}
 
 	if o.name != "" {
-		o.buf.WriteString(" name=\"" + o.name + "\"")
+		writeAttr(&o.buf, "name", o.name)
 	}
 
 	if o.form != "" {
-		o.buf.WriteString(" form=\"" + o.form + "\"")
+		writeAttr(&o.buf, "form", o.form)
 	}
 
 	if len(o.style) != 0 {
@@ -609,7 +609,7 @@ func (o *Output) Add(e Element) *Output {
 
 // Text adds text content to the output element
 func (o *Output) Text(text string) *Output {
-	o.contents = appendElement(o.contents, rawText(text))
+	o.contents = appendElement(o.contents, escapedText(text))
 	return o
 }
 
@@ -686,11 +686,11 @@ func (f *Fieldset) Prepare() {
 	f.buf.WriteString("<fieldset")
 
 	if f.form != "" {
-		f.buf.WriteString(" form=\"" + f.form + "\"")
+		writeAttr(&f.buf, "form", f.form)
 	}
 
 	if f.name != "" {
-		f.buf.WriteString(" name=\"" + f.name + "\"")
+		writeAttr(&f.buf, "name", f.name)
 	}
 
 	if f.disabled {
@@ -797,35 +797,35 @@ func (b *Button) Prepare() {
 	b.buf.WriteString("<button")
 
 	if b.buttonType != "" {
-		b.buf.WriteString(" type=\"" + b.buttonType + "\"")
+		writeAttr(&b.buf, "type", b.buttonType)
 	}
 
 	if b.name != "" {
-		b.buf.WriteString(" name=\"" + b.name + "\"")
+		writeAttr(&b.buf, "name", b.name)
 	}
 
 	if b.value != "" {
-		b.buf.WriteString(" value=\"" + b.value + "\"")
+		writeAttr(&b.buf, "value", b.value)
 	}
 
 	if b.form != "" {
-		b.buf.WriteString(" form=\"" + b.form + "\"")
+		writeAttr(&b.buf, "form", b.form)
 	}
 
 	if b.formAction != "" {
-		b.buf.WriteString(" formaction=\"" + b.formAction + "\"")
+		writeAttr(&b.buf, "formaction", b.formAction)
 	}
 
 	if b.formEnctype != "" {
-		b.buf.WriteString(" formenctype=\"" + b.formEnctype + "\"")
+		writeAttr(&b.buf, "formenctype", b.formEnctype)
 	}
 
 	if b.formMethod != "" {
-		b.buf.WriteString(" formmethod=\"" + b.formMethod + "\"")
+		writeAttr(&b.buf, "formmethod", b.formMethod)
 	}
 
 	if b.formTarget != "" {
-		b.buf.WriteString(" formtarget=\"" + b.formTarget + "\"")
+		writeAttr(&b.buf, "formtarget", b.formTarget)
 	}
 
 	if b.formNovalidate {
@@ -861,7 +861,7 @@ func (b *Button) Add(e Element) *Button {
 
 // Text adds text content to the button element
 func (b *Button) Text(text string) *Button {
-	b.contents = appendElement(b.contents, rawText(text))
+	b.contents = appendElement(b.contents, escapedText(text))
 	return b
 }
 
@@ -991,19 +991,19 @@ func (s *Select) Prepare() {
 	s.buf.WriteString("<select")
 
 	if s.name != "" {
-		s.buf.WriteString(" name=\"" + s.name + "\"")
+		writeAttr(&s.buf, "name", s.name)
 	}
 
 	if s.form != "" {
-		s.buf.WriteString(" form=\"" + s.form + "\"")
+		writeAttr(&s.buf, "form", s.form)
 	}
 
 	if s.size != "" {
-		s.buf.WriteString(" size=\"" + s.size + "\"")
+		writeAttr(&s.buf, "size", s.size)
 	}
 
 	if s.autoComplete != "" {
-		s.buf.WriteString(" autocomplete=\"" + s.autoComplete + "\"")
+		writeAttr(&s.buf, "autocomplete", s.autoComplete)
 	}
 
 	if s.multiple {
@@ -1142,7 +1142,7 @@ func (d *Datalist) Prepare() {
 	d.buf.WriteString("<datalist")
 
 	if d.id != "" {
-		d.buf.WriteString(" id=\"" + d.id + "\"")
+		writeAttr(&d.buf, "id", d.id)
 	}
 
 	if len(d.style) != 0 {
@@ -1224,7 +1224,7 @@ func (o *Optgroup) Prepare() {
 	o.buf.WriteString("<optgroup")
 
 	if o.label != "" {
-		o.buf.WriteString(" label=\"" + o.label + "\"")
+		writeAttr(&o.buf, "label", o.label)
 	}
 
 	if o.disabled {
@@ -1318,11 +1318,11 @@ func (o *Option) Prepare() {
 	o.buf.WriteString("<option")
 
 	if o.value != "" {
-		o.buf.WriteString(" value=\"" + o.value + "\"")
+		writeAttr(&o.buf, "value", o.value)
 	}
 
 	if o.label != "" {
-		o.buf.WriteString(" label=\"" + o.label + "\"")
+		writeAttr(&o.buf, "label", o.label)
 	}
 
 	if o.selected {
@@ -1354,7 +1354,7 @@ func (o *Option) Add(e Element) *Option {
 
 // Text adds text content to the option element
 func (o *Option) Text(text string) *Option {
-	o.contents = appendElement(o.contents, rawText(text))
+	o.contents = appendElement(o.contents, escapedText(text))
 	return o
 }
 
@@ -1448,43 +1448,43 @@ func (t *Textarea) Prepare() {
 	t.buf.WriteString("<textarea")
 
 	if t.name != "" {
-		t.buf.WriteString(" name=\"" + t.name + "\"")
+		writeAttr(&t.buf, "name", t.name)
 	}
 
 	if t.form != "" {
-		t.buf.WriteString(" form=\"" + t.form + "\"")
+		writeAttr(&t.buf, "form", t.form)
 	}
 
 	if t.rows != "" {
-		t.buf.WriteString(" rows=\"" + t.rows + "\"")
+		writeAttr(&t.buf, "rows", t.rows)
 	}
 
 	if t.cols != "" {
-		t.buf.WriteString(" cols=\"" + t.cols + "\"")
+		writeAttr(&t.buf, "cols", t.cols)
 	}
 
 	if t.placeholder != "" {
-		t.buf.WriteString(" placeholder=\"" + t.placeholder + "\"")
+		writeAttr(&t.buf, "placeholder", t.placeholder)
 	}
 
 	if t.maxLength != "" {
-		t.buf.WriteString(" maxlength=\"" + t.maxLength + "\"")
+		writeAttr(&t.buf, "maxlength", t.maxLength)
 	}
 
 	if t.minLength != "" {
-		t.buf.WriteString(" minlength=\"" + t.minLength + "\"")
+		writeAttr(&t.buf, "minlength", t.minLength)
 	}
 
 	if t.wrap != "" {
-		t.buf.WriteString(" wrap=\"" + t.wrap + "\"")
+		writeAttr(&t.buf, "wrap", t.wrap)
 	}
 
 	if t.autoComplete != "" {
-		t.buf.WriteString(" autocomplete=\"" + t.autoComplete + "\"")
+		writeAttr(&t.buf, "autocomplete", t.autoComplete)
 	}
 
 	if t.spellcheck != "" {
-		t.buf.WriteString(" spellcheck=\"" + t.spellcheck + "\"")
+		writeAttr(&t.buf, "spellcheck", t.spellcheck)
 	}
 
 	if t.required {
@@ -1524,7 +1524,7 @@ func (t *Textarea) Add(e Element) *Textarea {
 
 // Text adds text content to the textarea element
 func (t *Textarea) Text(text string) *Textarea {
-	t.contents = appendElement(t.contents, rawText(text))
+	t.contents = appendElement(t.contents, escapedText(text))
 	return t
 }
 
@@ -1667,15 +1667,15 @@ func (p *Progress) Prepare() {
 	p.buf.WriteString("<progress")
 
 	if p.value != "" {
-		p.buf.WriteString(" value=\"" + p.value + "\"")
+		writeAttr(&p.buf, "value", p.value)
 	}
 
 	if p.max != "" {
-		p.buf.WriteString(" max=\"" + p.max + "\"")
+		writeAttr(&p.buf, "max", p.max)
 	}
 
 	if p.form != "" {
-		p.buf.WriteString(" form=\"" + p.form + "\"")
+		writeAttr(&p.buf, "form", p.form)
 	}
 
 	if len(p.style) != 0 {
@@ -1699,7 +1699,7 @@ func (p *Progress) Add(e Element) *Progress {
 
 // Text adds text content to the progress element (fallback for non-supporting browsers)
 func (p *Progress) Text(text string) *Progress {
-	p.contents = appendElement(p.contents, rawText(text))
+	p.contents = appendElement(p.contents, escapedText(text))
 	return p
 }
 
@@ -1780,31 +1780,31 @@ func (m *Meter) Prepare() {
 	m.buf.WriteString("<meter")
 
 	if m.value != "" {
-		m.buf.WriteString(" value=\"" + m.value + "\"")
+		writeAttr(&m.buf, "value", m.value)
 	}
 
 	if m.min != "" {
-		m.buf.WriteString(" min=\"" + m.min + "\"")
+		writeAttr(&m.buf, "min", m.min)
 	}
 
 	if m.max != "" {
-		m.buf.WriteString(" max=\"" + m.max + "\"")
+		writeAttr(&m.buf, "max", m.max)
 	}
 
 	if m.low != "" {
-		m.buf.WriteString(" low=\"" + m.low + "\"")
+		writeAttr(&m.buf, "low", m.low)
 	}
 
 	if m.high != "" {
-		m.buf.WriteString(" high=\"" + m.high + "\"")
+		writeAttr(&m.buf, "high", m.high)
 	}
 
 	if m.optimum != "" {
-		m.buf.WriteString(" optimum=\"" + m.optimum + "\"")
+		writeAttr(&m.buf, "optimum", m.optimum)
 	}
 
 	if m.form != "" {
-		m.buf.WriteString(" form=\"" + m.form + "\"")
+		writeAttr(&m.buf, "form", m.form)
 	}
 
 	if len(m.style) != 0 {
@@ -1828,7 +1828,7 @@ func (m *Meter) Add(e Element) *Meter {
 
 // Text adds text content to the meter element (fallback for non-supporting browsers)
 func (m *Meter) Text(text string) *Meter {
-	m.contents = appendElement(m.contents, rawText(text))
+	m.contents = appendElement(m.contents, escapedText(text))
 	return m
 }
 
@@ -1946,7 +1946,7 @@ func (l *Legend) Add(e Element) *Legend {
 
 // Text adds text content to the legend element
 func (l *Legend) Text(text string) *Legend {
-	l.contents = appendElement(l.contents, rawText(text))
+	l.contents = appendElement(l.contents, escapedText(text))
 	return l
 }
 

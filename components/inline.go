@@ -53,9 +53,9 @@ func (a *Anchor) Prepare() {
 		parseStyle(&a.buf, a.style)
 	}
 	if a.link != "" {
-		a.buf.WriteString(" href=\"" + a.link + "\"")
+		writeAttr(&a.buf, "href", a.link)
 	}
-	a.buf.WriteString(">" + a.text + "</a>")
+	a.buf.WriteString(">" + escapeText(a.text) + "</a>")
 }
 
 type Abbr struct {
@@ -112,9 +112,9 @@ func (a *Abbr) Prepare() {
 		parseStyle(&a.buf, a.style)
 	}
 	if a.title != "" {
-		a.buf.WriteString(" title=\"" + a.title + "\"")
+		writeAttr(&a.buf, "title", a.title)
 	}
-	a.buf.WriteString(">" + a.text + "</abbr>")
+	a.buf.WriteString(">" + escapeText(a.text) + "</abbr>")
 }
 
 type B struct {
@@ -164,7 +164,7 @@ func (b *B) Prepare() {
 	if len(b.style) != 0 {
 		parseStyle(&b.buf, b.style)
 	}
-	b.buf.WriteString(">" + b.text + "</b>")
+	b.buf.WriteString(">" + escapeText(b.text) + "</b>")
 }
 
 type I struct {
@@ -214,7 +214,7 @@ func (i *I) Prepare() {
 	if len(i.style) != 0 {
 		parseStyle(&i.buf, i.style)
 	}
-	i.buf.WriteString(">" + i.text + "</i>")
+	i.buf.WriteString(">" + escapeText(i.text) + "</i>")
 }
 
 type Q struct {
@@ -271,9 +271,9 @@ func (q *Q) Prepare() {
 		parseStyle(&q.buf, q.style)
 	}
 	if q.cite != "" {
-		q.buf.WriteString(" cite=\"" + q.cite + "\"")
+		writeAttr(&q.buf, "cite", q.cite)
 	}
-	q.buf.WriteString(">" + q.text + "</q>")
+	q.buf.WriteString(">" + escapeText(q.text) + "</q>")
 }
 
 type S struct {
@@ -323,7 +323,7 @@ func (s *S) Prepare() {
 	if len(s.style) != 0 {
 		parseStyle(&s.buf, s.style)
 	}
-	s.buf.WriteString(">" + s.text + "</s>")
+	s.buf.WriteString(">" + escapeText(s.text) + "</s>")
 }
 
 type U struct {
@@ -373,7 +373,7 @@ func (u *U) Prepare() {
 	if len(u.style) != 0 {
 		parseStyle(&u.buf, u.style)
 	}
-	u.buf.WriteString(">" + u.text + "</u>")
+	u.buf.WriteString(">" + escapeText(u.text) + "</u>")
 }
 
 type Dbi struct {
@@ -423,7 +423,7 @@ func (d *Dbi) Prepare() {
 	if len(d.style) != 0 {
 		parseStyle(&d.buf, d.style)
 	}
-	d.buf.WriteString(">" + d.text + "</dbi>")
+	d.buf.WriteString(">" + escapeText(d.text) + "</dbi>")
 }
 
 type Dbo struct {
@@ -473,7 +473,7 @@ func (d *Dbo) Prepare() {
 	if len(d.style) != 0 {
 		parseStyle(&d.buf, d.style)
 	}
-	d.buf.WriteString(">" + d.text + "</dbo>")
+	d.buf.WriteString(">" + escapeText(d.text) + "</dbo>")
 }
 
 type Br struct {
@@ -567,7 +567,7 @@ func (c *Cite) Prepare() {
 	if len(c.style) != 0 {
 		parseStyle(&c.buf, c.style)
 	}
-	c.buf.WriteString(">" + c.text + "</cite>")
+	c.buf.WriteString(">" + escapeText(c.text) + "</cite>")
 }
 
 type Code struct {
@@ -617,7 +617,7 @@ func (c *Code) Prepare() {
 	if len(c.style) != 0 {
 		parseStyle(&c.buf, c.style)
 	}
-	c.buf.WriteString(">" + c.text + "</code>")
+	c.buf.WriteString(">" + escapeText(c.text) + "</code>")
 }
 
 type Data struct {
@@ -674,9 +674,9 @@ func (d *Data) Prepare() {
 		parseStyle(&d.buf, d.style)
 	}
 	if d.value != "" {
-		d.buf.WriteString(" value=\"" + d.value + "\"")
+		writeAttr(&d.buf, "value", d.value)
 	}
-	d.buf.WriteString(">" + d.text + "</data>")
+	d.buf.WriteString(">" + escapeText(d.text) + "</data>")
 }
 
 type Dfn struct {
@@ -733,9 +733,9 @@ func (d *Dfn) Prepare() {
 		parseStyle(&d.buf, d.style)
 	}
 	if d.title != "" {
-		d.buf.WriteString(" title=\"" + d.title + "\"")
+		writeAttr(&d.buf, "title", d.title)
 	}
-	d.buf.WriteString(">" + d.text + "</dfn>")
+	d.buf.WriteString(">" + escapeText(d.text) + "</dfn>")
 }
 
 type Elem struct {
@@ -785,7 +785,7 @@ func (e *Elem) Prepare() {
 	if len(e.style) != 0 {
 		parseStyle(&e.buf, e.style)
 	}
-	e.buf.WriteString(">" + e.text + "</elem>")
+	e.buf.WriteString(">" + escapeText(e.text) + "</elem>")
 }
 
 type Mark struct {
@@ -835,7 +835,7 @@ func (m *Mark) Prepare() {
 	if len(m.style) != 0 {
 		parseStyle(&m.buf, m.style)
 	}
-	m.buf.WriteString(">" + m.text + "</mark>")
+	m.buf.WriteString(">" + escapeText(m.text) + "</mark>")
 }
 
 type Ruby struct {
@@ -938,7 +938,7 @@ func (rb *Rb) Prepare() {
 	if len(rb.style) != 0 {
 		parseStyle(&rb.buf, rb.style)
 	}
-	rb.buf.WriteString(">" + rb.text + "</rb>")
+	rb.buf.WriteString(">" + escapeText(rb.text) + "</rb>")
 }
 
 type Rt struct {
@@ -988,7 +988,7 @@ func (rt *Rt) Prepare() {
 	if len(rt.style) != 0 {
 		parseStyle(&rt.buf, rt.style)
 	}
-	rt.buf.WriteString(">" + rt.text + "</rt>")
+	rt.buf.WriteString(">" + escapeText(rt.text) + "</rt>")
 }
 
 type Rtc struct {
@@ -1091,7 +1091,7 @@ func (rp *Rp) Prepare() {
 	if len(rp.style) != 0 {
 		parseStyle(&rp.buf, rp.style)
 	}
-	rp.buf.WriteString(">" + rp.text + "</rp>")
+	rp.buf.WriteString(">" + escapeText(rp.text) + "</rp>")
 }
 
 type Kbd struct {
@@ -1141,7 +1141,7 @@ func (k *Kbd) Prepare() {
 	if len(k.style) != 0 {
 		parseStyle(&k.buf, k.style)
 	}
-	k.buf.WriteString(">" + k.text + "</kbd>")
+	k.buf.WriteString(">" + escapeText(k.text) + "</kbd>")
 }
 
 type Sub struct {
@@ -1191,7 +1191,7 @@ func (s *Sub) Prepare() {
 	if len(s.style) != 0 {
 		parseStyle(&s.buf, s.style)
 	}
-	s.buf.WriteString(">" + s.text + "</sub>")
+	s.buf.WriteString(">" + escapeText(s.text) + "</sub>")
 }
 
 type Sup struct {
@@ -1241,7 +1241,7 @@ func (s *Sup) Prepare() {
 	if len(s.style) != 0 {
 		parseStyle(&s.buf, s.style)
 	}
-	s.buf.WriteString(">" + s.text + "</sup>")
+	s.buf.WriteString(">" + escapeText(s.text) + "</sup>")
 }
 
 type Samp struct {
@@ -1291,7 +1291,7 @@ func (s *Samp) Prepare() {
 	if len(s.style) != 0 {
 		parseStyle(&s.buf, s.style)
 	}
-	s.buf.WriteString(">" + s.text + "</samp>")
+	s.buf.WriteString(">" + escapeText(s.text) + "</samp>")
 }
 
 type Small struct {
@@ -1341,7 +1341,7 @@ func (s *Small) Prepare() {
 	if len(s.style) != 0 {
 		parseStyle(&s.buf, s.style)
 	}
-	s.buf.WriteString(">" + s.text + "</small>")
+	s.buf.WriteString(">" + escapeText(s.text) + "</small>")
 }
 
 type Span struct {
@@ -1391,7 +1391,7 @@ func (s *Span) Prepare() {
 	if len(s.style) != 0 {
 		parseStyle(&s.buf, s.style)
 	}
-	s.buf.WriteString(">" + s.text + "</span>")
+	s.buf.WriteString(">" + escapeText(s.text) + "</span>")
 }
 
 type Strong struct {
@@ -1441,7 +1441,7 @@ func (s *Strong) Prepare() {
 	if len(s.style) != 0 {
 		parseStyle(&s.buf, s.style)
 	}
-	s.buf.WriteString(">" + s.text + "</strong>")
+	s.buf.WriteString(">" + escapeText(s.text) + "</strong>")
 }
 
 type Time struct {
@@ -1541,12 +1541,12 @@ func (t *Time) Prepare() {
 	t.buf.Reset()
 	t.buf.WriteString("<time")
 	if t.datetime != "" {
-		t.buf.WriteString(" datetime=\"" + t.datetime + "\"")
+		writeAttr(&t.buf, "datetime", t.datetime)
 	}
 	if len(t.style) != 0 {
 		parseStyle(&t.buf, t.style)
 	}
-	t.buf.WriteString(">" + t.text + "</time>")
+	t.buf.WriteString(">" + escapeText(t.text) + "</time>")
 }
 
 type Var struct {
@@ -1596,7 +1596,7 @@ func (v *Var) Prepare() {
 	if len(v.style) != 0 {
 		parseStyle(&v.buf, v.style)
 	}
-	v.buf.WriteString(">" + v.text + "</var>")
+	v.buf.WriteString(">" + escapeText(v.text) + "</var>")
 }
 
 type Wbr struct {

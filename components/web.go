@@ -53,7 +53,7 @@ func (s *Slot) Prepare() {
 	s.buf.Reset()
 	s.buf.WriteString("<slot")
 	if s.name != "" {
-		s.buf.WriteString(" name=\"" + s.name + "\"")
+		writeAttr(&s.buf, "name", s.name)
 	}
 	if len(s.style) != 0 {
 		parseStyle(&s.buf, s.style)
@@ -118,7 +118,7 @@ func (t *Template) Prepare() {
 	t.buf.Reset()
 	t.buf.WriteString("<template")
 	if t.id != "" {
-		t.buf.WriteString(" id=\"" + t.id + "\"")
+		writeAttr(&t.buf, "id", t.id)
 	}
 	if len(t.style) != 0 {
 		parseStyle(&t.buf, t.style)

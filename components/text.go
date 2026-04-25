@@ -49,7 +49,7 @@ func (p *P) Prepare() {
 	if len(p.style) != 0 {
 		parseStyle(&p.buf, p.style)
 	}
-	p.buf.WriteString(">" + p.text + "</p>")
+	p.buf.WriteString(">" + escapeText(p.text) + "</p>")
 }
 
 type Comment struct {
@@ -169,7 +169,7 @@ func (p *Pre) Prepare() {
 	if len(p.style) != 0 {
 		parseStyle(&p.buf, p.style)
 	}
-	p.buf.WriteString(">" + p.text + "</pre>")
+	p.buf.WriteString(">" + escapeText(p.text) + "</pre>")
 }
 
 type Blockquote struct {
@@ -223,12 +223,12 @@ func (b *Blockquote) Prepare() {
 	b.buf.Reset()
 	b.buf.WriteString("<blockquote")
 	if b.cite != "" {
-		b.buf.WriteString(" cite=\"" + b.cite + "\"")
+		writeAttr(&b.buf, "cite", b.cite)
 	}
 	if len(b.style) != 0 {
 		parseStyle(&b.buf, b.style)
 	}
-	b.buf.WriteString(">" + b.text + "</blockquote>")
+	b.buf.WriteString(">" + escapeText(b.text) + "</blockquote>")
 }
 
 type Menu struct {
@@ -288,10 +288,10 @@ func (m *Menu) Prepare() {
 	m.buf.Reset()
 	m.buf.WriteString("<menu")
 	if m.menuType != "" {
-		m.buf.WriteString(" type=\"" + m.menuType + "\"")
+		writeAttr(&m.buf, "type", m.menuType)
 	}
 	if m.label != "" {
-		m.buf.WriteString(" label=\"" + m.label + "\"")
+		writeAttr(&m.buf, "label", m.label)
 	}
 	if len(m.style) != 0 {
 		parseStyle(&m.buf, m.style)
@@ -365,12 +365,10 @@ func (o *Ol) Prepare() {
 	o.buf.Reset()
 	o.buf.WriteString("<ol")
 	if o.start > 0 {
-		o.buf.WriteString(" start=\"")
-		o.buf.WriteString(string(rune(o.start + '0')))
-		o.buf.WriteString("\"")
+		writeIntAttr(&o.buf, "start", o.start)
 	}
 	if o.listType != "" {
-		o.buf.WriteString(" type=\"" + o.listType + "\"")
+		writeAttr(&o.buf, "type", o.listType)
 	}
 	if o.reversed {
 		o.buf.WriteString(" reversed")
@@ -488,9 +486,7 @@ func (l *Li) Prepare() {
 	l.buf.Reset()
 	l.buf.WriteString("<li")
 	if l.value > 0 {
-		l.buf.WriteString(" value=\"")
-		l.buf.WriteString(string(rune(l.value + '0')))
-		l.buf.WriteString("\"")
+		writeIntAttr(&l.buf, "value", l.value)
 	}
 	if len(l.style) != 0 {
 		parseStyle(&l.buf, l.style)

@@ -32,10 +32,10 @@ func (d *Del) Prepare() {
 	d.buf.Reset()
 	d.buf.WriteString("<del")
 	if d.cite != "" {
-		d.buf.WriteString(" cite=\"" + d.cite + "\"")
+		writeAttr(&d.buf, "cite", d.cite)
 	}
 	if d.datetime != "" {
-		d.buf.WriteString(" datetime=\"" + d.datetime + "\"")
+		writeAttr(&d.buf, "datetime", d.datetime)
 	}
 	if len(d.style) != 0 {
 		parseStyle(&d.buf, d.style)
@@ -120,11 +120,11 @@ func (i *Ins) Prepare() {
 	i.buf.WriteString("<ins")
 
 	if i.cite != "" {
-		i.buf.WriteString(" cite=\"" + i.cite + "\"")
+		writeAttr(&i.buf, "cite", i.cite)
 	}
 
 	if i.datetime != "" {
-		i.buf.WriteString(" datetime=\"" + i.datetime + "\"")
+		writeAttr(&i.buf, "datetime", i.datetime)
 	}
 
 	if len(i.style) != 0 {

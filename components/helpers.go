@@ -2,7 +2,9 @@ package rephtml
 
 import (
 	"bytes"
+	"html"
 	"regexp"
+	"strconv"
 )
 
 /*
@@ -12,7 +14,7 @@ func parseStyle(buf *bytes.Buffer, style map[string]string) {
 	idx := 0
 	buf.WriteString(" style=\"")
 	for k, v := range style {
-		buf.WriteString(k + ": " + v + ";")
+		buf.WriteString(escapeAttr(k) + ": " + escapeAttr(v) + ";")
 		if idx != len(style)-1 {
 			buf.WriteByte(' ')
 		}
@@ -44,6 +46,37 @@ func cloneBytes(b []byte) []byte {
 	return append([]byte(nil), b...)
 }
 
+func escapeText(text string) string {
+	return html.EscapeString(text)
+}
+
+func escapeAttr(value string) string {
+	return html.EscapeString(value)
+}
+
+func writeAttr(buf *bytes.Buffer, name, value string) {
+	buf.WriteByte(' ')
+	buf.WriteString(name)
+	buf.WriteString("=\"")
+	buf.WriteString(escapeAttr(value))
+	buf.WriteByte('"')
+}
+
+func writeIntAttr(buf *bytes.Buffer, name string, value int) {
+	writeAttr(buf, name, strconv.Itoa(value))
+}
+
+func writeClassAttr(buf *bytes.Buffer, classes []string) {
+	buf.WriteString(" class=\"")
+	for i, class := range classes {
+		buf.WriteString(escapeAttr(class))
+		if i != len(classes)-1 {
+			buf.WriteByte(' ')
+		}
+	}
+	buf.WriteByte('"')
+}
+
 type rawText string
 
 func (r rawText) Bytes() []byte {
@@ -51,6 +84,14 @@ func (r rawText) Bytes() []byte {
 }
 
 func (r rawText) Prepare() {}
+
+type escapedText string
+
+func (e escapedText) Bytes() []byte {
+	return []byte(escapeText(string(e)))
+}
+
+func (e escapedText) Prepare() {}
 
 func appendElement(contents []Element, e Element) []Element {
 	if e == nil {
