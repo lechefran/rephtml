@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"html"
 	"regexp"
+	"slices"
 	"strconv"
 )
 
@@ -11,14 +12,19 @@ import (
 Internal parsing function to handle style
 */
 func parseStyle(buf *bytes.Buffer, style map[string]string) {
-	idx := 0
 	buf.WriteString(" style=\"")
-	for k, v := range style {
-		buf.WriteString(escapeAttr(k) + ": " + escapeAttr(v) + ";")
-		if idx != len(style)-1 {
+
+	keys := make([]string, 0, len(style))
+	for k := range style {
+		keys = append(keys, k)
+	}
+	slices.Sort(keys)
+
+	for idx, k := range keys {
+		buf.WriteString(escapeAttr(k) + ": " + escapeAttr(style[k]) + ";")
+		if idx != len(keys)-1 {
 			buf.WriteByte(' ')
 		}
-		idx++
 	}
 	buf.WriteString("\"")
 }

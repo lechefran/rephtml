@@ -11,3 +11,17 @@ func TestStripRemovesWhitespace(t *testing.T) {
 		t.Fatalf("strip() = %q, want %q", got, want)
 	}
 }
+
+func TestParseStyleSortsKeys(t *testing.T) {
+	paragraph := NewP().Text("Sorted").Style(map[string]string{
+		"z-index": "1",
+		"color":   "red",
+		"border":  `1px solid "black"`,
+	})
+	paragraph.Prepare()
+
+	want := `<p style="border: 1px solid &#34;black&#34;; color: red; z-index: 1;">Sorted</p>`
+	if got := string(paragraph.Bytes()); got != want {
+		t.Fatalf("unexpected style output:\ngot  %q\nwant %q", got, want)
+	}
+}
