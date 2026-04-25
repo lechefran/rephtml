@@ -43,3 +43,22 @@ func TestStyleUsesDefaultPropMap(t *testing.T) {
 		t.Fatalf("unexpected style output:\ngot  %q\nwant %q", got, want)
 	}
 }
+
+func TestStyleElementAddUnwrapsStyle(t *testing.T) {
+	rule := NewStyle("body")
+	rule.Props = CssProps{
+		Color: "#111827",
+	}
+
+	style := NewStyleElement().Add(rule)
+	style.Prepare()
+
+	want := "<style>\n" +
+		"body {\n" +
+		"\tcolor: #111827;\n" +
+		"}\n" +
+		"</style>"
+	if got := string(style.Bytes()); got != want {
+		t.Fatalf("unexpected style element:\ngot  %q\nwant %q", got, want)
+	}
+}

@@ -46,3 +46,25 @@ func TestAddToHeadAndBodyPrepareDocumentSections(t *testing.T) {
 		t.Fatalf("unexpected compact html:\ngot  %q\nwant %q", got, want)
 	}
 }
+
+func TestAddToHeadFlattensHeadContents(t *testing.T) {
+	html := rephtml.NewHtmlFile()
+	html.AddToHead(rephtml.NewHead().Add(rephtml.NewTitle().Text("Nested Head")))
+	html.Prepare()
+
+	want := `<html><head><title>Nested Head</title></head></html>`
+	if got := string(html.Bytes()); got != want {
+		t.Fatalf("unexpected html:\ngot  %q\nwant %q", got, want)
+	}
+}
+
+func TestAddToBodyFlattensBodyContents(t *testing.T) {
+	html := rephtml.NewHtmlFile()
+	html.AddToBody(rephtml.NewBody().Add(rephtml.NewP().Text("Nested Body")))
+	html.Prepare()
+
+	want := `<html><body><p>Nested Body</p></body></html>`
+	if got := string(html.Bytes()); got != want {
+		t.Fatalf("unexpected html:\ngot  %q\nwant %q", got, want)
+	}
+}

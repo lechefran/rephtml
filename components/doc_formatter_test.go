@@ -51,3 +51,21 @@ func TestFormatHTMLPreservesRawTextElementBody(t *testing.T) {
 		t.Fatalf("pre body was changed:\ngot  %q\nwant %q\nfull output:\n%s", raw, body, got)
 	}
 }
+
+func TestFormatHTMLIndentsStyleBody(t *testing.T) {
+	input := []byte("<html><head><style>\nbody {\n\tcolor: red;\n}\n</style></head></html>")
+	got := string(formatHTML(input))
+	want := "<html>\n" +
+		"\t<head>\n" +
+		"\t\t<style>\n" +
+		"\t\t\tbody {\n" +
+		"\t\t\t\tcolor: red;\n" +
+		"\t\t\t}\n" +
+		"\t\t</style>\n" +
+		"\t</head>\n" +
+		"</html>\n"
+
+	if got != want {
+		t.Fatalf("unexpected formatted style block:\ngot:\n%s\nwant:\n%s", got, want)
+	}
+}

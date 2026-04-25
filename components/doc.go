@@ -88,40 +88,54 @@ func (h *HtmlFile) Add(e Element) *HtmlFile {
 }
 
 func (h *HtmlFile) AddToHead(e Element) *HtmlFile {
-	if e != nil {
-		v := h.Opts.Validation
-		if v == DEFAULT {
-			if _, ok := e.(HeadElement); !ok {
-				log.Printf("%s is not a valid head element but will be added to the head element\n",
-					reflect.TypeOf(e).Elem().Name())
-			}
-		} else if v == STRICT {
-			if _, ok := e.(HeadElement); !ok {
-				log.Fatalf("Cannot add %s to head element\n", reflect.TypeOf(e).Elem().Name())
-			}
-		}
-
-		h.headContent = appendElement(h.headContent, e)
+	if e == nil {
+		return h
 	}
+
+	if head, ok := e.(*Head); ok && len(head.style) == 0 {
+		h.headContent = append(h.headContent, head.contents...)
+		return h
+	}
+
+	v := h.Opts.Validation
+	if v == DEFAULT {
+		if _, ok := e.(HeadElement); !ok {
+			log.Printf("%s is not a valid head element but will be added to the head element\n",
+				reflect.TypeOf(e).Elem().Name())
+		}
+	} else if v == STRICT {
+		if _, ok := e.(HeadElement); !ok {
+			log.Fatalf("Cannot add %s to head element\n", reflect.TypeOf(e).Elem().Name())
+		}
+	}
+
+	h.headContent = appendElement(h.headContent, e)
 	return h
 }
 
 func (h *HtmlFile) AddToBody(e Element) *HtmlFile {
-	if e != nil {
-		v := h.Opts.Validation
-		if v == DEFAULT {
-			if _, ok := e.(BodyElement); !ok {
-				log.Printf("%s is not a valid body element but will be added to body element\n",
-					reflect.TypeOf(e).Elem().Name())
-			}
-		} else if v == STRICT {
-			if _, ok := e.(BodyElement); !ok {
-				log.Fatalf("Cannot add %s to body element\n", reflect.TypeOf(e).Elem().Name())
-			}
-		}
-
-		h.bodyContent = appendElement(h.bodyContent, e)
+	if e == nil {
+		return h
 	}
+
+	if body, ok := e.(*Body); ok && len(body.style) == 0 && body.onLoad == "" && body.onUnload == "" {
+		h.bodyContent = append(h.bodyContent, body.contents...)
+		return h
+	}
+
+	v := h.Opts.Validation
+	if v == DEFAULT {
+		if _, ok := e.(BodyElement); !ok {
+			log.Printf("%s is not a valid body element but will be added to body element\n",
+				reflect.TypeOf(e).Elem().Name())
+		}
+	} else if v == STRICT {
+		if _, ok := e.(BodyElement); !ok {
+			log.Fatalf("Cannot add %s to body element\n", reflect.TypeOf(e).Elem().Name())
+		}
+	}
+
+	h.bodyContent = appendElement(h.bodyContent, e)
 	return h
 }
 
@@ -236,7 +250,7 @@ func formatHTML(src []byte) []byte {
 		token := tokens[i]
 		switch token.kind {
 		case "raw":
-			writeRawBlock(&buf, indent, token.text)
+			writeRawBlock(&buf, indent, token.name, token.text)
 		case "start":
 			if i+1 < len(tokens) && tokens[i+1].kind == "end" && tokens[i+1].name == token.name {
 				writeFormattedLine(&buf, indent, token.text+tokens[i+1].text)
@@ -360,11 +374,50 @@ func writeFormattedText(buf *bytes.Buffer, indent int, text string) {
 	}
 }
 
-func writeRawBlock(buf *bytes.Buffer, indent int, text string) {
+func writeRawBlock(buf *bytes.Buffer, indent int, name, text string) {
+	if name == "style" {
+		if openTag, body, closeTag, ok := splitRawElement(text, name); ok {
+			writeFormattedLine(buf, indent, openTag)
+			writeIndentedRawLines(buf, indent+1, body)
+			writeFormattedLine(buf, indent, closeTag)
+			return
+		}
+	}
+
 	buf.WriteString(tabs(indent))
 	buf.WriteString(text)
 	if !strings.HasSuffix(text, "\n") {
 		buf.WriteByte('\n')
+	}
+}
+
+func splitRawElement(text, name string) (string, string, string, bool) {
+	openEnd := findTagEnd(text, 0)
+	if openEnd == -1 {
+		return "", "", "", false
+	}
+
+	closeTag := "</" + name + ">"
+	closeAt := strings.LastIndex(strings.ToLower(text), closeTag)
+	if closeAt == -1 || closeAt < openEnd {
+		return "", "", "", false
+	}
+
+	return text[:openEnd+1], text[openEnd+1 : closeAt], text[closeAt:], true
+}
+
+func writeIndentedRawLines(buf *bytes.Buffer, indent int, text string) {
+	text = strings.Trim(text, "\n")
+	if text == "" {
+		return
+	}
+
+	for _, line := range strings.Split(text, "\n") {
+		if strings.TrimSpace(line) == "" {
+			buf.WriteByte('\n')
+			continue
+		}
+		writeFormattedLine(buf, indent, line)
 	}
 }
 
@@ -1063,7 +1116,21 @@ func (s *StyleElement) Prepare() {
 
 // Add adds content to the style element
 func (s *StyleElement) Add(e Element) *StyleElement {
-	if e != nil {
+	switch element := e.(type) {
+	case nil:
+		return s
+	case *StyleRule:
+		return s.AddRule(element)
+	case *Style:
+		if element == nil {
+			return s
+		}
+		return s.AddRule(&StyleRule{
+			pmap:  element.pmap,
+			Props: element.Props,
+			Tags:  append([]string(nil), element.Tags...),
+		})
+	default:
 		s.contents = appendElement(s.contents, e)
 	}
 	return s
