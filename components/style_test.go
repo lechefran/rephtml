@@ -65,3 +65,107 @@ func TestStyleElementAddUnwrapsStyle(t *testing.T) {
 		t.Fatalf("unexpected style element:\ngot  %q\nwant %q", got, want)
 	}
 }
+
+func TestStyleElementBuildsStatementAtRules(t *testing.T) {
+	style := NewStyleElement().
+		AddRule(NewCharsetRule("utf-8")).
+		AddRule(NewImportRule("/base.css").Condition("screen"))
+	style.Prepare()
+
+	want := "<style>\n" +
+		"@charset \"utf-8\";\n" +
+		"\n" +
+		"@import url(\"/base.css\") screen;\n" +
+		"</style>"
+	if got := string(style.Bytes()); got != want {
+		t.Fatalf("unexpected at-rule style element:\ngot  %q\nwant %q", got, want)
+	}
+}
+
+func TestFontFaceRuleUsesFontDescriptors(t *testing.T) {
+	fontFace := NewFontFaceRule()
+	fontFace.Props = FontFaceProps{
+		FontFamily: "Report",
+		FontWeight: "700",
+		Src:        `url("/fonts/report.woff2") format("woff2")`,
+	}
+	fontFace.Prepare()
+
+	want := "\n@font-face {\n" +
+		"\tfont-family: Report;\n" +
+		"\tfont-weight: 700;\n" +
+		"\tsrc: url(\"/fonts/report.woff2\") format(\"woff2\");\n" +
+		"}\n"
+	if got := string(fontFace.Bytes()); got != want {
+		t.Fatalf("unexpected font-face rule:\ngot  %q\nwant %q", got, want)
+	}
+}
+
+func TestRawCSSRuleRendersCustomCSS(t *testing.T) {
+	rule := NewRawCSSRule("@layer base;")
+	rule.Prepare()
+
+	want := "\n@layer base;\n"
+	if got := string(rule.Bytes()); got != want {
+		t.Fatalf("unexpected raw CSS rule:\ngot  %q\nwant %q", got, want)
+	}
+}
+
+func TestFontFeatureValuesRuleRendersRawBlockContent(t *testing.T) {
+	rule := NewFontFeatureValuesRule("Report").Text("@styleset {\n\tswash: 1;\n}")
+	rule.Prepare()
+
+	want := "\n@font-feature-values Report {\n" +
+		"\t@styleset {\n" +
+		"\t\tswash: 1;\n" +
+		"\t}\n" +
+		"}\n"
+	if got := string(rule.Bytes()); got != want {
+		t.Fatalf("unexpected font-feature-values rule:\ngot  %q\nwant %q", got, want)
+	}
+}
+
+func TestMediaRuleNestsStyleRules(t *testing.T) {
+	rule := NewStyleRule(".card")
+	rule.Props = CssProps{Padding: "2rem"}
+
+	media := NewMediaRule("(min-width: 800px)").AddRule(rule)
+	media.Prepare()
+
+	want := "\n@media (min-width: 800px) {\n" +
+		"\t.card {\n" +
+		"\t\tpadding: 2rem;\n" +
+		"\t}\n" +
+		"}\n"
+	if got := string(media.Bytes()); got != want {
+		t.Fatalf("unexpected media rule:\ngot  %q\nwant %q", got, want)
+	}
+}
+
+func TestKeyframesRuleBuildsFrames(t *testing.T) {
+	keyframes := NewKeyframesRule("fade").
+		AddFrame("from", CssProps{Opacity: "0"}).
+		AddFrame("to", CssProps{Opacity: "1"})
+	keyframes.Prepare()
+
+	want := "\n@keyframes fade {\n" +
+		"\tfrom {\n" +
+		"\t\topacity: 0;\n" +
+		"\t}\n" +
+		"\tto {\n" +
+		"\t\topacity: 1;\n" +
+		"\t}\n" +
+		"}\n"
+	if got := string(keyframes.Bytes()); got != want {
+		t.Fatalf("unexpected keyframes rule:\ngot  %q\nwant %q", got, want)
+	}
+}
+
+func TestPropMapDoesNotContainAtRules(t *testing.T) {
+	pmap := NewPropMap()
+	for _, key := range []string{"@charset", "@import", "@fontFace", "@fontFeatureValues", "@media", "@keyframes", "Charset", "Import", "FontFace", "FontFeatureValues", "Media", "Keyframes"} {
+		if _, ok := pmap.pmap[key]; ok {
+			t.Fatalf("PropMap should not map at-rule key %q as a declaration", key)
+		}
+	}
+}

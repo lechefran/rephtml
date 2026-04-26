@@ -58,7 +58,7 @@ main {
 
 ## CSS Rules
 
-Use `StyleElement.Text` when you already have CSS text. Use `StyleRule` when you want to build CSS from `CssProps` without nesting another `<style>` tag.
+Use `StyleElement.Text` when you already have CSS text. Use `StyleRule` when you want to build selector rules from `CssProps` without nesting another `<style>` tag. CSS at-rules use dedicated builders such as `NewMediaRule`, `NewKeyframesRule`, `NewFontFaceRule`, `NewImportRule`, and `NewCharsetRule` instead of being mixed into `CssProps`.
 
 ```go
 body := rephtml.NewStyleRule("body")
@@ -69,9 +69,15 @@ body.Props = rephtml.CssProps{
 	Margin:     "0",
 }
 
+mainWide := rephtml.NewStyleRule("main")
+mainWide.Props = rephtml.CssProps{
+	MaxWidth: "960px",
+}
+
 html.AddToHead(rephtml.NewStyleElement().
 	Type("text/css").
-	AddRule(body))
+	AddRule(body).
+	AddRule(rephtml.NewMediaRule("(min-width: 800px)").AddRule(mainWide)))
 ```
 
 ## Formatting and Escaping

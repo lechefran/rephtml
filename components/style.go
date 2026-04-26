@@ -3,6 +3,8 @@ package rephtml
 import (
 	"bytes"
 	"reflect"
+	"strconv"
+	"strings"
 )
 
 // CssProps
@@ -114,7 +116,6 @@ type CssProps struct {
 	BreakInside              string
 	CaptionSide              string
 	CaretColor               string
-	Charset                  string // parsed as @charset
 	Clear                    string
 	Clip                     string
 	ClipPath                 string
@@ -148,10 +149,8 @@ type CssProps struct {
 	FlexWrap                 string
 	Float                    string
 	Font                     string
-	FontFace                 string // parsed as @font-face
 	FontFamily               string
 	FontFeatureSettings      string
-	FontFeatureValues        string // parsed as @font-feature-values
 	FontKerning              string
 	FontLanguageOverride     string
 	FontSize                 string
@@ -188,7 +187,6 @@ type CssProps struct {
 	Hyphens                  string
 	HypenateCharacter        string
 	ImageRendering           string
-	Import                   string // parsed as @import
 	InitialLetter            string
 	InlineSize               string
 	Inset                    string
@@ -202,7 +200,6 @@ type CssProps struct {
 	JustifyContent           string
 	JustifyItems             string
 	JustifySelf              string
-	Keyframes                string // parsed as @keyframes
 	Left                     string
 	LetterSpacing            string
 	LineBreak                string
@@ -238,7 +235,6 @@ type CssProps struct {
 	MaskType                 string
 	MaxHeight                string
 	MaxWidth                 string
-	Media                    string // parsed as @media
 	MaxBlockSize             string
 	MaxInlineSize            string
 	MinBlockSize             string
@@ -263,7 +259,7 @@ type CssProps struct {
 	OutlineStyle             string
 	OutlineWidth             string
 	Overflow                 string
-	OverflowAnchor           string // parsed as @overflow-anchor
+	OverflowAnchor           string
 	OverflowWrap             string
 	OverflowX                string
 	OverflowY                string
@@ -373,6 +369,19 @@ type CssProps struct {
 	ZIndex                   string
 }
 
+// FontFaceProps represents CSS descriptors accepted inside @font-face.
+type FontFaceProps struct {
+	FontDisplay           string
+	FontFamily            string
+	FontFeatureSettings   string
+	FontStretch           string
+	FontStyle             string
+	FontVariationSettings string
+	FontWeight            string
+	Src                   string
+	UnicodeRange          string
+}
+
 // NewCssProps sets the newcssprops value on the CssProps component.
 func (p *CssProps) NewCssProps() *CssProps {
 	return &CssProps{}
@@ -429,6 +438,12 @@ func (s *Style) PropMap(p *PropMap) *Style {
 	return s
 }
 
+// CSSRule represents renderable CSS that can be placed inside a style element.
+type CSSRule interface {
+	Element
+	IsCSSRule()
+}
+
 // StyleRule represents the StyleRule component or supporting type.
 type StyleRule struct {
 	buf   bytes.Buffer
@@ -462,6 +477,326 @@ func (s *StyleRule) PropMap(p *PropMap) *StyleRule {
 	return s
 }
 
+// IsCSSRule marks StyleRule as CSS content for style elements.
+func (s *StyleRule) IsCSSRule() {}
+
+// RawCSSRule represents raw CSS content for custom or unsupported rules.
+type RawCSSRule struct {
+	buf bytes.Buffer
+	css string
+}
+
+// NewRawCSSRule creates a raw CSS rule.
+func NewRawCSSRule(css string) *RawCSSRule {
+	return &RawCSSRule{css: css}
+}
+
+// Text replaces the raw CSS content.
+func (r *RawCSSRule) Text(css string) *RawCSSRule {
+	r.css = css
+	return r
+}
+
+// Bytes returns a defensive copy of the rendered RawCSSRule bytes.
+func (r *RawCSSRule) Bytes() []byte {
+	return cloneBytes(r.buf.Bytes())
+}
+
+// Prepare renders the RawCSSRule component into its internal buffer.
+func (r *RawCSSRule) Prepare() {
+	r.buf.Reset()
+	css := strings.Trim(r.css, "\n")
+	if css == "" {
+		return
+	}
+	r.buf.WriteByte('\n')
+	r.buf.WriteString(css)
+	r.buf.WriteByte('\n')
+}
+
+// IsCSSRule marks RawCSSRule as CSS content for style elements.
+func (r *RawCSSRule) IsCSSRule() {}
+
+// CharsetRule represents a CSS @charset rule.
+type CharsetRule struct {
+	buf     bytes.Buffer
+	Charset string
+}
+
+// NewCharsetRule creates a new @charset rule.
+func NewCharsetRule(charset string) *CharsetRule {
+	return &CharsetRule{Charset: charset}
+}
+
+// Bytes returns a defensive copy of the rendered CharsetRule bytes.
+func (c *CharsetRule) Bytes() []byte {
+	return cloneBytes(c.buf.Bytes())
+}
+
+// Prepare renders the CharsetRule component into its internal buffer.
+func (c *CharsetRule) Prepare() {
+	c.buf.Reset()
+	if c.Charset == "" {
+		return
+	}
+	c.buf.WriteString("\n@charset ")
+	c.buf.WriteString(quoteCSSString(c.Charset))
+	c.buf.WriteString(";\n")
+}
+
+// IsCSSRule marks CharsetRule as CSS content for style elements.
+func (c *CharsetRule) IsCSSRule() {}
+
+// ImportRule represents a CSS @import rule.
+type ImportRule struct {
+	buf        bytes.Buffer
+	Href       string
+	Conditions []string
+}
+
+// NewImportRule creates a new @import rule.
+func NewImportRule(href string) *ImportRule {
+	return &ImportRule{Href: href}
+}
+
+// Condition appends an import condition such as media, layer, or supports.
+func (i *ImportRule) Condition(condition string) *ImportRule {
+	i.Conditions = append(i.Conditions, condition)
+	return i
+}
+
+// ConditionsList replaces import conditions.
+func (i *ImportRule) ConditionsList(conditions []string) *ImportRule {
+	i.Conditions = cloneStrings(conditions)
+	return i
+}
+
+// Bytes returns a defensive copy of the rendered ImportRule bytes.
+func (i *ImportRule) Bytes() []byte {
+	return cloneBytes(i.buf.Bytes())
+}
+
+// Prepare renders the ImportRule component into its internal buffer.
+func (i *ImportRule) Prepare() {
+	i.buf.Reset()
+	if i.Href == "" {
+		return
+	}
+	i.buf.WriteString("\n@import ")
+	i.buf.WriteString(formatImportHref(i.Href))
+	if len(i.Conditions) != 0 {
+		i.buf.WriteByte(' ')
+		i.buf.WriteString(strings.Join(i.Conditions, " "))
+	}
+	i.buf.WriteString(";\n")
+}
+
+// IsCSSRule marks ImportRule as CSS content for style elements.
+func (i *ImportRule) IsCSSRule() {}
+
+// FontFaceRule represents a CSS @font-face declaration block.
+type FontFaceRule struct {
+	buf   bytes.Buffer
+	Props FontFaceProps
+}
+
+// NewFontFaceRule creates a new @font-face rule.
+func NewFontFaceRule() *FontFaceRule {
+	return &FontFaceRule{}
+}
+
+// Bytes returns a defensive copy of the rendered FontFaceRule bytes.
+func (f *FontFaceRule) Bytes() []byte {
+	return cloneBytes(f.buf.Bytes())
+}
+
+// Prepare renders the FontFaceRule component into its internal buffer.
+func (f *FontFaceRule) Prepare() {
+	f.buf.Reset()
+	f.buf.WriteString(formatFontFaceRule(f.Props))
+}
+
+// IsCSSRule marks FontFaceRule as CSS content for style elements.
+func (f *FontFaceRule) IsCSSRule() {}
+
+// FontFeatureValuesRule represents a CSS @font-feature-values block.
+type FontFeatureValuesRule struct {
+	buf     bytes.Buffer
+	Family  string
+	Content string
+}
+
+// NewFontFeatureValuesRule creates a new @font-feature-values rule.
+func NewFontFeatureValuesRule(family string) *FontFeatureValuesRule {
+	return &FontFeatureValuesRule{Family: family}
+}
+
+// Text replaces the raw @font-feature-values block content.
+func (f *FontFeatureValuesRule) Text(content string) *FontFeatureValuesRule {
+	f.Content = content
+	return f
+}
+
+// Bytes returns a defensive copy of the rendered FontFeatureValuesRule bytes.
+func (f *FontFeatureValuesRule) Bytes() []byte {
+	return cloneBytes(f.buf.Bytes())
+}
+
+// Prepare renders the FontFeatureValuesRule component into its internal buffer.
+func (f *FontFeatureValuesRule) Prepare() {
+	f.buf.Reset()
+	f.buf.WriteString("\n@font-feature-values")
+	if f.Family != "" {
+		f.buf.WriteByte(' ')
+		f.buf.WriteString(f.Family)
+	}
+	f.buf.WriteString(" {\n")
+	writeIndentedCSS(&f.buf, tab, f.Content)
+	f.buf.WriteString("}\n")
+}
+
+// IsCSSRule marks FontFeatureValuesRule as CSS content for style elements.
+func (f *FontFeatureValuesRule) IsCSSRule() {}
+
+// MediaRule represents a CSS @media grouping rule.
+type MediaRule struct {
+	buf   bytes.Buffer
+	Query string
+	Rules []CSSRule
+}
+
+// NewMediaRule creates a new @media rule.
+func NewMediaRule(query string) *MediaRule {
+	return &MediaRule{Query: query}
+}
+
+// AddRule appends a CSS rule inside the media block.
+func (m *MediaRule) AddRule(rule CSSRule) *MediaRule {
+	if !isNilCSSRule(rule) {
+		m.Rules = append(m.Rules, rule)
+	}
+	return m
+}
+
+// Add appends CSS content inside the media block.
+func (m *MediaRule) Add(e Element) *MediaRule {
+	switch element := e.(type) {
+	case nil:
+		return m
+	case CSSRule:
+		return m.AddRule(element)
+	case *Style:
+		if element == nil {
+			return m
+		}
+		return m.AddRule(&StyleRule{
+			pmap:  element.pmap,
+			Props: element.Props,
+			Tags:  append([]string(nil), element.Tags...),
+		})
+	default:
+		return m
+	}
+}
+
+// Bytes returns a defensive copy of the rendered MediaRule bytes.
+func (m *MediaRule) Bytes() []byte {
+	return cloneBytes(m.buf.Bytes())
+}
+
+// Prepare renders the MediaRule component into its internal buffer.
+func (m *MediaRule) Prepare() {
+	m.buf.Reset()
+	m.buf.WriteString(formatGroupingAtRule("@media", m.Query, m.Rules))
+}
+
+// IsCSSRule marks MediaRule as CSS content for style elements.
+func (m *MediaRule) IsCSSRule() {}
+
+// KeyframeBlock represents one keyframe selector block inside @keyframes.
+type KeyframeBlock struct {
+	buf      bytes.Buffer
+	pmap     *PropMap
+	Selector string
+	Props    CssProps
+}
+
+// NewKeyframeBlock creates a new keyframe selector block.
+func NewKeyframeBlock(selector string) *KeyframeBlock {
+	return &KeyframeBlock{
+		pmap:     NewPropMap(),
+		Selector: selector,
+	}
+}
+
+// PropMap sets the property map for the KeyframeBlock component.
+func (k *KeyframeBlock) PropMap(p *PropMap) *KeyframeBlock {
+	k.pmap = p
+	return k
+}
+
+// Bytes returns a defensive copy of the rendered KeyframeBlock bytes.
+func (k *KeyframeBlock) Bytes() []byte {
+	return cloneBytes(k.buf.Bytes())
+}
+
+// Prepare renders the KeyframeBlock component into its internal buffer.
+func (k *KeyframeBlock) Prepare() {
+	k.buf.Reset()
+	k.buf.WriteString(formatStyleRule([]string{k.Selector}, k.Props, k.pmap))
+}
+
+// KeyframesRule represents a CSS @keyframes rule.
+type KeyframesRule struct {
+	buf    bytes.Buffer
+	Name   string
+	Frames []*KeyframeBlock
+}
+
+// NewKeyframesRule creates a new @keyframes rule.
+func NewKeyframesRule(name string) *KeyframesRule {
+	return &KeyframesRule{Name: name}
+}
+
+// AddFrame appends one keyframe selector block.
+func (k *KeyframesRule) AddFrame(selector string, props CssProps) *KeyframesRule {
+	frame := NewKeyframeBlock(selector)
+	frame.Props = props
+	return k.AddBlock(frame)
+}
+
+// AddBlock appends one keyframe block.
+func (k *KeyframesRule) AddBlock(frame *KeyframeBlock) *KeyframesRule {
+	if frame != nil {
+		k.Frames = append(k.Frames, frame)
+	}
+	return k
+}
+
+// Bytes returns a defensive copy of the rendered KeyframesRule bytes.
+func (k *KeyframesRule) Bytes() []byte {
+	return cloneBytes(k.buf.Bytes())
+}
+
+// Prepare renders the KeyframesRule component into its internal buffer.
+func (k *KeyframesRule) Prepare() {
+	k.buf.Reset()
+	k.buf.WriteString("\n@keyframes ")
+	k.buf.WriteString(k.Name)
+	k.buf.WriteString(" {\n")
+	for _, frame := range k.Frames {
+		if frame == nil {
+			continue
+		}
+		frame.Prepare()
+		writeIndentedCSS(&k.buf, tab, string(frame.Bytes()))
+	}
+	k.buf.WriteString("}\n")
+}
+
+// IsCSSRule marks KeyframesRule as CSS content for style elements.
+func (k *KeyframesRule) IsCSSRule() {}
+
 // formatStyleRule renders one CSS rule from selectors and typed properties.
 func formatStyleRule(tags []string, props CssProps, pmap *PropMap) string {
 	if pmap == nil {
@@ -470,9 +805,87 @@ func formatStyleRule(tags []string, props CssProps, pmap *PropMap) string {
 
 	var buf bytes.Buffer
 	buf.WriteByte('\n')
+	writeCSSStyleRule(&buf, "", tags, props, pmap)
+	return buf.String()
+}
+
+// formatDeclarationAtRule renders an at-rule with a declaration block.
+func formatDeclarationAtRule(name, prelude string, props CssProps, pmap *PropMap) string {
+	if pmap == nil {
+		pmap = NewPropMap()
+	}
+
+	var buf bytes.Buffer
+	buf.WriteByte('\n')
+	writeCSSDeclarationAtRule(&buf, "", name, prelude, props, pmap)
+	return buf.String()
+}
+
+// formatFontFaceRule renders a @font-face descriptor block.
+func formatFontFaceRule(props FontFaceProps) string {
+	var buf bytes.Buffer
+	buf.WriteByte('\n')
+	buf.WriteString("@font-face {\n")
+	writeMappedDeclarations(&buf, tab, props, fontFacePropMap())
+	buf.WriteString("}\n")
+	return buf.String()
+}
+
+// formatGroupingAtRule renders an at-rule containing nested CSS rules.
+func formatGroupingAtRule(name, prelude string, rules []CSSRule) string {
+	var buf bytes.Buffer
+	buf.WriteByte('\n')
+	buf.WriteString(name)
+	if prelude != "" {
+		buf.WriteByte(' ')
+		buf.WriteString(prelude)
+	}
+	buf.WriteString(" {\n")
+	for _, rule := range rules {
+		if isNilCSSRule(rule) {
+			continue
+		}
+		rule.Prepare()
+		writeIndentedCSS(&buf, tab, string(rule.Bytes()))
+	}
+	buf.WriteString("}\n")
+	return buf.String()
+}
+
+// writeCSSStyleRule writes a CSS selector rule at the given indentation.
+func writeCSSStyleRule(buf *bytes.Buffer, indent string, tags []string, props CssProps, pmap *PropMap) {
+	buf.WriteString(indent)
 	buf.WriteString(formatStringArray(tags))
 	buf.WriteString(" {\n")
+	writeCSSDeclarations(buf, indent+tab, props, pmap)
+	buf.WriteString(indent)
+	buf.WriteString("}\n")
+}
 
+// writeCSSDeclarationAtRule writes an at-rule declaration block.
+func writeCSSDeclarationAtRule(buf *bytes.Buffer, indent, name, prelude string, props CssProps, pmap *PropMap) {
+	buf.WriteString(indent)
+	buf.WriteString(name)
+	if prelude != "" {
+		buf.WriteByte(' ')
+		buf.WriteString(prelude)
+	}
+	buf.WriteString(" {\n")
+	writeCSSDeclarations(buf, indent+tab, props, pmap)
+	buf.WriteString(indent)
+	buf.WriteString("}\n")
+}
+
+// writeCSSDeclarations writes non-empty typed CSS declarations.
+func writeCSSDeclarations(buf *bytes.Buffer, indent string, props CssProps, pmap *PropMap) {
+	if pmap == nil {
+		pmap = NewPropMap()
+	}
+	writeMappedDeclarations(buf, indent, props, pmap.pmap)
+}
+
+// writeMappedDeclarations writes non-empty string fields using a field-to-property map.
+func writeMappedDeclarations(buf *bytes.Buffer, indent string, props any, propMap map[string]string) {
 	val := reflect.ValueOf(props)
 	t := val.Type()
 	for i := 0; i < val.NumField(); i++ {
@@ -480,36 +893,86 @@ func formatStyleRule(tags []string, props CssProps, pmap *PropMap) string {
 		if k == "" || v.String() == "" {
 			continue
 		}
-		prop, ok := pmap.pmap[k]
+		prop, ok := propMap[k]
 		if !ok {
 			continue
 		}
-		buf.WriteByte('\t')
+		buf.WriteString(indent)
 		buf.WriteString(prop)
 		buf.WriteString(": ")
 		buf.WriteString(v.String())
 		buf.WriteString(";\n")
 	}
+}
 
-	buf.WriteString("}\n")
-	return buf.String()
+// fontFacePropMap maps FontFaceProps field names to CSS font descriptors.
+func fontFacePropMap() map[string]string {
+	return map[string]string{
+		"FontDisplay":           "font-display",
+		"FontFamily":            "font-family",
+		"FontFeatureSettings":   "font-feature-settings",
+		"FontStretch":           "font-stretch",
+		"FontStyle":             "font-style",
+		"FontVariationSettings": "font-variation-settings",
+		"FontWeight":            "font-weight",
+		"Src":                   "src",
+		"UnicodeRange":          "unicode-range",
+	}
+}
+
+// writeIndentedCSS writes CSS text with one indentation prefix per non-empty line.
+func writeIndentedCSS(buf *bytes.Buffer, indent, css string) {
+	css = strings.Trim(css, "\n")
+	if css == "" {
+		return
+	}
+	for _, line := range strings.Split(css, "\n") {
+		if strings.TrimSpace(line) == "" {
+			buf.WriteByte('\n')
+			continue
+		}
+		buf.WriteString(indent)
+		buf.WriteString(line)
+		buf.WriteByte('\n')
+	}
+}
+
+// quoteCSSString returns a double-quoted CSS string.
+func quoteCSSString(value string) string {
+	return strconv.Quote(value)
+}
+
+// formatImportHref formats an import href as a CSS url() unless already CSS-formatted.
+func formatImportHref(href string) string {
+	trimmed := strings.TrimSpace(href)
+	if strings.HasPrefix(trimmed, "url(") || strings.HasPrefix(trimmed, "\"") || strings.HasPrefix(trimmed, "'") {
+		return trimmed
+	}
+	return "url(" + quoteCSSString(href) + ")"
+}
+
+// isNilCSSRule reports whether a CSSRule is nil or a nil pointer.
+func isNilCSSRule(rule CSSRule) bool {
+	if rule == nil {
+		return true
+	}
+	value := reflect.ValueOf(rule)
+	switch value.Kind() {
+	case reflect.Chan, reflect.Func, reflect.Interface, reflect.Map, reflect.Pointer, reflect.Slice:
+		return value.IsNil()
+	default:
+		return false
+	}
 }
 
 // PropMap represents the PropMap component or supporting type.
 type PropMap struct {
-	pmap  map[string]string
-	count int
+	pmap map[string]string
 }
 
 // NewPropMap creates a new PropMap component.
 func NewPropMap() *PropMap {
 	pmap := map[string]string{}
-	pmap["@charset"] = "@charset"
-	pmap["@fontFace"] = "@font-face"
-	pmap["@fontFeatureValues"] = "@font-feature-values"
-	pmap["@import"] = "@import"
-	pmap["@keyframes"] = "@keyframes"
-	pmap["@media"] = "@media"
 	pmap["AccentColor"] = "accent-color"
 	pmap["AlignContent"] = "align-content"
 	pmap["AlignItems"] = "align-items"
@@ -863,7 +1326,6 @@ func NewPropMap() *PropMap {
 	pmap["WritingMode"] = "writing-mode"
 	pmap["ZIndex"] = "z-index"
 	return &PropMap{
-		pmap:  pmap,
-		count: len(pmap),
+		pmap: pmap,
 	}
 }

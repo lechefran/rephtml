@@ -208,11 +208,17 @@ func writeStyleRuleExample() {
 		Margin:   "0 0 8px",
 	}
 
+	wideCardRule := rephtml.NewStyleRule("section")
+	wideCardRule.Props = rephtml.CssProps{
+		MaxWidth: "640px",
+	}
+
 	html.AddToHead(rephtml.NewStyleElement().
 		Type("text/css").
 		AddRule(bodyRule).
 		AddRule(cardRule).
-		AddRule(headingRule))
+		AddRule(headingRule).
+		AddRule(rephtml.NewMediaRule("(min-width: 800px)").AddRule(wideCardRule)))
 
 	html.AddToBody(rephtml.NewMain().Add(
 		rephtml.NewSection().

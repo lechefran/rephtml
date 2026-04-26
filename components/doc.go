@@ -1163,7 +1163,7 @@ func (s *StyleElement) Add(e Element) *StyleElement {
 	switch element := e.(type) {
 	case nil:
 		return s
-	case *StyleRule:
+	case CSSRule:
 		return s.AddRule(element)
 	case *Style:
 		if element == nil {
@@ -1180,9 +1180,9 @@ func (s *StyleElement) Add(e Element) *StyleElement {
 	return s
 }
 
-// AddRule sets the addrule value on the StyleElement component.
-func (s *StyleElement) AddRule(rule *StyleRule) *StyleElement {
-	if rule != nil {
+// AddRule appends typed CSS rule content to the style element.
+func (s *StyleElement) AddRule(rule CSSRule) *StyleElement {
+	if !isNilCSSRule(rule) {
 		s.contents = appendElement(s.contents, rule)
 	}
 	return s
