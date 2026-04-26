@@ -2,7 +2,7 @@ package rephtml
 
 import (
 	"bytes"
-	"log"
+	"fmt"
 	"regexp"
 	"time"
 )
@@ -1677,6 +1677,7 @@ type Time struct {
 	style    map[string]string
 	text     string
 	datetime string
+	err      error
 }
 
 // NewTime creates a new Time component.
@@ -1715,10 +1716,18 @@ func (t *Time) Text(str string) *Time {
 // Datetime sets the datetime value on the Time component.
 func (t *Time) Datetime(dt string) *Time {
 	if !isValidDatetime(dt) {
-		log.Fatal("Invalid datetime value: " + dt)
+		t.datetime = ""
+		t.err = fmt.Errorf("invalid datetime value: %s", dt)
+		return t
 	}
 	t.datetime = dt
+	t.err = nil
 	return t
+}
+
+// Err returns a datetime validation error recorded on the Time component.
+func (t *Time) Err() error {
+	return t.err
 }
 
 // isValidDatetime reports whether a string is accepted for the datetime attribute.

@@ -189,6 +189,15 @@ func TestInlineComponentOutputFormats(t *testing.T) {
 	}
 }
 
+func TestTimeDatetimeValidationRecordsError(t *testing.T) {
+	timeElement := NewTime().Datetime("not a datetime").Text("invalid")
+	if timeElement.Err() == nil {
+		t.Fatal("expected invalid datetime error")
+	}
+
+	assertRender(t, "Time invalid datetime", timeElement, `<time>invalid</time>`)
+}
+
 func TestFormComponentOutputFormats(t *testing.T) {
 	tests := []struct {
 		name    string

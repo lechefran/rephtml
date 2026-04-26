@@ -50,7 +50,9 @@ main {
 		Add(rephtml.NewP().Text("Quarterly regional performance")).
 		Add(table))
 
-	html.WriteToFile("report.html")
+	if err := html.WriteToFile("report.html"); err != nil {
+		panic(err)
+	}
 }
 ```
 
@@ -76,7 +78,7 @@ html.AddToHead(rephtml.NewStyleElement().
 
 rephtml escapes normal text and attribute values so characters like `<`, `>`, `&`, and quotes do not corrupt the generated HTML. Raw-text elements that commonly contain code, such as `<style>` and `<script>`, keep their content unescaped.
 
-`WriteToFile` formats the output document with indentation. CSS inside `<style>` blocks is also indented for readability, while whitespace-sensitive blocks such as `<pre>` and `<textarea>` are preserved.
+`WriteToFile` formats the output document with indentation and returns filesystem or strict validation errors. CSS inside `<style>` blocks is also indented for readability, while whitespace-sensitive blocks such as `<pre>` and `<textarea>` are preserved.
 
 ## Examples
 

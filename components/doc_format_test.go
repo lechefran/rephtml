@@ -13,7 +13,9 @@ func TestWriteToFileFormatsDocument(t *testing.T) {
 	html.AddToBody(NewH1().Text("Summary"))
 
 	path := filepath.Join(t.TempDir(), "report.html")
-	html.WriteToFile(path)
+	if err := html.WriteToFile(path); err != nil {
+		t.Fatal(err)
+	}
 
 	got, err := os.ReadFile(path)
 	if err != nil {
@@ -31,6 +33,32 @@ func TestWriteToFileFormatsDocument(t *testing.T) {
 
 	if string(got) != want {
 		t.Fatalf("unexpected formatted html:\ngot:\n%s\nwant:\n%s", got, want)
+	}
+}
+
+func TestWriteToFileReturnsFilesystemError(t *testing.T) {
+	html := NewHtmlFile().AddToBody(NewP().Text("Hello"))
+
+	err := html.WriteToFile(filepath.Join(t.TempDir(), "missing", "report.html"))
+	if err == nil {
+		t.Fatal("expected filesystem error")
+	}
+}
+
+func TestStrictValidationRecordsErrorWithoutExiting(t *testing.T) {
+	html := NewHtmlFile().AddOptions(Options{Validation: STRICT})
+	html.AddToHead(NewP().Text("body element"))
+
+	if html.Err() == nil {
+		t.Fatal("expected strict validation error")
+	}
+
+	path := filepath.Join(t.TempDir(), "invalid.html")
+	if err := html.WriteToFile(path); err == nil {
+		t.Fatal("expected WriteToFile to return strict validation error")
+	}
+	if _, err := os.Stat(path); !os.IsNotExist(err) {
+		t.Fatalf("strict validation error should not create file, stat error: %v", err)
 	}
 }
 

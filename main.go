@@ -102,7 +102,9 @@ func main() {
 	html.AddStyles(dStyles)
 	html.Add(table)
 	html.Prepare()
-	html.WriteToFile("report.html")
+	if err := html.WriteToFile("report.html"); err != nil {
+		log.Fatal(err)
+	}
 
 	// rgx := regexp.MustCompile(`^[<a-zA-Z]+(?: [a-zA-Z0-9]+="[^"]+")+([>])*$`)
 	// fmt.Println(rgx.MatchString("<table id=\"myId\">"))

@@ -224,6 +224,8 @@ func writeStyleRuleExample() {
 }
 
 func write(html *rephtml.HtmlFile, path string) {
-	html.WriteToFile(path)
+	if err := html.WriteToFile(path); err != nil {
+		log.Fatal(err)
+	}
 	log.Printf("wrote %s", path)
 }

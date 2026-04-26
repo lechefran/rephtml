@@ -2,6 +2,8 @@ package rephtml
 
 import (
 	"bytes"
+	"errors"
+	"fmt"
 	"log"
 	"os"
 	"reflect"
@@ -25,6 +27,7 @@ type HtmlFile struct {
 	manifest    string
 	contextMenu string
 	Opts        Options
+	err         error
 }
 
 // NewHtmlFile creates a new HtmlFile element
@@ -37,6 +40,16 @@ func NewHtmlFile() *HtmlFile {
 // Bytes returns the buffer contents
 func (h *HtmlFile) Bytes() []byte {
 	return cloneBytes(h.buf.Bytes())
+}
+
+// Err returns validation or rendering errors recorded while building the document.
+func (h *HtmlFile) Err() error {
+	return h.err
+}
+
+// addError records an error without interrupting fluent document construction.
+func (h *HtmlFile) addError(err error) {
+	h.err = errors.Join(h.err, err)
 }
 
 // Prepare builds the HTML for the html element
@@ -102,11 +115,12 @@ func (h *HtmlFile) AddToHead(e Element) *HtmlFile {
 	if v == DEFAULT {
 		if _, ok := e.(HeadElement); !ok {
 			log.Printf("%s is not a valid head element but will be added to the head element\n",
-				reflect.TypeOf(e).Elem().Name())
+				elementName(e))
 		}
 	} else if v == STRICT {
 		if _, ok := e.(HeadElement); !ok {
-			log.Fatalf("Cannot add %s to head element\n", reflect.TypeOf(e).Elem().Name())
+			h.addError(fmt.Errorf("cannot add %s to head element", elementName(e)))
+			return h
 		}
 	}
 
@@ -129,11 +143,12 @@ func (h *HtmlFile) AddToBody(e Element) *HtmlFile {
 	if v == DEFAULT {
 		if _, ok := e.(BodyElement); !ok {
 			log.Printf("%s is not a valid body element but will be added to body element\n",
-				reflect.TypeOf(e).Elem().Name())
+				elementName(e))
 		}
 	} else if v == STRICT {
 		if _, ok := e.(BodyElement); !ok {
-			log.Fatalf("Cannot add %s to body element\n", reflect.TypeOf(e).Elem().Name())
+			h.addError(fmt.Errorf("cannot add %s to body element", elementName(e)))
+			return h
 		}
 	}
 
@@ -206,8 +221,12 @@ func (h *HtmlFile) Style(m map[string]string) *HtmlFile {
 	return h
 }
 
-// WriteToFile sets the writetofile value on the HtmlFile component.
-func (h *HtmlFile) WriteToFile(path string) {
+// WriteToFile writes the formatted HTML document to path.
+func (h *HtmlFile) WriteToFile(path string) error {
+	if h.err != nil {
+		return h.err
+	}
+
 	if len(h.contents) == 0 && len(h.headContent) == 0 && len(h.bodyContent) == 0 && len(h.style) == 0 {
 		log.Print("No values were appended to the HTML File. " + path + " will not be created")
 	}
@@ -216,17 +235,25 @@ func (h *HtmlFile) WriteToFile(path string) {
 
 	file, err := os.Create(path)
 	if err != nil {
-		log.Fatal(err)
+		return fmt.Errorf("create html file %q: %w", path, err)
 	}
-	defer func(file *os.File) {
-		if err := file.Close(); err != nil {
-			log.Fatal(err)
-		}
-	}(file)
 
 	if _, err := file.Write(formatHTML(h.buf.Bytes())); err != nil {
-		log.Fatal(err)
+		closeErr := file.Close()
+		if closeErr != nil {
+			return errors.Join(
+				fmt.Errorf("write html file %q: %w", path, err),
+				fmt.Errorf("close html file %q: %w", path, closeErr),
+			)
+		}
+		return fmt.Errorf("write html file %q: %w", path, err)
 	}
+
+	if err := file.Close(); err != nil {
+		return fmt.Errorf("close html file %q: %w", path, err)
+	}
+
+	return nil
 }
 
 // writeContentElement writes a generated head or body section.
@@ -234,6 +261,21 @@ func (h *HtmlFile) writeContentElement(tag string, contents []Element) {
 	h.buf.WriteString("<" + tag + ">")
 	writeElements(&h.buf, contents)
 	h.buf.WriteString("</" + tag + ">")
+}
+
+// elementName returns a stable type name for error and warning messages.
+func elementName(e Element) string {
+	if e == nil {
+		return "<nil>"
+	}
+	t := reflect.TypeOf(e)
+	for t.Kind() == reflect.Pointer {
+		t = t.Elem()
+	}
+	if t.Name() == "" {
+		return t.String()
+	}
+	return t.Name()
 }
 
 // htmlToken stores one formatter token.
