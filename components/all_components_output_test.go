@@ -15,6 +15,8 @@ func TestElementInterfaceContracts(t *testing.T) {
 	var _ Element = NewP()
 	var _ HeadElement = NewTitle()
 	var _ BodyElement = NewP()
+	var _ BodyElement = (*Hgroup)(nil)
+	var _ BodyElement = (*Search)(nil)
 }
 
 func TestDocumentComponentOutputFormats(t *testing.T) {
