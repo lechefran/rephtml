@@ -34,7 +34,7 @@ func (c *Canvas) AddStyles(m map[string]string) *Canvas {
 
 // Style replaces the inline CSS declarations on the Canvas component.
 func (c *Canvas) Style(m map[string]string) *Canvas {
-	c.style = m
+	c.style = cloneStyleMap(m)
 	return c
 }
 
@@ -119,7 +119,7 @@ func (n *Noscript) AddStyles(m map[string]string) *Noscript {
 
 // Style replaces the inline CSS declarations on the Noscript component.
 func (n *Noscript) Style(m map[string]string) *Noscript {
-	n.style = m
+	n.style = cloneStyleMap(m)
 	return n
 }
 
@@ -191,7 +191,7 @@ func (s *Script) AddStyles(m map[string]string) *Script {
 
 // Style replaces the inline CSS declarations on the Script component.
 func (s *Script) Style(m map[string]string) *Script {
-	s.style = m
+	s.style = cloneStyleMap(m)
 	return s
 }
 

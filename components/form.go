@@ -153,10 +153,7 @@ func (f *Form) AddStyles(m map[string]string) *Form {
 
 // Style replaces all styles
 func (f *Form) Style(m map[string]string) *Form {
-	f.style = make(map[string]string)
-	for k, v := range m {
-		f.style[k] = v
-	}
+	f.style = cloneStyleMap(m)
 	return f
 }
 
@@ -251,10 +248,7 @@ func (l *Label) AddStyles(m map[string]string) *Label {
 
 // Style replaces all styles
 func (l *Label) Style(m map[string]string) *Label {
-	l.style = make(map[string]string)
-	for k, v := range m {
-		l.style[k] = v
-	}
+	l.style = cloneStyleMap(m)
 	return l
 }
 
@@ -538,10 +532,7 @@ func (i *Input) AddStyles(m map[string]string) *Input {
 
 // Style replaces all styles
 func (i *Input) Style(m map[string]string) *Input {
-	i.style = make(map[string]string)
-	for k, v := range m {
-		i.style[k] = v
-	}
+	i.style = cloneStyleMap(m)
 	return i
 }
 
@@ -647,10 +638,7 @@ func (o *Output) AddStyles(m map[string]string) *Output {
 
 // Style replaces all styles
 func (o *Output) Style(m map[string]string) *Output {
-	o.style = make(map[string]string)
-	for k, v := range m {
-		o.style[k] = v
-	}
+	o.style = cloneStyleMap(m)
 	return o
 }
 
@@ -750,10 +738,7 @@ func (f *Fieldset) AddStyles(m map[string]string) *Fieldset {
 
 // Style replaces all styles
 func (f *Fieldset) Style(m map[string]string) *Fieldset {
-	f.style = make(map[string]string)
-	for k, v := range m {
-		f.style[k] = v
-	}
+	f.style = cloneStyleMap(m)
 	return f
 }
 
@@ -947,10 +932,7 @@ func (b *Button) AddStyles(m map[string]string) *Button {
 
 // Style replaces all styles
 func (b *Button) Style(m map[string]string) *Button {
-	b.style = make(map[string]string)
-	for k, v := range m {
-		b.style[k] = v
-	}
+	b.style = cloneStyleMap(m)
 	return b
 }
 
@@ -1105,10 +1087,7 @@ func (s *Select) AddStyles(m map[string]string) *Select {
 
 // Style replaces all styles
 func (s *Select) Style(m map[string]string) *Select {
-	s.style = make(map[string]string)
-	for k, v := range m {
-		s.style[k] = v
-	}
+	s.style = cloneStyleMap(m)
 	return s
 }
 
@@ -1186,10 +1165,7 @@ func (d *Datalist) AddStyles(m map[string]string) *Datalist {
 
 // Style replaces all styles
 func (d *Datalist) Style(m map[string]string) *Datalist {
-	d.style = make(map[string]string)
-	for k, v := range m {
-		d.style[k] = v
-	}
+	d.style = cloneStyleMap(m)
 	return d
 }
 
@@ -1278,10 +1254,7 @@ func (o *Optgroup) AddStyles(m map[string]string) *Optgroup {
 
 // Style replaces all styles
 func (o *Optgroup) Style(m map[string]string) *Optgroup {
-	o.style = make(map[string]string)
-	for k, v := range m {
-		o.style[k] = v
-	}
+	o.style = cloneStyleMap(m)
 	return o
 }
 
@@ -1398,10 +1371,7 @@ func (o *Option) AddStyles(m map[string]string) *Option {
 
 // Style replaces all styles
 func (o *Option) Style(m map[string]string) *Option {
-	o.style = make(map[string]string)
-	for k, v := range m {
-		o.style[k] = v
-	}
+	o.style = cloneStyleMap(m)
 	return o
 }
 
@@ -1628,10 +1598,7 @@ func (t *Textarea) AddStyles(m map[string]string) *Textarea {
 
 // Style replaces all styles
 func (t *Textarea) Style(m map[string]string) *Textarea {
-	t.style = make(map[string]string)
-	for k, v := range m {
-		t.style[k] = v
-	}
+	t.style = cloneStyleMap(m)
 	return t
 }
 
@@ -1737,10 +1704,7 @@ func (p *Progress) AddStyles(m map[string]string) *Progress {
 
 // Style replaces all styles
 func (p *Progress) Style(m map[string]string) *Progress {
-	p.style = make(map[string]string)
-	for k, v := range m {
-		p.style[k] = v
-	}
+	p.style = cloneStyleMap(m)
 	return p
 }
 
@@ -1890,10 +1854,7 @@ func (m *Meter) AddStyles(ma map[string]string) *Meter {
 
 // Style replaces all styles
 func (m *Meter) Style(ma map[string]string) *Meter {
-	m.style = make(map[string]string)
-	for k, v := range ma {
-		m.style[k] = v
-	}
+	m.style = cloneStyleMap(ma)
 	return m
 }
 
@@ -1966,9 +1927,6 @@ func (l *Legend) AddStyles(m map[string]string) *Legend {
 
 // Style replaces all styles
 func (l *Legend) Style(m map[string]string) *Legend {
-	l.style = make(map[string]string)
-	for k, v := range m {
-		l.style[k] = v
-	}
+	l.style = cloneStyleMap(m)
 	return l
 }

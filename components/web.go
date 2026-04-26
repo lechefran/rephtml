@@ -33,7 +33,7 @@ func (s *Slot) AddStyles(m map[string]string) *Slot {
 
 // Style replaces the inline CSS declarations on the Slot component.
 func (s *Slot) Style(m map[string]string) *Slot {
-	s.style = m
+	s.style = cloneStyleMap(m)
 	return s
 }
 
@@ -110,7 +110,7 @@ func (t *Template) AddStyles(m map[string]string) *Template {
 
 // Style replaces the inline CSS declarations on the Template component.
 func (t *Template) Style(m map[string]string) *Template {
-	t.style = m
+	t.style = cloneStyleMap(m)
 	return t
 }
 

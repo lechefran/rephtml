@@ -214,10 +214,7 @@ func (h *HtmlFile) AddStyles(m map[string]string) *HtmlFile {
 
 // Style replaces all styles
 func (h *HtmlFile) Style(m map[string]string) *HtmlFile {
-	h.style = make(map[string]string)
-	for k, v := range m {
-		h.style[k] = v
-	}
+	h.style = cloneStyleMap(m)
 	return h
 }
 
@@ -637,10 +634,7 @@ func (h *Head) AddStyles(m map[string]string) *Head {
 
 // Style replaces all styles
 func (h *Head) Style(m map[string]string) *Head {
-	h.style = make(map[string]string)
-	for k, v := range m {
-		h.style[k] = v
-	}
+	h.style = cloneStyleMap(m)
 	return h
 }
 
@@ -724,10 +718,7 @@ func (b *Body) AddStyles(m map[string]string) *Body {
 
 // Style replaces all styles
 func (b *Body) Style(m map[string]string) *Body {
-	b.style = make(map[string]string)
-	for k, v := range m {
-		b.style[k] = v
-	}
+	b.style = cloneStyleMap(m)
 	return b
 }
 
@@ -797,10 +788,7 @@ func (t *Title) AddStyles(m map[string]string) *Title {
 
 // Style replaces all styles
 func (t *Title) Style(m map[string]string) *Title {
-	t.style = make(map[string]string)
-	for k, v := range m {
-		t.style[k] = v
-	}
+	t.style = cloneStyleMap(m)
 	return t
 }
 
@@ -871,10 +859,7 @@ func (b *Base) AddStyles(m map[string]string) *Base {
 
 // Style replaces all styles
 func (b *Base) Style(m map[string]string) *Base {
-	b.style = make(map[string]string)
-	for k, v := range m {
-		b.style[k] = v
-	}
+	b.style = cloneStyleMap(m)
 	return b
 }
 
@@ -1015,10 +1000,7 @@ func (l *Link) AddStyles(m map[string]string) *Link {
 
 // Style replaces all styles
 func (l *Link) Style(m map[string]string) *Link {
-	l.style = make(map[string]string)
-	for k, v := range m {
-		l.style[k] = v
-	}
+	l.style = cloneStyleMap(m)
 	return l
 }
 
@@ -1126,10 +1108,7 @@ func (m *Meta) AddStyles(m2 map[string]string) *Meta {
 
 // Style replaces all styles
 func (m *Meta) Style(m2 map[string]string) *Meta {
-	m.style = make(map[string]string)
-	for k, v := range m2 {
-		m.style[k] = v
-	}
+	m.style = cloneStyleMap(m2)
 	return m
 }
 
@@ -1243,10 +1222,7 @@ func (s *StyleElement) AddStyles(m map[string]string) *StyleElement {
 
 // Style replaces all styles
 func (s *StyleElement) Style(m map[string]string) *StyleElement {
-	s.style = make(map[string]string)
-	for k, v := range m {
-		s.style[k] = v
-	}
+	s.style = cloneStyleMap(m)
 	return s
 }
 

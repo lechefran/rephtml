@@ -36,7 +36,7 @@ func (a *Area) AddStyles(m map[string]string) *Area {
 
 // Style replaces the inline CSS declarations on the Area component.
 func (a *Area) Style(m map[string]string) *Area {
-	a.style = m
+	a.style = cloneStyleMap(m)
 	return a
 }
 
@@ -137,7 +137,7 @@ func (i *Img) AddStyles(m map[string]string) *Img {
 
 // Style replaces the inline CSS declarations on the Img component.
 func (i *Img) Style(m map[string]string) *Img {
-	i.style = m
+	i.style = cloneStyleMap(m)
 	return i
 }
 
@@ -240,7 +240,7 @@ func (a *Audio) AddStyles(m map[string]string) *Audio {
 
 // Style replaces the inline CSS declarations on the Audio component.
 func (a *Audio) Style(m map[string]string) *Audio {
-	a.style = m
+	a.style = cloneStyleMap(m)
 	return a
 }
 
@@ -359,7 +359,7 @@ func (t *Track) AddStyles(m map[string]string) *Track {
 
 // Style replaces the inline CSS declarations on the Track component.
 func (t *Track) Style(m map[string]string) *Track {
-	t.style = m
+	t.style = cloneStyleMap(m)
 	return t
 }
 
@@ -457,7 +457,7 @@ func (m *Map) AddStyles(ms map[string]string) *Map {
 
 // Style replaces the inline CSS declarations on the Map component.
 func (m *Map) Style(ms map[string]string) *Map {
-	m.style = ms
+	m.style = cloneStyleMap(ms)
 	return m
 }
 
@@ -536,7 +536,7 @@ func (v *Video) AddStyles(m map[string]string) *Video {
 
 // Style replaces the inline CSS declarations on the Video component.
 func (v *Video) Style(m map[string]string) *Video {
-	v.style = m
+	v.style = cloneStyleMap(m)
 	return v
 }
 

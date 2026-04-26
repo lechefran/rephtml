@@ -76,10 +76,7 @@ func (d *Details) AddStyles(m map[string]string) *Details {
 
 // Style replaces all styles
 func (d *Details) Style(m map[string]string) *Details {
-	d.style = make(map[string]string)
-	for k, v := range m {
-		d.style[k] = v
-	}
+	d.style = cloneStyleMap(m)
 	return d
 }
 
@@ -157,10 +154,7 @@ func (d *Dialog) AddStyles(m map[string]string) *Dialog {
 
 // Style replaces all styles
 func (d *Dialog) Style(m map[string]string) *Dialog {
-	d.style = make(map[string]string)
-	for k, v := range m {
-		d.style[k] = v
-	}
+	d.style = cloneStyleMap(m)
 	return d
 }
 
@@ -227,9 +221,6 @@ func (s *Summary) AddStyles(m map[string]string) *Summary {
 
 // Style replaces all styles
 func (s *Summary) Style(m map[string]string) *Summary {
-	s.style = make(map[string]string)
-	for k, v := range m {
-		s.style[k] = v
-	}
+	s.style = cloneStyleMap(m)
 	return s
 }

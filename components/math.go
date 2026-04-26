@@ -35,7 +35,7 @@ func (m *Math) AddStyles(ms map[string]string) *Math {
 
 // Style replaces the inline CSS declarations on the Math component.
 func (m *Math) Style(ms map[string]string) *Math {
-	m.style = ms
+	m.style = cloneStyleMap(ms)
 	return m
 }
 
@@ -122,7 +122,7 @@ func (s *Svg) AddStyles(m map[string]string) *Svg {
 
 // Style replaces the inline CSS declarations on the Svg component.
 func (s *Svg) Style(m map[string]string) *Svg {
-	s.style = m
+	s.style = cloneStyleMap(m)
 	return s
 }
 

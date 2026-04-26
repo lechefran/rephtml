@@ -53,6 +53,15 @@ func cloneBytes(b []byte) []byte {
 	return append([]byte(nil), b...)
 }
 
+// cloneStyleMap returns a copy of CSS declarations so callers can reuse maps safely.
+func cloneStyleMap(style map[string]string) map[string]string {
+	clone := make(map[string]string, len(style))
+	for k, v := range style {
+		clone[k] = v
+	}
+	return clone
+}
+
 // escapeText escapes ordinary HTML text node content.
 func escapeText(text string) string {
 	return html.EscapeString(text)

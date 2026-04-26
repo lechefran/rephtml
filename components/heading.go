@@ -32,7 +32,7 @@ func (h *Hgroup) AddStyles(m map[string]string) *Hgroup {
 
 // Style replaces the inline CSS declarations on the Hgroup component.
 func (h *Hgroup) Style(m map[string]string) *Hgroup {
-	h.style = m
+	h.style = cloneStyleMap(m)
 	return h
 }
 
@@ -85,7 +85,7 @@ func (h *H1) AddStyle(k, v string) *H1 {
 
 // Style replaces the inline CSS declarations on the H1 component.
 func (h *H1) Style(m map[string]string) *H1 {
-	h.style = m
+	h.style = cloneStyleMap(m)
 	return h
 }
 
@@ -135,7 +135,7 @@ func (h *H2) AddStyle(k, v string) *H2 {
 
 // Style replaces the inline CSS declarations on the H2 component.
 func (h *H2) Style(m map[string]string) *H2 {
-	h.style = m
+	h.style = cloneStyleMap(m)
 	return h
 }
 
@@ -185,7 +185,7 @@ func (h *H3) AddStyle(k, v string) *H3 {
 
 // Style replaces the inline CSS declarations on the H3 component.
 func (h *H3) Style(m map[string]string) *H3 {
-	h.style = m
+	h.style = cloneStyleMap(m)
 	return h
 }
 
@@ -235,7 +235,7 @@ func (h *H4) AddStyle(k, v string) *H4 {
 
 // Style replaces the inline CSS declarations on the H4 component.
 func (h *H4) Style(m map[string]string) *H4 {
-	h.style = m
+	h.style = cloneStyleMap(m)
 	return h
 }
 
@@ -285,7 +285,7 @@ func (h *H5) AddStyle(k, v string) *H5 {
 
 // Style replaces the inline CSS declarations on the H5 component.
 func (h *H5) Style(m map[string]string) *H5 {
-	h.style = m
+	h.style = cloneStyleMap(m)
 	return h
 }
 
@@ -335,7 +335,7 @@ func (h *H6) AddStyle(k, v string) *H6 {
 
 // Style replaces the inline CSS declarations on the H6 component.
 func (h *H6) Style(m map[string]string) *H6 {
-	h.style = m
+	h.style = cloneStyleMap(m)
 	return h
 }
 

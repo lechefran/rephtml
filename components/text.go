@@ -32,7 +32,7 @@ func (p *P) AddStyles(m map[string]string) *P {
 
 // Style replaces the inline CSS declarations on the P component.
 func (p *P) Style(m map[string]string) *P {
-	p.style = m
+	p.style = cloneStyleMap(m)
 	return p
 }
 
@@ -120,7 +120,7 @@ func (h *Hr) AddStyles(m map[string]string) *Hr {
 
 // Style replaces the inline CSS declarations on the Hr component.
 func (h *Hr) Style(m map[string]string) *Hr {
-	h.style = m
+	h.style = cloneStyleMap(m)
 	return h
 }
 
@@ -172,7 +172,7 @@ func (p *Pre) AddStyles(m map[string]string) *Pre {
 
 // Style replaces the inline CSS declarations on the Pre component.
 func (p *Pre) Style(m map[string]string) *Pre {
-	p.style = m
+	p.style = cloneStyleMap(m)
 	return p
 }
 
@@ -231,7 +231,7 @@ func (b *Blockquote) AddStyles(m map[string]string) *Blockquote {
 
 // Style replaces the inline CSS declarations on the Blockquote component.
 func (b *Blockquote) Style(m map[string]string) *Blockquote {
-	b.style = m
+	b.style = cloneStyleMap(m)
 	return b
 }
 
@@ -300,7 +300,7 @@ func (m *Menu) AddStyles(ms map[string]string) *Menu {
 
 // Style replaces the inline CSS declarations on the Menu component.
 func (m *Menu) Style(ms map[string]string) *Menu {
-	m.style = ms
+	m.style = cloneStyleMap(ms)
 	return m
 }
 
@@ -382,7 +382,7 @@ func (o *Ol) AddStyles(m map[string]string) *Ol {
 
 // Style replaces the inline CSS declarations on the Ol component.
 func (o *Ol) Style(m map[string]string) *Ol {
-	o.style = m
+	o.style = cloneStyleMap(m)
 	return o
 }
 
@@ -470,7 +470,7 @@ func (u *Ul) AddStyles(m map[string]string) *Ul {
 
 // Style replaces the inline CSS declarations on the Ul component.
 func (u *Ul) Style(m map[string]string) *Ul {
-	u.style = m
+	u.style = cloneStyleMap(m)
 	return u
 }
 
@@ -532,7 +532,7 @@ func (l *Li) AddStyles(m map[string]string) *Li {
 
 // Style replaces the inline CSS declarations on the Li component.
 func (l *Li) Style(m map[string]string) *Li {
-	l.style = m
+	l.style = cloneStyleMap(m)
 	return l
 }
 
@@ -602,7 +602,7 @@ func (d *Dl) AddStyles(m map[string]string) *Dl {
 
 // Style replaces the inline CSS declarations on the Dl component.
 func (d *Dl) Style(m map[string]string) *Dl {
-	d.style = m
+	d.style = cloneStyleMap(m)
 	return d
 }
 
@@ -663,7 +663,7 @@ func (d *Dt) AddStyles(m map[string]string) *Dt {
 
 // Style replaces the inline CSS declarations on the Dt component.
 func (d *Dt) Style(m map[string]string) *Dt {
-	d.style = m
+	d.style = cloneStyleMap(m)
 	return d
 }
 
@@ -724,7 +724,7 @@ func (d *Dd) AddStyles(m map[string]string) *Dd {
 
 // Style replaces the inline CSS declarations on the Dd component.
 func (d *Dd) Style(m map[string]string) *Dd {
-	d.style = m
+	d.style = cloneStyleMap(m)
 	return d
 }
 
@@ -785,7 +785,7 @@ func (f *Figure) AddStyles(m map[string]string) *Figure {
 
 // Style replaces the inline CSS declarations on the Figure component.
 func (f *Figure) Style(m map[string]string) *Figure {
-	f.style = m
+	f.style = cloneStyleMap(m)
 	return f
 }
 
@@ -846,7 +846,7 @@ func (f *Figcaption) AddStyles(m map[string]string) *Figcaption {
 
 // Style replaces the inline CSS declarations on the Figcaption component.
 func (f *Figcaption) Style(m map[string]string) *Figcaption {
-	f.style = m
+	f.style = cloneStyleMap(m)
 	return f
 }
 
@@ -907,7 +907,7 @@ func (s *Search) AddStyles(m map[string]string) *Search {
 
 // Style replaces the inline CSS declarations on the Search component.
 func (s *Search) Style(m map[string]string) *Search {
-	s.style = m
+	s.style = cloneStyleMap(m)
 	return s
 }
 

@@ -82,10 +82,7 @@ func (d *Del) AddStyles(m map[string]string) *Del {
 
 // Style replaces all styles
 func (d *Del) Style(m map[string]string) *Del {
-	d.style = make(map[string]string)
-	for k, v := range m {
-		d.style[k] = v
-	}
+	d.style = cloneStyleMap(m)
 	return d
 }
 
@@ -174,9 +171,6 @@ func (i *Ins) AddStyles(m map[string]string) *Ins {
 
 // Style replaces all styles
 func (i *Ins) Style(m map[string]string) *Ins {
-	i.style = make(map[string]string)
-	for k, v := range m {
-		i.style[k] = v
-	}
+	i.style = cloneStyleMap(m)
 	return i
 }

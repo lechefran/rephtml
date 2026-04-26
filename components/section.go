@@ -32,7 +32,7 @@ func (h *Header) AddStyles(m map[string]string) *Header {
 
 // Style replaces the inline CSS declarations on the Header component.
 func (h *Header) Style(m map[string]string) *Header {
-	h.style = m
+	h.style = cloneStyleMap(m)
 	return h
 }
 
@@ -94,7 +94,7 @@ func (n *Nav) AddStyles(m map[string]string) *Nav {
 
 // Style replaces the inline CSS declarations on the Nav component.
 func (n *Nav) Style(m map[string]string) *Nav {
-	n.style = m
+	n.style = cloneStyleMap(m)
 	return n
 }
 
@@ -164,7 +164,7 @@ func (m *Main) AddStyles(mp map[string]string) *Main {
 
 // Style replaces the inline CSS declarations on the Main component.
 func (m *Main) Style(mp map[string]string) *Main {
-	m.style = mp
+	m.style = cloneStyleMap(mp)
 	return m
 }
 
@@ -226,7 +226,7 @@ func (s *Section) AddStyles(m map[string]string) *Section {
 
 // Style replaces the inline CSS declarations on the Section component.
 func (s *Section) Style(m map[string]string) *Section {
-	s.style = m
+	s.style = cloneStyleMap(m)
 	return s
 }
 
@@ -296,7 +296,7 @@ func (a *Article) AddStyles(mp map[string]string) *Article {
 
 // Style replaces the inline CSS declarations on the Article component.
 func (a *Article) Style(mp map[string]string) *Article {
-	a.style = mp
+	a.style = cloneStyleMap(mp)
 	return a
 }
 
@@ -357,7 +357,7 @@ func (as *Aside) AddStyles(mp map[string]string) *Aside {
 
 // Style replaces the inline CSS declarations on the Aside component.
 func (as *Aside) Style(mp map[string]string) *Aside {
-	as.style = mp
+	as.style = cloneStyleMap(mp)
 	return as
 }
 
@@ -418,7 +418,7 @@ func (f *Footer) AddStyles(mp map[string]string) *Footer {
 
 // Style replaces the inline CSS declarations on the Footer component.
 func (f *Footer) Style(mp map[string]string) *Footer {
-	f.style = mp
+	f.style = cloneStyleMap(mp)
 	return f
 }
 
@@ -479,7 +479,7 @@ func (ad *Address) AddStyles(mp map[string]string) *Address {
 
 // Style replaces the inline CSS declarations on the Address component.
 func (ad *Address) Style(mp map[string]string) *Address {
-	ad.style = mp
+	ad.style = cloneStyleMap(mp)
 	return ad
 }
 

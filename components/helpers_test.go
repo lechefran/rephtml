@@ -27,3 +27,31 @@ func TestParseStyleSortsKeys(t *testing.T) {
 		t.Fatalf("unexpected style output:\ngot  %q\nwant %q", got, want)
 	}
 }
+
+func TestStyleCopiesInputMap(t *testing.T) {
+	styles := map[string]string{
+		"color":       "red",
+		"font-weight": "700",
+	}
+
+	paragraph := NewP().Text("Styled").Style(styles)
+	styles["color"] = "blue"
+	styles["margin"] = "12px"
+
+	paragraph.Prepare()
+
+	want := `<p style="color: red; font-weight: 700;">Styled</p>`
+	if got := string(paragraph.Bytes()); got != want {
+		t.Fatalf("unexpected style output after caller map mutation:\ngot  %q\nwant %q", got, want)
+	}
+}
+
+func TestCloneStyleMapReturnsIndependentMap(t *testing.T) {
+	styles := map[string]string{"color": "red"}
+	clone := cloneStyleMap(styles)
+	styles["color"] = "blue"
+
+	if clone["color"] != "red" {
+		t.Fatalf("cloneStyleMap retained caller map, got color %q", clone["color"])
+	}
+}

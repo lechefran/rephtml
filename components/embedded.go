@@ -35,7 +35,7 @@ func (e *Embed) AddStyles(m map[string]string) *Embed {
 
 // Style replaces the inline CSS declarations on the Embed component.
 func (e *Embed) Style(m map[string]string) *Embed {
-	e.style = m
+	e.style = cloneStyleMap(m)
 	return e
 }
 
@@ -132,7 +132,7 @@ func (i *Iframe) AddStyles(m map[string]string) *Iframe {
 
 // Style replaces the inline CSS declarations on the Iframe component.
 func (i *Iframe) Style(m map[string]string) *Iframe {
-	i.style = m
+	i.style = cloneStyleMap(m)
 	return i
 }
 
@@ -281,7 +281,7 @@ func (o *Object) AddStyles(m map[string]string) *Object {
 
 // Style replaces the inline CSS declarations on the Object component.
 func (o *Object) Style(m map[string]string) *Object {
-	o.style = m
+	o.style = cloneStyleMap(m)
 	return o
 }
 
@@ -405,7 +405,7 @@ func (p *Picture) AddStyles(m map[string]string) *Picture {
 
 // Style replaces the inline CSS declarations on the Picture component.
 func (p *Picture) Style(m map[string]string) *Picture {
-	p.style = m
+	p.style = cloneStyleMap(m)
 	return p
 }
 
@@ -467,7 +467,7 @@ func (p *Portal) AddStyles(m map[string]string) *Portal {
 
 // Style replaces the inline CSS declarations on the Portal component.
 func (p *Portal) Style(m map[string]string) *Portal {
-	p.style = m
+	p.style = cloneStyleMap(m)
 	return p
 }
 
@@ -541,7 +541,7 @@ func (s *Source) AddStyles(m map[string]string) *Source {
 
 // Style replaces the inline CSS declarations on the Source component.
 func (s *Source) Style(m map[string]string) *Source {
-	s.style = m
+	s.style = cloneStyleMap(m)
 	return s
 }
 
