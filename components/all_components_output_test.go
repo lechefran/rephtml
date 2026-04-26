@@ -138,6 +138,7 @@ func TestTextComponentOutputFormats(t *testing.T) {
 		{name: "Figcaption", element: NewFigcaption().Add(NewSpan().Text("Caption")), want: `<figcaption><span>Caption</span></figcaption>`},
 		{name: "Search", element: NewSearch().Add(NewForm().Action("/search")), want: `<search><form action="/search"></form></search>`},
 		{name: "Div", element: NewDiv().Add(NewSpan().Text("Content")), want: `<div><span>Content</span></div>`},
+		{name: "DivWithTable", element: NewDiv().Add(NewTable().AddRow([]string{"Alpha Beta"})), want: `<div><table><tr><td>Alpha Beta</td></tr></table></div>`},
 	}
 
 	for _, tt := range tests {
@@ -246,6 +247,24 @@ func TestTableComponentOutputFormats(t *testing.T) {
 	for _, tt := range tests {
 		assertRender(t, tt.name, tt.element, tt.want)
 	}
+}
+
+func TestTableClassReplacesExistingClasses(t *testing.T) {
+	table := NewTable().
+		AddClass("legacy").
+		AddClasses([]string{"extra"}).
+		Class([]string{"current"}).
+		AddRow([]string{"cell"})
+
+	assertRender(t, "Table class replacement", table, `<table class="current"><tr><td>cell</td></tr></table>`)
+}
+
+func TestTableClassCopiesInputSlice(t *testing.T) {
+	classes := []string{"current"}
+	table := NewTable().Class(classes).AddRow([]string{"cell"})
+	classes[0] = "mutated"
+
+	assertRender(t, "Table class slice copy", table, `<table class="current"><tr><td>cell</td></tr></table>`)
 }
 
 func TestMediaComponentOutputFormats(t *testing.T) {

@@ -2,17 +2,6 @@ package rephtml
 
 import "testing"
 
-// TestStripRemovesWhitespace provides TestStripRemovesWhitespace behavior for the package.
-func TestStripRemovesWhitespace(t *testing.T) {
-	input := []byte(" <tr>\n\t<td>Alpha</td> \r\n <td>Beta</td>\t</tr> ")
-	got := string(strip(input))
-	want := "<tr><td>Alpha</td><td>Beta</td></tr>"
-
-	if got != want {
-		t.Fatalf("strip() = %q, want %q", got, want)
-	}
-}
-
 // TestParseStyleSortsKeys provides TestParseStyleSortsKeys behavior for the package.
 func TestParseStyleSortsKeys(t *testing.T) {
 	paragraph := NewP().Text("Sorted").Style(map[string]string{
@@ -53,5 +42,15 @@ func TestCloneStyleMapReturnsIndependentMap(t *testing.T) {
 
 	if clone["color"] != "red" {
 		t.Fatalf("cloneStyleMap retained caller map, got color %q", clone["color"])
+	}
+}
+
+func TestCloneStringsReturnsIndependentSlice(t *testing.T) {
+	classes := []string{"primary"}
+	clone := cloneStrings(classes)
+	classes[0] = "mutated"
+
+	if clone[0] != "primary" {
+		t.Fatalf("cloneStrings retained caller slice, got class %q", clone[0])
 	}
 }

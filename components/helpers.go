@@ -3,7 +3,6 @@ package rephtml
 import (
 	"bytes"
 	"html"
-	"regexp"
 	"slices"
 	"strconv"
 )
@@ -30,14 +29,6 @@ func parseStyle(buf *bytes.Buffer, style map[string]string) {
 }
 
 /*
-Internal parsing function to remove all spaces from a byte array
-*/
-func strip(b []byte) []byte {
-	re := regexp.MustCompile(`\s+`)
-	return re.ReplaceAll(b, nil)
-}
-
-/*
 Internal function that creates tabs based on the value of t
 */
 func tabs(t int) string {
@@ -60,6 +51,11 @@ func cloneStyleMap(style map[string]string) map[string]string {
 		clone[k] = v
 	}
 	return clone
+}
+
+// cloneStrings returns a copy of a string slice so callers can reuse slices safely.
+func cloneStrings(values []string) []string {
+	return append([]string(nil), values...)
 }
 
 // escapeText escapes ordinary HTML text node content.

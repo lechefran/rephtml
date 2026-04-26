@@ -128,6 +128,26 @@ func TestFormatHTMLAllowsGreaterThanInsideQuotedAttributes(t *testing.T) {
 	}
 }
 
+func TestFormatHTMLFormatsTableInsideDiv(t *testing.T) {
+	input := []byte(`<html><body><div><table><tr><td>Alpha Beta</td></tr></table></div></body></html>`)
+	got := string(formatHTML(input))
+	want := "<html>\n" +
+		"\t<body>\n" +
+		"\t\t<div>\n" +
+		"\t\t\t<table>\n" +
+		"\t\t\t\t<tr>\n" +
+		"\t\t\t\t\t<td>Alpha Beta</td>\n" +
+		"\t\t\t\t</tr>\n" +
+		"\t\t\t</table>\n" +
+		"\t\t</div>\n" +
+		"\t</body>\n" +
+		"</html>\n"
+
+	if got != want {
+		t.Fatalf("unexpected formatted html:\ngot:\n%s\nwant:\n%s", got, want)
+	}
+}
+
 // TestFormatHTMLPreservesRawTextElementBody provides TestFormatHTMLPreservesRawTextElementBody behavior for the package.
 func TestFormatHTMLPreservesRawTextElementBody(t *testing.T) {
 	body := "  first\n\tsecond < third > fourth\n"

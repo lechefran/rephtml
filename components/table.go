@@ -40,7 +40,7 @@ func (t *Table) AddClasses(s []string) *Table {
 
 // Class sets the class value on the Table component.
 func (t *Table) Class(s []string) *Table {
-	t.class = append(t.class, s...)
+	t.class = cloneStrings(s)
 	return t
 }
 
@@ -250,7 +250,7 @@ func (th *Thead) AddClasses(s []string) *Thead {
 
 // Class sets the class value on the Thead component.
 func (th *Thead) Class(s []string) *Thead {
-	th.class = append(th.class, s...)
+	th.class = cloneStrings(s)
 	return th
 }
 
@@ -349,7 +349,7 @@ func (tb *Tbody) AddClasses(s []string) *Tbody {
 
 // Class sets the class value on the Tbody component.
 func (tb *Tbody) Class(s []string) *Tbody {
-	tb.class = append(tb.class, s...)
+	tb.class = cloneStrings(s)
 	return tb
 }
 
@@ -448,7 +448,7 @@ func (tf *Tfoot) AddClasses(s []string) *Tfoot {
 
 // Class sets the class value on the Tfoot component.
 func (tf *Tfoot) Class(s []string) *Tfoot {
-	tf.class = append(tf.class, s...)
+	tf.class = cloneStrings(s)
 	return tf
 }
 
@@ -547,7 +547,7 @@ func (c *Caption) AddClasses(s []string) *Caption {
 
 // Class sets the class value on the Caption component.
 func (c *Caption) Class(s []string) *Caption {
-	c.class = append(c.class, s...)
+	c.class = cloneStrings(s)
 	return c
 }
 
@@ -646,7 +646,7 @@ func (col *Col) AddClasses(s []string) *Col {
 
 // Class sets the class value on the Col component.
 func (col *Col) Class(s []string) *Col {
-	col.class = append(col.class, s...)
+	col.class = cloneStrings(s)
 	return col
 }
 
@@ -746,7 +746,7 @@ func (cg *Colgroup) AddClasses(s []string) *Colgroup {
 
 // Class sets the class value on the Colgroup component.
 func (cg *Colgroup) Class(s []string) *Colgroup {
-	cg.class = append(cg.class, s...)
+	cg.class = cloneStrings(s)
 	return cg
 }
 
@@ -854,7 +854,7 @@ func (tr *Tr) AddClasses(s []string) *Tr {
 
 // Class sets the class value on the Tr component.
 func (tr *Tr) Class(s []string) *Tr {
-	tr.class = append(tr.class, s...)
+	tr.class = cloneStrings(s)
 	return tr
 }
 
@@ -961,7 +961,7 @@ func (td *Td) AddClasses(s []string) *Td {
 
 // Class sets the class value on the Td component.
 func (td *Td) Class(s []string) *Td {
-	td.class = append(td.class, s...)
+	td.class = cloneStrings(s)
 	return td
 }
 
@@ -1081,7 +1081,7 @@ func (th *Th) AddClasses(s []string) *Th {
 
 // Class sets the class value on the Th component.
 func (th *Th) Class(s []string) *Th {
-	th.class = append(th.class, s...)
+	th.class = cloneStrings(s)
 	return th
 }
 
