@@ -1,5 +1,6 @@
 package rephtml
 
+// Strictness represents the Strictness component or supporting type.
 type Strictness string
 
 const (

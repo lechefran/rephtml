@@ -7,38 +7,45 @@ import (
 	"time"
 )
 
+// Anchor represents the Anchor component or supporting type.
 type Anchor struct {
 	buf        bytes.Buffer
 	style      map[string]string
 	link, text string
 }
 
+// NewAnchor creates a new Anchor component.
 func NewAnchor() *Anchor {
 	return &Anchor{
 		style: make(map[string]string),
 	}
 }
 
+// AddStyle adds one inline CSS declaration to the Anchor component.
 func (a *Anchor) AddStyle(k, v string) *Anchor {
 	a.style[k] = v
 	return a
 }
 
+// Style replaces the inline CSS declarations on the Anchor component.
 func (a *Anchor) Style(m map[string]string) *Anchor {
 	a.style = m
 	return a
 }
 
+// Text sets or appends text content on the Anchor component.
 func (a *Anchor) Text(s string) *Anchor {
 	a.text = s
 	return a
 }
 
+// Link sets the link value on the Anchor component.
 func (a *Anchor) Link(s string) *Anchor {
 	a.link = s
 	return a
 }
 
+// Bytes returns a defensive copy of the rendered Anchor bytes.
 func (a *Anchor) Bytes() []byte {
 	return cloneBytes(a.buf.Bytes())
 }
@@ -46,6 +53,7 @@ func (a *Anchor) Bytes() []byte {
 // IsBodyElement implements BodyElement interface
 func (a *Anchor) IsBodyElement() {}
 
+// Prepare renders the Anchor component into its internal buffer.
 func (a *Anchor) Prepare() {
 	a.buf.Reset()
 	a.buf.WriteString("<a")
@@ -58,6 +66,7 @@ func (a *Anchor) Prepare() {
 	a.buf.WriteString(">" + escapeText(a.text) + "</a>")
 }
 
+// Abbr represents the Abbr component or supporting type.
 type Abbr struct {
 	buf   bytes.Buffer
 	style map[string]string
@@ -65,17 +74,20 @@ type Abbr struct {
 	title string
 }
 
+// NewAbbr creates a new Abbr component.
 func NewAbbr() *Abbr {
 	return &Abbr{
 		style: make(map[string]string),
 	}
 }
 
+// AddStyle adds one inline CSS declaration to the Abbr component.
 func (a *Abbr) AddStyle(k, v string) *Abbr {
 	a.style[k] = v
 	return a
 }
 
+// AddStyles adds multiple inline CSS declarations to the Abbr component.
 func (a *Abbr) AddStyles(m map[string]string) *Abbr {
 	for k, v := range m {
 		a.style[k] = v
@@ -83,21 +95,25 @@ func (a *Abbr) AddStyles(m map[string]string) *Abbr {
 	return a
 }
 
+// Style replaces the inline CSS declarations on the Abbr component.
 func (a *Abbr) Style(m map[string]string) *Abbr {
 	a.style = m
 	return a
 }
 
+// Text sets or appends text content on the Abbr component.
 func (a *Abbr) Text(s string) *Abbr {
 	a.text = s
 	return a
 }
 
+// Title sets the title value on the Abbr component.
 func (a *Abbr) Title(s string) *Abbr {
 	a.title = s
 	return a
 }
 
+// Bytes returns a defensive copy of the rendered Abbr bytes.
 func (a *Abbr) Bytes() []byte {
 	return cloneBytes(a.buf.Bytes())
 }
@@ -105,6 +121,7 @@ func (a *Abbr) Bytes() []byte {
 // IsBodyElement implements BodyElement interface
 func (a *Abbr) IsBodyElement() {}
 
+// Prepare renders the Abbr component into its internal buffer.
 func (a *Abbr) Prepare() {
 	a.buf.Reset()
 	a.buf.WriteString("<abbr")
@@ -117,23 +134,27 @@ func (a *Abbr) Prepare() {
 	a.buf.WriteString(">" + escapeText(a.text) + "</abbr>")
 }
 
+// B represents the B component or supporting type.
 type B struct {
 	buf   bytes.Buffer
 	style map[string]string
 	text  string
 }
 
+// NewB creates a new B component.
 func NewB() *B {
 	return &B{
 		style: make(map[string]string),
 	}
 }
 
+// AddStyle adds one inline CSS declaration to the B component.
 func (b *B) AddStyle(k, v string) *B {
 	b.style[k] = v
 	return b
 }
 
+// AddStyles adds multiple inline CSS declarations to the B component.
 func (b *B) AddStyles(m map[string]string) *B {
 	for k, v := range m {
 		b.style[k] = v
@@ -141,16 +162,19 @@ func (b *B) AddStyles(m map[string]string) *B {
 	return b
 }
 
+// Style replaces the inline CSS declarations on the B component.
 func (b *B) Style(m map[string]string) *B {
 	b.style = m
 	return b
 }
 
+// Text sets or appends text content on the B component.
 func (b *B) Text(s string) *B {
 	b.text = s
 	return b
 }
 
+// Bytes returns a defensive copy of the rendered B bytes.
 func (b *B) Bytes() []byte {
 	return cloneBytes(b.buf.Bytes())
 }
@@ -158,6 +182,7 @@ func (b *B) Bytes() []byte {
 // IsBodyElement implements BodyElement interface
 func (b *B) IsBodyElement() {}
 
+// Prepare renders the B component into its internal buffer.
 func (b *B) Prepare() {
 	b.buf.Reset()
 	b.buf.WriteString("<b")
@@ -167,23 +192,27 @@ func (b *B) Prepare() {
 	b.buf.WriteString(">" + escapeText(b.text) + "</b>")
 }
 
+// I represents the I component or supporting type.
 type I struct {
 	buf   bytes.Buffer
 	style map[string]string
 	text  string
 }
 
+// NewI creates a new I component.
 func NewI() *I {
 	return &I{
 		style: make(map[string]string),
 	}
 }
 
+// AddStyle adds one inline CSS declaration to the I component.
 func (i *I) AddStyle(k, v string) *I {
 	i.style[k] = v
 	return i
 }
 
+// AddStyles adds multiple inline CSS declarations to the I component.
 func (i *I) AddStyles(m map[string]string) *I {
 	for k, v := range m {
 		i.style[k] = v
@@ -191,16 +220,19 @@ func (i *I) AddStyles(m map[string]string) *I {
 	return i
 }
 
+// Style replaces the inline CSS declarations on the I component.
 func (i *I) Style(m map[string]string) *I {
 	i.style = m
 	return i
 }
 
+// Text sets or appends text content on the I component.
 func (i *I) Text(s string) *I {
 	i.text = s
 	return i
 }
 
+// Bytes returns a defensive copy of the rendered I bytes.
 func (i *I) Bytes() []byte {
 	return cloneBytes(i.buf.Bytes())
 }
@@ -208,6 +240,7 @@ func (i *I) Bytes() []byte {
 // IsBodyElement implements BodyElement interface
 func (i *I) IsBodyElement() {}
 
+// Prepare renders the I component into its internal buffer.
 func (i *I) Prepare() {
 	i.buf.Reset()
 	i.buf.WriteString("<i")
@@ -217,6 +250,7 @@ func (i *I) Prepare() {
 	i.buf.WriteString(">" + escapeText(i.text) + "</i>")
 }
 
+// Q represents the Q component or supporting type.
 type Q struct {
 	buf   bytes.Buffer
 	style map[string]string
@@ -224,17 +258,20 @@ type Q struct {
 	cite  string
 }
 
+// NewQ creates a new Q component.
 func NewQ() *Q {
 	return &Q{
 		style: make(map[string]string),
 	}
 }
 
+// AddStyle adds one inline CSS declaration to the Q component.
 func (q *Q) AddStyle(k, v string) *Q {
 	q.style[k] = v
 	return q
 }
 
+// AddStyles adds multiple inline CSS declarations to the Q component.
 func (q *Q) AddStyles(m map[string]string) *Q {
 	for k, v := range m {
 		q.style[k] = v
@@ -242,21 +279,25 @@ func (q *Q) AddStyles(m map[string]string) *Q {
 	return q
 }
 
+// Style replaces the inline CSS declarations on the Q component.
 func (q *Q) Style(m map[string]string) *Q {
 	q.style = m
 	return q
 }
 
+// Text sets or appends text content on the Q component.
 func (q *Q) Text(s string) *Q {
 	q.text = s
 	return q
 }
 
+// Cite sets the cite value on the Q component.
 func (q *Q) Cite(s string) *Q {
 	q.cite = s
 	return q
 }
 
+// Bytes returns a defensive copy of the rendered Q bytes.
 func (q *Q) Bytes() []byte {
 	return cloneBytes(q.buf.Bytes())
 }
@@ -264,6 +305,7 @@ func (q *Q) Bytes() []byte {
 // IsBodyElement implements BodyElement interface
 func (q *Q) IsBodyElement() {}
 
+// Prepare renders the Q component into its internal buffer.
 func (q *Q) Prepare() {
 	q.buf.Reset()
 	q.buf.WriteString("<q")
@@ -276,23 +318,27 @@ func (q *Q) Prepare() {
 	q.buf.WriteString(">" + escapeText(q.text) + "</q>")
 }
 
+// S represents the S component or supporting type.
 type S struct {
 	buf   bytes.Buffer
 	style map[string]string
 	text  string
 }
 
+// NewS creates a new S component.
 func NewS() *S {
 	return &S{
 		style: make(map[string]string),
 	}
 }
 
+// AddStyle adds one inline CSS declaration to the S component.
 func (s *S) AddStyle(k, v string) *S {
 	s.style[k] = v
 	return s
 }
 
+// AddStyles adds multiple inline CSS declarations to the S component.
 func (s *S) AddStyles(m map[string]string) *S {
 	for k, v := range m {
 		s.style[k] = v
@@ -300,16 +346,19 @@ func (s *S) AddStyles(m map[string]string) *S {
 	return s
 }
 
+// Style replaces the inline CSS declarations on the S component.
 func (s *S) Style(m map[string]string) *S {
 	s.style = m
 	return s
 }
 
+// Text sets or appends text content on the S component.
 func (s *S) Text(str string) *S {
 	s.text = str
 	return s
 }
 
+// Bytes returns a defensive copy of the rendered S bytes.
 func (s *S) Bytes() []byte {
 	return cloneBytes(s.buf.Bytes())
 }
@@ -317,6 +366,7 @@ func (s *S) Bytes() []byte {
 // IsBodyElement implements BodyElement interface
 func (s *S) IsBodyElement() {}
 
+// Prepare renders the S component into its internal buffer.
 func (s *S) Prepare() {
 	s.buf.Reset()
 	s.buf.WriteString("<s")
@@ -326,23 +376,27 @@ func (s *S) Prepare() {
 	s.buf.WriteString(">" + escapeText(s.text) + "</s>")
 }
 
+// U represents the U component or supporting type.
 type U struct {
 	buf   bytes.Buffer
 	style map[string]string
 	text  string
 }
 
+// NewU creates a new U component.
 func NewU() *U {
 	return &U{
 		style: make(map[string]string),
 	}
 }
 
+// AddStyle adds one inline CSS declaration to the U component.
 func (u *U) AddStyle(k, v string) *U {
 	u.style[k] = v
 	return u
 }
 
+// AddStyles adds multiple inline CSS declarations to the U component.
 func (u *U) AddStyles(m map[string]string) *U {
 	for k, v := range m {
 		u.style[k] = v
@@ -350,16 +404,19 @@ func (u *U) AddStyles(m map[string]string) *U {
 	return u
 }
 
+// Style replaces the inline CSS declarations on the U component.
 func (u *U) Style(m map[string]string) *U {
 	u.style = m
 	return u
 }
 
+// Text sets or appends text content on the U component.
 func (u *U) Text(s string) *U {
 	u.text = s
 	return u
 }
 
+// Bytes returns a defensive copy of the rendered U bytes.
 func (u *U) Bytes() []byte {
 	return cloneBytes(u.buf.Bytes())
 }
@@ -367,6 +424,7 @@ func (u *U) Bytes() []byte {
 // IsBodyElement implements BodyElement interface
 func (u *U) IsBodyElement() {}
 
+// Prepare renders the U component into its internal buffer.
 func (u *U) Prepare() {
 	u.buf.Reset()
 	u.buf.WriteString("<u")
@@ -376,23 +434,27 @@ func (u *U) Prepare() {
 	u.buf.WriteString(">" + escapeText(u.text) + "</u>")
 }
 
+// Dbi represents the Dbi component or supporting type.
 type Dbi struct {
 	buf   bytes.Buffer
 	style map[string]string
 	text  string
 }
 
+// NewDbi creates a new Dbi component.
 func NewDbi() *Dbi {
 	return &Dbi{
 		style: make(map[string]string),
 	}
 }
 
+// AddStyle adds one inline CSS declaration to the Dbi component.
 func (d *Dbi) AddStyle(k, v string) *Dbi {
 	d.style[k] = v
 	return d
 }
 
+// AddStyles adds multiple inline CSS declarations to the Dbi component.
 func (d *Dbi) AddStyles(m map[string]string) *Dbi {
 	for k, v := range m {
 		d.style[k] = v
@@ -400,16 +462,19 @@ func (d *Dbi) AddStyles(m map[string]string) *Dbi {
 	return d
 }
 
+// Style replaces the inline CSS declarations on the Dbi component.
 func (d *Dbi) Style(m map[string]string) *Dbi {
 	d.style = m
 	return d
 }
 
+// Text sets or appends text content on the Dbi component.
 func (d *Dbi) Text(s string) *Dbi {
 	d.text = s
 	return d
 }
 
+// Bytes returns a defensive copy of the rendered Dbi bytes.
 func (d *Dbi) Bytes() []byte {
 	return cloneBytes(d.buf.Bytes())
 }
@@ -417,6 +482,7 @@ func (d *Dbi) Bytes() []byte {
 // IsBodyElement implements BodyElement interface
 func (d *Dbi) IsBodyElement() {}
 
+// Prepare renders the Dbi component into its internal buffer.
 func (d *Dbi) Prepare() {
 	d.buf.Reset()
 	d.buf.WriteString("<dbi")
@@ -426,23 +492,27 @@ func (d *Dbi) Prepare() {
 	d.buf.WriteString(">" + escapeText(d.text) + "</dbi>")
 }
 
+// Dbo represents the Dbo component or supporting type.
 type Dbo struct {
 	buf   bytes.Buffer
 	style map[string]string
 	text  string
 }
 
+// NewDbo creates a new Dbo component.
 func NewDbo() *Dbo {
 	return &Dbo{
 		style: make(map[string]string),
 	}
 }
 
+// AddStyle adds one inline CSS declaration to the Dbo component.
 func (d *Dbo) AddStyle(k, v string) *Dbo {
 	d.style[k] = v
 	return d
 }
 
+// AddStyles adds multiple inline CSS declarations to the Dbo component.
 func (d *Dbo) AddStyles(m map[string]string) *Dbo {
 	for k, v := range m {
 		d.style[k] = v
@@ -450,16 +520,19 @@ func (d *Dbo) AddStyles(m map[string]string) *Dbo {
 	return d
 }
 
+// Style replaces the inline CSS declarations on the Dbo component.
 func (d *Dbo) Style(m map[string]string) *Dbo {
 	d.style = m
 	return d
 }
 
+// Text sets or appends text content on the Dbo component.
 func (d *Dbo) Text(s string) *Dbo {
 	d.text = s
 	return d
 }
 
+// Bytes returns a defensive copy of the rendered Dbo bytes.
 func (d *Dbo) Bytes() []byte {
 	return cloneBytes(d.buf.Bytes())
 }
@@ -467,6 +540,7 @@ func (d *Dbo) Bytes() []byte {
 // IsBodyElement implements BodyElement interface
 func (d *Dbo) IsBodyElement() {}
 
+// Prepare renders the Dbo component into its internal buffer.
 func (d *Dbo) Prepare() {
 	d.buf.Reset()
 	d.buf.WriteString("<dbo")
@@ -476,22 +550,26 @@ func (d *Dbo) Prepare() {
 	d.buf.WriteString(">" + escapeText(d.text) + "</dbo>")
 }
 
+// Br represents the Br component or supporting type.
 type Br struct {
 	buf   bytes.Buffer
 	style map[string]string
 }
 
+// NewBr creates a new Br component.
 func NewBr() *Br {
 	return &Br{
 		style: make(map[string]string),
 	}
 }
 
+// AddStyle adds one inline CSS declaration to the Br component.
 func (br *Br) AddStyle(k, v string) *Br {
 	br.style[k] = v
 	return br
 }
 
+// AddStyles adds multiple inline CSS declarations to the Br component.
 func (br *Br) AddStyles(m map[string]string) *Br {
 	for k, v := range m {
 		br.style[k] = v
@@ -499,11 +577,13 @@ func (br *Br) AddStyles(m map[string]string) *Br {
 	return br
 }
 
+// Style replaces the inline CSS declarations on the Br component.
 func (br *Br) Style(m map[string]string) *Br {
 	br.style = m
 	return br
 }
 
+// Bytes returns a defensive copy of the rendered Br bytes.
 func (br *Br) Bytes() []byte {
 	return cloneBytes(br.buf.Bytes())
 }
@@ -511,6 +591,7 @@ func (br *Br) Bytes() []byte {
 // IsBodyElement implements BodyElement interface
 func (br *Br) IsBodyElement() {}
 
+// Prepare renders the Br component into its internal buffer.
 func (br *Br) Prepare() {
 	br.buf.Reset()
 	br.buf.WriteString("<br")
@@ -520,23 +601,27 @@ func (br *Br) Prepare() {
 	br.buf.WriteByte('>')
 }
 
+// Cite represents the Cite component or supporting type.
 type Cite struct {
 	buf   bytes.Buffer
 	style map[string]string
 	text  string
 }
 
+// NewCite creates a new Cite component.
 func NewCite() *Cite {
 	return &Cite{
 		style: make(map[string]string),
 	}
 }
 
+// AddStyle adds one inline CSS declaration to the Cite component.
 func (c *Cite) AddStyle(k, v string) *Cite {
 	c.style[k] = v
 	return c
 }
 
+// AddStyles adds multiple inline CSS declarations to the Cite component.
 func (c *Cite) AddStyles(m map[string]string) *Cite {
 	for k, v := range m {
 		c.style[k] = v
@@ -544,16 +629,19 @@ func (c *Cite) AddStyles(m map[string]string) *Cite {
 	return c
 }
 
+// Style replaces the inline CSS declarations on the Cite component.
 func (c *Cite) Style(m map[string]string) *Cite {
 	c.style = m
 	return c
 }
 
+// Text sets or appends text content on the Cite component.
 func (c *Cite) Text(s string) *Cite {
 	c.text = s
 	return c
 }
 
+// Bytes returns a defensive copy of the rendered Cite bytes.
 func (c *Cite) Bytes() []byte {
 	return cloneBytes(c.buf.Bytes())
 }
@@ -561,6 +649,7 @@ func (c *Cite) Bytes() []byte {
 // IsBodyElement implements BodyElement interface
 func (c *Cite) IsBodyElement() {}
 
+// Prepare renders the Cite component into its internal buffer.
 func (c *Cite) Prepare() {
 	c.buf.Reset()
 	c.buf.WriteString("<cite")
@@ -570,23 +659,27 @@ func (c *Cite) Prepare() {
 	c.buf.WriteString(">" + escapeText(c.text) + "</cite>")
 }
 
+// Code represents the Code component or supporting type.
 type Code struct {
 	buf   bytes.Buffer
 	style map[string]string
 	text  string
 }
 
+// NewCode creates a new Code component.
 func NewCode() *Code {
 	return &Code{
 		style: make(map[string]string),
 	}
 }
 
+// AddStyle adds one inline CSS declaration to the Code component.
 func (c *Code) AddStyle(k, v string) *Code {
 	c.style[k] = v
 	return c
 }
 
+// AddStyles adds multiple inline CSS declarations to the Code component.
 func (c *Code) AddStyles(m map[string]string) *Code {
 	for k, v := range m {
 		c.style[k] = v
@@ -594,16 +687,19 @@ func (c *Code) AddStyles(m map[string]string) *Code {
 	return c
 }
 
+// Style replaces the inline CSS declarations on the Code component.
 func (c *Code) Style(m map[string]string) *Code {
 	c.style = m
 	return c
 }
 
+// Text sets or appends text content on the Code component.
 func (c *Code) Text(s string) *Code {
 	c.text = s
 	return c
 }
 
+// Bytes returns a defensive copy of the rendered Code bytes.
 func (c *Code) Bytes() []byte {
 	return cloneBytes(c.buf.Bytes())
 }
@@ -611,6 +707,7 @@ func (c *Code) Bytes() []byte {
 // IsBodyElement implements BodyElement interface
 func (c *Code) IsBodyElement() {}
 
+// Prepare renders the Code component into its internal buffer.
 func (c *Code) Prepare() {
 	c.buf.Reset()
 	c.buf.WriteString("<code")
@@ -620,6 +717,7 @@ func (c *Code) Prepare() {
 	c.buf.WriteString(">" + escapeText(c.text) + "</code>")
 }
 
+// Data represents the Data component or supporting type.
 type Data struct {
 	buf   bytes.Buffer
 	style map[string]string
@@ -627,17 +725,20 @@ type Data struct {
 	value string
 }
 
+// NewData creates a new Data component.
 func NewData() *Data {
 	return &Data{
 		style: make(map[string]string),
 	}
 }
 
+// AddStyle adds one inline CSS declaration to the Data component.
 func (d *Data) AddStyle(k, v string) *Data {
 	d.style[k] = v
 	return d
 }
 
+// AddStyles adds multiple inline CSS declarations to the Data component.
 func (d *Data) AddStyles(m map[string]string) *Data {
 	for k, v := range m {
 		d.style[k] = v
@@ -645,21 +746,25 @@ func (d *Data) AddStyles(m map[string]string) *Data {
 	return d
 }
 
+// Style replaces the inline CSS declarations on the Data component.
 func (d *Data) Style(m map[string]string) *Data {
 	d.style = m
 	return d
 }
 
+// Text sets or appends text content on the Data component.
 func (d *Data) Text(s string) *Data {
 	d.text = s
 	return d
 }
 
+// Value sets the value value on the Data component.
 func (d *Data) Value(s string) *Data {
 	d.value = s
 	return d
 }
 
+// Bytes returns a defensive copy of the rendered Data bytes.
 func (d *Data) Bytes() []byte {
 	return cloneBytes(d.buf.Bytes())
 }
@@ -667,6 +772,7 @@ func (d *Data) Bytes() []byte {
 // IsBodyElement implements BodyElement interface
 func (d *Data) IsBodyElement() {}
 
+// Prepare renders the Data component into its internal buffer.
 func (d *Data) Prepare() {
 	d.buf.Reset()
 	d.buf.WriteString("<data")
@@ -679,6 +785,7 @@ func (d *Data) Prepare() {
 	d.buf.WriteString(">" + escapeText(d.text) + "</data>")
 }
 
+// Dfn represents the Dfn component or supporting type.
 type Dfn struct {
 	buf   bytes.Buffer
 	style map[string]string
@@ -686,17 +793,20 @@ type Dfn struct {
 	title string
 }
 
+// NewDfn creates a new Dfn component.
 func NewDfn() *Dfn {
 	return &Dfn{
 		style: make(map[string]string),
 	}
 }
 
+// AddStyle adds one inline CSS declaration to the Dfn component.
 func (d *Dfn) AddStyle(k, v string) *Dfn {
 	d.style[k] = v
 	return d
 }
 
+// AddStyles adds multiple inline CSS declarations to the Dfn component.
 func (d *Dfn) AddStyles(m map[string]string) *Dfn {
 	for k, v := range m {
 		d.style[k] = v
@@ -704,21 +814,25 @@ func (d *Dfn) AddStyles(m map[string]string) *Dfn {
 	return d
 }
 
+// Style replaces the inline CSS declarations on the Dfn component.
 func (d *Dfn) Style(m map[string]string) *Dfn {
 	d.style = m
 	return d
 }
 
+// Text sets or appends text content on the Dfn component.
 func (d *Dfn) Text(s string) *Dfn {
 	d.text = s
 	return d
 }
 
+// Title sets the title value on the Dfn component.
 func (d *Dfn) Title(s string) *Dfn {
 	d.title = s
 	return d
 }
 
+// Bytes returns a defensive copy of the rendered Dfn bytes.
 func (d *Dfn) Bytes() []byte {
 	return cloneBytes(d.buf.Bytes())
 }
@@ -726,6 +840,7 @@ func (d *Dfn) Bytes() []byte {
 // IsBodyElement implements BodyElement interface
 func (d *Dfn) IsBodyElement() {}
 
+// Prepare renders the Dfn component into its internal buffer.
 func (d *Dfn) Prepare() {
 	d.buf.Reset()
 	d.buf.WriteString("<dfn")
@@ -738,23 +853,27 @@ func (d *Dfn) Prepare() {
 	d.buf.WriteString(">" + escapeText(d.text) + "</dfn>")
 }
 
+// Elem represents the Elem component or supporting type.
 type Elem struct {
 	buf   bytes.Buffer
 	style map[string]string
 	text  string
 }
 
+// NewElem creates a new Elem component.
 func NewElem() *Elem {
 	return &Elem{
 		style: make(map[string]string),
 	}
 }
 
+// AddStyle adds one inline CSS declaration to the Elem component.
 func (e *Elem) AddStyle(k, v string) *Elem {
 	e.style[k] = v
 	return e
 }
 
+// AddStyles adds multiple inline CSS declarations to the Elem component.
 func (e *Elem) AddStyles(m map[string]string) *Elem {
 	for k, v := range m {
 		e.style[k] = v
@@ -762,16 +881,19 @@ func (e *Elem) AddStyles(m map[string]string) *Elem {
 	return e
 }
 
+// Style replaces the inline CSS declarations on the Elem component.
 func (e *Elem) Style(m map[string]string) *Elem {
 	e.style = m
 	return e
 }
 
+// Text sets or appends text content on the Elem component.
 func (e *Elem) Text(s string) *Elem {
 	e.text = s
 	return e
 }
 
+// Bytes returns a defensive copy of the rendered Elem bytes.
 func (e *Elem) Bytes() []byte {
 	return cloneBytes(e.buf.Bytes())
 }
@@ -779,6 +901,7 @@ func (e *Elem) Bytes() []byte {
 // IsBodyElement implements BodyElement interface
 func (e *Elem) IsBodyElement() {}
 
+// Prepare renders the Elem component into its internal buffer.
 func (e *Elem) Prepare() {
 	e.buf.Reset()
 	e.buf.WriteString("<elem")
@@ -788,23 +911,27 @@ func (e *Elem) Prepare() {
 	e.buf.WriteString(">" + escapeText(e.text) + "</elem>")
 }
 
+// Mark represents the Mark component or supporting type.
 type Mark struct {
 	buf   bytes.Buffer
 	style map[string]string
 	text  string
 }
 
+// NewMark creates a new Mark component.
 func NewMark() *Mark {
 	return &Mark{
 		style: make(map[string]string),
 	}
 }
 
+// AddStyle adds one inline CSS declaration to the Mark component.
 func (m *Mark) AddStyle(k, v string) *Mark {
 	m.style[k] = v
 	return m
 }
 
+// AddStyles adds multiple inline CSS declarations to the Mark component.
 func (m *Mark) AddStyles(ms map[string]string) *Mark {
 	for k, v := range ms {
 		m.style[k] = v
@@ -812,16 +939,19 @@ func (m *Mark) AddStyles(ms map[string]string) *Mark {
 	return m
 }
 
+// Style replaces the inline CSS declarations on the Mark component.
 func (m *Mark) Style(ms map[string]string) *Mark {
 	m.style = ms
 	return m
 }
 
+// Text sets or appends text content on the Mark component.
 func (m *Mark) Text(s string) *Mark {
 	m.text = s
 	return m
 }
 
+// Bytes returns a defensive copy of the rendered Mark bytes.
 func (m *Mark) Bytes() []byte {
 	return cloneBytes(m.buf.Bytes())
 }
@@ -829,6 +959,7 @@ func (m *Mark) Bytes() []byte {
 // IsBodyElement implements BodyElement interface
 func (m *Mark) IsBodyElement() {}
 
+// Prepare renders the Mark component into its internal buffer.
 func (m *Mark) Prepare() {
 	m.buf.Reset()
 	m.buf.WriteString("<mark")
@@ -838,23 +969,27 @@ func (m *Mark) Prepare() {
 	m.buf.WriteString(">" + escapeText(m.text) + "</mark>")
 }
 
+// Ruby represents the Ruby component or supporting type.
 type Ruby struct {
 	buf      bytes.Buffer
 	style    map[string]string
 	contents []Element
 }
 
+// NewRuby creates a new Ruby component.
 func NewRuby() *Ruby {
 	return &Ruby{
 		style: make(map[string]string),
 	}
 }
 
+// AddStyle adds one inline CSS declaration to the Ruby component.
 func (r *Ruby) AddStyle(k, v string) *Ruby {
 	r.style[k] = v
 	return r
 }
 
+// AddStyles adds multiple inline CSS declarations to the Ruby component.
 func (r *Ruby) AddStyles(m map[string]string) *Ruby {
 	for k, v := range m {
 		r.style[k] = v
@@ -862,16 +997,19 @@ func (r *Ruby) AddStyles(m map[string]string) *Ruby {
 	return r
 }
 
+// Style replaces the inline CSS declarations on the Ruby component.
 func (r *Ruby) Style(m map[string]string) *Ruby {
 	r.style = m
 	return r
 }
 
+// Add appends child content to the Ruby component.
 func (r *Ruby) Add(e Element) *Ruby {
 	r.contents = appendElement(r.contents, e)
 	return r
 }
 
+// Bytes returns a defensive copy of the rendered Ruby bytes.
 func (r *Ruby) Bytes() []byte {
 	return cloneBytes(r.buf.Bytes())
 }
@@ -879,6 +1017,7 @@ func (r *Ruby) Bytes() []byte {
 // IsBodyElement implements BodyElement interface
 func (r *Ruby) IsBodyElement() {}
 
+// Prepare renders the Ruby component into its internal buffer.
 func (r *Ruby) Prepare() {
 	r.buf.Reset()
 	r.buf.WriteString("<ruby")
@@ -891,23 +1030,27 @@ func (r *Ruby) Prepare() {
 	r.buf.WriteString("</ruby>")
 }
 
+// Rb represents the Rb component or supporting type.
 type Rb struct {
 	buf   bytes.Buffer
 	style map[string]string
 	text  string
 }
 
+// NewRb creates a new Rb component.
 func NewRb() *Rb {
 	return &Rb{
 		style: make(map[string]string),
 	}
 }
 
+// AddStyle adds one inline CSS declaration to the Rb component.
 func (rb *Rb) AddStyle(k, v string) *Rb {
 	rb.style[k] = v
 	return rb
 }
 
+// AddStyles adds multiple inline CSS declarations to the Rb component.
 func (rb *Rb) AddStyles(m map[string]string) *Rb {
 	for k, v := range m {
 		rb.style[k] = v
@@ -915,16 +1058,19 @@ func (rb *Rb) AddStyles(m map[string]string) *Rb {
 	return rb
 }
 
+// Style replaces the inline CSS declarations on the Rb component.
 func (rb *Rb) Style(m map[string]string) *Rb {
 	rb.style = m
 	return rb
 }
 
+// Text sets or appends text content on the Rb component.
 func (rb *Rb) Text(s string) *Rb {
 	rb.text = s
 	return rb
 }
 
+// Bytes returns a defensive copy of the rendered Rb bytes.
 func (rb *Rb) Bytes() []byte {
 	return cloneBytes(rb.buf.Bytes())
 }
@@ -932,6 +1078,7 @@ func (rb *Rb) Bytes() []byte {
 // IsBodyElement implements BodyElement interface
 func (rb *Rb) IsBodyElement() {}
 
+// Prepare renders the Rb component into its internal buffer.
 func (rb *Rb) Prepare() {
 	rb.buf.Reset()
 	rb.buf.WriteString("<rb")
@@ -941,23 +1088,27 @@ func (rb *Rb) Prepare() {
 	rb.buf.WriteString(">" + escapeText(rb.text) + "</rb>")
 }
 
+// Rt represents the Rt component or supporting type.
 type Rt struct {
 	buf   bytes.Buffer
 	style map[string]string
 	text  string
 }
 
+// NewRt creates a new Rt component.
 func NewRt() *Rt {
 	return &Rt{
 		style: make(map[string]string),
 	}
 }
 
+// AddStyle adds one inline CSS declaration to the Rt component.
 func (rt *Rt) AddStyle(k, v string) *Rt {
 	rt.style[k] = v
 	return rt
 }
 
+// AddStyles adds multiple inline CSS declarations to the Rt component.
 func (rt *Rt) AddStyles(m map[string]string) *Rt {
 	for k, v := range m {
 		rt.style[k] = v
@@ -965,16 +1116,19 @@ func (rt *Rt) AddStyles(m map[string]string) *Rt {
 	return rt
 }
 
+// Style replaces the inline CSS declarations on the Rt component.
 func (rt *Rt) Style(m map[string]string) *Rt {
 	rt.style = m
 	return rt
 }
 
+// Text sets or appends text content on the Rt component.
 func (rt *Rt) Text(s string) *Rt {
 	rt.text = s
 	return rt
 }
 
+// Bytes returns a defensive copy of the rendered Rt bytes.
 func (rt *Rt) Bytes() []byte {
 	return cloneBytes(rt.buf.Bytes())
 }
@@ -982,6 +1136,7 @@ func (rt *Rt) Bytes() []byte {
 // IsBodyElement implements BodyElement interface
 func (rt *Rt) IsBodyElement() {}
 
+// Prepare renders the Rt component into its internal buffer.
 func (rt *Rt) Prepare() {
 	rt.buf.Reset()
 	rt.buf.WriteString("<rt")
@@ -991,23 +1146,27 @@ func (rt *Rt) Prepare() {
 	rt.buf.WriteString(">" + escapeText(rt.text) + "</rt>")
 }
 
+// Rtc represents the Rtc component or supporting type.
 type Rtc struct {
 	buf      bytes.Buffer
 	style    map[string]string
 	contents []Element
 }
 
+// NewRtc creates a new Rtc component.
 func NewRtc() *Rtc {
 	return &Rtc{
 		style: make(map[string]string),
 	}
 }
 
+// AddStyle adds one inline CSS declaration to the Rtc component.
 func (rtc *Rtc) AddStyle(k, v string) *Rtc {
 	rtc.style[k] = v
 	return rtc
 }
 
+// AddStyles adds multiple inline CSS declarations to the Rtc component.
 func (rtc *Rtc) AddStyles(m map[string]string) *Rtc {
 	for k, v := range m {
 		rtc.style[k] = v
@@ -1015,16 +1174,19 @@ func (rtc *Rtc) AddStyles(m map[string]string) *Rtc {
 	return rtc
 }
 
+// Style replaces the inline CSS declarations on the Rtc component.
 func (rtc *Rtc) Style(m map[string]string) *Rtc {
 	rtc.style = m
 	return rtc
 }
 
+// Add appends child content to the Rtc component.
 func (rtc *Rtc) Add(e Element) *Rtc {
 	rtc.contents = appendElement(rtc.contents, e)
 	return rtc
 }
 
+// Bytes returns a defensive copy of the rendered Rtc bytes.
 func (rtc *Rtc) Bytes() []byte {
 	return cloneBytes(rtc.buf.Bytes())
 }
@@ -1032,6 +1194,7 @@ func (rtc *Rtc) Bytes() []byte {
 // IsBodyElement implements BodyElement interface
 func (rtc *Rtc) IsBodyElement() {}
 
+// Prepare renders the Rtc component into its internal buffer.
 func (rtc *Rtc) Prepare() {
 	rtc.buf.Reset()
 	rtc.buf.WriteString("<rtc")
@@ -1044,23 +1207,27 @@ func (rtc *Rtc) Prepare() {
 	rtc.buf.WriteString("</rtc>")
 }
 
+// Rp represents the Rp component or supporting type.
 type Rp struct {
 	buf   bytes.Buffer
 	style map[string]string
 	text  string
 }
 
+// NewRp creates a new Rp component.
 func NewRp() *Rp {
 	return &Rp{
 		style: make(map[string]string),
 	}
 }
 
+// AddStyle adds one inline CSS declaration to the Rp component.
 func (rp *Rp) AddStyle(k, v string) *Rp {
 	rp.style[k] = v
 	return rp
 }
 
+// AddStyles adds multiple inline CSS declarations to the Rp component.
 func (rp *Rp) AddStyles(m map[string]string) *Rp {
 	for k, v := range m {
 		rp.style[k] = v
@@ -1068,16 +1235,19 @@ func (rp *Rp) AddStyles(m map[string]string) *Rp {
 	return rp
 }
 
+// Style replaces the inline CSS declarations on the Rp component.
 func (rp *Rp) Style(m map[string]string) *Rp {
 	rp.style = m
 	return rp
 }
 
+// Text sets or appends text content on the Rp component.
 func (rp *Rp) Text(s string) *Rp {
 	rp.text = s
 	return rp
 }
 
+// Bytes returns a defensive copy of the rendered Rp bytes.
 func (rp *Rp) Bytes() []byte {
 	return cloneBytes(rp.buf.Bytes())
 }
@@ -1085,6 +1255,7 @@ func (rp *Rp) Bytes() []byte {
 // IsBodyElement implements BodyElement interface
 func (rp *Rp) IsBodyElement() {}
 
+// Prepare renders the Rp component into its internal buffer.
 func (rp *Rp) Prepare() {
 	rp.buf.Reset()
 	rp.buf.WriteString("<rp")
@@ -1094,23 +1265,27 @@ func (rp *Rp) Prepare() {
 	rp.buf.WriteString(">" + escapeText(rp.text) + "</rp>")
 }
 
+// Kbd represents the Kbd component or supporting type.
 type Kbd struct {
 	buf   bytes.Buffer
 	style map[string]string
 	text  string
 }
 
+// NewKbd creates a new Kbd component.
 func NewKbd() *Kbd {
 	return &Kbd{
 		style: make(map[string]string),
 	}
 }
 
+// AddStyle adds one inline CSS declaration to the Kbd component.
 func (k *Kbd) AddStyle(key, v string) *Kbd {
 	k.style[key] = v
 	return k
 }
 
+// AddStyles adds multiple inline CSS declarations to the Kbd component.
 func (k *Kbd) AddStyles(m map[string]string) *Kbd {
 	for key, v := range m {
 		k.style[key] = v
@@ -1118,16 +1293,19 @@ func (k *Kbd) AddStyles(m map[string]string) *Kbd {
 	return k
 }
 
+// Style replaces the inline CSS declarations on the Kbd component.
 func (k *Kbd) Style(m map[string]string) *Kbd {
 	k.style = m
 	return k
 }
 
+// Text sets or appends text content on the Kbd component.
 func (k *Kbd) Text(s string) *Kbd {
 	k.text = s
 	return k
 }
 
+// Bytes returns a defensive copy of the rendered Kbd bytes.
 func (k *Kbd) Bytes() []byte {
 	return cloneBytes(k.buf.Bytes())
 }
@@ -1135,6 +1313,7 @@ func (k *Kbd) Bytes() []byte {
 // IsBodyElement implements BodyElement interface
 func (k *Kbd) IsBodyElement() {}
 
+// Prepare renders the Kbd component into its internal buffer.
 func (k *Kbd) Prepare() {
 	k.buf.Reset()
 	k.buf.WriteString("<kbd")
@@ -1144,23 +1323,27 @@ func (k *Kbd) Prepare() {
 	k.buf.WriteString(">" + escapeText(k.text) + "</kbd>")
 }
 
+// Sub represents the Sub component or supporting type.
 type Sub struct {
 	buf   bytes.Buffer
 	style map[string]string
 	text  string
 }
 
+// NewSub creates a new Sub component.
 func NewSub() *Sub {
 	return &Sub{
 		style: make(map[string]string),
 	}
 }
 
+// AddStyle adds one inline CSS declaration to the Sub component.
 func (s *Sub) AddStyle(k, v string) *Sub {
 	s.style[k] = v
 	return s
 }
 
+// AddStyles adds multiple inline CSS declarations to the Sub component.
 func (s *Sub) AddStyles(m map[string]string) *Sub {
 	for k, v := range m {
 		s.style[k] = v
@@ -1168,16 +1351,19 @@ func (s *Sub) AddStyles(m map[string]string) *Sub {
 	return s
 }
 
+// Style replaces the inline CSS declarations on the Sub component.
 func (s *Sub) Style(m map[string]string) *Sub {
 	s.style = m
 	return s
 }
 
+// Text sets or appends text content on the Sub component.
 func (s *Sub) Text(str string) *Sub {
 	s.text = str
 	return s
 }
 
+// Bytes returns a defensive copy of the rendered Sub bytes.
 func (s *Sub) Bytes() []byte {
 	return cloneBytes(s.buf.Bytes())
 }
@@ -1185,6 +1371,7 @@ func (s *Sub) Bytes() []byte {
 // IsBodyElement implements BodyElement interface
 func (s *Sub) IsBodyElement() {}
 
+// Prepare renders the Sub component into its internal buffer.
 func (s *Sub) Prepare() {
 	s.buf.Reset()
 	s.buf.WriteString("<sub")
@@ -1194,23 +1381,27 @@ func (s *Sub) Prepare() {
 	s.buf.WriteString(">" + escapeText(s.text) + "</sub>")
 }
 
+// Sup represents the Sup component or supporting type.
 type Sup struct {
 	buf   bytes.Buffer
 	style map[string]string
 	text  string
 }
 
+// NewSup creates a new Sup component.
 func NewSup() *Sup {
 	return &Sup{
 		style: make(map[string]string),
 	}
 }
 
+// AddStyle adds one inline CSS declaration to the Sup component.
 func (s *Sup) AddStyle(k, v string) *Sup {
 	s.style[k] = v
 	return s
 }
 
+// AddStyles adds multiple inline CSS declarations to the Sup component.
 func (s *Sup) AddStyles(m map[string]string) *Sup {
 	for k, v := range m {
 		s.style[k] = v
@@ -1218,16 +1409,19 @@ func (s *Sup) AddStyles(m map[string]string) *Sup {
 	return s
 }
 
+// Style replaces the inline CSS declarations on the Sup component.
 func (s *Sup) Style(m map[string]string) *Sup {
 	s.style = m
 	return s
 }
 
+// Text sets or appends text content on the Sup component.
 func (s *Sup) Text(str string) *Sup {
 	s.text = str
 	return s
 }
 
+// Bytes returns a defensive copy of the rendered Sup bytes.
 func (s *Sup) Bytes() []byte {
 	return cloneBytes(s.buf.Bytes())
 }
@@ -1235,6 +1429,7 @@ func (s *Sup) Bytes() []byte {
 // IsBodyElement implements BodyElement interface
 func (s *Sup) IsBodyElement() {}
 
+// Prepare renders the Sup component into its internal buffer.
 func (s *Sup) Prepare() {
 	s.buf.Reset()
 	s.buf.WriteString("<sup")
@@ -1244,23 +1439,27 @@ func (s *Sup) Prepare() {
 	s.buf.WriteString(">" + escapeText(s.text) + "</sup>")
 }
 
+// Samp represents the Samp component or supporting type.
 type Samp struct {
 	buf   bytes.Buffer
 	style map[string]string
 	text  string
 }
 
+// NewSamp creates a new Samp component.
 func NewSamp() *Samp {
 	return &Samp{
 		style: make(map[string]string),
 	}
 }
 
+// AddStyle adds one inline CSS declaration to the Samp component.
 func (s *Samp) AddStyle(k, v string) *Samp {
 	s.style[k] = v
 	return s
 }
 
+// AddStyles adds multiple inline CSS declarations to the Samp component.
 func (s *Samp) AddStyles(m map[string]string) *Samp {
 	for k, v := range m {
 		s.style[k] = v
@@ -1268,16 +1467,19 @@ func (s *Samp) AddStyles(m map[string]string) *Samp {
 	return s
 }
 
+// Style replaces the inline CSS declarations on the Samp component.
 func (s *Samp) Style(m map[string]string) *Samp {
 	s.style = m
 	return s
 }
 
+// Text sets or appends text content on the Samp component.
 func (s *Samp) Text(str string) *Samp {
 	s.text = str
 	return s
 }
 
+// Bytes returns a defensive copy of the rendered Samp bytes.
 func (s *Samp) Bytes() []byte {
 	return cloneBytes(s.buf.Bytes())
 }
@@ -1285,6 +1487,7 @@ func (s *Samp) Bytes() []byte {
 // IsBodyElement implements BodyElement interface
 func (s *Samp) IsBodyElement() {}
 
+// Prepare renders the Samp component into its internal buffer.
 func (s *Samp) Prepare() {
 	s.buf.Reset()
 	s.buf.WriteString("<samp")
@@ -1294,23 +1497,27 @@ func (s *Samp) Prepare() {
 	s.buf.WriteString(">" + escapeText(s.text) + "</samp>")
 }
 
+// Small represents the Small component or supporting type.
 type Small struct {
 	buf   bytes.Buffer
 	style map[string]string
 	text  string
 }
 
+// NewSmall creates a new Small component.
 func NewSmall() *Small {
 	return &Small{
 		style: make(map[string]string),
 	}
 }
 
+// AddStyle adds one inline CSS declaration to the Small component.
 func (s *Small) AddStyle(k, v string) *Small {
 	s.style[k] = v
 	return s
 }
 
+// AddStyles adds multiple inline CSS declarations to the Small component.
 func (s *Small) AddStyles(m map[string]string) *Small {
 	for k, v := range m {
 		s.style[k] = v
@@ -1318,16 +1525,19 @@ func (s *Small) AddStyles(m map[string]string) *Small {
 	return s
 }
 
+// Style replaces the inline CSS declarations on the Small component.
 func (s *Small) Style(m map[string]string) *Small {
 	s.style = m
 	return s
 }
 
+// Text sets or appends text content on the Small component.
 func (s *Small) Text(str string) *Small {
 	s.text = str
 	return s
 }
 
+// Bytes returns a defensive copy of the rendered Small bytes.
 func (s *Small) Bytes() []byte {
 	return cloneBytes(s.buf.Bytes())
 }
@@ -1335,6 +1545,7 @@ func (s *Small) Bytes() []byte {
 // IsBodyElement implements BodyElement interface
 func (s *Small) IsBodyElement() {}
 
+// Prepare renders the Small component into its internal buffer.
 func (s *Small) Prepare() {
 	s.buf.Reset()
 	s.buf.WriteString("<small")
@@ -1344,23 +1555,27 @@ func (s *Small) Prepare() {
 	s.buf.WriteString(">" + escapeText(s.text) + "</small>")
 }
 
+// Span represents the Span component or supporting type.
 type Span struct {
 	buf   bytes.Buffer
 	style map[string]string
 	text  string
 }
 
+// NewSpan creates a new Span component.
 func NewSpan() *Span {
 	return &Span{
 		style: make(map[string]string),
 	}
 }
 
+// AddStyle adds one inline CSS declaration to the Span component.
 func (s *Span) AddStyle(k, v string) *Span {
 	s.style[k] = v
 	return s
 }
 
+// AddStyles adds multiple inline CSS declarations to the Span component.
 func (s *Span) AddStyles(m map[string]string) *Span {
 	for k, v := range m {
 		s.style[k] = v
@@ -1368,16 +1583,19 @@ func (s *Span) AddStyles(m map[string]string) *Span {
 	return s
 }
 
+// Style replaces the inline CSS declarations on the Span component.
 func (s *Span) Style(m map[string]string) *Span {
 	s.style = m
 	return s
 }
 
+// Text sets or appends text content on the Span component.
 func (s *Span) Text(str string) *Span {
 	s.text = str
 	return s
 }
 
+// Bytes returns a defensive copy of the rendered Span bytes.
 func (s *Span) Bytes() []byte {
 	return cloneBytes(s.buf.Bytes())
 }
@@ -1385,6 +1603,7 @@ func (s *Span) Bytes() []byte {
 // IsBodyElement implements BodyElement interface
 func (s *Span) IsBodyElement() {}
 
+// Prepare renders the Span component into its internal buffer.
 func (s *Span) Prepare() {
 	s.buf.Reset()
 	s.buf.WriteString("<span")
@@ -1394,23 +1613,27 @@ func (s *Span) Prepare() {
 	s.buf.WriteString(">" + escapeText(s.text) + "</span>")
 }
 
+// Strong represents the Strong component or supporting type.
 type Strong struct {
 	buf   bytes.Buffer
 	style map[string]string
 	text  string
 }
 
+// NewStrong creates a new Strong component.
 func NewStrong() *Strong {
 	return &Strong{
 		style: make(map[string]string),
 	}
 }
 
+// AddStyle adds one inline CSS declaration to the Strong component.
 func (s *Strong) AddStyle(k, v string) *Strong {
 	s.style[k] = v
 	return s
 }
 
+// AddStyles adds multiple inline CSS declarations to the Strong component.
 func (s *Strong) AddStyles(m map[string]string) *Strong {
 	for k, v := range m {
 		s.style[k] = v
@@ -1418,16 +1641,19 @@ func (s *Strong) AddStyles(m map[string]string) *Strong {
 	return s
 }
 
+// Style replaces the inline CSS declarations on the Strong component.
 func (s *Strong) Style(m map[string]string) *Strong {
 	s.style = m
 	return s
 }
 
+// Text sets or appends text content on the Strong component.
 func (s *Strong) Text(str string) *Strong {
 	s.text = str
 	return s
 }
 
+// Bytes returns a defensive copy of the rendered Strong bytes.
 func (s *Strong) Bytes() []byte {
 	return cloneBytes(s.buf.Bytes())
 }
@@ -1435,6 +1661,7 @@ func (s *Strong) Bytes() []byte {
 // IsBodyElement implements BodyElement interface
 func (s *Strong) IsBodyElement() {}
 
+// Prepare renders the Strong component into its internal buffer.
 func (s *Strong) Prepare() {
 	s.buf.Reset()
 	s.buf.WriteString("<strong")
@@ -1444,6 +1671,7 @@ func (s *Strong) Prepare() {
 	s.buf.WriteString(">" + escapeText(s.text) + "</strong>")
 }
 
+// Time represents the Time component or supporting type.
 type Time struct {
 	buf      bytes.Buffer
 	style    map[string]string
@@ -1451,17 +1679,20 @@ type Time struct {
 	datetime string
 }
 
+// NewTime creates a new Time component.
 func NewTime() *Time {
 	return &Time{
 		style: make(map[string]string),
 	}
 }
 
+// AddStyle adds one inline CSS declaration to the Time component.
 func (t *Time) AddStyle(k, v string) *Time {
 	t.style[k] = v
 	return t
 }
 
+// AddStyles adds multiple inline CSS declarations to the Time component.
 func (t *Time) AddStyles(m map[string]string) *Time {
 	for k, v := range m {
 		t.style[k] = v
@@ -1469,16 +1700,19 @@ func (t *Time) AddStyles(m map[string]string) *Time {
 	return t
 }
 
+// Style replaces the inline CSS declarations on the Time component.
 func (t *Time) Style(m map[string]string) *Time {
 	t.style = m
 	return t
 }
 
+// Text sets or appends text content on the Time component.
 func (t *Time) Text(str string) *Time {
 	t.text = str
 	return t
 }
 
+// Datetime sets the datetime value on the Time component.
 func (t *Time) Datetime(dt string) *Time {
 	if !isValidDatetime(dt) {
 		log.Fatal("Invalid datetime value: " + dt)
@@ -1487,6 +1721,7 @@ func (t *Time) Datetime(dt string) *Time {
 	return t
 }
 
+// isValidDatetime reports whether a string is accepted for the datetime attribute.
 func isValidDatetime(dt string) bool {
 	if dt == "" {
 		return true
@@ -1530,6 +1765,7 @@ func isValidDatetime(dt string) bool {
 	return false
 }
 
+// Bytes returns a defensive copy of the rendered Time bytes.
 func (t *Time) Bytes() []byte {
 	return cloneBytes(t.buf.Bytes())
 }
@@ -1537,6 +1773,7 @@ func (t *Time) Bytes() []byte {
 // IsBodyElement implements BodyElement interface
 func (t *Time) IsBodyElement() {}
 
+// Prepare renders the Time component into its internal buffer.
 func (t *Time) Prepare() {
 	t.buf.Reset()
 	t.buf.WriteString("<time")
@@ -1549,23 +1786,27 @@ func (t *Time) Prepare() {
 	t.buf.WriteString(">" + escapeText(t.text) + "</time>")
 }
 
+// Var represents the Var component or supporting type.
 type Var struct {
 	buf   bytes.Buffer
 	style map[string]string
 	text  string
 }
 
+// NewVar creates a new Var component.
 func NewVar() *Var {
 	return &Var{
 		style: make(map[string]string),
 	}
 }
 
+// AddStyle adds one inline CSS declaration to the Var component.
 func (v *Var) AddStyle(k, val string) *Var {
 	v.style[k] = val
 	return v
 }
 
+// AddStyles adds multiple inline CSS declarations to the Var component.
 func (v *Var) AddStyles(m map[string]string) *Var {
 	for k, val := range m {
 		v.style[k] = val
@@ -1573,16 +1814,19 @@ func (v *Var) AddStyles(m map[string]string) *Var {
 	return v
 }
 
+// Style replaces the inline CSS declarations on the Var component.
 func (v *Var) Style(m map[string]string) *Var {
 	v.style = m
 	return v
 }
 
+// Text sets or appends text content on the Var component.
 func (v *Var) Text(str string) *Var {
 	v.text = str
 	return v
 }
 
+// Bytes returns a defensive copy of the rendered Var bytes.
 func (v *Var) Bytes() []byte {
 	return cloneBytes(v.buf.Bytes())
 }
@@ -1590,6 +1834,7 @@ func (v *Var) Bytes() []byte {
 // IsBodyElement implements BodyElement interface
 func (v *Var) IsBodyElement() {}
 
+// Prepare renders the Var component into its internal buffer.
 func (v *Var) Prepare() {
 	v.buf.Reset()
 	v.buf.WriteString("<var")
@@ -1599,22 +1844,26 @@ func (v *Var) Prepare() {
 	v.buf.WriteString(">" + escapeText(v.text) + "</var>")
 }
 
+// Wbr represents the Wbr component or supporting type.
 type Wbr struct {
 	buf   bytes.Buffer
 	style map[string]string
 }
 
+// NewWbr creates a new Wbr component.
 func NewWbr() *Wbr {
 	return &Wbr{
 		style: make(map[string]string),
 	}
 }
 
+// AddStyle adds one inline CSS declaration to the Wbr component.
 func (w *Wbr) AddStyle(k, v string) *Wbr {
 	w.style[k] = v
 	return w
 }
 
+// AddStyles adds multiple inline CSS declarations to the Wbr component.
 func (w *Wbr) AddStyles(m map[string]string) *Wbr {
 	for k, v := range m {
 		w.style[k] = v
@@ -1622,11 +1871,13 @@ func (w *Wbr) AddStyles(m map[string]string) *Wbr {
 	return w
 }
 
+// Style replaces the inline CSS declarations on the Wbr component.
 func (w *Wbr) Style(m map[string]string) *Wbr {
 	w.style = m
 	return w
 }
 
+// Bytes returns a defensive copy of the rendered Wbr bytes.
 func (w *Wbr) Bytes() []byte {
 	return cloneBytes(w.buf.Bytes())
 }
@@ -1634,6 +1885,7 @@ func (w *Wbr) Bytes() []byte {
 // IsBodyElement implements BodyElement interface
 func (w *Wbr) IsBodyElement() {}
 
+// Prepare renders the Wbr component into its internal buffer.
 func (w *Wbr) Prepare() {
 	w.buf.Reset()
 	w.buf.WriteString("<wbr")

@@ -4,6 +4,7 @@ import (
 	"bytes"
 )
 
+// Div represents the Div component or supporting type.
 type Div struct {
 	buf      bytes.Buffer
 	contents []Element
@@ -11,22 +12,26 @@ type Div struct {
 	style    map[string]string
 }
 
+// NewDiv creates a new Div component.
 func NewDiv() *Div {
 	return &Div{
 		style: make(map[string]string),
 	}
 }
 
+// Tabs sets the tabs value on the Div component.
 func (d *Div) Tabs(i int) *Div {
 	d.ttrack = i
 	return d
 }
 
+// Add appends child content to the Div component.
 func (d *Div) Add(e Element) *Div {
 	d.contents = appendElement(d.contents, e)
 	return d
 }
 
+// AddStyles adds multiple inline CSS declarations to the Div component.
 func (d *Div) AddStyles(m map[string]string) *Div {
 	for k, v := range m {
 		d.style[k] = v
@@ -34,6 +39,7 @@ func (d *Div) AddStyles(m map[string]string) *Div {
 	return d
 }
 
+// Bytes returns a defensive copy of the rendered Div bytes.
 func (d *Div) Bytes() []byte {
 	return cloneBytes(d.buf.Bytes())
 }
@@ -41,6 +47,7 @@ func (d *Div) Bytes() []byte {
 // IsBodyElement implements BodyElement interface
 func (d *Div) IsBodyElement() {}
 
+// Prepare renders the Div component into its internal buffer.
 func (d *Div) Prepare() {
 	d.buf.Reset()
 	d.buf.WriteString("<div")
@@ -64,6 +71,7 @@ func (d *Div) Prepare() {
 	d.buf.WriteString("</div>")
 }
 
+// formatDiv applies legacy indentation behavior for nested div content.
 func (d *Div) formatDiv(b []byte) []byte {
 	var fb bytes.Buffer
 
@@ -101,6 +109,7 @@ func (d *Div) formatDiv(b []byte) []byte {
 	return fb.Bytes()
 }
 
+// formatTable applies legacy indentation behavior for table content in divs.
 func (d *Div) formatTable(b []byte) []byte {
 	var fb bytes.Buffer
 

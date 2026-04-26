@@ -48,18 +48,22 @@ func tabs(t int) string {
 	return res
 }
 
+// cloneBytes returns a copy of rendered bytes so callers cannot mutate buffers.
 func cloneBytes(b []byte) []byte {
 	return append([]byte(nil), b...)
 }
 
+// escapeText escapes ordinary HTML text node content.
 func escapeText(text string) string {
 	return html.EscapeString(text)
 }
 
+// escapeAttr escapes HTML attribute values.
 func escapeAttr(value string) string {
 	return html.EscapeString(value)
 }
 
+// writeAttr writes one escaped name/value HTML attribute.
 func writeAttr(buf *bytes.Buffer, name, value string) {
 	buf.WriteByte(' ')
 	buf.WriteString(name)
@@ -68,10 +72,12 @@ func writeAttr(buf *bytes.Buffer, name, value string) {
 	buf.WriteByte('"')
 }
 
+// writeIntAttr writes one integer HTML attribute.
 func writeIntAttr(buf *bytes.Buffer, name string, value int) {
 	writeAttr(buf, name, strconv.Itoa(value))
 }
 
+// writeClassAttr writes a class attribute from class names.
 func writeClassAttr(buf *bytes.Buffer, classes []string) {
 	buf.WriteString(" class=\"")
 	for i, class := range classes {
@@ -83,22 +89,29 @@ func writeClassAttr(buf *bytes.Buffer, classes []string) {
 	buf.WriteByte('"')
 }
 
+// rawText stores content that should be rendered without escaping.
 type rawText string
 
+// Bytes returns a defensive copy of the rendered rawText bytes.
 func (r rawText) Bytes() []byte {
 	return []byte(r)
 }
 
+// Prepare renders the rawText component into its internal buffer.
 func (r rawText) Prepare() {}
 
+// escapedText stores content that should be escaped before rendering.
 type escapedText string
 
+// Bytes returns a defensive copy of the rendered escapedText bytes.
 func (e escapedText) Bytes() []byte {
 	return []byte(escapeText(string(e)))
 }
 
+// Prepare renders the escapedText component into its internal buffer.
 func (e escapedText) Prepare() {}
 
+// appendElement appends a non-nil child element to a content slice.
 func appendElement(contents []Element, e Element) []Element {
 	if e == nil {
 		return contents
@@ -106,6 +119,7 @@ func appendElement(contents []Element, e Element) []Element {
 	return append(contents, e)
 }
 
+// writeElement prepares and writes one element to the destination buffer.
 func writeElement(buf *bytes.Buffer, e Element) {
 	if e == nil {
 		return
@@ -114,6 +128,7 @@ func writeElement(buf *bytes.Buffer, e Element) {
 	buf.Write(e.Bytes())
 }
 
+// writeElements prepares and writes all elements to the destination buffer.
 func writeElements(buf *bytes.Buffer, contents []Element) {
 	for _, e := range contents {
 		writeElement(buf, e)

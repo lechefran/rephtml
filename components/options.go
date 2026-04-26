@@ -1,5 +1,6 @@
 package rephtml
 
+// Options represents the Options component or supporting type.
 type Options struct {
 	AllowAudio           bool       // allow audio
 	AllowEmbeddedContent bool       // allow embedded content

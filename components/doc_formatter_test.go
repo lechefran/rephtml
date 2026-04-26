@@ -5,6 +5,7 @@ import (
 	"testing"
 )
 
+// TestFormatHTMLKeepsComparisonTextLiteral provides TestFormatHTMLKeepsComparisonTextLiteral behavior for the package.
 func TestFormatHTMLKeepsComparisonTextLiteral(t *testing.T) {
 	input := []byte(`<html><body><p>Keep 1 < 2 and 3 > 2</p></body></html>`)
 	got := string(formatHTML(input))
@@ -19,6 +20,7 @@ func TestFormatHTMLKeepsComparisonTextLiteral(t *testing.T) {
 	}
 }
 
+// TestFormatHTMLAllowsGreaterThanInsideQuotedAttributes provides TestFormatHTMLAllowsGreaterThanInsideQuotedAttributes behavior for the package.
 func TestFormatHTMLAllowsGreaterThanInsideQuotedAttributes(t *testing.T) {
 	input := []byte(`<html><body><div data-rule="score > 10"><span>ok</span></div></body></html>`)
 	got := string(formatHTML(input))
@@ -35,6 +37,7 @@ func TestFormatHTMLAllowsGreaterThanInsideQuotedAttributes(t *testing.T) {
 	}
 }
 
+// TestFormatHTMLPreservesRawTextElementBody provides TestFormatHTMLPreservesRawTextElementBody behavior for the package.
 func TestFormatHTMLPreservesRawTextElementBody(t *testing.T) {
 	body := "  first\n\tsecond < third > fourth\n"
 	input := []byte(`<html><body><pre>` + body + `</pre></body></html>`)
@@ -52,6 +55,7 @@ func TestFormatHTMLPreservesRawTextElementBody(t *testing.T) {
 	}
 }
 
+// TestFormatHTMLIndentsStyleBody provides TestFormatHTMLIndentsStyleBody behavior for the package.
 func TestFormatHTMLIndentsStyleBody(t *testing.T) {
 	input := []byte("<html><head><style>\nbody {\n\tcolor: red;\n}\n</style></head></html>")
 	got := string(formatHTML(input))

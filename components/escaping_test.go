@@ -2,6 +2,7 @@ package rephtml
 
 import "testing"
 
+// TestAnchorEscapesTextAndAttributes provides TestAnchorEscapesTextAndAttributes behavior for the package.
 func TestAnchorEscapesTextAndAttributes(t *testing.T) {
 	anchor := NewAnchor().
 		Link(`https://example.test/search?q="cats"&tag=<pet>`).
@@ -15,6 +16,7 @@ func TestAnchorEscapesTextAndAttributes(t *testing.T) {
 	}
 }
 
+// TestTableEscapesLegacyHeadersRowsAndAttributes provides TestTableEscapesLegacyHeadersRowsAndAttributes behavior for the package.
 func TestTableEscapesLegacyHeadersRowsAndAttributes(t *testing.T) {
 	table := NewTable().
 		Id(`sales"2026`).
@@ -30,6 +32,7 @@ func TestTableEscapesLegacyHeadersRowsAndAttributes(t *testing.T) {
 	}
 }
 
+// TestContainerTextHelpersEscapeText provides TestContainerTextHelpersEscapeText behavior for the package.
 func TestContainerTextHelpersEscapeText(t *testing.T) {
 	button := NewButton().Text(`<Save & Close>`)
 	button.Prepare()
@@ -40,6 +43,7 @@ func TestContainerTextHelpersEscapeText(t *testing.T) {
 	}
 }
 
+// TestStyleElementTextRemainsRaw provides TestStyleElementTextRemainsRaw behavior for the package.
 func TestStyleElementTextRemainsRaw(t *testing.T) {
 	style := NewStyleElement().Text(`.a > .b { content: "x & y"; }`)
 	style.Prepare()

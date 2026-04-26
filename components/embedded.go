@@ -2,6 +2,7 @@ package rephtml
 
 import "bytes"
 
+// Embed represents the Embed component or supporting type.
 type Embed struct {
 	buf       bytes.Buffer
 	style     map[string]string
@@ -11,17 +12,20 @@ type Embed struct {
 	height    string
 }
 
+// NewEmbed creates a new Embed component.
 func NewEmbed() *Embed {
 	return &Embed{
 		style: make(map[string]string),
 	}
 }
 
+// AddStyle adds one inline CSS declaration to the Embed component.
 func (e *Embed) AddStyle(k, v string) *Embed {
 	e.style[k] = v
 	return e
 }
 
+// AddStyles adds multiple inline CSS declarations to the Embed component.
 func (e *Embed) AddStyles(m map[string]string) *Embed {
 	for k, v := range m {
 		e.style[k] = v
@@ -29,31 +33,37 @@ func (e *Embed) AddStyles(m map[string]string) *Embed {
 	return e
 }
 
+// Style replaces the inline CSS declarations on the Embed component.
 func (e *Embed) Style(m map[string]string) *Embed {
 	e.style = m
 	return e
 }
 
+// Src sets the src value on the Embed component.
 func (e *Embed) Src(src string) *Embed {
 	e.src = src
 	return e
 }
 
+// Type sets the type value on the Embed component.
 func (e *Embed) Type(embedType string) *Embed {
 	e.embedType = embedType
 	return e
 }
 
+// Width sets the width value on the Embed component.
 func (e *Embed) Width(width string) *Embed {
 	e.width = width
 	return e
 }
 
+// Height sets the height value on the Embed component.
 func (e *Embed) Height(height string) *Embed {
 	e.height = height
 	return e
 }
 
+// Bytes returns a defensive copy of the rendered Embed bytes.
 func (e *Embed) Bytes() []byte {
 	return cloneBytes(e.buf.Bytes())
 }
@@ -61,6 +71,7 @@ func (e *Embed) Bytes() []byte {
 // IsBodyElement implements BodyElement interface
 func (e *Embed) IsBodyElement() {}
 
+// Prepare renders the Embed component into its internal buffer.
 func (e *Embed) Prepare() {
 	e.buf.Reset()
 	e.buf.WriteString("<embed")
@@ -82,6 +93,7 @@ func (e *Embed) Prepare() {
 	e.buf.WriteString(">")
 }
 
+// Iframe represents the Iframe component or supporting type.
 type Iframe struct {
 	buf             bytes.Buffer
 	style           map[string]string
@@ -97,17 +109,20 @@ type Iframe struct {
 	srcdoc          string
 }
 
+// NewIframe creates a new Iframe component.
 func NewIframe() *Iframe {
 	return &Iframe{
 		style: make(map[string]string),
 	}
 }
 
+// AddStyle adds one inline CSS declaration to the Iframe component.
 func (i *Iframe) AddStyle(k, v string) *Iframe {
 	i.style[k] = v
 	return i
 }
 
+// AddStyles adds multiple inline CSS declarations to the Iframe component.
 func (i *Iframe) AddStyles(m map[string]string) *Iframe {
 	for k, v := range m {
 		i.style[k] = v
@@ -115,61 +130,73 @@ func (i *Iframe) AddStyles(m map[string]string) *Iframe {
 	return i
 }
 
+// Style replaces the inline CSS declarations on the Iframe component.
 func (i *Iframe) Style(m map[string]string) *Iframe {
 	i.style = m
 	return i
 }
 
+// Src sets the src value on the Iframe component.
 func (i *Iframe) Src(src string) *Iframe {
 	i.src = src
 	return i
 }
 
+// Width sets the width value on the Iframe component.
 func (i *Iframe) Width(width string) *Iframe {
 	i.width = width
 	return i
 }
 
+// Height sets the height value on the Iframe component.
 func (i *Iframe) Height(height string) *Iframe {
 	i.height = height
 	return i
 }
 
+// Name sets the name value on the Iframe component.
 func (i *Iframe) Name(name string) *Iframe {
 	i.name = name
 	return i
 }
 
+// Sandbox sets the sandbox value on the Iframe component.
 func (i *Iframe) Sandbox(sandbox string) *Iframe {
 	i.sandbox = sandbox
 	return i
 }
 
+// Allow sets the allow value on the Iframe component.
 func (i *Iframe) Allow(allow string) *Iframe {
 	i.allow = allow
 	return i
 }
 
+// Allowfullscreen sets the allowfullscreen value on the Iframe component.
 func (i *Iframe) Allowfullscreen(allowfullscreen bool) *Iframe {
 	i.allowfullscreen = allowfullscreen
 	return i
 }
 
+// Loading sets the loading value on the Iframe component.
 func (i *Iframe) Loading(loading string) *Iframe {
 	i.loading = loading
 	return i
 }
 
+// Referrerpolicy sets the referrerpolicy value on the Iframe component.
 func (i *Iframe) Referrerpolicy(referrerpolicy string) *Iframe {
 	i.referrerpolicy = referrerpolicy
 	return i
 }
 
+// Srcdoc sets the srcdoc value on the Iframe component.
 func (i *Iframe) Srcdoc(srcdoc string) *Iframe {
 	i.srcdoc = srcdoc
 	return i
 }
 
+// Bytes returns a defensive copy of the rendered Iframe bytes.
 func (i *Iframe) Bytes() []byte {
 	return cloneBytes(i.buf.Bytes())
 }
@@ -177,6 +204,7 @@ func (i *Iframe) Bytes() []byte {
 // IsBodyElement implements BodyElement interface
 func (i *Iframe) IsBodyElement() {}
 
+// Prepare renders the Iframe component into its internal buffer.
 func (i *Iframe) Prepare() {
 	i.buf.Reset()
 	i.buf.WriteString("<iframe")
@@ -216,6 +244,7 @@ func (i *Iframe) Prepare() {
 	i.buf.WriteString("></iframe>")
 }
 
+// Object represents the Object component or supporting type.
 type Object struct {
 	buf      bytes.Buffer
 	style    map[string]string
@@ -229,17 +258,20 @@ type Object struct {
 	form     string
 }
 
+// NewObject creates a new Object component.
 func NewObject() *Object {
 	return &Object{
 		style: make(map[string]string),
 	}
 }
 
+// AddStyle adds one inline CSS declaration to the Object component.
 func (o *Object) AddStyle(k, v string) *Object {
 	o.style[k] = v
 	return o
 }
 
+// AddStyles adds multiple inline CSS declarations to the Object component.
 func (o *Object) AddStyles(m map[string]string) *Object {
 	for k, v := range m {
 		o.style[k] = v
@@ -247,51 +279,61 @@ func (o *Object) AddStyles(m map[string]string) *Object {
 	return o
 }
 
+// Style replaces the inline CSS declarations on the Object component.
 func (o *Object) Style(m map[string]string) *Object {
 	o.style = m
 	return o
 }
 
+// Add appends child content to the Object component.
 func (o *Object) Add(e Element) *Object {
 	o.contents = appendElement(o.contents, e)
 	return o
 }
 
+// Data sets the data value on the Object component.
 func (o *Object) Data(data string) *Object {
 	o.data = data
 	return o
 }
 
+// Type sets the type value on the Object component.
 func (o *Object) Type(objType string) *Object {
 	o.objType = objType
 	return o
 }
 
+// Width sets the width value on the Object component.
 func (o *Object) Width(width string) *Object {
 	o.width = width
 	return o
 }
 
+// Height sets the height value on the Object component.
 func (o *Object) Height(height string) *Object {
 	o.height = height
 	return o
 }
 
+// Name sets the name value on the Object component.
 func (o *Object) Name(name string) *Object {
 	o.name = name
 	return o
 }
 
+// Usemap sets the usemap value on the Object component.
 func (o *Object) Usemap(usemap string) *Object {
 	o.usemap = usemap
 	return o
 }
 
+// Form sets the form value on the Object component.
 func (o *Object) Form(form string) *Object {
 	o.form = form
 	return o
 }
 
+// Bytes returns a defensive copy of the rendered Object bytes.
 func (o *Object) Bytes() []byte {
 	return cloneBytes(o.buf.Bytes())
 }
@@ -299,6 +341,7 @@ func (o *Object) Bytes() []byte {
 // IsBodyElement implements BodyElement interface
 func (o *Object) IsBodyElement() {}
 
+// Prepare renders the Object component into its internal buffer.
 func (o *Object) Prepare() {
 	o.buf.Reset()
 	o.buf.WriteString("<object")
@@ -332,23 +375,27 @@ func (o *Object) Prepare() {
 	o.buf.WriteString("</object>")
 }
 
+// Picture represents the Picture component or supporting type.
 type Picture struct {
 	buf      bytes.Buffer
 	style    map[string]string
 	contents []Element
 }
 
+// NewPicture creates a new Picture component.
 func NewPicture() *Picture {
 	return &Picture{
 		style: make(map[string]string),
 	}
 }
 
+// AddStyle adds one inline CSS declaration to the Picture component.
 func (p *Picture) AddStyle(k, v string) *Picture {
 	p.style[k] = v
 	return p
 }
 
+// AddStyles adds multiple inline CSS declarations to the Picture component.
 func (p *Picture) AddStyles(m map[string]string) *Picture {
 	for k, v := range m {
 		p.style[k] = v
@@ -356,16 +403,19 @@ func (p *Picture) AddStyles(m map[string]string) *Picture {
 	return p
 }
 
+// Style replaces the inline CSS declarations on the Picture component.
 func (p *Picture) Style(m map[string]string) *Picture {
 	p.style = m
 	return p
 }
 
+// Add appends child content to the Picture component.
 func (p *Picture) Add(e Element) *Picture {
 	p.contents = appendElement(p.contents, e)
 	return p
 }
 
+// Bytes returns a defensive copy of the rendered Picture bytes.
 func (p *Picture) Bytes() []byte {
 	return cloneBytes(p.buf.Bytes())
 }
@@ -373,6 +423,7 @@ func (p *Picture) Bytes() []byte {
 // IsBodyElement implements BodyElement interface
 func (p *Picture) IsBodyElement() {}
 
+// Prepare renders the Picture component into its internal buffer.
 func (p *Picture) Prepare() {
 	p.buf.Reset()
 	p.buf.WriteString("<picture")
@@ -385,6 +436,7 @@ func (p *Picture) Prepare() {
 	p.buf.WriteString("</picture>")
 }
 
+// Portal represents the Portal component or supporting type.
 type Portal struct {
 	buf            bytes.Buffer
 	style          map[string]string
@@ -392,17 +444,20 @@ type Portal struct {
 	referrerpolicy string
 }
 
+// NewPortal creates a new Portal component.
 func NewPortal() *Portal {
 	return &Portal{
 		style: make(map[string]string),
 	}
 }
 
+// AddStyle adds one inline CSS declaration to the Portal component.
 func (p *Portal) AddStyle(k, v string) *Portal {
 	p.style[k] = v
 	return p
 }
 
+// AddStyles adds multiple inline CSS declarations to the Portal component.
 func (p *Portal) AddStyles(m map[string]string) *Portal {
 	for k, v := range m {
 		p.style[k] = v
@@ -410,21 +465,25 @@ func (p *Portal) AddStyles(m map[string]string) *Portal {
 	return p
 }
 
+// Style replaces the inline CSS declarations on the Portal component.
 func (p *Portal) Style(m map[string]string) *Portal {
 	p.style = m
 	return p
 }
 
+// Src sets the src value on the Portal component.
 func (p *Portal) Src(src string) *Portal {
 	p.src = src
 	return p
 }
 
+// Referrerpolicy sets the referrerpolicy value on the Portal component.
 func (p *Portal) Referrerpolicy(referrerpolicy string) *Portal {
 	p.referrerpolicy = referrerpolicy
 	return p
 }
 
+// Bytes returns a defensive copy of the rendered Portal bytes.
 func (p *Portal) Bytes() []byte {
 	return cloneBytes(p.buf.Bytes())
 }
@@ -432,6 +491,7 @@ func (p *Portal) Bytes() []byte {
 // IsBodyElement implements BodyElement interface
 func (p *Portal) IsBodyElement() {}
 
+// Prepare renders the Portal component into its internal buffer.
 func (p *Portal) Prepare() {
 	p.buf.Reset()
 	p.buf.WriteString("<portal")
@@ -447,6 +507,7 @@ func (p *Portal) Prepare() {
 	p.buf.WriteString("></portal>")
 }
 
+// Source represents the Source component or supporting type.
 type Source struct {
 	buf     bytes.Buffer
 	style   map[string]string
@@ -457,17 +518,20 @@ type Source struct {
 	srcType string
 }
 
+// NewSource creates a new Source component.
 func NewSource() *Source {
 	return &Source{
 		style: make(map[string]string),
 	}
 }
 
+// AddStyle adds one inline CSS declaration to the Source component.
 func (s *Source) AddStyle(k, v string) *Source {
 	s.style[k] = v
 	return s
 }
 
+// AddStyles adds multiple inline CSS declarations to the Source component.
 func (s *Source) AddStyles(m map[string]string) *Source {
 	for k, v := range m {
 		s.style[k] = v
@@ -475,36 +539,43 @@ func (s *Source) AddStyles(m map[string]string) *Source {
 	return s
 }
 
+// Style replaces the inline CSS declarations on the Source component.
 func (s *Source) Style(m map[string]string) *Source {
 	s.style = m
 	return s
 }
 
+// Src sets the src value on the Source component.
 func (s *Source) Src(src string) *Source {
 	s.src = src
 	return s
 }
 
+// Srcset sets the srcset value on the Source component.
 func (s *Source) Srcset(srcset string) *Source {
 	s.srcset = srcset
 	return s
 }
 
+// Media sets the media value on the Source component.
 func (s *Source) Media(media string) *Source {
 	s.media = media
 	return s
 }
 
+// Sizes sets the sizes value on the Source component.
 func (s *Source) Sizes(sizes string) *Source {
 	s.sizes = sizes
 	return s
 }
 
+// Type sets the type value on the Source component.
 func (s *Source) Type(srcType string) *Source {
 	s.srcType = srcType
 	return s
 }
 
+// Bytes returns a defensive copy of the rendered Source bytes.
 func (s *Source) Bytes() []byte {
 	return cloneBytes(s.buf.Bytes())
 }
@@ -512,6 +583,7 @@ func (s *Source) Bytes() []byte {
 // IsBodyElement implements BodyElement interface
 func (s *Source) IsBodyElement() {}
 
+// Prepare renders the Source component into its internal buffer.
 func (s *Source) Prepare() {
 	s.buf.Reset()
 	s.buf.WriteString("<source")

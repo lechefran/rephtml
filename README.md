@@ -1,29 +1,89 @@
 # rephtml
-A simple HTML file creator written in Go! rephtml supports both string and struct parameters.
-## Simple Example
+
+rephtml is a fluent Go package for building HTML documents from typed components. Each component implements the `Element` interface, renders into an internal byte buffer with `Prepare`, and exposes rendered bytes through `Bytes`.
+
+The package is designed around small composable structs:
+
+- `NewHtmlFile` creates the document root and owns the final file output.
+- `AddToHead` and `AddToBody` place components into generated `<head>` and `<body>` sections.
+- `Add` composes child elements into container elements.
+- `Text` methods escape normal text content by default.
+- Attribute setters escape attribute values by default.
+- `StyleElement.Text` and `Script.Text` intentionally preserve raw CSS and JavaScript content.
+- `WriteToFile` writes a human-readable formatted HTML file.
+
+## Installation
+
+```sh
+go get github.com/lechefran/rephtml
 ```
-html := NewHtmlFile()
-html.Style(`h1, h2, h3, h4, h5, h6, p {
-		font-family: Arial;
-		text-align: center;
-	}`)
-html.Style(`th, td {
-		font-family: Arial;
-		padding: 10px;
-		text-align: center;
-	}`)
-html.Style(`table {
-	margin-left: auto;
-	margin-right: auto;
-	width: 80%;
-	}`)
-html.H1("Test H1 Header")
-html.Table([]string{"header1", "header2", "header3"},
-          [][]string{{"record1", "record2", "record3"},
-          {"record4", "record5", "record6"}})
-html.P("Test paragraph for testing purposes")
-html.Prepare()
-html.WriteToFile("report.html") // create a file named report.html in the current directory
+
+## Quick Start
+
+```go
+package main
+
+import rephtml "github.com/lechefran/rephtml/components"
+
+func main() {
+	html := rephtml.NewHtmlFile().Lang("en")
+
+	html.AddToHead(rephtml.NewTitle().Text("Sales Report"))
+	html.AddToHead(rephtml.NewStyleElement().Text(`
+body {
+	font-family: Arial, sans-serif;
+	color: #1f2933;
+}
+main {
+	max-width: 720px;
+	margin: 40px auto;
+}
+`))
+
+	table := rephtml.NewTable().
+		Headers([]string{"Region", "Revenue", "Growth"}).
+		AddRow([]string{"North", "$125,000", "12%"}).
+		AddRow([]string{"South", "$98,000", "8%"})
+
+	html.AddToBody(rephtml.NewMain().
+		Add(rephtml.NewH1().Text("Sales Report")).
+		Add(rephtml.NewP().Text("Quarterly regional performance")).
+		Add(table))
+
+	html.WriteToFile("report.html")
+}
+```
+
+## CSS Rules
+
+Use `StyleElement.Text` when you already have CSS text. Use `StyleRule` when you want to build CSS from `CssProps` without nesting another `<style>` tag.
+
+```go
+body := rephtml.NewStyleRule("body")
+body.Props = rephtml.CssProps{
+	Background: "#f7f7fb",
+	Color:      "#1f2937",
+	FontFamily: "Arial, sans-serif",
+	Margin:     "0",
+}
+
+html.AddToHead(rephtml.NewStyleElement().
+	Type("text/css").
+	AddRule(body))
+```
+
+## Formatting and Escaping
+
+rephtml escapes normal text and attribute values so characters like `<`, `>`, `&`, and quotes do not corrupt the generated HTML. Raw-text elements that commonly contain code, such as `<style>` and `<script>`, keep their content unescaped.
+
+`WriteToFile` formats the output document with indentation. CSS inside `<style>` blocks is also indented for readability, while whitespace-sensitive blocks such as `<pre>` and `<textarea>` are preserved.
+
+## Examples
+
+Runnable examples live in `examples/generate_examples.go` and write files into `examples/output`.
+
+```sh
+go run ./examples
 ```
 
 ## Supported Elements

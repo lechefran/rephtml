@@ -2,6 +2,7 @@ package rephtml
 
 import "testing"
 
+// TestStripRemovesWhitespace provides TestStripRemovesWhitespace behavior for the package.
 func TestStripRemovesWhitespace(t *testing.T) {
 	input := []byte(" <tr>\n\t<td>Alpha</td> \r\n <td>Beta</td>\t</tr> ")
 	got := string(strip(input))
@@ -12,6 +13,7 @@ func TestStripRemovesWhitespace(t *testing.T) {
 	}
 }
 
+// TestParseStyleSortsKeys provides TestParseStyleSortsKeys behavior for the package.
 func TestParseStyleSortsKeys(t *testing.T) {
 	paragraph := NewP().Text("Sorted").Style(map[string]string{
 		"z-index": "1",

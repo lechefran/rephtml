@@ -373,10 +373,12 @@ type CssProps struct {
 	ZIndex                   string
 }
 
+// NewCssProps sets the newcssprops value on the CssProps component.
 func (p *CssProps) NewCssProps() *CssProps {
 	return &CssProps{}
 }
 
+// Style represents the Style component or supporting type.
 type Style struct {
 	buf   bytes.Buffer
 	pmap  *PropMap
@@ -384,6 +386,7 @@ type Style struct {
 	Tags  []string
 }
 
+// NewStyle creates a new Style component.
 func NewStyle(tags ...string) *Style {
 	return &Style{
 		pmap: NewPropMap(),
@@ -391,10 +394,12 @@ func NewStyle(tags ...string) *Style {
 	}
 }
 
+// Bytes returns a defensive copy of the rendered Style bytes.
 func (s *Style) Bytes() []byte {
 	return cloneBytes(s.buf.Bytes())
 }
 
+// Prepare renders the Style component into its internal buffer.
 func (s *Style) Prepare() {
 	s.buf.Reset()
 	s.buf.WriteString("<style>")
@@ -405,6 +410,7 @@ func (s *Style) Prepare() {
 // IsHeadElement implements HeadElement interface
 func (s *Style) IsHeadElement() {}
 
+// formatStringArray joins CSS selectors for a rule block.
 func formatStringArray(sarr []string) string {
 	res := ""
 	for i := 0; i < len(sarr); i++ {
@@ -417,11 +423,13 @@ func formatStringArray(sarr []string) string {
 	return res
 }
 
+// PropMap sets the propmap value on the Style component.
 func (s *Style) PropMap(p *PropMap) *Style {
 	s.pmap = p
 	return s
 }
 
+// StyleRule represents the StyleRule component or supporting type.
 type StyleRule struct {
 	buf   bytes.Buffer
 	pmap  *PropMap
@@ -429,6 +437,7 @@ type StyleRule struct {
 	Tags  []string
 }
 
+// NewStyleRule creates a new StyleRule component.
 func NewStyleRule(tags ...string) *StyleRule {
 	return &StyleRule{
 		pmap: NewPropMap(),
@@ -436,20 +445,24 @@ func NewStyleRule(tags ...string) *StyleRule {
 	}
 }
 
+// Bytes returns a defensive copy of the rendered StyleRule bytes.
 func (s *StyleRule) Bytes() []byte {
 	return cloneBytes(s.buf.Bytes())
 }
 
+// Prepare renders the StyleRule component into its internal buffer.
 func (s *StyleRule) Prepare() {
 	s.buf.Reset()
 	s.buf.WriteString(formatStyleRule(s.Tags, s.Props, s.pmap))
 }
 
+// PropMap sets the propmap value on the StyleRule component.
 func (s *StyleRule) PropMap(p *PropMap) *StyleRule {
 	s.pmap = p
 	return s
 }
 
+// formatStyleRule renders one CSS rule from selectors and typed properties.
 func formatStyleRule(tags []string, props CssProps, pmap *PropMap) string {
 	if pmap == nil {
 		pmap = NewPropMap()
@@ -482,11 +495,13 @@ func formatStyleRule(tags []string, props CssProps, pmap *PropMap) string {
 	return buf.String()
 }
 
+// PropMap represents the PropMap component or supporting type.
 type PropMap struct {
 	pmap  map[string]string
 	count int
 }
 
+// NewPropMap creates a new PropMap component.
 func NewPropMap() *PropMap {
 	pmap := map[string]string{}
 	pmap["@charset"] = "@charset"

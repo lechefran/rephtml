@@ -2,6 +2,7 @@ package rephtml
 
 import "testing"
 
+// TestStyleElementAddRuleBuildsUnwrappedCSS provides TestStyleElementAddRuleBuildsUnwrappedCSS behavior for the package.
 func TestStyleElementAddRuleBuildsUnwrappedCSS(t *testing.T) {
 	rule := NewStyleRule("body")
 	rule.Props = CssProps{
@@ -23,6 +24,7 @@ func TestStyleElementAddRuleBuildsUnwrappedCSS(t *testing.T) {
 	}
 }
 
+// TestStyleUsesDefaultPropMap provides TestStyleUsesDefaultPropMap behavior for the package.
 func TestStyleUsesDefaultPropMap(t *testing.T) {
 	style := &Style{
 		Tags: []string{".card"},
@@ -44,6 +46,7 @@ func TestStyleUsesDefaultPropMap(t *testing.T) {
 	}
 }
 
+// TestStyleElementAddUnwrapsStyle provides TestStyleElementAddUnwrapsStyle behavior for the package.
 func TestStyleElementAddUnwrapsStyle(t *testing.T) {
 	rule := NewStyle("body")
 	rule.Props = CssProps{

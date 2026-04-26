@@ -87,6 +87,7 @@ func (h *HtmlFile) Add(e Element) *HtmlFile {
 	return h
 }
 
+// AddToHead sets the addtohead value on the HtmlFile component.
 func (h *HtmlFile) AddToHead(e Element) *HtmlFile {
 	if e == nil {
 		return h
@@ -113,6 +114,7 @@ func (h *HtmlFile) AddToHead(e Element) *HtmlFile {
 	return h
 }
 
+// AddToBody sets the addtobody value on the HtmlFile component.
 func (h *HtmlFile) AddToBody(e Element) *HtmlFile {
 	if e == nil {
 		return h
@@ -139,6 +141,7 @@ func (h *HtmlFile) AddToBody(e Element) *HtmlFile {
 	return h
 }
 
+// AddOptions sets the addoptions value on the HtmlFile component.
 func (h *HtmlFile) AddOptions(o Options) *HtmlFile {
 	h.Opts = o
 	return h
@@ -203,6 +206,7 @@ func (h *HtmlFile) Style(m map[string]string) *HtmlFile {
 	return h
 }
 
+// WriteToFile sets the writetofile value on the HtmlFile component.
 func (h *HtmlFile) WriteToFile(path string) {
 	if len(h.contents) == 0 && len(h.headContent) == 0 && len(h.bodyContent) == 0 && len(h.style) == 0 {
 		log.Print("No values were appended to the HTML File. " + path + " will not be created")
@@ -225,18 +229,21 @@ func (h *HtmlFile) WriteToFile(path string) {
 	}
 }
 
+// writeContentElement writes a generated head or body section.
 func (h *HtmlFile) writeContentElement(tag string, contents []Element) {
 	h.buf.WriteString("<" + tag + ">")
 	writeElements(&h.buf, contents)
 	h.buf.WriteString("</" + tag + ">")
 }
 
+// htmlToken stores one formatter token.
 type htmlToken struct {
 	kind string
 	name string
 	text string
 }
 
+// formatHTML returns an indented representation of rendered HTML bytes.
 func formatHTML(src []byte) []byte {
 	tokens := tokenizeHTML(string(src))
 	if len(tokens) == 0 {
@@ -280,6 +287,7 @@ func formatHTML(src []byte) []byte {
 	return buf.Bytes()
 }
 
+// tokenizeHTML converts rendered HTML into formatter tokens.
 func tokenizeHTML(input string) []htmlToken {
 	tokens := []htmlToken{}
 	for i := 0; i < len(input); {
@@ -349,6 +357,7 @@ func tokenizeHTML(input string) []htmlToken {
 	return tokens
 }
 
+// appendTextToken appends meaningful text content to the token stream.
 func appendTextToken(tokens []htmlToken, text string) []htmlToken {
 	if text == "" {
 		return tokens
@@ -359,12 +368,14 @@ func appendTextToken(tokens []htmlToken, text string) []htmlToken {
 	return append(tokens, htmlToken{kind: "text", text: text})
 }
 
+// writeFormattedLine writes one indented formatter line.
 func writeFormattedLine(buf *bytes.Buffer, indent int, line string) {
 	buf.WriteString(tabs(indent))
 	buf.WriteString(line)
 	buf.WriteByte('\n')
 }
 
+// writeFormattedText writes formatted text lines.
 func writeFormattedText(buf *bytes.Buffer, indent int, text string) {
 	for _, line := range strings.Split(text, "\n") {
 		if line == "" {
@@ -374,6 +385,7 @@ func writeFormattedText(buf *bytes.Buffer, indent int, text string) {
 	}
 }
 
+// writeRawBlock writes raw-text elements without corrupting sensitive content.
 func writeRawBlock(buf *bytes.Buffer, indent int, name, text string) {
 	if name == "style" {
 		if openTag, body, closeTag, ok := splitRawElement(text, name); ok {
@@ -391,6 +403,7 @@ func writeRawBlock(buf *bytes.Buffer, indent int, name, text string) {
 	}
 }
 
+// splitRawElement separates a raw-text element into open tag, body, and close tag.
 func splitRawElement(text, name string) (string, string, string, bool) {
 	openEnd := findTagEnd(text, 0)
 	if openEnd == -1 {
@@ -406,6 +419,7 @@ func splitRawElement(text, name string) (string, string, string, bool) {
 	return text[:openEnd+1], text[openEnd+1 : closeAt], text[closeAt:], true
 }
 
+// writeIndentedRawLines writes raw block body lines under the current indent.
 func writeIndentedRawLines(buf *bytes.Buffer, indent int, text string) {
 	text = strings.Trim(text, "\n")
 	if text == "" {
@@ -421,6 +435,7 @@ func writeIndentedRawLines(buf *bytes.Buffer, indent int, text string) {
 	}
 }
 
+// tagName extracts the lower-case element name from an HTML tag.
 func tagName(tag string) string {
 	tag = strings.TrimSpace(tag)
 	tag = strings.TrimPrefix(tag, "<")
@@ -436,16 +451,19 @@ func tagName(tag string) string {
 	return strings.ToLower(tag)
 }
 
+// isEndTag reports whether a tag is a closing tag.
 func isEndTag(tag string) bool {
 	return strings.HasPrefix(strings.TrimSpace(tag), "</")
 }
 
+// isSelfClosingTag reports whether a tag ends with a self-closing slash.
 func isSelfClosingTag(tag string) bool {
 	tag = strings.TrimSpace(tag)
 	tag = strings.TrimSuffix(tag, ">")
 	return strings.HasSuffix(strings.TrimSpace(tag), "/")
 }
 
+// isVoidTag reports whether a tag name is an HTML void element.
 func isVoidTag(tag string) bool {
 	switch tag {
 	case "area", "base", "br", "col", "embed", "hr", "img", "input", "link", "meta", "source", "track", "wbr":
@@ -455,6 +473,7 @@ func isVoidTag(tag string) bool {
 	}
 }
 
+// isRawTextElement reports whether a tag body needs raw-text handling.
 func isRawTextElement(tag string) bool {
 	switch tag {
 	case "script", "style", "pre", "textarea":
@@ -464,6 +483,7 @@ func isRawTextElement(tag string) bool {
 	}
 }
 
+// nextHTMLTagStart returns the next likely HTML tag start position.
 func nextHTMLTagStart(input string, from int) int {
 	for i := from; i < len(input); i++ {
 		if input[i] == '<' && isHTMLTagStart(input, i) {
@@ -473,6 +493,7 @@ func nextHTMLTagStart(input string, from int) int {
 	return -1
 }
 
+// isHTMLTagStart reports whether a less-than sign starts likely HTML markup.
 func isHTMLTagStart(input string, idx int) bool {
 	if idx+1 >= len(input) || input[idx] != '<' {
 		return false
@@ -491,10 +512,12 @@ func isHTMLTagStart(input string, idx int) bool {
 	return isTagNameStart(next)
 }
 
+// isTagNameStart reports whether a byte can start an HTML tag name.
 func isTagNameStart(c byte) bool {
 	return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')
 }
 
+// findTagEnd returns the closing greater-than sign while respecting quotes.
 func findTagEnd(input string, start int) int {
 	var quote byte
 	for i := start + 1; i < len(input); i++ {
@@ -1136,6 +1159,7 @@ func (s *StyleElement) Add(e Element) *StyleElement {
 	return s
 }
 
+// AddRule sets the addrule value on the StyleElement component.
 func (s *StyleElement) AddRule(rule *StyleRule) *StyleElement {
 	if rule != nil {
 		s.contents = appendElement(s.contents, rule)
