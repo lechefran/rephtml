@@ -434,120 +434,120 @@ func (u *U) Prepare() {
 	u.buf.WriteString(">" + escapeText(u.text) + "</u>")
 }
 
-// Dbi represents the Dbi component or supporting type.
-type Dbi struct {
+// Bdi represents the bdi component or supporting type.
+type Bdi struct {
 	buf   bytes.Buffer
 	style map[string]string
 	text  string
 }
 
-// NewDbi creates a new Dbi component.
-func NewDbi() *Dbi {
-	return &Dbi{
+// NewBdi creates a new bdi component.
+func NewBdi() *Bdi {
+	return &Bdi{
 		style: make(map[string]string),
 	}
 }
 
-// AddStyle adds one inline CSS declaration to the Dbi component.
-func (d *Dbi) AddStyle(k, v string) *Dbi {
+// AddStyle adds one inline CSS declaration to the Bdi component.
+func (d *Bdi) AddStyle(k, v string) *Bdi {
 	d.style[k] = v
 	return d
 }
 
-// AddStyles adds multiple inline CSS declarations to the Dbi component.
-func (d *Dbi) AddStyles(m map[string]string) *Dbi {
+// AddStyles adds multiple inline CSS declarations to the Bdi component.
+func (d *Bdi) AddStyles(m map[string]string) *Bdi {
 	for k, v := range m {
 		d.style[k] = v
 	}
 	return d
 }
 
-// Style replaces the inline CSS declarations on the Dbi component.
-func (d *Dbi) Style(m map[string]string) *Dbi {
+// Style replaces the inline CSS declarations on the Bdi component.
+func (d *Bdi) Style(m map[string]string) *Bdi {
 	d.style = m
 	return d
 }
 
-// Text sets or appends text content on the Dbi component.
-func (d *Dbi) Text(s string) *Dbi {
+// Text sets or appends text content on the Bdi component.
+func (d *Bdi) Text(s string) *Bdi {
 	d.text = s
 	return d
 }
 
-// Bytes returns a defensive copy of the rendered Dbi bytes.
-func (d *Dbi) Bytes() []byte {
+// Bytes returns a defensive copy of the rendered Bdi bytes.
+func (d *Bdi) Bytes() []byte {
 	return cloneBytes(d.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
-func (d *Dbi) IsBodyElement() {}
+func (d *Bdi) IsBodyElement() {}
 
-// Prepare renders the Dbi component into its internal buffer.
-func (d *Dbi) Prepare() {
+// Prepare renders the Bdi component into its internal buffer.
+func (d *Bdi) Prepare() {
 	d.buf.Reset()
-	d.buf.WriteString("<dbi")
+	d.buf.WriteString("<bdi")
 	if len(d.style) != 0 {
 		parseStyle(&d.buf, d.style)
 	}
-	d.buf.WriteString(">" + escapeText(d.text) + "</dbi>")
+	d.buf.WriteString(">" + escapeText(d.text) + "</bdi>")
 }
 
-// Dbo represents the Dbo component or supporting type.
-type Dbo struct {
+// Bdo represents the bdo component or supporting type.
+type Bdo struct {
 	buf   bytes.Buffer
 	style map[string]string
 	text  string
 }
 
-// NewDbo creates a new Dbo component.
-func NewDbo() *Dbo {
-	return &Dbo{
+// NewBdo creates a new bdo component.
+func NewBdo() *Bdo {
+	return &Bdo{
 		style: make(map[string]string),
 	}
 }
 
-// AddStyle adds one inline CSS declaration to the Dbo component.
-func (d *Dbo) AddStyle(k, v string) *Dbo {
+// AddStyle adds one inline CSS declaration to the Bdo component.
+func (d *Bdo) AddStyle(k, v string) *Bdo {
 	d.style[k] = v
 	return d
 }
 
-// AddStyles adds multiple inline CSS declarations to the Dbo component.
-func (d *Dbo) AddStyles(m map[string]string) *Dbo {
+// AddStyles adds multiple inline CSS declarations to the Bdo component.
+func (d *Bdo) AddStyles(m map[string]string) *Bdo {
 	for k, v := range m {
 		d.style[k] = v
 	}
 	return d
 }
 
-// Style replaces the inline CSS declarations on the Dbo component.
-func (d *Dbo) Style(m map[string]string) *Dbo {
+// Style replaces the inline CSS declarations on the Bdo component.
+func (d *Bdo) Style(m map[string]string) *Bdo {
 	d.style = m
 	return d
 }
 
-// Text sets or appends text content on the Dbo component.
-func (d *Dbo) Text(s string) *Dbo {
+// Text sets or appends text content on the Bdo component.
+func (d *Bdo) Text(s string) *Bdo {
 	d.text = s
 	return d
 }
 
-// Bytes returns a defensive copy of the rendered Dbo bytes.
-func (d *Dbo) Bytes() []byte {
+// Bytes returns a defensive copy of the rendered Bdo bytes.
+func (d *Bdo) Bytes() []byte {
 	return cloneBytes(d.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
-func (d *Dbo) IsBodyElement() {}
+func (d *Bdo) IsBodyElement() {}
 
-// Prepare renders the Dbo component into its internal buffer.
-func (d *Dbo) Prepare() {
+// Prepare renders the Bdo component into its internal buffer.
+func (d *Bdo) Prepare() {
 	d.buf.Reset()
-	d.buf.WriteString("<dbo")
+	d.buf.WriteString("<bdo")
 	if len(d.style) != 0 {
 		parseStyle(&d.buf, d.style)
 	}
-	d.buf.WriteString(">" + escapeText(d.text) + "</dbo>")
+	d.buf.WriteString(">" + escapeText(d.text) + "</bdo>")
 }
 
 // Br represents the Br component or supporting type.
@@ -853,62 +853,62 @@ func (d *Dfn) Prepare() {
 	d.buf.WriteString(">" + escapeText(d.text) + "</dfn>")
 }
 
-// Elem represents the Elem component or supporting type.
-type Elem struct {
+// Em represents the em component or supporting type.
+type Em struct {
 	buf   bytes.Buffer
 	style map[string]string
 	text  string
 }
 
-// NewElem creates a new Elem component.
-func NewElem() *Elem {
-	return &Elem{
+// NewEm creates a new em component.
+func NewEm() *Em {
+	return &Em{
 		style: make(map[string]string),
 	}
 }
 
-// AddStyle adds one inline CSS declaration to the Elem component.
-func (e *Elem) AddStyle(k, v string) *Elem {
+// AddStyle adds one inline CSS declaration to the Em component.
+func (e *Em) AddStyle(k, v string) *Em {
 	e.style[k] = v
 	return e
 }
 
-// AddStyles adds multiple inline CSS declarations to the Elem component.
-func (e *Elem) AddStyles(m map[string]string) *Elem {
+// AddStyles adds multiple inline CSS declarations to the Em component.
+func (e *Em) AddStyles(m map[string]string) *Em {
 	for k, v := range m {
 		e.style[k] = v
 	}
 	return e
 }
 
-// Style replaces the inline CSS declarations on the Elem component.
-func (e *Elem) Style(m map[string]string) *Elem {
+// Style replaces the inline CSS declarations on the Em component.
+func (e *Em) Style(m map[string]string) *Em {
 	e.style = m
 	return e
 }
 
-// Text sets or appends text content on the Elem component.
-func (e *Elem) Text(s string) *Elem {
+// Text sets or appends text content on the Em component.
+func (e *Em) Text(s string) *Em {
 	e.text = s
 	return e
 }
 
-// Bytes returns a defensive copy of the rendered Elem bytes.
-func (e *Elem) Bytes() []byte {
+// Bytes returns a defensive copy of the rendered Em bytes.
+func (e *Em) Bytes() []byte {
 	return cloneBytes(e.buf.Bytes())
 }
 
 // IsBodyElement implements BodyElement interface
-func (e *Elem) IsBodyElement() {}
+func (e *Em) IsBodyElement() {}
 
-// Prepare renders the Elem component into its internal buffer.
-func (e *Elem) Prepare() {
+// Prepare renders the Em component into its internal buffer.
+func (e *Em) Prepare() {
 	e.buf.Reset()
-	e.buf.WriteString("<elem")
+	e.buf.WriteString("<em")
 	if len(e.style) != 0 {
 		parseStyle(&e.buf, e.style)
 	}
-	e.buf.WriteString(">" + escapeText(e.text) + "</elem>")
+	e.buf.WriteString(">" + escapeText(e.text) + "</em>")
 }
 
 // Mark represents the Mark component or supporting type.
