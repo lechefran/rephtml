@@ -1,20 +1,18 @@
-package tests
+package rephtml
 
 import (
 	"testing"
-
-	rephtml "github.com/lechefran/rephtml/components"
 )
 
 func TestHgroupPrepare(t *testing.T) {
-	var _ rephtml.BodyElement = (*rephtml.Hgroup)(nil)
+	var _ BodyElement = (*Hgroup)(nil)
 
-	heading := rephtml.NewH1().Text("Frankenstein")
+	heading := NewH1().Text("Frankenstein")
 	heading.Prepare()
-	subtitle := rephtml.NewP().Text("Or: The Modern Prometheus")
+	subtitle := NewP().Text("Or: The Modern Prometheus")
 	subtitle.Prepare()
 
-	hgroup := rephtml.NewHgroup().
+	hgroup := NewHgroup().
 		AddStyle("text-align", "right").
 		Add(heading).
 		Add(subtitle)
@@ -27,20 +25,20 @@ func TestHgroupPrepare(t *testing.T) {
 }
 
 func TestSearchPrepare(t *testing.T) {
-	var _ rephtml.BodyElement = (*rephtml.Search)(nil)
+	var _ BodyElement = (*Search)(nil)
 
-	input := rephtml.NewInput().
+	input := NewInput().
 		Type("search").
 		Name("q").
 		Placeholder("Search")
 
-	form := rephtml.NewForm().
+	form := NewForm().
 		Action("/search").
 		Method("get").
 		Add(input)
 	form.Prepare()
 
-	search := rephtml.NewSearch().Add(form)
+	search := NewSearch().Add(form)
 	search.Prepare()
 
 	want := `<search><form action="/search" method="get"><input type="search" name="q" placeholder="Search"></form></search>`

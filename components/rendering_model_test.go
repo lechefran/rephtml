@@ -1,13 +1,11 @@
-package tests
+package rephtml
 
 import (
 	"testing"
-
-	rephtml "github.com/lechefran/rephtml/components"
 )
 
 func TestContainerAddRendersUnpreparedChildren(t *testing.T) {
-	header := rephtml.NewHeader().Add(rephtml.NewH1().Text("Dashboard"))
+	header := NewHeader().Add(NewH1().Text("Dashboard"))
 	header.Prepare()
 
 	want := "<header><h1>Dashboard</h1></header>"
@@ -17,8 +15,8 @@ func TestContainerAddRendersUnpreparedChildren(t *testing.T) {
 }
 
 func TestContainerRendersCurrentChildState(t *testing.T) {
-	paragraph := rephtml.NewP().Text("Draft")
-	section := rephtml.NewSection().Add(paragraph)
+	paragraph := NewP().Text("Draft")
+	section := NewSection().Add(paragraph)
 
 	paragraph.Text("Final")
 	section.Prepare()
@@ -30,11 +28,11 @@ func TestContainerRendersCurrentChildState(t *testing.T) {
 }
 
 func TestTableRendersCurrentNestedChildState(t *testing.T) {
-	span := rephtml.NewSpan().Text("Draft")
-	cell := rephtml.NewTd().Add(span)
-	row := rephtml.NewTr().AddTd(cell)
-	body := rephtml.NewTbody().AddTr(row)
-	table := rephtml.NewTable().AddTbody(body)
+	span := NewSpan().Text("Draft")
+	cell := NewTd().Add(span)
+	row := NewTr().AddTd(cell)
+	body := NewTbody().AddTr(row)
+	table := NewTable().AddTbody(body)
 
 	span.Text("Final")
 	table.Prepare()
@@ -46,7 +44,7 @@ func TestTableRendersCurrentNestedChildState(t *testing.T) {
 }
 
 func TestBytesReturnsSnapshot(t *testing.T) {
-	paragraph := rephtml.NewP().Text("Stable")
+	paragraph := NewP().Text("Stable")
 	paragraph.Prepare()
 
 	snapshot := paragraph.Bytes()

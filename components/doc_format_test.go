@@ -1,17 +1,15 @@
-package tests
+package rephtml
 
 import (
 	"os"
 	"path/filepath"
 	"testing"
-
-	rephtml "github.com/lechefran/rephtml/components"
 )
 
 func TestWriteToFileFormatsDocument(t *testing.T) {
-	html := rephtml.NewHtmlFile().Lang("en")
-	html.AddToHead(rephtml.NewTitle().Text("Readable Report"))
-	html.AddToBody(rephtml.NewH1().Text("Summary"))
+	html := NewHtmlFile().Lang("en")
+	html.AddToHead(NewTitle().Text("Readable Report"))
+	html.AddToBody(NewH1().Text("Summary"))
 
 	path := filepath.Join(t.TempDir(), "report.html")
 	html.WriteToFile(path)
@@ -36,9 +34,9 @@ func TestWriteToFileFormatsDocument(t *testing.T) {
 }
 
 func TestAddToHeadAndBodyPrepareDocumentSections(t *testing.T) {
-	html := rephtml.NewHtmlFile()
-	html.AddToHead(rephtml.NewMeta().Charset("utf-8"))
-	html.AddToBody(rephtml.NewP().Text("Hello"))
+	html := NewHtmlFile()
+	html.AddToHead(NewMeta().Charset("utf-8"))
+	html.AddToBody(NewP().Text("Hello"))
 	html.Prepare()
 
 	want := `<html><head><meta charset="utf-8"></head><body><p>Hello</p></body></html>`
@@ -48,8 +46,8 @@ func TestAddToHeadAndBodyPrepareDocumentSections(t *testing.T) {
 }
 
 func TestAddToHeadFlattensHeadContents(t *testing.T) {
-	html := rephtml.NewHtmlFile()
-	html.AddToHead(rephtml.NewHead().Add(rephtml.NewTitle().Text("Nested Head")))
+	html := NewHtmlFile()
+	html.AddToHead(NewHead().Add(NewTitle().Text("Nested Head")))
 	html.Prepare()
 
 	want := `<html><head><title>Nested Head</title></head></html>`
@@ -59,8 +57,8 @@ func TestAddToHeadFlattensHeadContents(t *testing.T) {
 }
 
 func TestAddToBodyFlattensBodyContents(t *testing.T) {
-	html := rephtml.NewHtmlFile()
-	html.AddToBody(rephtml.NewBody().Add(rephtml.NewP().Text("Nested Body")))
+	html := NewHtmlFile()
+	html.AddToBody(NewBody().Add(NewP().Text("Nested Body")))
 	html.Prepare()
 
 	want := `<html><body><p>Nested Body</p></body></html>`
