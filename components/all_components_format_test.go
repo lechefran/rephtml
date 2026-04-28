@@ -17,6 +17,10 @@ type formatElementCase struct {
 	element Element
 }
 
+func formatRenderedForTest(input []byte) string {
+	return string(formatRenderedDocumentHTML(renderedDocumentHTML(input)))
+}
+
 func TestWriteToFileFormatsDocument(t *testing.T) {
 	html := NewHtmlFile().Lang("en")
 	html.AddToHead(NewTitle().Text("Readable Report"))
@@ -187,9 +191,9 @@ func TestRenderFormattedReturnsPendingError(t *testing.T) {
 	}
 }
 
-func TestFormatHTMLKeepsComparisonTextLiteral(t *testing.T) {
+func TestFormatRenderedDocumentHTMLKeepsComparisonTextLiteral(t *testing.T) {
 	input := []byte(`<html><body><p>Keep 1 < 2 and 3 > 2</p></body></html>`)
-	got := string(formatHTML(input))
+	got := formatRenderedForTest(input)
 	want := "<html>\n" +
 		"\t<body>\n" +
 		"\t\t<p>Keep 1 < 2 and 3 > 2</p>\n" +
@@ -201,9 +205,9 @@ func TestFormatHTMLKeepsComparisonTextLiteral(t *testing.T) {
 	}
 }
 
-func TestFormatHTMLAllowsGreaterThanInsideQuotedAttributes(t *testing.T) {
+func TestFormatRenderedDocumentHTMLAllowsGreaterThanInsideQuotedAttributes(t *testing.T) {
 	input := []byte(`<html><body><div data-rule="score > 10"><span>ok</span></div></body></html>`)
-	got := string(formatHTML(input))
+	got := formatRenderedForTest(input)
 	want := "<html>\n" +
 		"\t<body>\n" +
 		"\t\t<div data-rule=\"score > 10\">\n" +
@@ -217,9 +221,9 @@ func TestFormatHTMLAllowsGreaterThanInsideQuotedAttributes(t *testing.T) {
 	}
 }
 
-func TestFormatHTMLFormatsTableInsideDiv(t *testing.T) {
+func TestFormatRenderedDocumentHTMLFormatsTableInsideDiv(t *testing.T) {
 	input := []byte(`<html><body><div><table><tr><td>Alpha Beta</td></tr></table></div></body></html>`)
-	got := string(formatHTML(input))
+	got := formatRenderedForTest(input)
 	want := "<html>\n" +
 		"\t<body>\n" +
 		"\t\t<div>\n" +
@@ -237,17 +241,17 @@ func TestFormatHTMLFormatsTableInsideDiv(t *testing.T) {
 	}
 }
 
-func TestFormatHTMLPreservesRawTextElementBody(t *testing.T) {
+func TestFormatRenderedDocumentHTMLPreservesRawTextElementBody(t *testing.T) {
 	body := "  first\n\tsecond < third > fourth\n"
 	input := []byte(`<html><body><pre>` + body + `</pre></body></html>`)
-	got := string(formatHTML(input))
+	got := formatRenderedForTest(input)
 
 	assertRawElementBody(t, got, "pre", body)
 }
 
-func TestFormatHTMLIndentsStyleBody(t *testing.T) {
+func TestFormatRenderedDocumentHTMLIndentsStyleBody(t *testing.T) {
 	input := []byte("<html><head><style>\nbody {\n\tcolor: red;\n}\n</style></head></html>")
-	got := string(formatHTML(input))
+	got := formatRenderedForTest(input)
 	want := "<html>\n" +
 		"\t<head>\n" +
 		"\t\t<style>\n" +
@@ -263,9 +267,9 @@ func TestFormatHTMLIndentsStyleBody(t *testing.T) {
 	}
 }
 
-func TestFormatHTMLFormatsDoctypeDocument(t *testing.T) {
+func TestFormatRenderedDocumentHTMLFormatsDoctypeDocument(t *testing.T) {
 	input := []byte(`<!doctype html><html><body><p>Hello</p></body></html>`)
-	got := string(formatHTML(input))
+	got := formatRenderedForTest(input)
 	want := "<!doctype html>\n" +
 		"<html>\n" +
 		"\t<body>\n" +
@@ -278,9 +282,9 @@ func TestFormatHTMLFormatsDoctypeDocument(t *testing.T) {
 	}
 }
 
-func TestFormatHTMLFormatsNestedDocumentSections(t *testing.T) {
+func TestFormatRenderedDocumentHTMLFormatsNestedDocumentSections(t *testing.T) {
 	input := []byte(`<html lang="en"><head><meta charset="utf-8"><title>Report</title></head><body><main><section><h2>Metrics</h2><p>Fast</p></section><aside><p>Notes</p></aside></main></body></html>`)
-	got := string(formatHTML(input))
+	got := formatRenderedForTest(input)
 	want := "<html lang=\"en\">\n" +
 		"\t<head>\n" +
 		"\t\t<meta charset=\"utf-8\">\n" +
@@ -304,9 +308,9 @@ func TestFormatHTMLFormatsNestedDocumentSections(t *testing.T) {
 	}
 }
 
-func TestFormatHTMLFormatsCommentsAndVoidElements(t *testing.T) {
+func TestFormatRenderedDocumentHTMLFormatsCommentsAndVoidElements(t *testing.T) {
 	input := []byte(`<html><body><!--intro--><hr><img src="chart.png" alt="Chart"><p>Line<br>break</p></body></html>`)
-	got := string(formatHTML(input))
+	got := formatRenderedForTest(input)
 	want := "<html>\n" +
 		"\t<body>\n" +
 		"\t\t<!--intro-->\n" +
@@ -325,18 +329,18 @@ func TestFormatHTMLFormatsCommentsAndVoidElements(t *testing.T) {
 	}
 }
 
-func TestFormatHTMLPreservesScriptRawTextElementBody(t *testing.T) {
+func TestFormatRenderedDocumentHTMLPreservesScriptRawTextElementBody(t *testing.T) {
 	body := "if (score < 10 && total > 2) {\n\tconsole.log(\"ok\");\n}\n"
 	input := []byte(`<html><body><script>` + body + `</script></body></html>`)
-	got := string(formatHTML(input))
+	got := formatRenderedForTest(input)
 
 	assertRawElementBody(t, got, "script", body)
 }
 
-func TestFormatHTMLPreservesTextareaRawTextElementBody(t *testing.T) {
+func TestFormatRenderedDocumentHTMLPreservesTextareaRawTextElementBody(t *testing.T) {
 	body := "  first line\nsecond < third > fourth\n"
 	input := []byte(`<html><body><textarea>` + body + `</textarea></body></html>`)
-	got := string(formatHTML(input))
+	got := formatRenderedForTest(input)
 
 	assertRawElementBody(t, got, "textarea", body)
 }
@@ -396,7 +400,7 @@ func TestFormattedStandaloneElementStructs(t *testing.T) {
 	for _, tt := range standaloneFormatCases() {
 		t.Run(tt.name, func(t *testing.T) {
 			rendered := renderForFormatting(t, tt.element)
-			got := string(formatHTML([]byte(rendered)))
+			got := formatRenderedForTest([]byte(rendered))
 			want := formattedLines(rendered)
 			if got != want {
 				t.Fatalf("unexpected formatted %s:\ngot:\n%s\nwant:\n%s", tt.name, got, want)
@@ -409,7 +413,7 @@ func TestFormattedHeadElementStructs(t *testing.T) {
 	for _, tt := range headFormatCases() {
 		t.Run(tt.name, func(t *testing.T) {
 			rendered := renderForFormatting(t, tt.element)
-			got := string(formatHTML([]byte("<html><head>" + rendered + "</head></html>")))
+			got := formatRenderedForTest([]byte("<html><head>" + rendered + "</head></html>"))
 			want := formattedLines(
 				"<html>",
 				"\t<head>",
@@ -428,7 +432,7 @@ func TestFormattedBodyElementStructs(t *testing.T) {
 	for _, tt := range bodyFormatCases() {
 		t.Run(tt.name, func(t *testing.T) {
 			rendered := renderForFormatting(t, tt.element)
-			got := string(formatHTML([]byte("<html><body>" + rendered + "</body></html>")))
+			got := formatRenderedForTest([]byte("<html><body>" + rendered + "</body></html>"))
 			want := formattedLines(
 				"<html>",
 				"\t<body>",
@@ -458,7 +462,7 @@ func TestFormattedStyleElementStructs(t *testing.T) {
 				rendered = renderForFormatting(t, tt.element)
 			}
 
-			got := string(formatHTML([]byte("<html><head>" + rendered + "</head></html>")))
+			got := formatRenderedForTest([]byte("<html><head>" + rendered + "</head></html>"))
 			want := formattedHeadStyleElement(t, rendered)
 			if got != want {
 				t.Fatalf("unexpected formatted %s:\ngot:\n%s\nwant:\n%s", tt.name, got, want)
