@@ -95,12 +95,68 @@ func TestAddToHeadFlattensHeadContents(t *testing.T) {
 	}
 }
 
+func TestAddToHeadFlattensHeadWrapperAndMergesStyles(t *testing.T) {
+	html := NewHtmlFile()
+	html.AddToHead(NewHead().AddStyle("color", "red").Add(NewTitle().Text("Styled Head")))
+	html.Prepare()
+
+	want := `<html><head style="color: red;"><title>Styled Head</title></head></html>`
+	if got := string(html.Bytes()); got != want {
+		t.Fatalf("unexpected html:\ngot  %q\nwant %q", got, want)
+	}
+}
+
 func TestAddToBodyFlattensBodyContents(t *testing.T) {
 	html := NewHtmlFile()
 	html.AddToBody(NewBody().Add(NewP().Text("Nested Body")))
 	html.Prepare()
 
 	want := `<html><body><p>Nested Body</p></body></html>`
+	if got := string(html.Bytes()); got != want {
+		t.Fatalf("unexpected html:\ngot  %q\nwant %q", got, want)
+	}
+}
+
+func TestAddToBodyFlattensBodyWrapperAndMergesAttributes(t *testing.T) {
+	html := NewHtmlFile()
+	html.AddToBody(
+		NewBody().
+			OnLoad("init()").
+			OnUnload("cleanup()").
+			AddStyle("color", "red").
+			Add(NewP().Text("Loaded Body")),
+	)
+	html.Prepare()
+
+	want := `<html><body onload="init()" onunload="cleanup()" style="color: red;"><p>Loaded Body</p></body></html>`
+	if got := string(html.Bytes()); got != want {
+		t.Fatalf("unexpected html:\ngot  %q\nwant %q", got, want)
+	}
+}
+
+func TestAddToHeadRejectsBodyWrapper(t *testing.T) {
+	html := NewHtmlFile().AddOptions(Options{Validation: STRICT})
+	html.AddToHead(NewBody().Add(NewP().Text("Invalid Body")))
+	if html.Err() == nil {
+		t.Fatal("expected strict validation error")
+	}
+
+	html.Prepare()
+	want := `<html></html>`
+	if got := string(html.Bytes()); got != want {
+		t.Fatalf("unexpected html:\ngot  %q\nwant %q", got, want)
+	}
+}
+
+func TestAddToBodyRejectsHeadWrapper(t *testing.T) {
+	html := NewHtmlFile().AddOptions(Options{Validation: STRICT})
+	html.AddToBody(NewHead().Add(NewTitle().Text("Invalid Head")))
+	if html.Err() == nil {
+		t.Fatal("expected strict validation error")
+	}
+
+	html.Prepare()
+	want := `<html></html>`
 	if got := string(html.Bytes()); got != want {
 		t.Fatalf("unexpected html:\ngot  %q\nwant %q", got, want)
 	}

@@ -14,25 +14,31 @@ const tab = "\t"
 
 // HtmlFile represents the HTML element for the document root
 type HtmlFile struct {
-	buf         bytes.Buffer
-	style       map[string]string
-	contents    []Element
-	headContent []Element
-	bodyContent []Element
-	lang        string
-	dir         string
-	xmlLang     string
-	xmlns       string
-	manifest    string
-	contextMenu string
-	Opts        Options
-	err         error
+	buf          bytes.Buffer
+	style        map[string]string
+	contents     []Element
+	headContent  []Element
+	bodyContent  []Element
+	headStyle    map[string]string
+	bodyStyle    map[string]string
+	lang         string
+	dir          string
+	xmlLang      string
+	xmlns        string
+	manifest     string
+	contextMenu  string
+	bodyOnLoad   string
+	bodyOnUnload string
+	Opts         Options
+	err          error
 }
 
 // NewHtmlFile creates a new HtmlFile element
 func NewHtmlFile() *HtmlFile {
 	return &HtmlFile{
-		style: make(map[string]string),
+		style:     make(map[string]string),
+		headStyle: make(map[string]string),
+		bodyStyle: make(map[string]string),
 	}
 }
 
@@ -78,14 +84,14 @@ func (h *HtmlFile) Prepare() {
 	}
 	h.buf.WriteByte('>')
 
-	if len(h.headContent) != 0 {
-		h.writeContentElement("head", h.headContent)
+	if len(h.headContent) != 0 || len(h.headStyle) != 0 {
+		h.writeHeadElement()
 	}
 
 	writeElements(&h.buf, h.contents)
 
-	if len(h.bodyContent) != 0 {
-		h.writeContentElement("body", h.bodyContent)
+	if len(h.bodyContent) != 0 || len(h.bodyStyle) != 0 || h.bodyOnLoad != "" || h.bodyOnUnload != "" {
+		h.writeBodyElement()
 	}
 
 	h.buf.WriteString("</html>")
@@ -105,8 +111,13 @@ func (h *HtmlFile) AddToHead(e Element) *HtmlFile {
 		return h
 	}
 
-	if head, ok := e.(*Head); ok && len(head.style) == 0 {
-		h.headContent = append(h.headContent, head.contents...)
+	if head, ok := e.(*Head); ok {
+		h.mergeHead(head)
+		return h
+	}
+
+	if _, ok := e.(*Body); ok {
+		h.rejectStructuralElement("head", e)
 		return h
 	}
 
@@ -133,8 +144,13 @@ func (h *HtmlFile) AddToBody(e Element) *HtmlFile {
 		return h
 	}
 
-	if body, ok := e.(*Body); ok && len(body.style) == 0 && body.onLoad == "" && body.onUnload == "" {
-		h.bodyContent = append(h.bodyContent, body.contents...)
+	if body, ok := e.(*Body); ok {
+		h.mergeBody(body)
+		return h
+	}
+
+	if _, ok := e.(*Head); ok {
+		h.rejectStructuralElement("body", e)
 		return h
 	}
 
@@ -223,7 +239,9 @@ func (h *HtmlFile) WriteToFile(path string) error {
 		return h.err
 	}
 
-	if len(h.contents) == 0 && len(h.headContent) == 0 && len(h.bodyContent) == 0 && len(h.style) == 0 {
+	if len(h.contents) == 0 && len(h.headContent) == 0 && len(h.bodyContent) == 0 &&
+		len(h.style) == 0 && len(h.headStyle) == 0 && len(h.bodyStyle) == 0 &&
+		h.bodyOnLoad == "" && h.bodyOnUnload == "" {
 		log.Print("No values were appended to the HTML File. " + path + " will not be created")
 	}
 
@@ -252,11 +270,72 @@ func (h *HtmlFile) WriteToFile(path string) error {
 	return nil
 }
 
-// writeContentElement writes a generated head or body section.
-func (h *HtmlFile) writeContentElement(tag string, contents []Element) {
-	h.buf.WriteString("<" + tag + ">")
-	writeElements(&h.buf, contents)
-	h.buf.WriteString("</" + tag + ">")
+// mergeHead copies a Head wrapper into the generated document head.
+func (h *HtmlFile) mergeHead(head *Head) {
+	if head == nil {
+		return
+	}
+	for k, v := range head.style {
+		h.headStyle[k] = v
+	}
+	h.headContent = append(h.headContent, head.contents...)
+}
+
+// mergeBody copies a Body wrapper into the generated document body.
+func (h *HtmlFile) mergeBody(body *Body) {
+	if body == nil {
+		return
+	}
+	for k, v := range body.style {
+		h.bodyStyle[k] = v
+	}
+	if body.onLoad != "" {
+		h.bodyOnLoad = body.onLoad
+	}
+	if body.onUnload != "" {
+		h.bodyOnUnload = body.onUnload
+	}
+	h.bodyContent = append(h.bodyContent, body.contents...)
+}
+
+// rejectStructuralElement rejects nested document structure elements.
+func (h *HtmlFile) rejectStructuralElement(target string, e Element) {
+	err := fmt.Errorf("cannot add %s to %s element", elementName(e), target)
+	if h.Opts.Validation == STRICT {
+		h.addError(err)
+		return
+	}
+	if h.Opts.Validation == DEFAULT {
+		log.Print(err)
+	}
+}
+
+// writeHeadElement writes the generated head section.
+func (h *HtmlFile) writeHeadElement() {
+	h.buf.WriteString("<head")
+	if len(h.headStyle) != 0 {
+		parseStyle(&h.buf, h.headStyle)
+	}
+	h.buf.WriteByte('>')
+	writeElements(&h.buf, h.headContent)
+	h.buf.WriteString("</head>")
+}
+
+// writeBodyElement writes the generated body section.
+func (h *HtmlFile) writeBodyElement() {
+	h.buf.WriteString("<body")
+	if h.bodyOnLoad != "" {
+		writeAttr(&h.buf, "onload", h.bodyOnLoad)
+	}
+	if h.bodyOnUnload != "" {
+		writeAttr(&h.buf, "onunload", h.bodyOnUnload)
+	}
+	if len(h.bodyStyle) != 0 {
+		parseStyle(&h.buf, h.bodyStyle)
+	}
+	h.buf.WriteByte('>')
+	writeElements(&h.buf, h.bodyContent)
+	h.buf.WriteString("</body>")
 }
 
 // elementName returns a stable type name for error and warning messages.
