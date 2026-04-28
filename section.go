@@ -47,6 +47,21 @@ func (h *Header) Bytes() []byte {
 	return cloneBytes(h.buf.Bytes())
 }
 
+// Render returns freshly prepared Header HTML bytes.
+func (h *Header) Render() []byte {
+	return renderPrepared(h)
+}
+
+// HTML returns freshly prepared Header HTML as a string.
+func (h *Header) HTML() string {
+	return htmlPrepared(h)
+}
+
+// String returns freshly prepared Header HTML as a string.
+func (h *Header) String() string {
+	return h.HTML()
+}
+
 // IsBodyElement implements BodyElement interface
 func (h *Header) IsBodyElement() {}
 
@@ -115,6 +130,21 @@ func (n *Nav) Bytes() []byte {
 	return cloneBytes(n.buf.Bytes())
 }
 
+// Render returns freshly prepared Nav HTML bytes.
+func (n *Nav) Render() []byte {
+	return renderPrepared(n)
+}
+
+// HTML returns freshly prepared Nav HTML as a string.
+func (n *Nav) HTML() string {
+	return htmlPrepared(n)
+}
+
+// String returns freshly prepared Nav HTML as a string.
+func (n *Nav) String() string {
+	return n.HTML()
+}
+
 // IsBodyElement implements BodyElement interface
 func (n *Nav) IsBodyElement() {}
 
@@ -177,6 +207,21 @@ func (m *Main) Add(e Element) *Main {
 // Bytes returns a defensive copy of the rendered Main bytes.
 func (m *Main) Bytes() []byte {
 	return cloneBytes(m.buf.Bytes())
+}
+
+// Render returns freshly prepared Main HTML bytes.
+func (m *Main) Render() []byte {
+	return renderPrepared(m)
+}
+
+// HTML returns freshly prepared Main HTML as a string.
+func (m *Main) HTML() string {
+	return htmlPrepared(m)
+}
+
+// String returns freshly prepared Main HTML as a string.
+func (m *Main) String() string {
+	return m.HTML()
 }
 
 // IsBodyElement implements BodyElement interface
@@ -247,6 +292,21 @@ func (s *Section) Bytes() []byte {
 	return cloneBytes(s.buf.Bytes())
 }
 
+// Render returns freshly prepared Section HTML bytes.
+func (s *Section) Render() []byte {
+	return renderPrepared(s)
+}
+
+// HTML returns freshly prepared Section HTML as a string.
+func (s *Section) HTML() string {
+	return htmlPrepared(s)
+}
+
+// String returns freshly prepared Section HTML as a string.
+func (s *Section) String() string {
+	return s.HTML()
+}
+
 // IsBodyElement implements BodyElement interface
 func (s *Section) IsBodyElement() {}
 
@@ -311,6 +371,21 @@ func (a *Article) Bytes() []byte {
 	return cloneBytes(a.buf.Bytes())
 }
 
+// Render returns freshly prepared Article HTML bytes.
+func (a *Article) Render() []byte {
+	return renderPrepared(a)
+}
+
+// HTML returns freshly prepared Article HTML as a string.
+func (a *Article) HTML() string {
+	return htmlPrepared(a)
+}
+
+// String returns freshly prepared Article HTML as a string.
+func (a *Article) String() string {
+	return a.HTML()
+}
+
 // IsBodyElement implements BodyElement interface
 func (a *Article) IsBodyElement() {}
 
@@ -370,6 +445,21 @@ func (as *Aside) Add(e Element) *Aside {
 // Bytes returns a defensive copy of the rendered Aside bytes.
 func (as *Aside) Bytes() []byte {
 	return cloneBytes(as.buf.Bytes())
+}
+
+// Render returns freshly prepared Aside HTML bytes.
+func (a *Aside) Render() []byte {
+	return renderPrepared(a)
+}
+
+// HTML returns freshly prepared Aside HTML as a string.
+func (a *Aside) HTML() string {
+	return htmlPrepared(a)
+}
+
+// String returns freshly prepared Aside HTML as a string.
+func (a *Aside) String() string {
+	return a.HTML()
 }
 
 // IsBodyElement implements BodyElement interface
@@ -433,6 +523,21 @@ func (f *Footer) Bytes() []byte {
 	return cloneBytes(f.buf.Bytes())
 }
 
+// Render returns freshly prepared Footer HTML bytes.
+func (f *Footer) Render() []byte {
+	return renderPrepared(f)
+}
+
+// HTML returns freshly prepared Footer HTML as a string.
+func (f *Footer) HTML() string {
+	return htmlPrepared(f)
+}
+
+// String returns freshly prepared Footer HTML as a string.
+func (f *Footer) String() string {
+	return f.HTML()
+}
+
 // IsBodyElement implements BodyElement interface
 func (f *Footer) IsBodyElement() {}
 
@@ -492,6 +597,21 @@ func (ad *Address) Add(e Element) *Address {
 // Bytes returns a defensive copy of the rendered Address bytes.
 func (ad *Address) Bytes() []byte {
 	return cloneBytes(ad.buf.Bytes())
+}
+
+// Render returns freshly prepared Address HTML bytes.
+func (a *Address) Render() []byte {
+	return renderPrepared(a)
+}
+
+// HTML returns freshly prepared Address HTML as a string.
+func (a *Address) HTML() string {
+	return htmlPrepared(a)
+}
+
+// String returns freshly prepared Address HTML as a string.
+func (a *Address) String() string {
+	return a.HTML()
 }
 
 // IsBodyElement implements BodyElement interface

@@ -212,6 +212,21 @@ func (t *Table) Bytes() []byte {
 	return cloneBytes(t.buf.Bytes())
 }
 
+// Render returns freshly prepared Table HTML bytes.
+func (t *Table) Render() []byte {
+	return renderPrepared(t)
+}
+
+// HTML returns freshly prepared Table HTML as a string.
+func (t *Table) HTML() string {
+	return htmlPrepared(t)
+}
+
+// String returns freshly prepared Table HTML as a string.
+func (t *Table) String() string {
+	return t.HTML()
+}
+
 // IsBodyElement implements BodyElement interface
 func (t *Table) IsBodyElement() {}
 
@@ -309,6 +324,21 @@ func (th *Thead) Prepare() {
 // Bytes returns a defensive copy of the rendered Thead bytes.
 func (th *Thead) Bytes() []byte {
 	return cloneBytes(th.buf.Bytes())
+}
+
+// Render returns freshly prepared Thead HTML bytes.
+func (t *Thead) Render() []byte {
+	return renderPrepared(t)
+}
+
+// HTML returns freshly prepared Thead HTML as a string.
+func (t *Thead) HTML() string {
+	return htmlPrepared(t)
+}
+
+// String returns freshly prepared Thead HTML as a string.
+func (t *Thead) String() string {
+	return t.HTML()
 }
 
 // IsBodyElement implements BodyElement interface
@@ -410,6 +440,21 @@ func (tb *Tbody) Bytes() []byte {
 	return cloneBytes(tb.buf.Bytes())
 }
 
+// Render returns freshly prepared Tbody HTML bytes.
+func (t *Tbody) Render() []byte {
+	return renderPrepared(t)
+}
+
+// HTML returns freshly prepared Tbody HTML as a string.
+func (t *Tbody) HTML() string {
+	return htmlPrepared(t)
+}
+
+// String returns freshly prepared Tbody HTML as a string.
+func (t *Tbody) String() string {
+	return t.HTML()
+}
+
 // IsBodyElement implements BodyElement interface
 func (tb *Tbody) IsBodyElement() {}
 
@@ -507,6 +552,21 @@ func (tf *Tfoot) Prepare() {
 // Bytes returns a defensive copy of the rendered Tfoot bytes.
 func (tf *Tfoot) Bytes() []byte {
 	return cloneBytes(tf.buf.Bytes())
+}
+
+// Render returns freshly prepared Tfoot HTML bytes.
+func (t *Tfoot) Render() []byte {
+	return renderPrepared(t)
+}
+
+// HTML returns freshly prepared Tfoot HTML as a string.
+func (t *Tfoot) HTML() string {
+	return htmlPrepared(t)
+}
+
+// String returns freshly prepared Tfoot HTML as a string.
+func (t *Tfoot) String() string {
+	return t.HTML()
 }
 
 // IsBodyElement implements BodyElement interface
@@ -608,6 +668,21 @@ func (c *Caption) Bytes() []byte {
 	return cloneBytes(c.buf.Bytes())
 }
 
+// Render returns freshly prepared Caption HTML bytes.
+func (c *Caption) Render() []byte {
+	return renderPrepared(c)
+}
+
+// HTML returns freshly prepared Caption HTML as a string.
+func (c *Caption) HTML() string {
+	return htmlPrepared(c)
+}
+
+// String returns freshly prepared Caption HTML as a string.
+func (c *Caption) String() string {
+	return c.HTML()
+}
+
 // IsBodyElement implements BodyElement interface
 func (c *Caption) IsBodyElement() {}
 
@@ -705,6 +780,21 @@ func (col *Col) Prepare() {
 // Bytes returns a defensive copy of the rendered Col bytes.
 func (col *Col) Bytes() []byte {
 	return cloneBytes(col.buf.Bytes())
+}
+
+// Render returns freshly prepared Col HTML bytes.
+func (c *Col) Render() []byte {
+	return renderPrepared(c)
+}
+
+// HTML returns freshly prepared Col HTML as a string.
+func (c *Col) HTML() string {
+	return htmlPrepared(c)
+}
+
+// String returns freshly prepared Col HTML as a string.
+func (c *Col) String() string {
+	return c.HTML()
 }
 
 // IsBodyElement implements BodyElement interface
@@ -816,6 +906,21 @@ func (cg *Colgroup) Bytes() []byte {
 	return cloneBytes(cg.buf.Bytes())
 }
 
+// Render returns freshly prepared Colgroup HTML bytes.
+func (c *Colgroup) Render() []byte {
+	return renderPrepared(c)
+}
+
+// HTML returns freshly prepared Colgroup HTML as a string.
+func (c *Colgroup) HTML() string {
+	return htmlPrepared(c)
+}
+
+// String returns freshly prepared Colgroup HTML as a string.
+func (c *Colgroup) String() string {
+	return c.HTML()
+}
+
 // IsBodyElement implements BodyElement interface
 func (cg *Colgroup) IsBodyElement() {}
 
@@ -919,6 +1024,21 @@ func (tr *Tr) Prepare() {
 // Bytes returns a defensive copy of the rendered Tr bytes.
 func (tr *Tr) Bytes() []byte {
 	return cloneBytes(tr.buf.Bytes())
+}
+
+// Render returns freshly prepared Tr HTML bytes.
+func (t *Tr) Render() []byte {
+	return renderPrepared(t)
+}
+
+// HTML returns freshly prepared Tr HTML as a string.
+func (t *Tr) HTML() string {
+	return htmlPrepared(t)
+}
+
+// String returns freshly prepared Tr HTML as a string.
+func (t *Tr) String() string {
+	return t.HTML()
 }
 
 // IsBodyElement implements BodyElement interface
@@ -1038,6 +1158,21 @@ func (td *Td) Prepare() {
 // Bytes returns a defensive copy of the rendered Td bytes.
 func (td *Td) Bytes() []byte {
 	return cloneBytes(td.buf.Bytes())
+}
+
+// Render returns freshly prepared Td HTML bytes.
+func (t *Td) Render() []byte {
+	return renderPrepared(t)
+}
+
+// HTML returns freshly prepared Td HTML as a string.
+func (t *Td) HTML() string {
+	return htmlPrepared(t)
+}
+
+// String returns freshly prepared Td HTML as a string.
+func (t *Td) String() string {
+	return t.HTML()
 }
 
 // IsBodyElement implements BodyElement interface
@@ -1167,6 +1302,21 @@ func (th *Th) Prepare() {
 // Bytes returns a defensive copy of the rendered Th bytes.
 func (th *Th) Bytes() []byte {
 	return cloneBytes(th.buf.Bytes())
+}
+
+// Render returns freshly prepared Th HTML bytes.
+func (t *Th) Render() []byte {
+	return renderPrepared(t)
+}
+
+// HTML returns freshly prepared Th HTML as a string.
+func (t *Th) HTML() string {
+	return htmlPrepared(t)
+}
+
+// String returns freshly prepared Th HTML as a string.
+func (t *Th) String() string {
+	return t.HTML()
 }
 
 // IsBodyElement implements BodyElement interface

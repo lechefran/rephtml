@@ -4,7 +4,6 @@ import (
 	"go/ast"
 	"go/parser"
 	"go/token"
-	"io/fs"
 	"os"
 	"path/filepath"
 	"sort"
@@ -751,24 +750,29 @@ func exportedElementStructNames(t *testing.T) map[string]bool {
 	t.Helper()
 
 	fset := token.NewFileSet()
-	pkgs, err := parser.ParseDir(fset, ".", func(info fs.FileInfo) bool {
-		return !strings.HasSuffix(info.Name(), "_test.go")
-	}, 0)
+	entries, err := os.ReadDir(".")
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	structs := map[string]bool{}
 	methods := map[string]map[string]bool{}
-	for _, pkg := range pkgs {
-		for _, file := range pkg.Files {
-			for _, decl := range file.Decls {
-				switch d := decl.(type) {
-				case *ast.GenDecl:
-					recordExportedStructs(d, structs)
-				case *ast.FuncDecl:
-					recordElementMethod(d, methods)
-				}
+	for _, entry := range entries {
+		name := entry.Name()
+		if entry.IsDir() || !strings.HasSuffix(name, ".go") || strings.HasSuffix(name, "_test.go") {
+			continue
+		}
+
+		file, err := parser.ParseFile(fset, name, nil, 0)
+		if err != nil {
+			t.Fatal(err)
+		}
+		for _, decl := range file.Decls {
+			switch d := decl.(type) {
+			case *ast.GenDecl:
+				recordExportedStructs(d, structs)
+			case *ast.FuncDecl:
+				recordElementMethod(d, methods)
 			}
 		}
 	}

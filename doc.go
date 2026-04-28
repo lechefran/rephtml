@@ -692,6 +692,21 @@ func (h *Head) Bytes() []byte {
 	return cloneBytes(h.buf.Bytes())
 }
 
+// Render returns freshly prepared Head HTML bytes.
+func (h *Head) Render() []byte {
+	return renderPrepared(h)
+}
+
+// HTML returns freshly prepared Head HTML as a string.
+func (h *Head) HTML() string {
+	return htmlPrepared(h)
+}
+
+// String returns freshly prepared Head HTML as a string.
+func (h *Head) String() string {
+	return h.HTML()
+}
+
 // Prepare builds the HTML for the head element
 func (h *Head) Prepare() {
 	h.buf.Reset()
@@ -752,6 +767,21 @@ func NewBody() *Body {
 // Bytes returns the buffer contents
 func (b *Body) Bytes() []byte {
 	return cloneBytes(b.buf.Bytes())
+}
+
+// Render returns freshly prepared Body HTML bytes.
+func (b *Body) Render() []byte {
+	return renderPrepared(b)
+}
+
+// HTML returns freshly prepared Body HTML as a string.
+func (b *Body) HTML() string {
+	return htmlPrepared(b)
+}
+
+// String returns freshly prepared Body HTML as a string.
+func (b *Body) String() string {
+	return b.HTML()
 }
 
 // IsBodyElement implements BodyElement interface
@@ -835,6 +865,21 @@ func (t *Title) Bytes() []byte {
 	return cloneBytes(t.buf.Bytes())
 }
 
+// Render returns freshly prepared Title HTML bytes.
+func (t *Title) Render() []byte {
+	return renderPrepared(t)
+}
+
+// HTML returns freshly prepared Title HTML as a string.
+func (t *Title) HTML() string {
+	return htmlPrepared(t)
+}
+
+// String returns freshly prepared Title HTML as a string.
+func (t *Title) String() string {
+	return t.HTML()
+}
+
 // Prepare builds the HTML for the title element
 func (t *Title) Prepare() {
 	t.buf.Reset()
@@ -903,6 +948,21 @@ func NewBase() *Base {
 // Bytes returns the buffer contents
 func (b *Base) Bytes() []byte {
 	return cloneBytes(b.buf.Bytes())
+}
+
+// Render returns freshly prepared Base HTML bytes.
+func (b *Base) Render() []byte {
+	return renderPrepared(b)
+}
+
+// HTML returns freshly prepared Base HTML as a string.
+func (b *Base) HTML() string {
+	return htmlPrepared(b)
+}
+
+// String returns freshly prepared Base HTML as a string.
+func (b *Base) String() string {
+	return b.HTML()
 }
 
 // Prepare builds the HTML for the base element
@@ -981,6 +1041,21 @@ func NewLink() *Link {
 // Bytes returns the buffer contents
 func (l *Link) Bytes() []byte {
 	return cloneBytes(l.buf.Bytes())
+}
+
+// Render returns freshly prepared Link HTML bytes.
+func (l *Link) Render() []byte {
+	return renderPrepared(l)
+}
+
+// HTML returns freshly prepared Link HTML as a string.
+func (l *Link) HTML() string {
+	return htmlPrepared(l)
+}
+
+// String returns freshly prepared Link HTML as a string.
+func (l *Link) String() string {
+	return l.HTML()
 }
 
 // Prepare builds the HTML for the link element
@@ -1121,6 +1196,21 @@ func (m *Meta) Bytes() []byte {
 	return cloneBytes(m.buf.Bytes())
 }
 
+// Render returns freshly prepared Meta HTML bytes.
+func (m *Meta) Render() []byte {
+	return renderPrepared(m)
+}
+
+// HTML returns freshly prepared Meta HTML as a string.
+func (m *Meta) HTML() string {
+	return htmlPrepared(m)
+}
+
+// String returns freshly prepared Meta HTML as a string.
+func (m *Meta) String() string {
+	return m.HTML()
+}
+
 // Prepare builds the HTML for the meta element
 func (m *Meta) Prepare() {
 	m.buf.Reset()
@@ -1227,6 +1317,21 @@ func NewStyleElement() *StyleElement {
 // Bytes returns the buffer contents
 func (s *StyleElement) Bytes() []byte {
 	return cloneBytes(s.buf.Bytes())
+}
+
+// Render returns freshly prepared StyleElement HTML bytes.
+func (s *StyleElement) Render() []byte {
+	return renderPrepared(s)
+}
+
+// HTML returns freshly prepared StyleElement HTML as a string.
+func (s *StyleElement) HTML() string {
+	return htmlPrepared(s)
+}
+
+// String returns freshly prepared StyleElement HTML as a string.
+func (s *StyleElement) String() string {
+	return s.HTML()
 }
 
 // Prepare builds the HTML for the style element

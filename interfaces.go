@@ -20,3 +20,12 @@ type BodyElement interface {
 	Element
 	IsBodyElement()
 }
+
+// preparedElement is the internal rendering contract used by buffer-backed
+// elements. Concrete element structs satisfy both Element and preparedElement:
+// public callers use Render/HTML, while the package uses Prepare/Bytes behind
+// those methods.
+type preparedElement interface {
+	Prepare()
+	Bytes() []byte
+}

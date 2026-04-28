@@ -47,6 +47,21 @@ func (h *Hgroup) Bytes() []byte {
 	return cloneBytes(h.buf.Bytes())
 }
 
+// Render returns freshly prepared Hgroup HTML bytes.
+func (h *Hgroup) Render() []byte {
+	return renderPrepared(h)
+}
+
+// HTML returns freshly prepared Hgroup HTML as a string.
+func (h *Hgroup) HTML() string {
+	return htmlPrepared(h)
+}
+
+// String returns freshly prepared Hgroup HTML as a string.
+func (h *Hgroup) String() string {
+	return h.HTML()
+}
+
 // IsBodyElement implements BodyElement interface
 func (h *Hgroup) IsBodyElement() {}
 
@@ -100,6 +115,21 @@ func (h *H1) Bytes() []byte {
 	return cloneBytes(h.buf.Bytes())
 }
 
+// Render returns freshly prepared H1 HTML bytes.
+func (h *H1) Render() []byte {
+	return renderPrepared(h)
+}
+
+// HTML returns freshly prepared H1 HTML as a string.
+func (h *H1) HTML() string {
+	return htmlPrepared(h)
+}
+
+// String returns freshly prepared H1 HTML as a string.
+func (h *H1) String() string {
+	return h.HTML()
+}
+
 // IsBodyElement implements BodyElement interface
 func (h *H1) IsBodyElement() {}
 
@@ -148,6 +178,21 @@ func (h *H2) Text(s string) *H2 {
 // Bytes returns a defensive copy of the rendered H2 bytes.
 func (h *H2) Bytes() []byte {
 	return cloneBytes(h.buf.Bytes())
+}
+
+// Render returns freshly prepared H2 HTML bytes.
+func (h *H2) Render() []byte {
+	return renderPrepared(h)
+}
+
+// HTML returns freshly prepared H2 HTML as a string.
+func (h *H2) HTML() string {
+	return htmlPrepared(h)
+}
+
+// String returns freshly prepared H2 HTML as a string.
+func (h *H2) String() string {
+	return h.HTML()
 }
 
 // IsBodyElement implements BodyElement interface
@@ -200,6 +245,21 @@ func (h *H3) Bytes() []byte {
 	return cloneBytes(h.buf.Bytes())
 }
 
+// Render returns freshly prepared H3 HTML bytes.
+func (h *H3) Render() []byte {
+	return renderPrepared(h)
+}
+
+// HTML returns freshly prepared H3 HTML as a string.
+func (h *H3) HTML() string {
+	return htmlPrepared(h)
+}
+
+// String returns freshly prepared H3 HTML as a string.
+func (h *H3) String() string {
+	return h.HTML()
+}
+
 // IsBodyElement implements BodyElement interface
 func (h *H3) IsBodyElement() {}
 
@@ -248,6 +308,21 @@ func (h *H4) Text(s string) *H4 {
 // Bytes returns a defensive copy of the rendered H4 bytes.
 func (h *H4) Bytes() []byte {
 	return cloneBytes(h.buf.Bytes())
+}
+
+// Render returns freshly prepared H4 HTML bytes.
+func (h *H4) Render() []byte {
+	return renderPrepared(h)
+}
+
+// HTML returns freshly prepared H4 HTML as a string.
+func (h *H4) HTML() string {
+	return htmlPrepared(h)
+}
+
+// String returns freshly prepared H4 HTML as a string.
+func (h *H4) String() string {
+	return h.HTML()
 }
 
 // IsBodyElement implements BodyElement interface
@@ -300,6 +375,21 @@ func (h *H5) Bytes() []byte {
 	return cloneBytes(h.buf.Bytes())
 }
 
+// Render returns freshly prepared H5 HTML bytes.
+func (h *H5) Render() []byte {
+	return renderPrepared(h)
+}
+
+// HTML returns freshly prepared H5 HTML as a string.
+func (h *H5) HTML() string {
+	return htmlPrepared(h)
+}
+
+// String returns freshly prepared H5 HTML as a string.
+func (h *H5) String() string {
+	return h.HTML()
+}
+
 // IsBodyElement implements BodyElement interface
 func (h *H5) IsBodyElement() {}
 
@@ -348,6 +438,21 @@ func (h *H6) Text(s string) *H6 {
 // Bytes returns a defensive copy of the rendered H6 bytes.
 func (h *H6) Bytes() []byte {
 	return cloneBytes(h.buf.Bytes())
+}
+
+// Render returns freshly prepared H6 HTML bytes.
+func (h *H6) Render() []byte {
+	return renderPrepared(h)
+}
+
+// HTML returns freshly prepared H6 HTML as a string.
+func (h *H6) HTML() string {
+	return htmlPrepared(h)
+}
+
+// String returns freshly prepared H6 HTML as a string.
+func (h *H6) String() string {
+	return h.HTML()
 }
 
 // IsBodyElement implements BodyElement interface

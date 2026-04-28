@@ -22,6 +22,21 @@ func (d *Details) Bytes() []byte {
 	return cloneBytes(d.buf.Bytes())
 }
 
+// Render returns freshly prepared Details HTML bytes.
+func (d *Details) Render() []byte {
+	return renderPrepared(d)
+}
+
+// HTML returns freshly prepared Details HTML as a string.
+func (d *Details) HTML() string {
+	return htmlPrepared(d)
+}
+
+// String returns freshly prepared Details HTML as a string.
+func (d *Details) String() string {
+	return d.HTML()
+}
+
 // IsBodyElement implements BodyElement interface
 func (d *Details) IsBodyElement() {}
 
@@ -99,6 +114,21 @@ func (d *Dialog) Bytes() []byte {
 	return cloneBytes(d.buf.Bytes())
 }
 
+// Render returns freshly prepared Dialog HTML bytes.
+func (d *Dialog) Render() []byte {
+	return renderPrepared(d)
+}
+
+// HTML returns freshly prepared Dialog HTML as a string.
+func (d *Dialog) HTML() string {
+	return htmlPrepared(d)
+}
+
+// String returns freshly prepared Dialog HTML as a string.
+func (d *Dialog) String() string {
+	return d.HTML()
+}
+
 // IsBodyElement implements BodyElement interface
 func (d *Dialog) IsBodyElement() {}
 
@@ -173,6 +203,21 @@ func NewSummary() *Summary {
 // Bytes returns the buffer contents
 func (s *Summary) Bytes() []byte {
 	return cloneBytes(s.buf.Bytes())
+}
+
+// Render returns freshly prepared Summary HTML bytes.
+func (s *Summary) Render() []byte {
+	return renderPrepared(s)
+}
+
+// HTML returns freshly prepared Summary HTML as a string.
+func (s *Summary) HTML() string {
+	return htmlPrepared(s)
+}
+
+// String returns freshly prepared Summary HTML as a string.
+func (s *Summary) String() string {
+	return s.HTML()
 }
 
 // IsBodyElement implements BodyElement interface

@@ -68,6 +68,21 @@ func (e *Embed) Bytes() []byte {
 	return cloneBytes(e.buf.Bytes())
 }
 
+// Render returns freshly prepared Embed HTML bytes.
+func (e *Embed) Render() []byte {
+	return renderPrepared(e)
+}
+
+// HTML returns freshly prepared Embed HTML as a string.
+func (e *Embed) HTML() string {
+	return htmlPrepared(e)
+}
+
+// String returns freshly prepared Embed HTML as a string.
+func (e *Embed) String() string {
+	return e.HTML()
+}
+
 // IsBodyElement implements BodyElement interface
 func (e *Embed) IsBodyElement() {}
 
@@ -199,6 +214,21 @@ func (i *Iframe) Srcdoc(srcdoc string) *Iframe {
 // Bytes returns a defensive copy of the rendered Iframe bytes.
 func (i *Iframe) Bytes() []byte {
 	return cloneBytes(i.buf.Bytes())
+}
+
+// Render returns freshly prepared Iframe HTML bytes.
+func (i *Iframe) Render() []byte {
+	return renderPrepared(i)
+}
+
+// HTML returns freshly prepared Iframe HTML as a string.
+func (i *Iframe) HTML() string {
+	return htmlPrepared(i)
+}
+
+// String returns freshly prepared Iframe HTML as a string.
+func (i *Iframe) String() string {
+	return i.HTML()
 }
 
 // IsBodyElement implements BodyElement interface
@@ -338,6 +368,21 @@ func (o *Object) Bytes() []byte {
 	return cloneBytes(o.buf.Bytes())
 }
 
+// Render returns freshly prepared Object HTML bytes.
+func (o *Object) Render() []byte {
+	return renderPrepared(o)
+}
+
+// HTML returns freshly prepared Object HTML as a string.
+func (o *Object) HTML() string {
+	return htmlPrepared(o)
+}
+
+// String returns freshly prepared Object HTML as a string.
+func (o *Object) String() string {
+	return o.HTML()
+}
+
 // IsBodyElement implements BodyElement interface
 func (o *Object) IsBodyElement() {}
 
@@ -420,6 +465,21 @@ func (p *Picture) Bytes() []byte {
 	return cloneBytes(p.buf.Bytes())
 }
 
+// Render returns freshly prepared Picture HTML bytes.
+func (p *Picture) Render() []byte {
+	return renderPrepared(p)
+}
+
+// HTML returns freshly prepared Picture HTML as a string.
+func (p *Picture) HTML() string {
+	return htmlPrepared(p)
+}
+
+// String returns freshly prepared Picture HTML as a string.
+func (p *Picture) String() string {
+	return p.HTML()
+}
+
 // IsBodyElement implements BodyElement interface
 func (p *Picture) IsBodyElement() {}
 
@@ -486,6 +546,21 @@ func (p *Portal) Referrerpolicy(referrerpolicy string) *Portal {
 // Bytes returns a defensive copy of the rendered Portal bytes.
 func (p *Portal) Bytes() []byte {
 	return cloneBytes(p.buf.Bytes())
+}
+
+// Render returns freshly prepared Portal HTML bytes.
+func (p *Portal) Render() []byte {
+	return renderPrepared(p)
+}
+
+// HTML returns freshly prepared Portal HTML as a string.
+func (p *Portal) HTML() string {
+	return htmlPrepared(p)
+}
+
+// String returns freshly prepared Portal HTML as a string.
+func (p *Portal) String() string {
+	return p.HTML()
 }
 
 // IsBodyElement implements BodyElement interface
@@ -578,6 +653,21 @@ func (s *Source) Type(srcType string) *Source {
 // Bytes returns a defensive copy of the rendered Source bytes.
 func (s *Source) Bytes() []byte {
 	return cloneBytes(s.buf.Bytes())
+}
+
+// Render returns freshly prepared Source HTML bytes.
+func (s *Source) Render() []byte {
+	return renderPrepared(s)
+}
+
+// HTML returns freshly prepared Source HTML as a string.
+func (s *Source) HTML() string {
+	return htmlPrepared(s)
+}
+
+// String returns freshly prepared Source HTML as a string.
+func (s *Source) String() string {
+	return s.HTML()
 }
 
 // IsBodyElement implements BodyElement interface

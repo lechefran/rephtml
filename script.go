@@ -61,6 +61,21 @@ func (c *Canvas) Bytes() []byte {
 	return cloneBytes(c.buf.Bytes())
 }
 
+// Render returns freshly prepared Canvas HTML bytes.
+func (c *Canvas) Render() []byte {
+	return renderPrepared(c)
+}
+
+// HTML returns freshly prepared Canvas HTML as a string.
+func (c *Canvas) HTML() string {
+	return htmlPrepared(c)
+}
+
+// String returns freshly prepared Canvas HTML as a string.
+func (c *Canvas) String() string {
+	return c.HTML()
+}
+
 // IsBodyElement implements BodyElement interface
 func (c *Canvas) IsBodyElement() {}
 
@@ -132,6 +147,21 @@ func (n *Noscript) Add(e Element) *Noscript {
 // Bytes returns a defensive copy of the rendered Noscript bytes.
 func (n *Noscript) Bytes() []byte {
 	return cloneBytes(n.buf.Bytes())
+}
+
+// Render returns freshly prepared Noscript HTML bytes.
+func (n *Noscript) Render() []byte {
+	return renderPrepared(n)
+}
+
+// HTML returns freshly prepared Noscript HTML as a string.
+func (n *Noscript) HTML() string {
+	return htmlPrepared(n)
+}
+
+// String returns freshly prepared Noscript HTML as a string.
+func (n *Noscript) String() string {
+	return n.HTML()
 }
 
 // Prepare renders the Noscript component into its internal buffer.
@@ -252,6 +282,21 @@ func (s *Script) Text(text string) *Script {
 // Bytes returns a defensive copy of the rendered Script bytes.
 func (s *Script) Bytes() []byte {
 	return cloneBytes(s.buf.Bytes())
+}
+
+// Render returns freshly prepared Script HTML bytes.
+func (s *Script) Render() []byte {
+	return renderPrepared(s)
+}
+
+// HTML returns freshly prepared Script HTML as a string.
+func (s *Script) HTML() string {
+	return htmlPrepared(s)
+}
+
+// String returns freshly prepared Script HTML as a string.
+func (s *Script) String() string {
+	return s.HTML()
 }
 
 // Prepare renders the Script component into its internal buffer.

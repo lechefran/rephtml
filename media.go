@@ -75,6 +75,21 @@ func (a *Area) Bytes() []byte {
 	return cloneBytes(a.buf.Bytes())
 }
 
+// Render returns freshly prepared Area HTML bytes.
+func (a *Area) Render() []byte {
+	return renderPrepared(a)
+}
+
+// HTML returns freshly prepared Area HTML as a string.
+func (a *Area) HTML() string {
+	return htmlPrepared(a)
+}
+
+// String returns freshly prepared Area HTML as a string.
+func (a *Area) String() string {
+	return a.HTML()
+}
+
 // IsBodyElement implements BodyElement interface
 func (a *Area) IsBodyElement() {}
 
@@ -174,6 +189,21 @@ func (i *Img) Title(title string) *Img {
 // Bytes returns a defensive copy of the rendered Img bytes.
 func (i *Img) Bytes() []byte {
 	return cloneBytes(i.buf.Bytes())
+}
+
+// Render returns freshly prepared Img HTML bytes.
+func (i *Img) Render() []byte {
+	return renderPrepared(i)
+}
+
+// HTML returns freshly prepared Img HTML as a string.
+func (i *Img) HTML() string {
+	return htmlPrepared(i)
+}
+
+// String returns freshly prepared Img HTML as a string.
+func (i *Img) String() string {
+	return i.HTML()
 }
 
 // IsBodyElement implements BodyElement interface
@@ -291,6 +321,21 @@ func (a *Audio) Bytes() []byte {
 	return cloneBytes(a.buf.Bytes())
 }
 
+// Render returns freshly prepared Audio HTML bytes.
+func (a *Audio) Render() []byte {
+	return renderPrepared(a)
+}
+
+// HTML returns freshly prepared Audio HTML as a string.
+func (a *Audio) HTML() string {
+	return htmlPrepared(a)
+}
+
+// String returns freshly prepared Audio HTML as a string.
+func (a *Audio) String() string {
+	return a.HTML()
+}
+
 // IsBodyElement implements BodyElement interface
 func (a *Audio) IsBodyElement() {}
 
@@ -398,6 +443,21 @@ func (t *Track) Bytes() []byte {
 	return cloneBytes(t.buf.Bytes())
 }
 
+// Render returns freshly prepared Track HTML bytes.
+func (t *Track) Render() []byte {
+	return renderPrepared(t)
+}
+
+// HTML returns freshly prepared Track HTML as a string.
+func (t *Track) HTML() string {
+	return htmlPrepared(t)
+}
+
+// String returns freshly prepared Track HTML as a string.
+func (t *Track) String() string {
+	return t.HTML()
+}
+
 // IsBodyElement implements BodyElement interface
 func (t *Track) IsBodyElement() {}
 
@@ -476,6 +536,21 @@ func (m *Map) Name(name string) *Map {
 // Bytes returns a defensive copy of the rendered Map bytes.
 func (m *Map) Bytes() []byte {
 	return cloneBytes(m.buf.Bytes())
+}
+
+// Render returns freshly prepared Map HTML bytes.
+func (m *Map) Render() []byte {
+	return renderPrepared(m)
+}
+
+// HTML returns freshly prepared Map HTML as a string.
+func (m *Map) HTML() string {
+	return htmlPrepared(m)
+}
+
+// String returns freshly prepared Map HTML as a string.
+func (m *Map) String() string {
+	return m.HTML()
 }
 
 // IsBodyElement implements BodyElement interface
@@ -603,6 +678,21 @@ func (v *Video) Poster(poster string) *Video {
 // Bytes returns a defensive copy of the rendered Video bytes.
 func (v *Video) Bytes() []byte {
 	return cloneBytes(v.buf.Bytes())
+}
+
+// Render returns freshly prepared Video HTML bytes.
+func (v *Video) Render() []byte {
+	return renderPrepared(v)
+}
+
+// HTML returns freshly prepared Video HTML as a string.
+func (v *Video) HTML() string {
+	return htmlPrepared(v)
+}
+
+// String returns freshly prepared Video HTML as a string.
+func (v *Video) String() string {
+	return v.HTML()
 }
 
 // IsBodyElement implements BodyElement interface

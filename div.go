@@ -37,6 +37,21 @@ func (d *Div) Bytes() []byte {
 	return cloneBytes(d.buf.Bytes())
 }
 
+// Render returns freshly prepared Div HTML bytes.
+func (d *Div) Render() []byte {
+	return renderPrepared(d)
+}
+
+// HTML returns freshly prepared Div HTML as a string.
+func (d *Div) HTML() string {
+	return htmlPrepared(d)
+}
+
+// String returns freshly prepared Div HTML as a string.
+func (d *Div) String() string {
+	return d.HTML()
+}
+
 // IsBodyElement implements BodyElement interface
 func (d *Div) IsBodyElement() {}
 

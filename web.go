@@ -54,6 +54,21 @@ func (s *Slot) Bytes() []byte {
 	return cloneBytes(s.buf.Bytes())
 }
 
+// Render returns freshly prepared Slot HTML bytes.
+func (s *Slot) Render() []byte {
+	return renderPrepared(s)
+}
+
+// HTML returns freshly prepared Slot HTML as a string.
+func (s *Slot) HTML() string {
+	return htmlPrepared(s)
+}
+
+// String returns freshly prepared Slot HTML as a string.
+func (s *Slot) String() string {
+	return s.HTML()
+}
+
 // IsBodyElement implements BodyElement interface
 func (s *Slot) IsBodyElement() {}
 
@@ -129,6 +144,21 @@ func (t *Template) Id(i string) *Template {
 // Bytes returns a defensive copy of the rendered Template bytes.
 func (t *Template) Bytes() []byte {
 	return cloneBytes(t.buf.Bytes())
+}
+
+// Render returns freshly prepared Template HTML bytes.
+func (t *Template) Render() []byte {
+	return renderPrepared(t)
+}
+
+// HTML returns freshly prepared Template HTML as a string.
+func (t *Template) HTML() string {
+	return htmlPrepared(t)
+}
+
+// String returns freshly prepared Template HTML as a string.
+func (t *Template) String() string {
+	return t.HTML()
 }
 
 // Prepare renders the Template component into its internal buffer.

@@ -23,6 +23,21 @@ func (d *Del) Bytes() []byte {
 	return cloneBytes(d.buf.Bytes())
 }
 
+// Render returns freshly prepared Del HTML bytes.
+func (d *Del) Render() []byte {
+	return renderPrepared(d)
+}
+
+// HTML returns freshly prepared Del HTML as a string.
+func (d *Del) HTML() string {
+	return htmlPrepared(d)
+}
+
+// String returns freshly prepared Del HTML as a string.
+func (d *Del) String() string {
+	return d.HTML()
+}
+
 // IsBodyElement implements BodyElement interface
 func (d *Del) IsBodyElement() {}
 
@@ -104,6 +119,21 @@ func NewIns() *Ins {
 // Bytes returns the buffer contents
 func (i *Ins) Bytes() []byte {
 	return cloneBytes(i.buf.Bytes())
+}
+
+// Render returns freshly prepared Ins HTML bytes.
+func (i *Ins) Render() []byte {
+	return renderPrepared(i)
+}
+
+// HTML returns freshly prepared Ins HTML as a string.
+func (i *Ins) HTML() string {
+	return htmlPrepared(i)
+}
+
+// String returns freshly prepared Ins HTML as a string.
+func (i *Ins) String() string {
+	return i.HTML()
 }
 
 // IsBodyElement implements BodyElement interface

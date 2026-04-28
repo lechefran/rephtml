@@ -62,6 +62,21 @@ func (m *Math) Bytes() []byte {
 	return cloneBytes(m.buf.Bytes())
 }
 
+// Render returns freshly prepared Math HTML bytes.
+func (m *Math) Render() []byte {
+	return renderPrepared(m)
+}
+
+// HTML returns freshly prepared Math HTML as a string.
+func (m *Math) HTML() string {
+	return htmlPrepared(m)
+}
+
+// String returns freshly prepared Math HTML as a string.
+func (m *Math) String() string {
+	return m.HTML()
+}
+
 // IsBodyElement implements BodyElement interface
 func (m *Math) IsBodyElement() {}
 
@@ -177,6 +192,21 @@ func (s *Svg) PreserveAspectRatio(preserveAspectRatio string) *Svg {
 // Bytes returns a defensive copy of the rendered SVG bytes.
 func (s *Svg) Bytes() []byte {
 	return cloneBytes(s.buf.Bytes())
+}
+
+// Render returns freshly prepared Svg HTML bytes.
+func (s *Svg) Render() []byte {
+	return renderPrepared(s)
+}
+
+// HTML returns freshly prepared Svg HTML as a string.
+func (s *Svg) HTML() string {
+	return htmlPrepared(s)
+}
+
+// String returns freshly prepared Svg HTML as a string.
+func (s *Svg) String() string {
+	return s.HTML()
 }
 
 // IsBodyElement implements BodyElement interface

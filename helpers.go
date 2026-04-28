@@ -58,6 +58,20 @@ func cloneStrings(values []string) []string {
 	return append([]string(nil), values...)
 }
 
+// renderPrepared prepares an element and returns a snapshot of its rendered bytes.
+func renderPrepared(e preparedElement) []byte {
+	if e == nil {
+		return nil
+	}
+	e.Prepare()
+	return e.Bytes()
+}
+
+// htmlPrepared prepares an element and returns its rendered HTML.
+func htmlPrepared(e preparedElement) string {
+	return string(renderPrepared(e))
+}
+
 // escapeText escapes ordinary HTML text node content.
 func escapeText(text string) string {
 	return html.EscapeString(text)
@@ -102,6 +116,21 @@ func (r rawText) Bytes() []byte {
 	return []byte(r)
 }
 
+// Render returns raw text bytes.
+func (r rawText) Render() []byte {
+	return renderPrepared(r)
+}
+
+// HTML returns raw text as a string.
+func (r rawText) HTML() string {
+	return htmlPrepared(r)
+}
+
+// String returns raw text as a string.
+func (r rawText) String() string {
+	return r.HTML()
+}
+
 // Prepare renders the rawText component into its internal buffer.
 func (r rawText) Prepare() {}
 
@@ -111,6 +140,21 @@ type escapedText string
 // Bytes returns a defensive copy of the rendered escapedText bytes.
 func (e escapedText) Bytes() []byte {
 	return []byte(escapeText(string(e)))
+}
+
+// Render returns escaped text bytes.
+func (e escapedText) Render() []byte {
+	return renderPrepared(e)
+}
+
+// HTML returns escaped text as a string.
+func (e escapedText) HTML() string {
+	return htmlPrepared(e)
+}
+
+// String returns escaped text as a string.
+func (e escapedText) String() string {
+	return e.HTML()
 }
 
 // Prepare renders the escapedText component into its internal buffer.
