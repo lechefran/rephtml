@@ -7,7 +7,6 @@ type Form struct {
 	buf           bytes.Buffer
 	style         map[string]string
 	contents      []Element
-	ttrack        int
 	action        string
 	method        string
 	enctype       string
@@ -162,7 +161,6 @@ type Label struct {
 	buf      bytes.Buffer
 	style    map[string]string
 	contents []Element
-	ttrack   int
 	forattr  string
 	form     string
 }
@@ -541,7 +539,6 @@ type Output struct {
 	buf      bytes.Buffer
 	style    map[string]string
 	contents []Element
-	ttrack   int
 	forattr  string
 	name     string
 	form     string
@@ -647,7 +644,6 @@ type Fieldset struct {
 	buf      bytes.Buffer
 	style    map[string]string
 	contents []Element
-	ttrack   int
 	form     string
 	name     string
 	disabled bool
@@ -747,7 +743,6 @@ type Button struct {
 	buf            bytes.Buffer
 	style          map[string]string
 	contents       []Element
-	ttrack         int
 	buttonType     string
 	name           string
 	value          string
@@ -941,7 +936,6 @@ type Select struct {
 	buf          bytes.Buffer
 	style        map[string]string
 	contents     []Element
-	ttrack       int
 	name         string
 	form         string
 	size         string
@@ -1096,7 +1090,6 @@ type Datalist struct {
 	buf      bytes.Buffer
 	style    map[string]string
 	contents []Element
-	ttrack   int
 	id       string
 }
 
@@ -1174,7 +1167,6 @@ type Optgroup struct {
 	buf      bytes.Buffer
 	style    map[string]string
 	contents []Element
-	ttrack   int
 	label    string
 	disabled bool
 }
@@ -1263,7 +1255,6 @@ type Option struct {
 	buf      bytes.Buffer
 	style    map[string]string
 	contents []Element
-	ttrack   int
 	value    string
 	label    string
 	selected bool
@@ -1380,7 +1371,6 @@ type Textarea struct {
 	buf          bytes.Buffer
 	style        map[string]string
 	contents     []Element
-	ttrack       int
 	name         string
 	form         string
 	rows         string
@@ -1607,7 +1597,6 @@ type Progress struct {
 	buf      bytes.Buffer
 	style    map[string]string
 	contents []Element
-	ttrack   int
 	value    string
 	max      string
 	form     string
@@ -1713,7 +1702,6 @@ type Meter struct {
 	buf      bytes.Buffer
 	style    map[string]string
 	contents []Element
-	ttrack   int
 	value    string
 	min      string
 	max      string
@@ -1863,7 +1851,6 @@ type Legend struct {
 	buf      bytes.Buffer
 	style    map[string]string
 	contents []Element
-	ttrack   int
 }
 
 // NewLegend creates a new Legend element

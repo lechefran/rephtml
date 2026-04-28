@@ -10,8 +10,7 @@ import (
 )
 
 type HtmlDiv struct {
-	buf     bytes.Buffer
-	content [][]byte
+	buf bytes.Buffer
 }
 
 func NewDiv() *HtmlDiv {

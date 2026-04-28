@@ -7,7 +7,6 @@ type Details struct {
 	buf      bytes.Buffer
 	style    map[string]string
 	contents []Element
-	ttrack   int
 	open     bool
 }
 
@@ -85,7 +84,6 @@ type Dialog struct {
 	buf      bytes.Buffer
 	style    map[string]string
 	contents []Element
-	ttrack   int
 	open     bool
 }
 
@@ -163,7 +161,6 @@ type Summary struct {
 	buf      bytes.Buffer
 	style    map[string]string
 	contents []Element
-	ttrack   int
 }
 
 // NewSummary creates a new Summary element

@@ -7,13 +7,11 @@ import (
 	"strings"
 )
 
-// CssProps
-/*
-Implementation of all CSS properties.
-This may be overkill since a bulk majority of these
-properties may not be relevant currently
-or may never be relevant for this project
-*/
+// CssProps holds CSS declarations for normal selector blocks.
+//
+// Each non-empty field renders as a CSS property based on PropMap. At-rules such
+// as @media and @font-face have their own rule types because they use different
+// CSS grammar than ordinary declarations.
 type CssProps struct {
 	AccentColor              string
 	AlignContent             string
@@ -382,12 +380,12 @@ type FontFaceProps struct {
 	UnicodeRange          string
 }
 
-// NewCssProps sets the newcssprops value on the CssProps component.
+// NewCssProps returns an empty CssProps value.
 func (p *CssProps) NewCssProps() *CssProps {
 	return &CssProps{}
 }
 
-// Style represents the Style component or supporting type.
+// Style renders a complete style element for one selector rule.
 type Style struct {
 	buf   bytes.Buffer
 	pmap  *PropMap
@@ -395,7 +393,7 @@ type Style struct {
 	Tags  []string
 }
 
-// NewStyle creates a new Style component.
+// NewStyle creates a style element for one CSS selector rule.
 func NewStyle(tags ...string) *Style {
 	return &Style{
 		pmap: NewPropMap(),
@@ -432,7 +430,7 @@ func formatStringArray(sarr []string) string {
 	return res
 }
 
-// PropMap sets the propmap value on the Style component.
+// PropMap replaces the field-to-property mapping used by the style rule.
 func (s *Style) PropMap(p *PropMap) *Style {
 	s.pmap = p
 	return s
@@ -444,7 +442,7 @@ type CSSRule interface {
 	IsCSSRule()
 }
 
-// StyleRule represents the StyleRule component or supporting type.
+// StyleRule renders one CSS selector rule without wrapping it in a style tag.
 type StyleRule struct {
 	buf   bytes.Buffer
 	pmap  *PropMap
@@ -452,7 +450,7 @@ type StyleRule struct {
 	Tags  []string
 }
 
-// NewStyleRule creates a new StyleRule component.
+// NewStyleRule creates one unwrapped selector rule.
 func NewStyleRule(tags ...string) *StyleRule {
 	return &StyleRule{
 		pmap: NewPropMap(),
@@ -471,7 +469,7 @@ func (s *StyleRule) Prepare() {
 	s.buf.WriteString(formatStyleRule(s.Tags, s.Props, s.pmap))
 }
 
-// PropMap sets the propmap value on the StyleRule component.
+// PropMap replaces the field-to-property mapping used by the rule.
 func (s *StyleRule) PropMap(p *PropMap) *StyleRule {
 	s.pmap = p
 	return s
@@ -809,18 +807,6 @@ func formatStyleRule(tags []string, props CssProps, pmap *PropMap) string {
 	return buf.String()
 }
 
-// formatDeclarationAtRule renders an at-rule with a declaration block.
-func formatDeclarationAtRule(name, prelude string, props CssProps, pmap *PropMap) string {
-	if pmap == nil {
-		pmap = NewPropMap()
-	}
-
-	var buf bytes.Buffer
-	buf.WriteByte('\n')
-	writeCSSDeclarationAtRule(&buf, "", name, prelude, props, pmap)
-	return buf.String()
-}
-
 // formatFontFaceRule renders a @font-face descriptor block.
 func formatFontFaceRule(props FontFaceProps) string {
 	var buf bytes.Buffer
@@ -856,20 +842,6 @@ func formatGroupingAtRule(name, prelude string, rules []CSSRule) string {
 func writeCSSStyleRule(buf *bytes.Buffer, indent string, tags []string, props CssProps, pmap *PropMap) {
 	buf.WriteString(indent)
 	buf.WriteString(formatStringArray(tags))
-	buf.WriteString(" {\n")
-	writeCSSDeclarations(buf, indent+tab, props, pmap)
-	buf.WriteString(indent)
-	buf.WriteString("}\n")
-}
-
-// writeCSSDeclarationAtRule writes an at-rule declaration block.
-func writeCSSDeclarationAtRule(buf *bytes.Buffer, indent, name, prelude string, props CssProps, pmap *PropMap) {
-	buf.WriteString(indent)
-	buf.WriteString(name)
-	if prelude != "" {
-		buf.WriteByte(' ')
-		buf.WriteString(prelude)
-	}
 	buf.WriteString(" {\n")
 	writeCSSDeclarations(buf, indent+tab, props, pmap)
 	buf.WriteString(indent)
@@ -965,7 +937,7 @@ func isNilCSSRule(rule CSSRule) bool {
 	}
 }
 
-// PropMap represents the PropMap component or supporting type.
+// PropMap maps CssProps field names to emitted CSS property names.
 type PropMap struct {
 	pmap map[string]string
 }

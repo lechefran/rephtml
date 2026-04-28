@@ -19,7 +19,6 @@ type HtmlFile struct {
 	contents    []Element
 	headContent []Element
 	bodyContent []Element
-	ttrack      int
 	lang        string
 	dir         string
 	xmlLang     string
@@ -582,7 +581,6 @@ type Head struct {
 	buf      bytes.Buffer
 	style    map[string]string
 	contents []Element
-	ttrack   int
 }
 
 // NewHead creates a new Head element
@@ -643,7 +641,6 @@ type Body struct {
 	buf      bytes.Buffer
 	style    map[string]string
 	contents []Element
-	ttrack   int
 	onLoad   string
 	onUnload string
 }
@@ -727,7 +724,6 @@ type Title struct {
 	buf      bytes.Buffer
 	style    map[string]string
 	contents []Element
-	ttrack   int
 }
 
 // NewTitle creates a new Title element
@@ -1120,7 +1116,6 @@ type StyleElement struct {
 	buf       bytes.Buffer
 	style     map[string]string
 	contents  []Element
-	ttrack    int
 	styleType string
 	media     string
 }

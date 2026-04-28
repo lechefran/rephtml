@@ -199,6 +199,50 @@ func TestTimeDatetimeValidationRecordsError(t *testing.T) {
 	assertRender(t, "Time invalid datetime", timeElement, `<time>invalid</time>`)
 }
 
+func TestTimeDatetimeValidationAcceptsHTMLForms(t *testing.T) {
+	valid := []string{
+		"2026",
+		"2026-04",
+		"2026-04-26",
+		"2026-W04",
+		"14:30",
+		"14:30:15",
+		"2026-04-26T14:30",
+		"2026-04-26T14:30Z",
+		"2026-04-26T14:30:15-05:00",
+		"P1DT2H3M4.5S",
+		"PT15M",
+	}
+
+	for _, dt := range valid {
+		t.Run(dt, func(t *testing.T) {
+			timeElement := NewTime().Datetime(dt)
+			if err := timeElement.Err(); err != nil {
+				t.Fatalf("Datetime(%q) recorded unexpected error: %v", dt, err)
+			}
+		})
+	}
+}
+
+func TestTimeDatetimeValidationRejectsInvalidForms(t *testing.T) {
+	invalid := []string{
+		"2026-13",
+		"2026-W00",
+		"2026-W99",
+		"P",
+		"PT",
+	}
+
+	for _, dt := range invalid {
+		t.Run(dt, func(t *testing.T) {
+			timeElement := NewTime().Datetime(dt)
+			if err := timeElement.Err(); err == nil {
+				t.Fatalf("Datetime(%q) should record an error", dt)
+			}
+		})
+	}
+}
+
 func TestFormComponentOutputFormats(t *testing.T) {
 	tests := []struct {
 		name    string

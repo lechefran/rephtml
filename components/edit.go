@@ -7,7 +7,6 @@ type Del struct {
 	buf      bytes.Buffer
 	style    map[string]string
 	contents []Element
-	ttrack   int
 	cite     string
 	datetime string
 }
@@ -91,7 +90,6 @@ type Ins struct {
 	buf      bytes.Buffer
 	style    map[string]string
 	contents []Element
-	ttrack   int
 	cite     string
 	datetime string
 }

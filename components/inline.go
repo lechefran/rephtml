@@ -4,7 +4,27 @@ import (
 	"bytes"
 	"fmt"
 	"regexp"
+	"strings"
 	"time"
+)
+
+var (
+	timeDatetimeLayouts = []string{
+		"2006-01-02T15:04:05Z07:00",
+		"2006-01-02T15:04:05Z",
+		"2006-01-02T15:04:05",
+		"2006-01-02T15:04Z07:00",
+		"2006-01-02T15:04Z",
+		"2006-01-02T15:04",
+		"2006-01-02",
+		"2006-01",
+		"2006",
+		"15:04:05",
+		"15:04",
+	}
+
+	timeWeekPattern     = regexp.MustCompile(`^\d{4}-W(0[1-9]|[1-4]\d|5[0-3])$`)
+	timeDurationPattern = regexp.MustCompile(`^P(?:\d+Y)?(?:\d+M)?(?:\d+W)?(?:\d+D)?(?:T(?:\d+H)?(?:\d+M)?(?:\d+(?:\.\d+)?S)?)?$`)
 )
 
 // Anchor represents the Anchor component or supporting type.
@@ -1671,7 +1691,7 @@ func (s *Strong) Prepare() {
 	s.buf.WriteString(">" + escapeText(s.text) + "</strong>")
 }
 
-// Time represents the Time component or supporting type.
+// Time represents the HTML time element and its machine-readable datetime value.
 type Time struct {
 	buf      bytes.Buffer
 	style    map[string]string
@@ -1680,20 +1700,20 @@ type Time struct {
 	err      error
 }
 
-// NewTime creates a new Time component.
+// NewTime creates a time element.
 func NewTime() *Time {
 	return &Time{
 		style: make(map[string]string),
 	}
 }
 
-// AddStyle adds one inline CSS declaration to the Time component.
+// AddStyle adds one inline CSS declaration to the time element.
 func (t *Time) AddStyle(k, v string) *Time {
 	t.style[k] = v
 	return t
 }
 
-// AddStyles adds multiple inline CSS declarations to the Time component.
+// AddStyles adds multiple inline CSS declarations to the time element.
 func (t *Time) AddStyles(m map[string]string) *Time {
 	for k, v := range m {
 		t.style[k] = v
@@ -1701,19 +1721,19 @@ func (t *Time) AddStyles(m map[string]string) *Time {
 	return t
 }
 
-// Style replaces the inline CSS declarations on the Time component.
+// Style replaces the inline CSS declarations on the time element.
 func (t *Time) Style(m map[string]string) *Time {
 	t.style = cloneStyleMap(m)
 	return t
 }
 
-// Text sets or appends text content on the Time component.
+// Text sets the human-readable time text.
 func (t *Time) Text(str string) *Time {
 	t.text = str
 	return t
 }
 
-// Datetime sets the datetime value on the Time component.
+// Datetime sets the machine-readable datetime attribute when dt is valid.
 func (t *Time) Datetime(dt string) *Time {
 	if !isValidDatetime(dt) {
 		t.datetime = ""
@@ -1725,53 +1745,43 @@ func (t *Time) Datetime(dt string) *Time {
 	return t
 }
 
-// Err returns a datetime validation error recorded on the Time component.
+// Err returns the last datetime validation error recorded on the time element.
 func (t *Time) Err() error {
 	return t.err
 }
 
-// isValidDatetime reports whether a string is accepted for the datetime attribute.
+// isValidDatetime reports whether a value matches common HTML datetime forms.
 func isValidDatetime(dt string) bool {
 	if dt == "" {
 		return true
 	}
 
-	datetimeFormats := []string{
-		"2006-01-02T15:04:05Z07:00",
-		"2006-01-02T15:04:05Z",
-		"2006-01-02T15:04:05",
-		"2006-01-02T15:04Z07:00",
-		"2006-01-02T15:04Z",
-		"2006-01-02T15:04",
-		"2006-01-02",
-		"2006-01",
-		"2006",
-		"15:04:05",
-		"15:04",
-	}
-
-	weekPattern := regexp.MustCompile(`^2006-W\d{2}$`)
-	if weekPattern.MatchString(dt) {
+	if timeWeekPattern.MatchString(dt) {
 		return true
 	}
 
-	monthPattern := regexp.MustCompile(`^2006-\d{2}$`)
-	if monthPattern.MatchString(dt) {
+	if isValidDuration(dt) {
 		return true
 	}
 
-	durationPattern := regexp.MustCompile(`^P(?:\d+Y)?(?:\d+M)?(?:\d+D)?(?:T(?:\d+H)?(?:\d+M)?(?:\d+(?:\.\d+)?S)?)?$`)
-	if durationPattern.MatchString(dt) {
-		return true
-	}
-
-	for _, format := range datetimeFormats {
+	for _, format := range timeDatetimeLayouts {
 		if _, err := time.Parse(format, dt); err == nil {
 			return true
 		}
 	}
 
 	return false
+}
+
+// isValidDuration reports whether a value matches a non-empty ISO-like duration.
+func isValidDuration(dt string) bool {
+	if !timeDurationPattern.MatchString(dt) {
+		return false
+	}
+	if dt == "P" || dt == "PT" || strings.HasSuffix(dt, "T") {
+		return false
+	}
+	return true
 }
 
 // Bytes returns a defensive copy of the rendered Time bytes.
