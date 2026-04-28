@@ -387,13 +387,3 @@ func TestStyleSupportOutputFormats(t *testing.T) {
 		t.Fatal("PropMap does not include Color mapping")
 	}
 }
-
-func TestOptionsAndStrictnessDefaults(t *testing.T) {
-	options := Options{Validation: STRICT, AllowImages: true}
-	if options.Validation != STRICT || !options.AllowImages {
-		t.Fatalf("unexpected options values: %+v", options)
-	}
-	if DEFAULT != "default" || LAZY != "lazy" || STRICT != "strict" {
-		t.Fatalf("unexpected strictness constants: %q %q %q", DEFAULT, LAZY, STRICT)
-	}
-}

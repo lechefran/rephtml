@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"log"
 	"os"
 	"reflect"
 	"strings"
@@ -29,7 +28,6 @@ type HtmlFile struct {
 	contextMenu  string
 	bodyOnLoad   string
 	bodyOnUnload string
-	Opts         Options
 	err          error
 }
 
@@ -47,7 +45,7 @@ func (h *HtmlFile) Bytes() []byte {
 	return cloneBytes(h.buf.Bytes())
 }
 
-// Err returns validation or rendering errors recorded while building the document.
+// Err returns document structure or rendering errors recorded while building.
 func (h *HtmlFile) Err() error {
 	return h.err
 }
@@ -121,17 +119,9 @@ func (h *HtmlFile) AddToHead(e Element) *HtmlFile {
 		return h
 	}
 
-	v := h.Opts.Validation
-	if v == DEFAULT {
-		if _, ok := e.(HeadElement); !ok {
-			log.Printf("%s is not a valid head element but will be added to the head element\n",
-				elementName(e))
-		}
-	} else if v == STRICT {
-		if _, ok := e.(HeadElement); !ok {
-			h.addError(fmt.Errorf("cannot add %s to head element", elementName(e)))
-			return h
-		}
+	if _, ok := e.(HeadElement); !ok {
+		h.addError(fmt.Errorf("cannot add %s to head element", elementName(e)))
+		return h
 	}
 
 	h.headContent = appendElement(h.headContent, e)
@@ -154,26 +144,12 @@ func (h *HtmlFile) AddToBody(e Element) *HtmlFile {
 		return h
 	}
 
-	v := h.Opts.Validation
-	if v == DEFAULT {
-		if _, ok := e.(BodyElement); !ok {
-			log.Printf("%s is not a valid body element but will be added to body element\n",
-				elementName(e))
-		}
-	} else if v == STRICT {
-		if _, ok := e.(BodyElement); !ok {
-			h.addError(fmt.Errorf("cannot add %s to body element", elementName(e)))
-			return h
-		}
+	if _, ok := e.(BodyElement); !ok {
+		h.addError(fmt.Errorf("cannot add %s to body element", elementName(e)))
+		return h
 	}
 
 	h.bodyContent = appendElement(h.bodyContent, e)
-	return h
-}
-
-// AddOptions sets the addoptions value on the HtmlFile component.
-func (h *HtmlFile) AddOptions(o Options) *HtmlFile {
-	h.Opts = o
 	return h
 }
 
@@ -235,24 +211,17 @@ func (h *HtmlFile) Style(m map[string]string) *HtmlFile {
 
 // WriteToFile writes the formatted HTML document to path.
 func (h *HtmlFile) WriteToFile(path string) error {
-	if h.err != nil {
-		return h.err
+	html, err := h.RenderFormatted()
+	if err != nil {
+		return err
 	}
-
-	if len(h.contents) == 0 && len(h.headContent) == 0 && len(h.bodyContent) == 0 &&
-		len(h.style) == 0 && len(h.headStyle) == 0 && len(h.bodyStyle) == 0 &&
-		h.bodyOnLoad == "" && h.bodyOnUnload == "" {
-		log.Print("No values were appended to the HTML File. " + path + " will not be created")
-	}
-
-	h.Prepare()
 
 	file, err := os.Create(path)
 	if err != nil {
 		return fmt.Errorf("create html file %q: %w", path, err)
 	}
 
-	if _, err := file.Write(formatHTML(h.buf.Bytes())); err != nil {
+	if _, err := file.Write(html); err != nil {
 		closeErr := file.Close()
 		if closeErr != nil {
 			return errors.Join(
@@ -268,6 +237,42 @@ func (h *HtmlFile) WriteToFile(path string) error {
 	}
 
 	return nil
+}
+
+// Render returns the compact HTML document bytes.
+func (h *HtmlFile) Render() ([]byte, error) {
+	if h.err != nil {
+		return nil, h.err
+	}
+	h.Prepare()
+	return h.Bytes(), nil
+}
+
+// RenderString returns the compact HTML document as a string.
+func (h *HtmlFile) RenderString() (string, error) {
+	html, err := h.Render()
+	if err != nil {
+		return "", err
+	}
+	return string(html), nil
+}
+
+// RenderFormatted returns human-readable formatted HTML document bytes.
+func (h *HtmlFile) RenderFormatted() ([]byte, error) {
+	html, err := h.Render()
+	if err != nil {
+		return nil, err
+	}
+	return formatHTML(html), nil
+}
+
+// RenderFormattedString returns formatted HTML as a string.
+func (h *HtmlFile) RenderFormattedString() (string, error) {
+	html, err := h.RenderFormatted()
+	if err != nil {
+		return "", err
+	}
+	return string(html), nil
 }
 
 // mergeHead copies a Head wrapper into the generated document head.
@@ -300,14 +305,7 @@ func (h *HtmlFile) mergeBody(body *Body) {
 
 // rejectStructuralElement rejects nested document structure elements.
 func (h *HtmlFile) rejectStructuralElement(target string, e Element) {
-	err := fmt.Errorf("cannot add %s to %s element", elementName(e), target)
-	if h.Opts.Validation == STRICT {
-		h.addError(err)
-		return
-	}
-	if h.Opts.Validation == DEFAULT {
-		log.Print(err)
-	}
+	h.addError(fmt.Errorf("cannot add %s to %s element", elementName(e), target))
 }
 
 // writeHeadElement writes the generated head section.

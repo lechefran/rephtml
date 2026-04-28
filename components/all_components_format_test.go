@@ -55,20 +55,20 @@ func TestWriteToFileReturnsFilesystemError(t *testing.T) {
 	}
 }
 
-func TestStrictValidationRecordsErrorWithoutExiting(t *testing.T) {
-	html := NewHtmlFile().AddOptions(Options{Validation: STRICT})
+func TestInvalidHeadElementRecordsDocumentError(t *testing.T) {
+	html := NewHtmlFile()
 	html.AddToHead(NewP().Text("body element"))
 
-	if html.Err() == nil {
-		t.Fatal("expected strict validation error")
+	if err := html.Err(); err == nil {
+		t.Fatal("expected document error")
 	}
 
 	path := filepath.Join(t.TempDir(), "invalid.html")
 	if err := html.WriteToFile(path); err == nil {
-		t.Fatal("expected WriteToFile to return strict validation error")
+		t.Fatal("expected WriteToFile to return document error")
 	}
 	if _, err := os.Stat(path); !os.IsNotExist(err) {
-		t.Fatalf("strict validation error should not create file, stat error: %v", err)
+		t.Fatalf("document error should not create file, stat error: %v", err)
 	}
 }
 
@@ -135,10 +135,10 @@ func TestAddToBodyFlattensBodyWrapperAndMergesAttributes(t *testing.T) {
 }
 
 func TestAddToHeadRejectsBodyWrapper(t *testing.T) {
-	html := NewHtmlFile().AddOptions(Options{Validation: STRICT})
+	html := NewHtmlFile()
 	html.AddToHead(NewBody().Add(NewP().Text("Invalid Body")))
 	if html.Err() == nil {
-		t.Fatal("expected strict validation error")
+		t.Fatal("expected document error")
 	}
 
 	html.Prepare()
@@ -149,16 +149,41 @@ func TestAddToHeadRejectsBodyWrapper(t *testing.T) {
 }
 
 func TestAddToBodyRejectsHeadWrapper(t *testing.T) {
-	html := NewHtmlFile().AddOptions(Options{Validation: STRICT})
+	html := NewHtmlFile()
 	html.AddToBody(NewHead().Add(NewTitle().Text("Invalid Head")))
 	if html.Err() == nil {
-		t.Fatal("expected strict validation error")
+		t.Fatal("expected document error")
 	}
 
 	html.Prepare()
 	want := `<html></html>`
 	if got := string(html.Bytes()); got != want {
 		t.Fatalf("unexpected html:\ngot  %q\nwant %q", got, want)
+	}
+}
+
+func TestRenderFormattedReturnsHTMLAndError(t *testing.T) {
+	html := NewHtmlFile().Lang("en").AddToBody(NewP().Text("Hello"))
+
+	got, err := html.RenderFormattedString()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	want := "<html lang=\"en\">\n" +
+		"\t<body>\n" +
+		"\t\t<p>Hello</p>\n" +
+		"\t</body>\n" +
+		"</html>\n"
+	if got != want {
+		t.Fatalf("unexpected formatted html:\ngot:\n%s\nwant:\n%s", got, want)
+	}
+}
+
+func TestRenderFormattedReturnsPendingError(t *testing.T) {
+	html := NewHtmlFile().AddToHead(NewP().Text("Invalid"))
+	if got, err := html.RenderFormattedString(); err == nil || got != "" {
+		t.Fatalf("expected error and empty result, got result %q error %v", got, err)
 	}
 }
 

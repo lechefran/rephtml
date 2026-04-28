@@ -381,7 +381,7 @@ type FontFaceProps struct {
 }
 
 // NewCssProps returns an empty CssProps value.
-func (p *CssProps) NewCssProps() *CssProps {
+func NewCssProps() *CssProps {
 	return &CssProps{}
 }
 

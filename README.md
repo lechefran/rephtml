@@ -11,6 +11,7 @@ The package is designed around small composable structs:
 - Attribute setters escape attribute values by default.
 - `StyleElement.Text` and `Script.Text` intentionally preserve raw CSS and JavaScript content.
 - `WriteToFile` writes a human-readable formatted HTML file.
+- `Render`, `RenderString`, `RenderFormatted`, and `RenderFormattedString` return generated HTML plus any document error.
 
 ## Installation
 
@@ -84,7 +85,7 @@ html.AddToHead(rephtml.NewStyleElement().
 
 rephtml escapes normal text and attribute values so characters like `<`, `>`, `&`, and quotes do not corrupt the generated HTML. Raw-text elements that commonly contain code, such as `<style>` and `<script>`, keep their content unescaped.
 
-`WriteToFile` formats the output document with indentation and returns filesystem or strict validation errors. CSS inside `<style>` blocks is also indented for readability, while whitespace-sensitive blocks such as `<pre>` and `<textarea>` are preserved.
+`WriteToFile` formats the output document with indentation and returns filesystem or document structure errors. CSS inside `<style>` blocks is also indented for readability, while whitespace-sensitive blocks such as `<pre>` and `<textarea>` are preserved.
 
 ## Examples
 
