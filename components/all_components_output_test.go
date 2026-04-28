@@ -5,9 +5,11 @@ import "testing"
 func assertRender(t *testing.T, name string, element Element, want string) {
 	t.Helper()
 
-	element.Prepare()
-	if got := string(element.Bytes()); got != want {
+	if got := element.HTML(); got != want {
 		t.Fatalf("%s rendered unexpected HTML:\ngot  %q\nwant %q", name, got, want)
+	}
+	if got := string(element.Render()); got != want {
+		t.Fatalf("%s rendered unexpected bytes:\ngot  %q\nwant %q", name, got, want)
 	}
 }
 
@@ -20,19 +22,21 @@ func TestElementInterfaceContracts(t *testing.T) {
 }
 
 func TestDocumentComponentOutputFormats(t *testing.T) {
+	html := NewHtmlFile().
+		Lang("en").
+		AddToHead(NewTitle().Text("Doc")).
+		AddToBody(NewP().Text("Hello"))
+
+	want := `<html lang="en"><head><title>Doc</title></head><body><p>Hello</p></body></html>`
+	if got, err := html.RenderString(); err != nil || got != want {
+		t.Fatalf("HtmlFile rendered unexpected HTML:\ngot  %q\nwant %q\nerr  %v", got, want, err)
+	}
+
 	tests := []struct {
 		name    string
 		element Element
 		want    string
 	}{
-		{
-			name: "HtmlFile",
-			element: NewHtmlFile().
-				Lang("en").
-				AddToHead(NewTitle().Text("Doc")).
-				AddToBody(NewP().Text("Hello")),
-			want: `<html lang="en"><head><title>Doc</title></head><body><p>Hello</p></body></html>`,
-		},
 		{
 			name:    "Head",
 			element: NewHead().Add(NewTitle().Text("Doc")),

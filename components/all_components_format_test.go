@@ -495,9 +495,7 @@ func TestFormattingCasesCoverAllElementStructs(t *testing.T) {
 }
 
 func standaloneFormatCases() []formatElementCase {
-	return []formatElementCase{
-		{name: "HtmlFile", element: NewHtmlFile()},
-	}
+	return nil
 }
 
 func headFormatCases() []formatElementCase {
@@ -675,8 +673,7 @@ func renderForFormatting(t *testing.T, element Element) string {
 	if element == nil {
 		t.Fatal("formatting case has nil element")
 	}
-	element.Prepare()
-	return string(element.Bytes())
+	return element.HTML()
 }
 
 func assertRawElementBody(t *testing.T, formatted, tag, want string) {
@@ -774,7 +771,7 @@ func exportedElementStructNames(t *testing.T) map[string]bool {
 
 	elements := map[string]bool{}
 	for name := range structs {
-		if methods[name]["Prepare"] && methods[name]["Bytes"] {
+		if methods[name]["Render"] && methods[name]["HTML"] {
 			elements[name] = true
 		}
 	}
@@ -794,7 +791,7 @@ func recordExportedStructs(decl *ast.GenDecl, structs map[string]bool) {
 }
 
 func recordElementMethod(decl *ast.FuncDecl, methods map[string]map[string]bool) {
-	if decl.Recv == nil || (decl.Name.Name != "Prepare" && decl.Name.Name != "Bytes") {
+	if decl.Recv == nil || (decl.Name.Name != "Render" && decl.Name.Name != "HTML") {
 		return
 	}
 	name := receiverName(decl.Recv.List[0].Type)

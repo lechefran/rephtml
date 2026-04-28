@@ -160,32 +160,27 @@ func (t *Table) Prepare() {
 
 	// write caption if present
 	if t.caption != nil {
-		t.caption.Prepare()
-		t.buf.Write(t.caption.Bytes())
+		t.buf.Write(t.caption.Render())
 	}
 
 	// write thead if present
 	if t.thead != nil {
-		t.thead.Prepare()
-		t.buf.Write(t.thead.Bytes())
+		t.buf.Write(t.thead.Render())
 	}
 
 	// write tbody if present
 	if t.tbody != nil {
-		t.tbody.Prepare()
-		t.buf.Write(t.tbody.Bytes())
+		t.buf.Write(t.tbody.Render())
 	}
 
 	// write tfoot if present
 	if t.tfoot != nil {
-		t.tfoot.Prepare()
-		t.buf.Write(t.tfoot.Bytes())
+		t.buf.Write(t.tfoot.Render())
 	}
 
 	// write direct tr elements if present
 	for _, tr := range t.trs {
-		tr.Prepare()
-		t.buf.Write(tr.Bytes())
+		t.buf.Write(tr.Render())
 	}
 
 	// write legacy header and rows if no structured elements are used

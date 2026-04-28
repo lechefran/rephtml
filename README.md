@@ -1,12 +1,13 @@
 # rephtml
 
-rephtml is a fluent Go package for building HTML documents from typed components. Each component implements the `Element` interface, renders into an internal byte buffer with `Prepare`, and exposes rendered bytes through `Bytes`.
+rephtml is a fluent Go package for building HTML documents from typed components. Regular HTML element components implement the `Element` interface and can render themselves through `Render` or `HTML` without requiring callers to manage an explicit preparation step. The document root uses error-returning render methods so document structure errors are not hidden.
 
 The package is designed around small composable structs:
 
 - `NewHtmlFile` creates the document root and owns the final file output.
 - `AddToHead` and `AddToBody` place components into generated `<head>` and `<body>` sections.
 - `Add` composes child elements into container elements.
+- `HTML` and `Render` prepare regular element components internally before returning output.
 - `Text` methods escape normal text content by default.
 - Attribute setters escape attribute values by default.
 - `StyleElement.Text` and `Script.Text` intentionally preserve raw CSS and JavaScript content.
@@ -84,6 +85,13 @@ html.AddToHead(rephtml.NewStyleElement().
 ## Formatting and Escaping
 
 rephtml escapes normal text and attribute values so characters like `<`, `>`, `&`, and quotes do not corrupt the generated HTML. Raw-text elements that commonly contain code, such as `<style>` and `<script>`, keep their content unescaped.
+
+For regular elements, call `HTML()` or `Render()` directly:
+
+```go
+paragraph := rephtml.NewP().Text("Hello")
+fmt.Println(paragraph.HTML())
+```
 
 `WriteToFile` formats the output document with indentation and returns filesystem or document structure errors. CSS inside `<style>` blocks is also indented for readability, while whitespace-sensitive blocks such as `<pre>` and `<textarea>` are preserved.
 

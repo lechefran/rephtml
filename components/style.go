@@ -489,8 +489,7 @@ func (k *KeyframesRule) Prepare() {
 		if frame == nil {
 			continue
 		}
-		frame.Prepare()
-		writeIndentedCSS(&k.buf, tab, string(frame.Bytes()))
+		writeIndentedCSS(&k.buf, tab, frame.HTML())
 	}
 	k.buf.WriteString("}\n")
 }
@@ -535,8 +534,7 @@ func formatGroupingAtRule(name, prelude string, rules []CSSRule) string {
 		if isNilCSSRule(rule) {
 			continue
 		}
-		rule.Prepare()
-		writeIndentedCSS(&buf, tab, string(rule.Bytes()))
+		writeIndentedCSS(&buf, tab, rule.HTML())
 	}
 	buf.WriteString("}\n")
 	return buf.String()

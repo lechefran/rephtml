@@ -124,16 +124,15 @@ func appendElement(contents []Element, e Element) []Element {
 	return append(contents, e)
 }
 
-// writeElement prepares and writes one element to the destination buffer.
+// writeElement renders and writes one element to the destination buffer.
 func writeElement(buf *bytes.Buffer, e Element) {
 	if e == nil {
 		return
 	}
-	e.Prepare()
-	buf.Write(e.Bytes())
+	buf.Write(e.Render())
 }
 
-// writeElements prepares and writes all elements to the destination buffer.
+// writeElements renders and writes all elements to the destination buffer.
 func writeElements(buf *bytes.Buffer, contents []Element) {
 	for _, e := range contents {
 		writeElement(buf, e)

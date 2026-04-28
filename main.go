@@ -36,11 +36,9 @@ func main() {
 		Props: tableProps,
 		Tags:  []string{"table"},
 	}
-	tableStyle.Prepare()
 
 	head := rephtml.NewHead()
 	head.Add(tableStyle)
-	head.Prepare()
 
 	// create table
 	table := rephtml.NewTable()
@@ -51,7 +49,6 @@ func main() {
 	table.AddStyle("color", "blue")
 	table.AddStyle("color", "red") // override color from blue to red
 	table.AddCaption(rephtml.NewCaption().Text("Hello World"))
-	table.Prepare()
 
 	// create paragraph styles
 	pgStyles := make(rephtml.StyleMap, 2)
@@ -63,20 +60,16 @@ func main() {
 	pg.Text("Hello, World!")
 	pg.AddStyle("font-size", "60px")
 	pg.AddStyles(pgStyles)
-	pg.Prepare()
 
 	pg1 := rephtml.NewP()
 	pg1.Text("Test paragraph in DIV")
 	pg1.AddStyle("color", "#FFFFFF")
-	pg1.Prepare()
 
 	h1 := rephtml.NewH1()
 	h1.Text("Paragraph struct!")
-	h1.Prepare()
 
 	// create comment
 	c := rephtml.NewComment().Text("This is a test comment.")
-	c.Prepare()
 
 	// create div styles
 	dStyles := make(rephtml.StyleMap, 1)
@@ -86,18 +79,15 @@ func main() {
 	d := rephtml.NewDiv().Add(pg1).Add(h1).AddStyles(dStyles)
 	d.Add(c)
 	d.Add(table) // to fix
-	d.Prepare()
 
 	// create another div
 	d1 := rephtml.NewDiv().Add(h1).AddStyles(dStyles)
-	d1.Prepare()
 
 	html := *rephtml.NewHtmlFile()
 	html.Add(head)
 	html.Add(d1)
 	html.AddStyles(dStyles)
 	html.Add(table)
-	html.Prepare()
 	if err := html.WriteToFile("report.html"); err != nil {
 		log.Fatal(err)
 	}

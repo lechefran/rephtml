@@ -4,12 +4,26 @@ import (
 	"testing"
 )
 
+func TestElementRenderMethodsPrepareInternally(t *testing.T) {
+	paragraph := NewP().Text("Hello")
+
+	want := "<p>Hello</p>"
+	if got := paragraph.HTML(); got != want {
+		t.Fatalf("HTML rendered unexpected output:\ngot  %q\nwant %q", got, want)
+	}
+	if got := string(paragraph.Render()); got != want {
+		t.Fatalf("Render rendered unexpected output:\ngot  %q\nwant %q", got, want)
+	}
+	if got := paragraph.String(); got != want {
+		t.Fatalf("String rendered unexpected output:\ngot  %q\nwant %q", got, want)
+	}
+}
+
 func TestContainerAddRendersUnpreparedChildren(t *testing.T) {
 	header := NewHeader().Add(NewH1().Text("Dashboard"))
-	header.Prepare()
 
 	want := "<header><h1>Dashboard</h1></header>"
-	if got := string(header.Bytes()); got != want {
+	if got := header.HTML(); got != want {
 		t.Fatalf("unexpected header output:\ngot  %q\nwant %q", got, want)
 	}
 }
@@ -19,10 +33,9 @@ func TestContainerRendersCurrentChildState(t *testing.T) {
 	section := NewSection().Add(paragraph)
 
 	paragraph.Text("Final")
-	section.Prepare()
 
 	want := "<section><p>Final</p></section>"
-	if got := string(section.Bytes()); got != want {
+	if got := section.HTML(); got != want {
 		t.Fatalf("unexpected section output:\ngot  %q\nwant %q", got, want)
 	}
 }
@@ -35,10 +48,9 @@ func TestTableRendersCurrentNestedChildState(t *testing.T) {
 	table := NewTable().AddTbody(body)
 
 	span.Text("Final")
-	table.Prepare()
 
 	want := "<table><tbody><tr><td><span>Final</span></td></tr></tbody></table>"
-	if got := string(table.Bytes()); got != want {
+	if got := table.HTML(); got != want {
 		t.Fatalf("unexpected table output:\ngot  %q\nwant %q", got, want)
 	}
 }

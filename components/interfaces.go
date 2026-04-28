@@ -1,30 +1,21 @@
 package rephtml
 
-// Element Interface
-/*
-Holds HTML element information that can be
-appended to the HTML document
-*/
+// Element is renderable HTML content that can be appended to other elements.
+//
+// Render and HTML prepare the element internally before returning output, so
+// callers do not need to call Prepare before reading rendered bytes.
 type Element interface {
-	Bytes() []byte
-	Prepare()
+	Render() []byte
+	HTML() string
 }
 
-// HeadElement Interface
-/*
-Signifies that the HTML element can be
-appended to the HTML head element
-*/
+// HeadElement is HTML content that can be appended to a document head.
 type HeadElement interface {
 	Element
 	IsHeadElement()
 }
 
-// BodyElement Interface
-/*
-Signifies that the HTML element can be
-appended to the HTML body element
-*/
+// BodyElement is HTML content that can be appended to a document body.
 type BodyElement interface {
 	Element
 	IsBodyElement()
