@@ -5,7 +5,7 @@ import "bytes"
 // Slot represents the Slot component or supporting type.
 type Slot struct {
 	buf      bytes.Buffer
-	style    map[string]string
+	style    StyleMap
 	contents []Element
 	name     string
 }
@@ -13,7 +13,7 @@ type Slot struct {
 // NewSlot creates a new Slot component.
 func NewSlot() *Slot {
 	return &Slot{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -24,7 +24,7 @@ func (s *Slot) AddStyle(k, v string) *Slot {
 }
 
 // AddStyles adds multiple inline CSS declarations to the Slot component.
-func (s *Slot) AddStyles(m map[string]string) *Slot {
+func (s *Slot) AddStyles(m StyleMap) *Slot {
 	for k, v := range m {
 		s.style[k] = v
 	}
@@ -32,7 +32,7 @@ func (s *Slot) AddStyles(m map[string]string) *Slot {
 }
 
 // Style replaces the inline CSS declarations on the Slot component.
-func (s *Slot) Style(m map[string]string) *Slot {
+func (s *Slot) Style(m StyleMap) *Slot {
 	s.style = cloneStyleMap(m)
 	return s
 }
@@ -76,7 +76,7 @@ func (s *Slot) Prepare() {
 // Template represents the Template component or supporting type.
 type Template struct {
 	buf      bytes.Buffer
-	style    map[string]string
+	style    StyleMap
 	contents []Element
 	id       string
 }
@@ -84,7 +84,7 @@ type Template struct {
 // NewTemplate creates a new Template component.
 func NewTemplate() *Template {
 	return &Template{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -101,7 +101,7 @@ func (t *Template) AddStyle(k, v string) *Template {
 }
 
 // AddStyles adds multiple inline CSS declarations to the Template component.
-func (t *Template) AddStyles(m map[string]string) *Template {
+func (t *Template) AddStyles(m StyleMap) *Template {
 	for k, v := range m {
 		t.style[k] = v
 	}
@@ -109,7 +109,7 @@ func (t *Template) AddStyles(m map[string]string) *Template {
 }
 
 // Style replaces the inline CSS declarations on the Template component.
-func (t *Template) Style(m map[string]string) *Template {
+func (t *Template) Style(m StyleMap) *Template {
 	t.style = cloneStyleMap(m)
 	return t
 }

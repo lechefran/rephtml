@@ -376,14 +376,10 @@ func TestScriptMathWebAndInteractiveOutputFormats(t *testing.T) {
 
 func TestStyleSupportOutputFormats(t *testing.T) {
 	style := NewStyle("body")
-	style.Props = CssProps{Color: "#111827"}
+	style.Props = StyleMap{"color": "#111827"}
 	assertRender(t, "Style", style, "<style>\nbody {\n\tcolor: #111827;\n}\n</style>")
 
 	rule := NewStyleRule(".card")
-	rule.Props = CssProps{Padding: "1rem"}
+	rule.Props = StyleMap{"padding": "1rem"}
 	assertRender(t, "StyleRule", rule, "\n.card {\n\tpadding: 1rem;\n}\n")
-
-	if NewPropMap().pmap["Color"] != "color" {
-		t.Fatal("PropMap does not include Color mapping")
-	}
 }

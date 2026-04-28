@@ -59,20 +59,20 @@ main {
 
 ## CSS Rules
 
-Use `StyleElement.Text` when you already have CSS text. Use `StyleRule` when you want to build selector rules from `CssProps` without nesting another `<style>` tag. CSS at-rules use dedicated builders such as `NewMediaRule`, `NewKeyframesRule`, `NewFontFaceRule`, `NewImportRule`, and `NewCharsetRule` instead of being mixed into `CssProps`.
+Use `StyleElement.Text` when you already have CSS text. Use `StyleMap` for both inline styles and generated CSS rules; property names are emitted exactly as written, so custom properties and vendor prefixes work without package changes. CSS at-rules use dedicated builders such as `NewMediaRule`, `NewKeyframesRule`, `NewFontFaceRule`, `NewImportRule`, and `NewCharsetRule`.
 
 ```go
 body := rephtml.NewStyleRule("body")
-body.Props = rephtml.CssProps{
-	Background: "#f7f7fb",
-	Color:      "#1f2937",
-	FontFamily: "Arial, sans-serif",
-	Margin:     "0",
+body.Props = rephtml.StyleMap{
+	"background":  "#f7f7fb",
+	"color":       "#1f2937",
+	"font-family": "Arial, sans-serif",
+	"margin":      "0",
 }
 
 mainWide := rephtml.NewStyleRule("main")
-mainWide.Props = rephtml.CssProps{
-	MaxWidth: "960px",
+mainWide.Props = rephtml.StyleMap{
+	"max-width": "960px",
 }
 
 html.AddToHead(rephtml.NewStyleElement().

@@ -184,33 +184,33 @@ func writeStyleRuleExample() {
 	html.AddToHead(rephtml.NewTitle().Text("Style Rules"))
 
 	bodyRule := rephtml.NewStyleRule("body")
-	bodyRule.Props = rephtml.CssProps{
-		Background: "#f7f7fb",
-		Color:      "#1f2937",
-		FontFamily: "Arial, sans-serif",
-		Margin:     "0",
+	bodyRule.Props = rephtml.StyleMap{
+		"background":  "#f7f7fb",
+		"color":       "#1f2937",
+		"font-family": "Arial, sans-serif",
+		"margin":      "0",
 	}
 
 	cardRule := rephtml.NewStyleRule("section")
-	cardRule.Props = rephtml.CssProps{
-		Background:   "#ffffff",
-		Border:       "1px solid #d8dee9",
-		BorderRadius: "6px",
-		BoxShadow:    "0 1px 3px rgba(15, 23, 42, 0.08)",
-		Margin:       "48px auto",
-		MaxWidth:     "520px",
-		Padding:      "24px",
+	cardRule.Props = rephtml.StyleMap{
+		"background":    "#ffffff",
+		"border":        "1px solid #d8dee9",
+		"border-radius": "6px",
+		"box-shadow":    "0 1px 3px rgba(15, 23, 42, 0.08)",
+		"margin":        "48px auto",
+		"max-width":     "520px",
+		"padding":       "24px",
 	}
 
 	headingRule := rephtml.NewStyleRule("section h1")
-	headingRule.Props = rephtml.CssProps{
-		FontSize: "24px",
-		Margin:   "0 0 8px",
+	headingRule.Props = rephtml.StyleMap{
+		"font-size": "24px",
+		"margin":    "0 0 8px",
 	}
 
 	wideCardRule := rephtml.NewStyleRule("section")
-	wideCardRule.Props = rephtml.CssProps{
-		MaxWidth: "640px",
+	wideCardRule.Props = rephtml.StyleMap{
+		"max-width": "640px",
 	}
 
 	html.AddToHead(rephtml.NewStyleElement().

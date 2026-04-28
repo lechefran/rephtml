@@ -5,7 +5,7 @@ import "bytes"
 // Del represents the HTML del element for marking deleted text
 type Del struct {
 	buf      bytes.Buffer
-	style    map[string]string
+	style    StyleMap
 	contents []Element
 	cite     string
 	datetime string
@@ -14,7 +14,7 @@ type Del struct {
 // NewDel creates a new Del element
 func NewDel() *Del {
 	return &Del{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -72,7 +72,7 @@ func (d *Del) AddStyle(k, v string) *Del {
 }
 
 // AddStyles adds multiple CSS properties
-func (d *Del) AddStyles(m map[string]string) *Del {
+func (d *Del) AddStyles(m StyleMap) *Del {
 	for k, v := range m {
 		d.style[k] = v
 	}
@@ -80,7 +80,7 @@ func (d *Del) AddStyles(m map[string]string) *Del {
 }
 
 // Style replaces all styles
-func (d *Del) Style(m map[string]string) *Del {
+func (d *Del) Style(m StyleMap) *Del {
 	d.style = cloneStyleMap(m)
 	return d
 }
@@ -88,7 +88,7 @@ func (d *Del) Style(m map[string]string) *Del {
 // Ins represents the HTML ins element for marking inserted text
 type Ins struct {
 	buf      bytes.Buffer
-	style    map[string]string
+	style    StyleMap
 	contents []Element
 	cite     string
 	datetime string
@@ -97,7 +97,7 @@ type Ins struct {
 // NewIns creates a new Ins element
 func NewIns() *Ins {
 	return &Ins{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -160,7 +160,7 @@ func (i *Ins) AddStyle(k, v string) *Ins {
 }
 
 // AddStyles adds multiple CSS properties
-func (i *Ins) AddStyles(m map[string]string) *Ins {
+func (i *Ins) AddStyles(m StyleMap) *Ins {
 	for k, v := range m {
 		i.style[k] = v
 	}
@@ -168,7 +168,7 @@ func (i *Ins) AddStyles(m map[string]string) *Ins {
 }
 
 // Style replaces all styles
-func (i *Ins) Style(m map[string]string) *Ins {
+func (i *Ins) Style(m StyleMap) *Ins {
 	i.style = cloneStyleMap(m)
 	return i
 }

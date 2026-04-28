@@ -4,7 +4,7 @@ import "testing"
 
 // TestParseStyleSortsKeys provides TestParseStyleSortsKeys behavior for the package.
 func TestParseStyleSortsKeys(t *testing.T) {
-	paragraph := NewP().Text("Sorted").Style(map[string]string{
+	paragraph := NewP().Text("Sorted").Style(StyleMap{
 		"z-index": "1",
 		"color":   "red",
 		"border":  `1px solid "black"`,
@@ -18,7 +18,7 @@ func TestParseStyleSortsKeys(t *testing.T) {
 }
 
 func TestStyleCopiesInputMap(t *testing.T) {
-	styles := map[string]string{
+	styles := StyleMap{
 		"color":       "red",
 		"font-weight": "700",
 	}
@@ -36,7 +36,7 @@ func TestStyleCopiesInputMap(t *testing.T) {
 }
 
 func TestCloneStyleMapReturnsIndependentMap(t *testing.T) {
-	styles := map[string]string{"color": "red"}
+	styles := StyleMap{"color": "red"}
 	clone := cloneStyleMap(styles)
 	styles["color"] = "blue"
 

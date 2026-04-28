@@ -24,21 +24,18 @@ func (d *HtmlDiv) ReadBuffer(b *bytes.Buffer) {
 }
 
 func main() {
-	// initialize a reusable prop map
-	pmap := rephtml.NewPropMap()
-	tableProps := rephtml.CssProps{
-		FontFamily:  "Arial",
-		FontSize:    "16px",
-		MarginLeft:  "auto",
-		MarginRight: "auto",
-		Width:       "80%",
+	tableProps := rephtml.StyleMap{
+		"font-family":  "Arial",
+		"font-size":    "16px",
+		"margin-left":  "auto",
+		"margin-right": "auto",
+		"width":        "80%",
 	}
 
 	tableStyle := &rephtml.Style{
 		Props: tableProps,
 		Tags:  []string{"table"},
 	}
-	tableStyle.PropMap(pmap)
 	tableStyle.Prepare()
 
 	head := rephtml.NewHead()
@@ -57,7 +54,7 @@ func main() {
 	table.Prepare()
 
 	// create paragraph styles
-	pgStyles := make(map[string]string, 2)
+	pgStyles := make(rephtml.StyleMap, 2)
 	pgStyles["color"] = "#a0d6b4"
 	pgStyles["font-size"] = "60px"
 
@@ -82,7 +79,7 @@ func main() {
 	c.Prepare()
 
 	// create div styles
-	dStyles := make(map[string]string, 1)
+	dStyles := make(rephtml.StyleMap, 1)
 	dStyles["background-color"] = "#CCCCFF"
 
 	// create div

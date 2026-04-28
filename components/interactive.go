@@ -5,7 +5,7 @@ import "bytes"
 // Details represents the HTML details element for creating a disclosure widget
 type Details struct {
 	buf      bytes.Buffer
-	style    map[string]string
+	style    StyleMap
 	contents []Element
 	open     bool
 }
@@ -13,7 +13,7 @@ type Details struct {
 // NewDetails creates a new Details element
 func NewDetails() *Details {
 	return &Details{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -66,7 +66,7 @@ func (d *Details) AddStyle(k, v string) *Details {
 }
 
 // AddStyles adds multiple CSS properties
-func (d *Details) AddStyles(m map[string]string) *Details {
+func (d *Details) AddStyles(m StyleMap) *Details {
 	for k, v := range m {
 		d.style[k] = v
 	}
@@ -74,7 +74,7 @@ func (d *Details) AddStyles(m map[string]string) *Details {
 }
 
 // Style replaces all styles
-func (d *Details) Style(m map[string]string) *Details {
+func (d *Details) Style(m StyleMap) *Details {
 	d.style = cloneStyleMap(m)
 	return d
 }
@@ -82,7 +82,7 @@ func (d *Details) Style(m map[string]string) *Details {
 // Dialog represents the HTML dialog element for creating modal dialogs
 type Dialog struct {
 	buf      bytes.Buffer
-	style    map[string]string
+	style    StyleMap
 	contents []Element
 	open     bool
 }
@@ -90,7 +90,7 @@ type Dialog struct {
 // NewDialog creates a new Dialog element
 func NewDialog() *Dialog {
 	return &Dialog{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -143,7 +143,7 @@ func (d *Dialog) AddStyle(k, v string) *Dialog {
 }
 
 // AddStyles adds multiple CSS properties
-func (d *Dialog) AddStyles(m map[string]string) *Dialog {
+func (d *Dialog) AddStyles(m StyleMap) *Dialog {
 	for k, v := range m {
 		d.style[k] = v
 	}
@@ -151,7 +151,7 @@ func (d *Dialog) AddStyles(m map[string]string) *Dialog {
 }
 
 // Style replaces all styles
-func (d *Dialog) Style(m map[string]string) *Dialog {
+func (d *Dialog) Style(m StyleMap) *Dialog {
 	d.style = cloneStyleMap(m)
 	return d
 }
@@ -159,14 +159,14 @@ func (d *Dialog) Style(m map[string]string) *Dialog {
 // Summary represents the HTML summary element for details disclosure summary
 type Summary struct {
 	buf      bytes.Buffer
-	style    map[string]string
+	style    StyleMap
 	contents []Element
 }
 
 // NewSummary creates a new Summary element
 func NewSummary() *Summary {
 	return &Summary{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -209,7 +209,7 @@ func (s *Summary) AddStyle(k, v string) *Summary {
 }
 
 // AddStyles adds multiple CSS properties
-func (s *Summary) AddStyles(m map[string]string) *Summary {
+func (s *Summary) AddStyles(m StyleMap) *Summary {
 	for k, v := range m {
 		s.style[k] = v
 	}
@@ -217,7 +217,7 @@ func (s *Summary) AddStyles(m map[string]string) *Summary {
 }
 
 // Style replaces all styles
-func (s *Summary) Style(m map[string]string) *Summary {
+func (s *Summary) Style(m StyleMap) *Summary {
 	s.style = cloneStyleMap(m)
 	return s
 }

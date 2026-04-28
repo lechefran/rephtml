@@ -5,14 +5,14 @@ import "bytes"
 // Hgroup represents the Hgroup component or supporting type.
 type Hgroup struct {
 	buf      bytes.Buffer
-	style    map[string]string
+	style    StyleMap
 	contents []Element
 }
 
 // NewHgroup creates a new Hgroup component.
 func NewHgroup() *Hgroup {
 	return &Hgroup{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -23,7 +23,7 @@ func (h *Hgroup) AddStyle(k, v string) *Hgroup {
 }
 
 // AddStyles adds multiple inline CSS declarations to the Hgroup component.
-func (h *Hgroup) AddStyles(m map[string]string) *Hgroup {
+func (h *Hgroup) AddStyles(m StyleMap) *Hgroup {
 	for k, v := range m {
 		h.style[k] = v
 	}
@@ -31,7 +31,7 @@ func (h *Hgroup) AddStyles(m map[string]string) *Hgroup {
 }
 
 // Style replaces the inline CSS declarations on the Hgroup component.
-func (h *Hgroup) Style(m map[string]string) *Hgroup {
+func (h *Hgroup) Style(m StyleMap) *Hgroup {
 	h.style = cloneStyleMap(m)
 	return h
 }
@@ -66,14 +66,14 @@ func (h *Hgroup) Prepare() {
 // H1 represents the H1 component or supporting type.
 type H1 struct {
 	buf   bytes.Buffer
-	style map[string]string
+	style StyleMap
 	text  string
 }
 
 // NewH1 creates a new H1 component.
 func NewH1() *H1 {
 	return &H1{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -84,7 +84,7 @@ func (h *H1) AddStyle(k, v string) *H1 {
 }
 
 // Style replaces the inline CSS declarations on the H1 component.
-func (h *H1) Style(m map[string]string) *H1 {
+func (h *H1) Style(m StyleMap) *H1 {
 	h.style = cloneStyleMap(m)
 	return h
 }
@@ -116,14 +116,14 @@ func (h *H1) Prepare() {
 // H2 represents the H2 component or supporting type.
 type H2 struct {
 	buf   bytes.Buffer
-	style map[string]string
+	style StyleMap
 	text  string
 }
 
 // NewH2 creates a new H2 component.
 func NewH2() *H2 {
 	return &H2{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -134,7 +134,7 @@ func (h *H2) AddStyle(k, v string) *H2 {
 }
 
 // Style replaces the inline CSS declarations on the H2 component.
-func (h *H2) Style(m map[string]string) *H2 {
+func (h *H2) Style(m StyleMap) *H2 {
 	h.style = cloneStyleMap(m)
 	return h
 }
@@ -166,14 +166,14 @@ func (h *H2) Prepare() {
 // H3 represents the H3 component or supporting type.
 type H3 struct {
 	buf   bytes.Buffer
-	style map[string]string
+	style StyleMap
 	text  string
 }
 
 // NewH3 creates a new H3 component.
 func NewH3() *H3 {
 	return &H3{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -184,7 +184,7 @@ func (h *H3) AddStyle(k, v string) *H3 {
 }
 
 // Style replaces the inline CSS declarations on the H3 component.
-func (h *H3) Style(m map[string]string) *H3 {
+func (h *H3) Style(m StyleMap) *H3 {
 	h.style = cloneStyleMap(m)
 	return h
 }
@@ -216,14 +216,14 @@ func (h *H3) Prepare() {
 // H4 represents the H4 component or supporting type.
 type H4 struct {
 	buf   bytes.Buffer
-	style map[string]string
+	style StyleMap
 	text  string
 }
 
 // NewH4 creates a new H4 component.
 func NewH4() *H4 {
 	return &H4{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -234,7 +234,7 @@ func (h *H4) AddStyle(k, v string) *H4 {
 }
 
 // Style replaces the inline CSS declarations on the H4 component.
-func (h *H4) Style(m map[string]string) *H4 {
+func (h *H4) Style(m StyleMap) *H4 {
 	h.style = cloneStyleMap(m)
 	return h
 }
@@ -266,14 +266,14 @@ func (h *H4) Prepare() {
 // H5 represents the H5 component or supporting type.
 type H5 struct {
 	buf   bytes.Buffer
-	style map[string]string
+	style StyleMap
 	text  string
 }
 
 // NewH5 creates a new H5 component.
 func NewH5() *H5 {
 	return &H5{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -284,7 +284,7 @@ func (h *H5) AddStyle(k, v string) *H5 {
 }
 
 // Style replaces the inline CSS declarations on the H5 component.
-func (h *H5) Style(m map[string]string) *H5 {
+func (h *H5) Style(m StyleMap) *H5 {
 	h.style = cloneStyleMap(m)
 	return h
 }
@@ -316,14 +316,14 @@ func (h *H5) Prepare() {
 // H6 represents the H6 component or supporting type.
 type H6 struct {
 	buf   bytes.Buffer
-	style map[string]string
+	style StyleMap
 	text  string
 }
 
 // NewH6 creates a new H6 component.
 func NewH6() *H6 {
 	return &H6{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -334,7 +334,7 @@ func (h *H6) AddStyle(k, v string) *H6 {
 }
 
 // Style replaces the inline CSS declarations on the H6 component.
-func (h *H6) Style(m map[string]string) *H6 {
+func (h *H6) Style(m StyleMap) *H6 {
 	h.style = cloneStyleMap(m)
 	return h
 }

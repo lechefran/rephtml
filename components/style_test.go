@@ -5,9 +5,9 @@ import "testing"
 // TestStyleElementAddRuleBuildsUnwrappedCSS provides TestStyleElementAddRuleBuildsUnwrappedCSS behavior for the package.
 func TestStyleElementAddRuleBuildsUnwrappedCSS(t *testing.T) {
 	rule := NewStyleRule("body")
-	rule.Props = CssProps{
-		Color:      "#111827",
-		FontFamily: "Arial, sans-serif",
+	rule.Props = StyleMap{
+		"color":       "#111827",
+		"font-family": "Arial, sans-serif",
 	}
 
 	style := NewStyleElement().AddRule(rule)
@@ -24,13 +24,12 @@ func TestStyleElementAddRuleBuildsUnwrappedCSS(t *testing.T) {
 	}
 }
 
-// TestStyleUsesDefaultPropMap provides TestStyleUsesDefaultPropMap behavior for the package.
-func TestStyleUsesDefaultPropMap(t *testing.T) {
+func TestStyleUsesStyleMapDeclarations(t *testing.T) {
 	style := &Style{
 		Tags: []string{".card"},
-		Props: CssProps{
-			Background: "#fff",
-			Padding:    "1rem",
+		Props: StyleMap{
+			"background": "#fff",
+			"padding":    "1rem",
 		},
 	}
 	style.Prepare()
@@ -49,8 +48,8 @@ func TestStyleUsesDefaultPropMap(t *testing.T) {
 // TestStyleElementAddUnwrapsStyle provides TestStyleElementAddUnwrapsStyle behavior for the package.
 func TestStyleElementAddUnwrapsStyle(t *testing.T) {
 	rule := NewStyle("body")
-	rule.Props = CssProps{
-		Color: "#111827",
+	rule.Props = StyleMap{
+		"color": "#111827",
 	}
 
 	style := NewStyleElement().Add(rule)
@@ -84,10 +83,10 @@ func TestStyleElementBuildsStatementAtRules(t *testing.T) {
 
 func TestFontFaceRuleUsesFontDescriptors(t *testing.T) {
 	fontFace := NewFontFaceRule()
-	fontFace.Props = FontFaceProps{
-		FontFamily: "Report",
-		FontWeight: "700",
-		Src:        `url("/fonts/report.woff2") format("woff2")`,
+	fontFace.Props = StyleMap{
+		"font-family": "Report",
+		"font-weight": "700",
+		"src":         `url("/fonts/report.woff2") format("woff2")`,
 	}
 	fontFace.Prepare()
 
@@ -127,7 +126,7 @@ func TestFontFeatureValuesRuleRendersRawBlockContent(t *testing.T) {
 
 func TestMediaRuleNestsStyleRules(t *testing.T) {
 	rule := NewStyleRule(".card")
-	rule.Props = CssProps{Padding: "2rem"}
+	rule.Props = StyleMap{"padding": "2rem"}
 
 	media := NewMediaRule("(min-width: 800px)").AddRule(rule)
 	media.Prepare()
@@ -144,8 +143,8 @@ func TestMediaRuleNestsStyleRules(t *testing.T) {
 
 func TestKeyframesRuleBuildsFrames(t *testing.T) {
 	keyframes := NewKeyframesRule("fade").
-		AddFrame("from", CssProps{Opacity: "0"}).
-		AddFrame("to", CssProps{Opacity: "1"})
+		AddFrame("from", StyleMap{"opacity": "0"}).
+		AddFrame("to", StyleMap{"opacity": "1"})
 	keyframes.Prepare()
 
 	want := "\n@keyframes fade {\n" +
@@ -161,11 +160,18 @@ func TestKeyframesRuleBuildsFrames(t *testing.T) {
 	}
 }
 
-func TestPropMapDoesNotContainAtRules(t *testing.T) {
-	pmap := NewPropMap()
-	for _, key := range []string{"@charset", "@import", "@fontFace", "@fontFeatureValues", "@media", "@keyframes", "Charset", "Import", "FontFace", "FontFeatureValues", "Media", "Keyframes"} {
-		if _, ok := pmap.pmap[key]; ok {
-			t.Fatalf("PropMap should not map at-rule key %q as a declaration", key)
-		}
+func TestStyleMapSupportsCustomProperties(t *testing.T) {
+	rule := NewStyleRule(":root").Style(StyleMap{
+		"--brand-color": "#2563eb",
+		"color":         "var(--brand-color)",
+	})
+	rule.Prepare()
+
+	want := "\n:root {\n" +
+		"\t--brand-color: #2563eb;\n" +
+		"\tcolor: var(--brand-color);\n" +
+		"}\n"
+	if got := string(rule.Bytes()); got != want {
+		t.Fatalf("unexpected style map rule:\ngot  %q\nwant %q", got, want)
 	}
 }

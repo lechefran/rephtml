@@ -8,13 +8,13 @@ import (
 type Div struct {
 	buf      bytes.Buffer
 	contents []Element
-	style    map[string]string
+	style    StyleMap
 }
 
 // NewDiv creates a new Div component.
 func NewDiv() *Div {
 	return &Div{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -25,7 +25,7 @@ func (d *Div) Add(e Element) *Div {
 }
 
 // AddStyles adds multiple inline CSS declarations to the Div component.
-func (d *Div) AddStyles(m map[string]string) *Div {
+func (d *Div) AddStyles(m StyleMap) *Div {
 	for k, v := range m {
 		d.style[k] = v
 	}

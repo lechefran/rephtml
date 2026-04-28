@@ -5,7 +5,7 @@ import "bytes"
 // Math represents a MathML math element.
 type Math struct {
 	buf      bytes.Buffer
-	style    map[string]string
+	style    StyleMap
 	contents []Element
 	display  string
 	xmlns    string
@@ -14,7 +14,7 @@ type Math struct {
 // NewMath creates a MathML math element with the default MathML namespace.
 func NewMath() *Math {
 	return &Math{
-		style: make(map[string]string),
+		style: make(StyleMap),
 		xmlns: "http://www.w3.org/1998/Math/MathML",
 	}
 }
@@ -26,7 +26,7 @@ func (m *Math) AddStyle(k, v string) *Math {
 }
 
 // AddStyles adds multiple inline CSS declarations to the math element.
-func (m *Math) AddStyles(ms map[string]string) *Math {
+func (m *Math) AddStyles(ms StyleMap) *Math {
 	for k, v := range ms {
 		m.style[k] = v
 	}
@@ -34,7 +34,7 @@ func (m *Math) AddStyles(ms map[string]string) *Math {
 }
 
 // Style replaces the inline CSS declarations on the math element.
-func (m *Math) Style(ms map[string]string) *Math {
+func (m *Math) Style(ms StyleMap) *Math {
 	m.style = cloneStyleMap(ms)
 	return m
 }
@@ -87,7 +87,7 @@ func (m *Math) Prepare() {
 // Svg represents an inline SVG element.
 type Svg struct {
 	buf                 bytes.Buffer
-	style               map[string]string
+	style               StyleMap
 	contents            []Element
 	width               string
 	height              string
@@ -101,7 +101,7 @@ type Svg struct {
 // NewSvg creates an SVG element with the default SVG namespace.
 func NewSvg() *Svg {
 	return &Svg{
-		style: make(map[string]string),
+		style: make(StyleMap),
 		xmlns: "http://www.w3.org/2000/svg",
 	}
 }
@@ -113,7 +113,7 @@ func (s *Svg) AddStyle(k, v string) *Svg {
 }
 
 // AddStyles adds multiple inline CSS declarations to the SVG element.
-func (s *Svg) AddStyles(m map[string]string) *Svg {
+func (s *Svg) AddStyles(m StyleMap) *Svg {
 	for k, v := range m {
 		s.style[k] = v
 	}
@@ -121,7 +121,7 @@ func (s *Svg) AddStyles(m map[string]string) *Svg {
 }
 
 // Style replaces the inline CSS declarations on the SVG element.
-func (s *Svg) Style(m map[string]string) *Svg {
+func (s *Svg) Style(m StyleMap) *Svg {
 	s.style = cloneStyleMap(m)
 	return s
 }

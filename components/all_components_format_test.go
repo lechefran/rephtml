@@ -628,32 +628,32 @@ func bodyFormatCases() []formatElementCase {
 
 func styleFormatCases() []formatElementCase {
 	style := NewStyle("body")
-	style.Props = CssProps{Color: "red"}
+	style.Props = StyleMap{"color": "red"}
 
 	styleElement := NewStyleElement().Text(".x { color: red; }")
 
 	styleRule := NewStyleRule(".card")
-	styleRule.Props = CssProps{Padding: "1rem"}
+	styleRule.Props = StyleMap{"padding": "1rem"}
 
 	fontFace := NewFontFaceRule()
-	fontFace.Props = FontFaceProps{
-		FontFamily: "Report",
-		Src:        `url("/report.woff2") format("woff2")`,
+	fontFace.Props = StyleMap{
+		"font-family": "Report",
+		"src":         `url("/report.woff2") format("woff2")`,
 	}
 
 	fontFeatures := NewFontFeatureValuesRule("Report").Text("@styleset {\n\tswash: 1;\n}")
 
 	mediaRule := NewMediaRule("(min-width: 800px)")
 	mediaChild := NewStyleRule(".card")
-	mediaChild.Props = CssProps{Padding: "2rem"}
+	mediaChild.Props = StyleMap{"padding": "2rem"}
 	mediaRule.AddRule(mediaChild)
 
 	keyframeBlock := NewKeyframeBlock("from")
-	keyframeBlock.Props = CssProps{Opacity: "0"}
+	keyframeBlock.Props = StyleMap{"opacity": "0"}
 
 	keyframes := NewKeyframesRule("fade").
-		AddFrame("from", CssProps{Opacity: "0"}).
-		AddFrame("to", CssProps{Opacity: "1"})
+		AddFrame("from", StyleMap{"opacity": "0"}).
+		AddFrame("to", StyleMap{"opacity": "1"})
 
 	return []formatElementCase{
 		{name: "StyleElement", element: styleElement},

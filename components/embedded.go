@@ -5,7 +5,7 @@ import "bytes"
 // Embed represents the Embed component or supporting type.
 type Embed struct {
 	buf       bytes.Buffer
-	style     map[string]string
+	style     StyleMap
 	src       string
 	embedType string
 	width     string
@@ -15,7 +15,7 @@ type Embed struct {
 // NewEmbed creates a new Embed component.
 func NewEmbed() *Embed {
 	return &Embed{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -26,7 +26,7 @@ func (e *Embed) AddStyle(k, v string) *Embed {
 }
 
 // AddStyles adds multiple inline CSS declarations to the Embed component.
-func (e *Embed) AddStyles(m map[string]string) *Embed {
+func (e *Embed) AddStyles(m StyleMap) *Embed {
 	for k, v := range m {
 		e.style[k] = v
 	}
@@ -34,7 +34,7 @@ func (e *Embed) AddStyles(m map[string]string) *Embed {
 }
 
 // Style replaces the inline CSS declarations on the Embed component.
-func (e *Embed) Style(m map[string]string) *Embed {
+func (e *Embed) Style(m StyleMap) *Embed {
 	e.style = cloneStyleMap(m)
 	return e
 }
@@ -96,7 +96,7 @@ func (e *Embed) Prepare() {
 // Iframe represents the Iframe component or supporting type.
 type Iframe struct {
 	buf             bytes.Buffer
-	style           map[string]string
+	style           StyleMap
 	src             string
 	width           string
 	height          string
@@ -112,7 +112,7 @@ type Iframe struct {
 // NewIframe creates a new Iframe component.
 func NewIframe() *Iframe {
 	return &Iframe{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -123,7 +123,7 @@ func (i *Iframe) AddStyle(k, v string) *Iframe {
 }
 
 // AddStyles adds multiple inline CSS declarations to the Iframe component.
-func (i *Iframe) AddStyles(m map[string]string) *Iframe {
+func (i *Iframe) AddStyles(m StyleMap) *Iframe {
 	for k, v := range m {
 		i.style[k] = v
 	}
@@ -131,7 +131,7 @@ func (i *Iframe) AddStyles(m map[string]string) *Iframe {
 }
 
 // Style replaces the inline CSS declarations on the Iframe component.
-func (i *Iframe) Style(m map[string]string) *Iframe {
+func (i *Iframe) Style(m StyleMap) *Iframe {
 	i.style = cloneStyleMap(m)
 	return i
 }
@@ -247,7 +247,7 @@ func (i *Iframe) Prepare() {
 // Object represents the Object component or supporting type.
 type Object struct {
 	buf      bytes.Buffer
-	style    map[string]string
+	style    StyleMap
 	contents []Element
 	data     string
 	objType  string
@@ -261,7 +261,7 @@ type Object struct {
 // NewObject creates a new Object component.
 func NewObject() *Object {
 	return &Object{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -272,7 +272,7 @@ func (o *Object) AddStyle(k, v string) *Object {
 }
 
 // AddStyles adds multiple inline CSS declarations to the Object component.
-func (o *Object) AddStyles(m map[string]string) *Object {
+func (o *Object) AddStyles(m StyleMap) *Object {
 	for k, v := range m {
 		o.style[k] = v
 	}
@@ -280,7 +280,7 @@ func (o *Object) AddStyles(m map[string]string) *Object {
 }
 
 // Style replaces the inline CSS declarations on the Object component.
-func (o *Object) Style(m map[string]string) *Object {
+func (o *Object) Style(m StyleMap) *Object {
 	o.style = cloneStyleMap(m)
 	return o
 }
@@ -378,14 +378,14 @@ func (o *Object) Prepare() {
 // Picture represents the Picture component or supporting type.
 type Picture struct {
 	buf      bytes.Buffer
-	style    map[string]string
+	style    StyleMap
 	contents []Element
 }
 
 // NewPicture creates a new Picture component.
 func NewPicture() *Picture {
 	return &Picture{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -396,7 +396,7 @@ func (p *Picture) AddStyle(k, v string) *Picture {
 }
 
 // AddStyles adds multiple inline CSS declarations to the Picture component.
-func (p *Picture) AddStyles(m map[string]string) *Picture {
+func (p *Picture) AddStyles(m StyleMap) *Picture {
 	for k, v := range m {
 		p.style[k] = v
 	}
@@ -404,7 +404,7 @@ func (p *Picture) AddStyles(m map[string]string) *Picture {
 }
 
 // Style replaces the inline CSS declarations on the Picture component.
-func (p *Picture) Style(m map[string]string) *Picture {
+func (p *Picture) Style(m StyleMap) *Picture {
 	p.style = cloneStyleMap(m)
 	return p
 }
@@ -439,7 +439,7 @@ func (p *Picture) Prepare() {
 // Portal represents the Portal component or supporting type.
 type Portal struct {
 	buf            bytes.Buffer
-	style          map[string]string
+	style          StyleMap
 	src            string
 	referrerpolicy string
 }
@@ -447,7 +447,7 @@ type Portal struct {
 // NewPortal creates a new Portal component.
 func NewPortal() *Portal {
 	return &Portal{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -458,7 +458,7 @@ func (p *Portal) AddStyle(k, v string) *Portal {
 }
 
 // AddStyles adds multiple inline CSS declarations to the Portal component.
-func (p *Portal) AddStyles(m map[string]string) *Portal {
+func (p *Portal) AddStyles(m StyleMap) *Portal {
 	for k, v := range m {
 		p.style[k] = v
 	}
@@ -466,7 +466,7 @@ func (p *Portal) AddStyles(m map[string]string) *Portal {
 }
 
 // Style replaces the inline CSS declarations on the Portal component.
-func (p *Portal) Style(m map[string]string) *Portal {
+func (p *Portal) Style(m StyleMap) *Portal {
 	p.style = cloneStyleMap(m)
 	return p
 }
@@ -510,7 +510,7 @@ func (p *Portal) Prepare() {
 // Source represents the Source component or supporting type.
 type Source struct {
 	buf     bytes.Buffer
-	style   map[string]string
+	style   StyleMap
 	src     string
 	srcset  string
 	media   string
@@ -521,7 +521,7 @@ type Source struct {
 // NewSource creates a new Source component.
 func NewSource() *Source {
 	return &Source{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -532,7 +532,7 @@ func (s *Source) AddStyle(k, v string) *Source {
 }
 
 // AddStyles adds multiple inline CSS declarations to the Source component.
-func (s *Source) AddStyles(m map[string]string) *Source {
+func (s *Source) AddStyles(m StyleMap) *Source {
 	for k, v := range m {
 		s.style[k] = v
 	}
@@ -540,7 +540,7 @@ func (s *Source) AddStyles(m map[string]string) *Source {
 }
 
 // Style replaces the inline CSS declarations on the Source component.
-func (s *Source) Style(m map[string]string) *Source {
+func (s *Source) Style(m StyleMap) *Source {
 	s.style = cloneStyleMap(m)
 	return s
 }

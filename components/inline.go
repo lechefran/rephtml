@@ -30,14 +30,14 @@ var (
 // Anchor represents the Anchor component or supporting type.
 type Anchor struct {
 	buf        bytes.Buffer
-	style      map[string]string
+	style      StyleMap
 	link, text string
 }
 
 // NewAnchor creates a new Anchor component.
 func NewAnchor() *Anchor {
 	return &Anchor{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -48,7 +48,7 @@ func (a *Anchor) AddStyle(k, v string) *Anchor {
 }
 
 // Style replaces the inline CSS declarations on the Anchor component.
-func (a *Anchor) Style(m map[string]string) *Anchor {
+func (a *Anchor) Style(m StyleMap) *Anchor {
 	a.style = cloneStyleMap(m)
 	return a
 }
@@ -89,7 +89,7 @@ func (a *Anchor) Prepare() {
 // Abbr represents the Abbr component or supporting type.
 type Abbr struct {
 	buf   bytes.Buffer
-	style map[string]string
+	style StyleMap
 	text  string
 	title string
 }
@@ -97,7 +97,7 @@ type Abbr struct {
 // NewAbbr creates a new Abbr component.
 func NewAbbr() *Abbr {
 	return &Abbr{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -108,7 +108,7 @@ func (a *Abbr) AddStyle(k, v string) *Abbr {
 }
 
 // AddStyles adds multiple inline CSS declarations to the Abbr component.
-func (a *Abbr) AddStyles(m map[string]string) *Abbr {
+func (a *Abbr) AddStyles(m StyleMap) *Abbr {
 	for k, v := range m {
 		a.style[k] = v
 	}
@@ -116,7 +116,7 @@ func (a *Abbr) AddStyles(m map[string]string) *Abbr {
 }
 
 // Style replaces the inline CSS declarations on the Abbr component.
-func (a *Abbr) Style(m map[string]string) *Abbr {
+func (a *Abbr) Style(m StyleMap) *Abbr {
 	a.style = cloneStyleMap(m)
 	return a
 }
@@ -157,14 +157,14 @@ func (a *Abbr) Prepare() {
 // B represents the B component or supporting type.
 type B struct {
 	buf   bytes.Buffer
-	style map[string]string
+	style StyleMap
 	text  string
 }
 
 // NewB creates a new B component.
 func NewB() *B {
 	return &B{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -175,7 +175,7 @@ func (b *B) AddStyle(k, v string) *B {
 }
 
 // AddStyles adds multiple inline CSS declarations to the B component.
-func (b *B) AddStyles(m map[string]string) *B {
+func (b *B) AddStyles(m StyleMap) *B {
 	for k, v := range m {
 		b.style[k] = v
 	}
@@ -183,7 +183,7 @@ func (b *B) AddStyles(m map[string]string) *B {
 }
 
 // Style replaces the inline CSS declarations on the B component.
-func (b *B) Style(m map[string]string) *B {
+func (b *B) Style(m StyleMap) *B {
 	b.style = cloneStyleMap(m)
 	return b
 }
@@ -215,14 +215,14 @@ func (b *B) Prepare() {
 // I represents the I component or supporting type.
 type I struct {
 	buf   bytes.Buffer
-	style map[string]string
+	style StyleMap
 	text  string
 }
 
 // NewI creates a new I component.
 func NewI() *I {
 	return &I{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -233,7 +233,7 @@ func (i *I) AddStyle(k, v string) *I {
 }
 
 // AddStyles adds multiple inline CSS declarations to the I component.
-func (i *I) AddStyles(m map[string]string) *I {
+func (i *I) AddStyles(m StyleMap) *I {
 	for k, v := range m {
 		i.style[k] = v
 	}
@@ -241,7 +241,7 @@ func (i *I) AddStyles(m map[string]string) *I {
 }
 
 // Style replaces the inline CSS declarations on the I component.
-func (i *I) Style(m map[string]string) *I {
+func (i *I) Style(m StyleMap) *I {
 	i.style = cloneStyleMap(m)
 	return i
 }
@@ -273,7 +273,7 @@ func (i *I) Prepare() {
 // Q represents the Q component or supporting type.
 type Q struct {
 	buf   bytes.Buffer
-	style map[string]string
+	style StyleMap
 	text  string
 	cite  string
 }
@@ -281,7 +281,7 @@ type Q struct {
 // NewQ creates a new Q component.
 func NewQ() *Q {
 	return &Q{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -292,7 +292,7 @@ func (q *Q) AddStyle(k, v string) *Q {
 }
 
 // AddStyles adds multiple inline CSS declarations to the Q component.
-func (q *Q) AddStyles(m map[string]string) *Q {
+func (q *Q) AddStyles(m StyleMap) *Q {
 	for k, v := range m {
 		q.style[k] = v
 	}
@@ -300,7 +300,7 @@ func (q *Q) AddStyles(m map[string]string) *Q {
 }
 
 // Style replaces the inline CSS declarations on the Q component.
-func (q *Q) Style(m map[string]string) *Q {
+func (q *Q) Style(m StyleMap) *Q {
 	q.style = cloneStyleMap(m)
 	return q
 }
@@ -341,14 +341,14 @@ func (q *Q) Prepare() {
 // S represents the S component or supporting type.
 type S struct {
 	buf   bytes.Buffer
-	style map[string]string
+	style StyleMap
 	text  string
 }
 
 // NewS creates a new S component.
 func NewS() *S {
 	return &S{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -359,7 +359,7 @@ func (s *S) AddStyle(k, v string) *S {
 }
 
 // AddStyles adds multiple inline CSS declarations to the S component.
-func (s *S) AddStyles(m map[string]string) *S {
+func (s *S) AddStyles(m StyleMap) *S {
 	for k, v := range m {
 		s.style[k] = v
 	}
@@ -367,7 +367,7 @@ func (s *S) AddStyles(m map[string]string) *S {
 }
 
 // Style replaces the inline CSS declarations on the S component.
-func (s *S) Style(m map[string]string) *S {
+func (s *S) Style(m StyleMap) *S {
 	s.style = cloneStyleMap(m)
 	return s
 }
@@ -399,14 +399,14 @@ func (s *S) Prepare() {
 // U represents the U component or supporting type.
 type U struct {
 	buf   bytes.Buffer
-	style map[string]string
+	style StyleMap
 	text  string
 }
 
 // NewU creates a new U component.
 func NewU() *U {
 	return &U{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -417,7 +417,7 @@ func (u *U) AddStyle(k, v string) *U {
 }
 
 // AddStyles adds multiple inline CSS declarations to the U component.
-func (u *U) AddStyles(m map[string]string) *U {
+func (u *U) AddStyles(m StyleMap) *U {
 	for k, v := range m {
 		u.style[k] = v
 	}
@@ -425,7 +425,7 @@ func (u *U) AddStyles(m map[string]string) *U {
 }
 
 // Style replaces the inline CSS declarations on the U component.
-func (u *U) Style(m map[string]string) *U {
+func (u *U) Style(m StyleMap) *U {
 	u.style = cloneStyleMap(m)
 	return u
 }
@@ -457,14 +457,14 @@ func (u *U) Prepare() {
 // Bdi represents the bdi component or supporting type.
 type Bdi struct {
 	buf   bytes.Buffer
-	style map[string]string
+	style StyleMap
 	text  string
 }
 
 // NewBdi creates a new bdi component.
 func NewBdi() *Bdi {
 	return &Bdi{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -475,7 +475,7 @@ func (d *Bdi) AddStyle(k, v string) *Bdi {
 }
 
 // AddStyles adds multiple inline CSS declarations to the Bdi component.
-func (d *Bdi) AddStyles(m map[string]string) *Bdi {
+func (d *Bdi) AddStyles(m StyleMap) *Bdi {
 	for k, v := range m {
 		d.style[k] = v
 	}
@@ -483,7 +483,7 @@ func (d *Bdi) AddStyles(m map[string]string) *Bdi {
 }
 
 // Style replaces the inline CSS declarations on the Bdi component.
-func (d *Bdi) Style(m map[string]string) *Bdi {
+func (d *Bdi) Style(m StyleMap) *Bdi {
 	d.style = cloneStyleMap(m)
 	return d
 }
@@ -515,14 +515,14 @@ func (d *Bdi) Prepare() {
 // Bdo represents the bdo component or supporting type.
 type Bdo struct {
 	buf   bytes.Buffer
-	style map[string]string
+	style StyleMap
 	text  string
 }
 
 // NewBdo creates a new bdo component.
 func NewBdo() *Bdo {
 	return &Bdo{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -533,7 +533,7 @@ func (d *Bdo) AddStyle(k, v string) *Bdo {
 }
 
 // AddStyles adds multiple inline CSS declarations to the Bdo component.
-func (d *Bdo) AddStyles(m map[string]string) *Bdo {
+func (d *Bdo) AddStyles(m StyleMap) *Bdo {
 	for k, v := range m {
 		d.style[k] = v
 	}
@@ -541,7 +541,7 @@ func (d *Bdo) AddStyles(m map[string]string) *Bdo {
 }
 
 // Style replaces the inline CSS declarations on the Bdo component.
-func (d *Bdo) Style(m map[string]string) *Bdo {
+func (d *Bdo) Style(m StyleMap) *Bdo {
 	d.style = cloneStyleMap(m)
 	return d
 }
@@ -573,13 +573,13 @@ func (d *Bdo) Prepare() {
 // Br represents the Br component or supporting type.
 type Br struct {
 	buf   bytes.Buffer
-	style map[string]string
+	style StyleMap
 }
 
 // NewBr creates a new Br component.
 func NewBr() *Br {
 	return &Br{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -590,7 +590,7 @@ func (br *Br) AddStyle(k, v string) *Br {
 }
 
 // AddStyles adds multiple inline CSS declarations to the Br component.
-func (br *Br) AddStyles(m map[string]string) *Br {
+func (br *Br) AddStyles(m StyleMap) *Br {
 	for k, v := range m {
 		br.style[k] = v
 	}
@@ -598,7 +598,7 @@ func (br *Br) AddStyles(m map[string]string) *Br {
 }
 
 // Style replaces the inline CSS declarations on the Br component.
-func (br *Br) Style(m map[string]string) *Br {
+func (br *Br) Style(m StyleMap) *Br {
 	br.style = cloneStyleMap(m)
 	return br
 }
@@ -624,14 +624,14 @@ func (br *Br) Prepare() {
 // Cite represents the Cite component or supporting type.
 type Cite struct {
 	buf   bytes.Buffer
-	style map[string]string
+	style StyleMap
 	text  string
 }
 
 // NewCite creates a new Cite component.
 func NewCite() *Cite {
 	return &Cite{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -642,7 +642,7 @@ func (c *Cite) AddStyle(k, v string) *Cite {
 }
 
 // AddStyles adds multiple inline CSS declarations to the Cite component.
-func (c *Cite) AddStyles(m map[string]string) *Cite {
+func (c *Cite) AddStyles(m StyleMap) *Cite {
 	for k, v := range m {
 		c.style[k] = v
 	}
@@ -650,7 +650,7 @@ func (c *Cite) AddStyles(m map[string]string) *Cite {
 }
 
 // Style replaces the inline CSS declarations on the Cite component.
-func (c *Cite) Style(m map[string]string) *Cite {
+func (c *Cite) Style(m StyleMap) *Cite {
 	c.style = cloneStyleMap(m)
 	return c
 }
@@ -682,14 +682,14 @@ func (c *Cite) Prepare() {
 // Code represents the Code component or supporting type.
 type Code struct {
 	buf   bytes.Buffer
-	style map[string]string
+	style StyleMap
 	text  string
 }
 
 // NewCode creates a new Code component.
 func NewCode() *Code {
 	return &Code{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -700,7 +700,7 @@ func (c *Code) AddStyle(k, v string) *Code {
 }
 
 // AddStyles adds multiple inline CSS declarations to the Code component.
-func (c *Code) AddStyles(m map[string]string) *Code {
+func (c *Code) AddStyles(m StyleMap) *Code {
 	for k, v := range m {
 		c.style[k] = v
 	}
@@ -708,7 +708,7 @@ func (c *Code) AddStyles(m map[string]string) *Code {
 }
 
 // Style replaces the inline CSS declarations on the Code component.
-func (c *Code) Style(m map[string]string) *Code {
+func (c *Code) Style(m StyleMap) *Code {
 	c.style = cloneStyleMap(m)
 	return c
 }
@@ -740,7 +740,7 @@ func (c *Code) Prepare() {
 // Data represents the Data component or supporting type.
 type Data struct {
 	buf   bytes.Buffer
-	style map[string]string
+	style StyleMap
 	text  string
 	value string
 }
@@ -748,7 +748,7 @@ type Data struct {
 // NewData creates a new Data component.
 func NewData() *Data {
 	return &Data{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -759,7 +759,7 @@ func (d *Data) AddStyle(k, v string) *Data {
 }
 
 // AddStyles adds multiple inline CSS declarations to the Data component.
-func (d *Data) AddStyles(m map[string]string) *Data {
+func (d *Data) AddStyles(m StyleMap) *Data {
 	for k, v := range m {
 		d.style[k] = v
 	}
@@ -767,7 +767,7 @@ func (d *Data) AddStyles(m map[string]string) *Data {
 }
 
 // Style replaces the inline CSS declarations on the Data component.
-func (d *Data) Style(m map[string]string) *Data {
+func (d *Data) Style(m StyleMap) *Data {
 	d.style = cloneStyleMap(m)
 	return d
 }
@@ -808,7 +808,7 @@ func (d *Data) Prepare() {
 // Dfn represents the Dfn component or supporting type.
 type Dfn struct {
 	buf   bytes.Buffer
-	style map[string]string
+	style StyleMap
 	text  string
 	title string
 }
@@ -816,7 +816,7 @@ type Dfn struct {
 // NewDfn creates a new Dfn component.
 func NewDfn() *Dfn {
 	return &Dfn{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -827,7 +827,7 @@ func (d *Dfn) AddStyle(k, v string) *Dfn {
 }
 
 // AddStyles adds multiple inline CSS declarations to the Dfn component.
-func (d *Dfn) AddStyles(m map[string]string) *Dfn {
+func (d *Dfn) AddStyles(m StyleMap) *Dfn {
 	for k, v := range m {
 		d.style[k] = v
 	}
@@ -835,7 +835,7 @@ func (d *Dfn) AddStyles(m map[string]string) *Dfn {
 }
 
 // Style replaces the inline CSS declarations on the Dfn component.
-func (d *Dfn) Style(m map[string]string) *Dfn {
+func (d *Dfn) Style(m StyleMap) *Dfn {
 	d.style = cloneStyleMap(m)
 	return d
 }
@@ -876,14 +876,14 @@ func (d *Dfn) Prepare() {
 // Em represents the em component or supporting type.
 type Em struct {
 	buf   bytes.Buffer
-	style map[string]string
+	style StyleMap
 	text  string
 }
 
 // NewEm creates a new em component.
 func NewEm() *Em {
 	return &Em{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -894,7 +894,7 @@ func (e *Em) AddStyle(k, v string) *Em {
 }
 
 // AddStyles adds multiple inline CSS declarations to the Em component.
-func (e *Em) AddStyles(m map[string]string) *Em {
+func (e *Em) AddStyles(m StyleMap) *Em {
 	for k, v := range m {
 		e.style[k] = v
 	}
@@ -902,7 +902,7 @@ func (e *Em) AddStyles(m map[string]string) *Em {
 }
 
 // Style replaces the inline CSS declarations on the Em component.
-func (e *Em) Style(m map[string]string) *Em {
+func (e *Em) Style(m StyleMap) *Em {
 	e.style = cloneStyleMap(m)
 	return e
 }
@@ -934,14 +934,14 @@ func (e *Em) Prepare() {
 // Mark represents the Mark component or supporting type.
 type Mark struct {
 	buf   bytes.Buffer
-	style map[string]string
+	style StyleMap
 	text  string
 }
 
 // NewMark creates a new Mark component.
 func NewMark() *Mark {
 	return &Mark{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -952,7 +952,7 @@ func (m *Mark) AddStyle(k, v string) *Mark {
 }
 
 // AddStyles adds multiple inline CSS declarations to the Mark component.
-func (m *Mark) AddStyles(ms map[string]string) *Mark {
+func (m *Mark) AddStyles(ms StyleMap) *Mark {
 	for k, v := range ms {
 		m.style[k] = v
 	}
@@ -960,7 +960,7 @@ func (m *Mark) AddStyles(ms map[string]string) *Mark {
 }
 
 // Style replaces the inline CSS declarations on the Mark component.
-func (m *Mark) Style(ms map[string]string) *Mark {
+func (m *Mark) Style(ms StyleMap) *Mark {
 	m.style = cloneStyleMap(ms)
 	return m
 }
@@ -992,14 +992,14 @@ func (m *Mark) Prepare() {
 // Ruby represents the Ruby component or supporting type.
 type Ruby struct {
 	buf      bytes.Buffer
-	style    map[string]string
+	style    StyleMap
 	contents []Element
 }
 
 // NewRuby creates a new Ruby component.
 func NewRuby() *Ruby {
 	return &Ruby{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -1010,7 +1010,7 @@ func (r *Ruby) AddStyle(k, v string) *Ruby {
 }
 
 // AddStyles adds multiple inline CSS declarations to the Ruby component.
-func (r *Ruby) AddStyles(m map[string]string) *Ruby {
+func (r *Ruby) AddStyles(m StyleMap) *Ruby {
 	for k, v := range m {
 		r.style[k] = v
 	}
@@ -1018,7 +1018,7 @@ func (r *Ruby) AddStyles(m map[string]string) *Ruby {
 }
 
 // Style replaces the inline CSS declarations on the Ruby component.
-func (r *Ruby) Style(m map[string]string) *Ruby {
+func (r *Ruby) Style(m StyleMap) *Ruby {
 	r.style = cloneStyleMap(m)
 	return r
 }
@@ -1053,14 +1053,14 @@ func (r *Ruby) Prepare() {
 // Rb represents the Rb component or supporting type.
 type Rb struct {
 	buf   bytes.Buffer
-	style map[string]string
+	style StyleMap
 	text  string
 }
 
 // NewRb creates a new Rb component.
 func NewRb() *Rb {
 	return &Rb{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -1071,7 +1071,7 @@ func (rb *Rb) AddStyle(k, v string) *Rb {
 }
 
 // AddStyles adds multiple inline CSS declarations to the Rb component.
-func (rb *Rb) AddStyles(m map[string]string) *Rb {
+func (rb *Rb) AddStyles(m StyleMap) *Rb {
 	for k, v := range m {
 		rb.style[k] = v
 	}
@@ -1079,7 +1079,7 @@ func (rb *Rb) AddStyles(m map[string]string) *Rb {
 }
 
 // Style replaces the inline CSS declarations on the Rb component.
-func (rb *Rb) Style(m map[string]string) *Rb {
+func (rb *Rb) Style(m StyleMap) *Rb {
 	rb.style = cloneStyleMap(m)
 	return rb
 }
@@ -1111,14 +1111,14 @@ func (rb *Rb) Prepare() {
 // Rt represents the Rt component or supporting type.
 type Rt struct {
 	buf   bytes.Buffer
-	style map[string]string
+	style StyleMap
 	text  string
 }
 
 // NewRt creates a new Rt component.
 func NewRt() *Rt {
 	return &Rt{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -1129,7 +1129,7 @@ func (rt *Rt) AddStyle(k, v string) *Rt {
 }
 
 // AddStyles adds multiple inline CSS declarations to the Rt component.
-func (rt *Rt) AddStyles(m map[string]string) *Rt {
+func (rt *Rt) AddStyles(m StyleMap) *Rt {
 	for k, v := range m {
 		rt.style[k] = v
 	}
@@ -1137,7 +1137,7 @@ func (rt *Rt) AddStyles(m map[string]string) *Rt {
 }
 
 // Style replaces the inline CSS declarations on the Rt component.
-func (rt *Rt) Style(m map[string]string) *Rt {
+func (rt *Rt) Style(m StyleMap) *Rt {
 	rt.style = cloneStyleMap(m)
 	return rt
 }
@@ -1169,14 +1169,14 @@ func (rt *Rt) Prepare() {
 // Rtc represents the Rtc component or supporting type.
 type Rtc struct {
 	buf      bytes.Buffer
-	style    map[string]string
+	style    StyleMap
 	contents []Element
 }
 
 // NewRtc creates a new Rtc component.
 func NewRtc() *Rtc {
 	return &Rtc{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -1187,7 +1187,7 @@ func (rtc *Rtc) AddStyle(k, v string) *Rtc {
 }
 
 // AddStyles adds multiple inline CSS declarations to the Rtc component.
-func (rtc *Rtc) AddStyles(m map[string]string) *Rtc {
+func (rtc *Rtc) AddStyles(m StyleMap) *Rtc {
 	for k, v := range m {
 		rtc.style[k] = v
 	}
@@ -1195,7 +1195,7 @@ func (rtc *Rtc) AddStyles(m map[string]string) *Rtc {
 }
 
 // Style replaces the inline CSS declarations on the Rtc component.
-func (rtc *Rtc) Style(m map[string]string) *Rtc {
+func (rtc *Rtc) Style(m StyleMap) *Rtc {
 	rtc.style = cloneStyleMap(m)
 	return rtc
 }
@@ -1230,14 +1230,14 @@ func (rtc *Rtc) Prepare() {
 // Rp represents the Rp component or supporting type.
 type Rp struct {
 	buf   bytes.Buffer
-	style map[string]string
+	style StyleMap
 	text  string
 }
 
 // NewRp creates a new Rp component.
 func NewRp() *Rp {
 	return &Rp{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -1248,7 +1248,7 @@ func (rp *Rp) AddStyle(k, v string) *Rp {
 }
 
 // AddStyles adds multiple inline CSS declarations to the Rp component.
-func (rp *Rp) AddStyles(m map[string]string) *Rp {
+func (rp *Rp) AddStyles(m StyleMap) *Rp {
 	for k, v := range m {
 		rp.style[k] = v
 	}
@@ -1256,7 +1256,7 @@ func (rp *Rp) AddStyles(m map[string]string) *Rp {
 }
 
 // Style replaces the inline CSS declarations on the Rp component.
-func (rp *Rp) Style(m map[string]string) *Rp {
+func (rp *Rp) Style(m StyleMap) *Rp {
 	rp.style = cloneStyleMap(m)
 	return rp
 }
@@ -1288,14 +1288,14 @@ func (rp *Rp) Prepare() {
 // Kbd represents the Kbd component or supporting type.
 type Kbd struct {
 	buf   bytes.Buffer
-	style map[string]string
+	style StyleMap
 	text  string
 }
 
 // NewKbd creates a new Kbd component.
 func NewKbd() *Kbd {
 	return &Kbd{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -1306,7 +1306,7 @@ func (k *Kbd) AddStyle(key, v string) *Kbd {
 }
 
 // AddStyles adds multiple inline CSS declarations to the Kbd component.
-func (k *Kbd) AddStyles(m map[string]string) *Kbd {
+func (k *Kbd) AddStyles(m StyleMap) *Kbd {
 	for key, v := range m {
 		k.style[key] = v
 	}
@@ -1314,7 +1314,7 @@ func (k *Kbd) AddStyles(m map[string]string) *Kbd {
 }
 
 // Style replaces the inline CSS declarations on the Kbd component.
-func (k *Kbd) Style(m map[string]string) *Kbd {
+func (k *Kbd) Style(m StyleMap) *Kbd {
 	k.style = cloneStyleMap(m)
 	return k
 }
@@ -1346,14 +1346,14 @@ func (k *Kbd) Prepare() {
 // Sub represents the Sub component or supporting type.
 type Sub struct {
 	buf   bytes.Buffer
-	style map[string]string
+	style StyleMap
 	text  string
 }
 
 // NewSub creates a new Sub component.
 func NewSub() *Sub {
 	return &Sub{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -1364,7 +1364,7 @@ func (s *Sub) AddStyle(k, v string) *Sub {
 }
 
 // AddStyles adds multiple inline CSS declarations to the Sub component.
-func (s *Sub) AddStyles(m map[string]string) *Sub {
+func (s *Sub) AddStyles(m StyleMap) *Sub {
 	for k, v := range m {
 		s.style[k] = v
 	}
@@ -1372,7 +1372,7 @@ func (s *Sub) AddStyles(m map[string]string) *Sub {
 }
 
 // Style replaces the inline CSS declarations on the Sub component.
-func (s *Sub) Style(m map[string]string) *Sub {
+func (s *Sub) Style(m StyleMap) *Sub {
 	s.style = cloneStyleMap(m)
 	return s
 }
@@ -1404,14 +1404,14 @@ func (s *Sub) Prepare() {
 // Sup represents the Sup component or supporting type.
 type Sup struct {
 	buf   bytes.Buffer
-	style map[string]string
+	style StyleMap
 	text  string
 }
 
 // NewSup creates a new Sup component.
 func NewSup() *Sup {
 	return &Sup{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -1422,7 +1422,7 @@ func (s *Sup) AddStyle(k, v string) *Sup {
 }
 
 // AddStyles adds multiple inline CSS declarations to the Sup component.
-func (s *Sup) AddStyles(m map[string]string) *Sup {
+func (s *Sup) AddStyles(m StyleMap) *Sup {
 	for k, v := range m {
 		s.style[k] = v
 	}
@@ -1430,7 +1430,7 @@ func (s *Sup) AddStyles(m map[string]string) *Sup {
 }
 
 // Style replaces the inline CSS declarations on the Sup component.
-func (s *Sup) Style(m map[string]string) *Sup {
+func (s *Sup) Style(m StyleMap) *Sup {
 	s.style = cloneStyleMap(m)
 	return s
 }
@@ -1462,14 +1462,14 @@ func (s *Sup) Prepare() {
 // Samp represents the Samp component or supporting type.
 type Samp struct {
 	buf   bytes.Buffer
-	style map[string]string
+	style StyleMap
 	text  string
 }
 
 // NewSamp creates a new Samp component.
 func NewSamp() *Samp {
 	return &Samp{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -1480,7 +1480,7 @@ func (s *Samp) AddStyle(k, v string) *Samp {
 }
 
 // AddStyles adds multiple inline CSS declarations to the Samp component.
-func (s *Samp) AddStyles(m map[string]string) *Samp {
+func (s *Samp) AddStyles(m StyleMap) *Samp {
 	for k, v := range m {
 		s.style[k] = v
 	}
@@ -1488,7 +1488,7 @@ func (s *Samp) AddStyles(m map[string]string) *Samp {
 }
 
 // Style replaces the inline CSS declarations on the Samp component.
-func (s *Samp) Style(m map[string]string) *Samp {
+func (s *Samp) Style(m StyleMap) *Samp {
 	s.style = cloneStyleMap(m)
 	return s
 }
@@ -1520,14 +1520,14 @@ func (s *Samp) Prepare() {
 // Small represents the Small component or supporting type.
 type Small struct {
 	buf   bytes.Buffer
-	style map[string]string
+	style StyleMap
 	text  string
 }
 
 // NewSmall creates a new Small component.
 func NewSmall() *Small {
 	return &Small{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -1538,7 +1538,7 @@ func (s *Small) AddStyle(k, v string) *Small {
 }
 
 // AddStyles adds multiple inline CSS declarations to the Small component.
-func (s *Small) AddStyles(m map[string]string) *Small {
+func (s *Small) AddStyles(m StyleMap) *Small {
 	for k, v := range m {
 		s.style[k] = v
 	}
@@ -1546,7 +1546,7 @@ func (s *Small) AddStyles(m map[string]string) *Small {
 }
 
 // Style replaces the inline CSS declarations on the Small component.
-func (s *Small) Style(m map[string]string) *Small {
+func (s *Small) Style(m StyleMap) *Small {
 	s.style = cloneStyleMap(m)
 	return s
 }
@@ -1578,14 +1578,14 @@ func (s *Small) Prepare() {
 // Span represents the Span component or supporting type.
 type Span struct {
 	buf   bytes.Buffer
-	style map[string]string
+	style StyleMap
 	text  string
 }
 
 // NewSpan creates a new Span component.
 func NewSpan() *Span {
 	return &Span{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -1596,7 +1596,7 @@ func (s *Span) AddStyle(k, v string) *Span {
 }
 
 // AddStyles adds multiple inline CSS declarations to the Span component.
-func (s *Span) AddStyles(m map[string]string) *Span {
+func (s *Span) AddStyles(m StyleMap) *Span {
 	for k, v := range m {
 		s.style[k] = v
 	}
@@ -1604,7 +1604,7 @@ func (s *Span) AddStyles(m map[string]string) *Span {
 }
 
 // Style replaces the inline CSS declarations on the Span component.
-func (s *Span) Style(m map[string]string) *Span {
+func (s *Span) Style(m StyleMap) *Span {
 	s.style = cloneStyleMap(m)
 	return s
 }
@@ -1636,14 +1636,14 @@ func (s *Span) Prepare() {
 // Strong represents the Strong component or supporting type.
 type Strong struct {
 	buf   bytes.Buffer
-	style map[string]string
+	style StyleMap
 	text  string
 }
 
 // NewStrong creates a new Strong component.
 func NewStrong() *Strong {
 	return &Strong{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -1654,7 +1654,7 @@ func (s *Strong) AddStyle(k, v string) *Strong {
 }
 
 // AddStyles adds multiple inline CSS declarations to the Strong component.
-func (s *Strong) AddStyles(m map[string]string) *Strong {
+func (s *Strong) AddStyles(m StyleMap) *Strong {
 	for k, v := range m {
 		s.style[k] = v
 	}
@@ -1662,7 +1662,7 @@ func (s *Strong) AddStyles(m map[string]string) *Strong {
 }
 
 // Style replaces the inline CSS declarations on the Strong component.
-func (s *Strong) Style(m map[string]string) *Strong {
+func (s *Strong) Style(m StyleMap) *Strong {
 	s.style = cloneStyleMap(m)
 	return s
 }
@@ -1694,7 +1694,7 @@ func (s *Strong) Prepare() {
 // Time represents the HTML time element and its machine-readable datetime value.
 type Time struct {
 	buf      bytes.Buffer
-	style    map[string]string
+	style    StyleMap
 	text     string
 	datetime string
 	err      error
@@ -1703,7 +1703,7 @@ type Time struct {
 // NewTime creates a time element.
 func NewTime() *Time {
 	return &Time{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -1714,7 +1714,7 @@ func (t *Time) AddStyle(k, v string) *Time {
 }
 
 // AddStyles adds multiple inline CSS declarations to the time element.
-func (t *Time) AddStyles(m map[string]string) *Time {
+func (t *Time) AddStyles(m StyleMap) *Time {
 	for k, v := range m {
 		t.style[k] = v
 	}
@@ -1722,7 +1722,7 @@ func (t *Time) AddStyles(m map[string]string) *Time {
 }
 
 // Style replaces the inline CSS declarations on the time element.
-func (t *Time) Style(m map[string]string) *Time {
+func (t *Time) Style(m StyleMap) *Time {
 	t.style = cloneStyleMap(m)
 	return t
 }
@@ -1808,14 +1808,14 @@ func (t *Time) Prepare() {
 // Var represents the Var component or supporting type.
 type Var struct {
 	buf   bytes.Buffer
-	style map[string]string
+	style StyleMap
 	text  string
 }
 
 // NewVar creates a new Var component.
 func NewVar() *Var {
 	return &Var{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -1826,7 +1826,7 @@ func (v *Var) AddStyle(k, val string) *Var {
 }
 
 // AddStyles adds multiple inline CSS declarations to the Var component.
-func (v *Var) AddStyles(m map[string]string) *Var {
+func (v *Var) AddStyles(m StyleMap) *Var {
 	for k, val := range m {
 		v.style[k] = val
 	}
@@ -1834,7 +1834,7 @@ func (v *Var) AddStyles(m map[string]string) *Var {
 }
 
 // Style replaces the inline CSS declarations on the Var component.
-func (v *Var) Style(m map[string]string) *Var {
+func (v *Var) Style(m StyleMap) *Var {
 	v.style = cloneStyleMap(m)
 	return v
 }
@@ -1866,13 +1866,13 @@ func (v *Var) Prepare() {
 // Wbr represents the Wbr component or supporting type.
 type Wbr struct {
 	buf   bytes.Buffer
-	style map[string]string
+	style StyleMap
 }
 
 // NewWbr creates a new Wbr component.
 func NewWbr() *Wbr {
 	return &Wbr{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -1883,7 +1883,7 @@ func (w *Wbr) AddStyle(k, v string) *Wbr {
 }
 
 // AddStyles adds multiple inline CSS declarations to the Wbr component.
-func (w *Wbr) AddStyles(m map[string]string) *Wbr {
+func (w *Wbr) AddStyles(m StyleMap) *Wbr {
 	for k, v := range m {
 		w.style[k] = v
 	}
@@ -1891,7 +1891,7 @@ func (w *Wbr) AddStyles(m map[string]string) *Wbr {
 }
 
 // Style replaces the inline CSS declarations on the Wbr component.
-func (w *Wbr) Style(m map[string]string) *Wbr {
+func (w *Wbr) Style(m StyleMap) *Wbr {
 	w.style = cloneStyleMap(m)
 	return w
 }

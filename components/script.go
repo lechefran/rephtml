@@ -5,7 +5,7 @@ import "bytes"
 // Canvas represents the Canvas component or supporting type.
 type Canvas struct {
 	buf      bytes.Buffer
-	style    map[string]string
+	style    StyleMap
 	contents []Element
 	width    string
 	height   string
@@ -14,7 +14,7 @@ type Canvas struct {
 // NewCanvas creates a new Canvas component.
 func NewCanvas() *Canvas {
 	return &Canvas{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -25,7 +25,7 @@ func (c *Canvas) AddStyle(k, v string) *Canvas {
 }
 
 // AddStyles adds multiple inline CSS declarations to the Canvas component.
-func (c *Canvas) AddStyles(m map[string]string) *Canvas {
+func (c *Canvas) AddStyles(m StyleMap) *Canvas {
 	for k, v := range m {
 		c.style[k] = v
 	}
@@ -33,7 +33,7 @@ func (c *Canvas) AddStyles(m map[string]string) *Canvas {
 }
 
 // Style replaces the inline CSS declarations on the Canvas component.
-func (c *Canvas) Style(m map[string]string) *Canvas {
+func (c *Canvas) Style(m StyleMap) *Canvas {
 	c.style = cloneStyleMap(m)
 	return c
 }
@@ -86,14 +86,14 @@ func (c *Canvas) Prepare() {
 // Noscript represents the Noscript component or supporting type.
 type Noscript struct {
 	buf      bytes.Buffer
-	style    map[string]string
+	style    StyleMap
 	contents []Element
 }
 
 // NewNoscript creates a new Noscript component.
 func NewNoscript() *Noscript {
 	return &Noscript{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -110,7 +110,7 @@ func (n *Noscript) AddStyle(k, v string) *Noscript {
 }
 
 // AddStyles adds multiple inline CSS declarations to the Noscript component.
-func (n *Noscript) AddStyles(m map[string]string) *Noscript {
+func (n *Noscript) AddStyles(m StyleMap) *Noscript {
 	for k, v := range m {
 		n.style[k] = v
 	}
@@ -118,7 +118,7 @@ func (n *Noscript) AddStyles(m map[string]string) *Noscript {
 }
 
 // Style replaces the inline CSS declarations on the Noscript component.
-func (n *Noscript) Style(m map[string]string) *Noscript {
+func (n *Noscript) Style(m StyleMap) *Noscript {
 	n.style = cloneStyleMap(m)
 	return n
 }
@@ -150,7 +150,7 @@ func (n *Noscript) Prepare() {
 // Script represents the Script component or supporting type.
 type Script struct {
 	buf            bytes.Buffer
-	style          map[string]string
+	style          StyleMap
 	src            string
 	scriptType     string
 	async          bool
@@ -165,7 +165,7 @@ type Script struct {
 // NewScript creates a new Script component.
 func NewScript() *Script {
 	return &Script{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -182,7 +182,7 @@ func (s *Script) AddStyle(k, v string) *Script {
 }
 
 // AddStyles adds multiple inline CSS declarations to the Script component.
-func (s *Script) AddStyles(m map[string]string) *Script {
+func (s *Script) AddStyles(m StyleMap) *Script {
 	for k, v := range m {
 		s.style[k] = v
 	}
@@ -190,7 +190,7 @@ func (s *Script) AddStyles(m map[string]string) *Script {
 }
 
 // Style replaces the inline CSS declarations on the Script component.
-func (s *Script) Style(m map[string]string) *Script {
+func (s *Script) Style(m StyleMap) *Script {
 	s.style = cloneStyleMap(m)
 	return s
 }

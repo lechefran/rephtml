@@ -10,7 +10,7 @@ import (
 /*
 Internal parsing function to handle style
 */
-func parseStyle(buf *bytes.Buffer, style map[string]string) {
+func parseStyle(buf *bytes.Buffer, style StyleMap) {
 	buf.WriteString(" style=\"")
 
 	keys := make([]string, 0, len(style))
@@ -45,8 +45,8 @@ func cloneBytes(b []byte) []byte {
 }
 
 // cloneStyleMap returns a copy of CSS declarations so callers can reuse maps safely.
-func cloneStyleMap(style map[string]string) map[string]string {
-	clone := make(map[string]string, len(style))
+func cloneStyleMap(style StyleMap) StyleMap {
+	clone := make(StyleMap, len(style))
 	for k, v := range style {
 		clone[k] = v
 	}

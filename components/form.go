@@ -5,7 +5,7 @@ import "bytes"
 // Form represents the HTML form element for user input
 type Form struct {
 	buf           bytes.Buffer
-	style         map[string]string
+	style         StyleMap
 	contents      []Element
 	action        string
 	method        string
@@ -20,7 +20,7 @@ type Form struct {
 // NewForm creates a new Form element
 func NewForm() *Form {
 	return &Form{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -143,7 +143,7 @@ func (f *Form) AddStyle(k, v string) *Form {
 }
 
 // AddStyles adds multiple CSS properties
-func (f *Form) AddStyles(m map[string]string) *Form {
+func (f *Form) AddStyles(m StyleMap) *Form {
 	for k, v := range m {
 		f.style[k] = v
 	}
@@ -151,7 +151,7 @@ func (f *Form) AddStyles(m map[string]string) *Form {
 }
 
 // Style replaces all styles
-func (f *Form) Style(m map[string]string) *Form {
+func (f *Form) Style(m StyleMap) *Form {
 	f.style = cloneStyleMap(m)
 	return f
 }
@@ -159,7 +159,7 @@ func (f *Form) Style(m map[string]string) *Form {
 // Label represents the HTML label element for form controls
 type Label struct {
 	buf      bytes.Buffer
-	style    map[string]string
+	style    StyleMap
 	contents []Element
 	forattr  string
 	form     string
@@ -168,7 +168,7 @@ type Label struct {
 // NewLabel creates a new Label element
 func NewLabel() *Label {
 	return &Label{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -237,7 +237,7 @@ func (l *Label) AddStyle(k, v string) *Label {
 }
 
 // AddStyles adds multiple CSS properties
-func (l *Label) AddStyles(m map[string]string) *Label {
+func (l *Label) AddStyles(m StyleMap) *Label {
 	for k, v := range m {
 		l.style[k] = v
 	}
@@ -245,7 +245,7 @@ func (l *Label) AddStyles(m map[string]string) *Label {
 }
 
 // Style replaces all styles
-func (l *Label) Style(m map[string]string) *Label {
+func (l *Label) Style(m StyleMap) *Label {
 	l.style = cloneStyleMap(m)
 	return l
 }
@@ -253,7 +253,7 @@ func (l *Label) Style(m map[string]string) *Label {
 // Input represents the HTML input element for user input
 type Input struct {
 	buf          bytes.Buffer
-	style        map[string]string
+	style        StyleMap
 	inputtype    string
 	name         string
 	value        string
@@ -280,7 +280,7 @@ type Input struct {
 // NewInput creates a new Input element
 func NewInput() *Input {
 	return &Input{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -521,7 +521,7 @@ func (i *Input) AddStyle(k, v string) *Input {
 }
 
 // AddStyles adds multiple CSS properties
-func (i *Input) AddStyles(m map[string]string) *Input {
+func (i *Input) AddStyles(m StyleMap) *Input {
 	for k, v := range m {
 		i.style[k] = v
 	}
@@ -529,7 +529,7 @@ func (i *Input) AddStyles(m map[string]string) *Input {
 }
 
 // Style replaces all styles
-func (i *Input) Style(m map[string]string) *Input {
+func (i *Input) Style(m StyleMap) *Input {
 	i.style = cloneStyleMap(m)
 	return i
 }
@@ -537,7 +537,7 @@ func (i *Input) Style(m map[string]string) *Input {
 // Output represents the HTML output element for calculation results
 type Output struct {
 	buf      bytes.Buffer
-	style    map[string]string
+	style    StyleMap
 	contents []Element
 	forattr  string
 	name     string
@@ -547,7 +547,7 @@ type Output struct {
 // NewOutput creates a new Output element
 func NewOutput() *Output {
 	return &Output{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -626,7 +626,7 @@ func (o *Output) AddStyle(k, v string) *Output {
 }
 
 // AddStyles adds multiple CSS properties
-func (o *Output) AddStyles(m map[string]string) *Output {
+func (o *Output) AddStyles(m StyleMap) *Output {
 	for k, v := range m {
 		o.style[k] = v
 	}
@@ -634,7 +634,7 @@ func (o *Output) AddStyles(m map[string]string) *Output {
 }
 
 // Style replaces all styles
-func (o *Output) Style(m map[string]string) *Output {
+func (o *Output) Style(m StyleMap) *Output {
 	o.style = cloneStyleMap(m)
 	return o
 }
@@ -642,7 +642,7 @@ func (o *Output) Style(m map[string]string) *Output {
 // Fieldset represents the HTML fieldset element for grouping form controls
 type Fieldset struct {
 	buf      bytes.Buffer
-	style    map[string]string
+	style    StyleMap
 	contents []Element
 	form     string
 	name     string
@@ -652,7 +652,7 @@ type Fieldset struct {
 // NewFieldset creates a new Fieldset element
 func NewFieldset() *Fieldset {
 	return &Fieldset{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -725,7 +725,7 @@ func (f *Fieldset) AddStyle(k, v string) *Fieldset {
 }
 
 // AddStyles adds multiple CSS properties
-func (f *Fieldset) AddStyles(m map[string]string) *Fieldset {
+func (f *Fieldset) AddStyles(m StyleMap) *Fieldset {
 	for k, v := range m {
 		f.style[k] = v
 	}
@@ -733,7 +733,7 @@ func (f *Fieldset) AddStyles(m map[string]string) *Fieldset {
 }
 
 // Style replaces all styles
-func (f *Fieldset) Style(m map[string]string) *Fieldset {
+func (f *Fieldset) Style(m StyleMap) *Fieldset {
 	f.style = cloneStyleMap(m)
 	return f
 }
@@ -741,7 +741,7 @@ func (f *Fieldset) Style(m map[string]string) *Fieldset {
 // Button represents the HTML button element for clickable buttons
 type Button struct {
 	buf            bytes.Buffer
-	style          map[string]string
+	style          StyleMap
 	contents       []Element
 	buttonType     string
 	name           string
@@ -759,7 +759,7 @@ type Button struct {
 // NewButton creates a new Button element
 func NewButton() *Button {
 	return &Button{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -918,7 +918,7 @@ func (b *Button) AddStyle(k, v string) *Button {
 }
 
 // AddStyles adds multiple CSS properties
-func (b *Button) AddStyles(m map[string]string) *Button {
+func (b *Button) AddStyles(m StyleMap) *Button {
 	for k, v := range m {
 		b.style[k] = v
 	}
@@ -926,7 +926,7 @@ func (b *Button) AddStyles(m map[string]string) *Button {
 }
 
 // Style replaces all styles
-func (b *Button) Style(m map[string]string) *Button {
+func (b *Button) Style(m StyleMap) *Button {
 	b.style = cloneStyleMap(m)
 	return b
 }
@@ -934,7 +934,7 @@ func (b *Button) Style(m map[string]string) *Button {
 // Select represents the HTML select element for dropdown lists
 type Select struct {
 	buf          bytes.Buffer
-	style        map[string]string
+	style        StyleMap
 	contents     []Element
 	name         string
 	form         string
@@ -949,7 +949,7 @@ type Select struct {
 // NewSelect creates a new Select element
 func NewSelect() *Select {
 	return &Select{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -1072,7 +1072,7 @@ func (s *Select) AddStyle(k, v string) *Select {
 }
 
 // AddStyles adds multiple CSS properties
-func (s *Select) AddStyles(m map[string]string) *Select {
+func (s *Select) AddStyles(m StyleMap) *Select {
 	for k, v := range m {
 		s.style[k] = v
 	}
@@ -1080,7 +1080,7 @@ func (s *Select) AddStyles(m map[string]string) *Select {
 }
 
 // Style replaces all styles
-func (s *Select) Style(m map[string]string) *Select {
+func (s *Select) Style(m StyleMap) *Select {
 	s.style = cloneStyleMap(m)
 	return s
 }
@@ -1088,7 +1088,7 @@ func (s *Select) Style(m map[string]string) *Select {
 // Datalist represents the HTML datalist element for predefined options
 type Datalist struct {
 	buf      bytes.Buffer
-	style    map[string]string
+	style    StyleMap
 	contents []Element
 	id       string
 }
@@ -1096,7 +1096,7 @@ type Datalist struct {
 // NewDatalist creates a new Datalist element
 func NewDatalist() *Datalist {
 	return &Datalist{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -1149,7 +1149,7 @@ func (d *Datalist) AddStyle(k, v string) *Datalist {
 }
 
 // AddStyles adds multiple CSS properties
-func (d *Datalist) AddStyles(m map[string]string) *Datalist {
+func (d *Datalist) AddStyles(m StyleMap) *Datalist {
 	for k, v := range m {
 		d.style[k] = v
 	}
@@ -1157,7 +1157,7 @@ func (d *Datalist) AddStyles(m map[string]string) *Datalist {
 }
 
 // Style replaces all styles
-func (d *Datalist) Style(m map[string]string) *Datalist {
+func (d *Datalist) Style(m StyleMap) *Datalist {
 	d.style = cloneStyleMap(m)
 	return d
 }
@@ -1165,7 +1165,7 @@ func (d *Datalist) Style(m map[string]string) *Datalist {
 // Optgroup represents the HTML optgroup element for grouping options
 type Optgroup struct {
 	buf      bytes.Buffer
-	style    map[string]string
+	style    StyleMap
 	contents []Element
 	label    string
 	disabled bool
@@ -1174,7 +1174,7 @@ type Optgroup struct {
 // NewOptgroup creates a new Optgroup element
 func NewOptgroup() *Optgroup {
 	return &Optgroup{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -1237,7 +1237,7 @@ func (o *Optgroup) AddStyle(k, v string) *Optgroup {
 }
 
 // AddStyles adds multiple CSS properties
-func (o *Optgroup) AddStyles(m map[string]string) *Optgroup {
+func (o *Optgroup) AddStyles(m StyleMap) *Optgroup {
 	for k, v := range m {
 		o.style[k] = v
 	}
@@ -1245,7 +1245,7 @@ func (o *Optgroup) AddStyles(m map[string]string) *Optgroup {
 }
 
 // Style replaces all styles
-func (o *Optgroup) Style(m map[string]string) *Optgroup {
+func (o *Optgroup) Style(m StyleMap) *Optgroup {
 	o.style = cloneStyleMap(m)
 	return o
 }
@@ -1253,7 +1253,7 @@ func (o *Optgroup) Style(m map[string]string) *Optgroup {
 // Option represents the HTML option element for select options
 type Option struct {
 	buf      bytes.Buffer
-	style    map[string]string
+	style    StyleMap
 	contents []Element
 	value    string
 	label    string
@@ -1264,7 +1264,7 @@ type Option struct {
 // NewOption creates a new Option element
 func NewOption() *Option {
 	return &Option{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -1353,7 +1353,7 @@ func (o *Option) AddStyle(k, v string) *Option {
 }
 
 // AddStyles adds multiple CSS properties
-func (o *Option) AddStyles(m map[string]string) *Option {
+func (o *Option) AddStyles(m StyleMap) *Option {
 	for k, v := range m {
 		o.style[k] = v
 	}
@@ -1361,7 +1361,7 @@ func (o *Option) AddStyles(m map[string]string) *Option {
 }
 
 // Style replaces all styles
-func (o *Option) Style(m map[string]string) *Option {
+func (o *Option) Style(m StyleMap) *Option {
 	o.style = cloneStyleMap(m)
 	return o
 }
@@ -1369,7 +1369,7 @@ func (o *Option) Style(m map[string]string) *Option {
 // Textarea represents the HTML textarea element for multi-line text input
 type Textarea struct {
 	buf          bytes.Buffer
-	style        map[string]string
+	style        StyleMap
 	contents     []Element
 	name         string
 	form         string
@@ -1390,7 +1390,7 @@ type Textarea struct {
 // NewTextarea creates a new Textarea element
 func NewTextarea() *Textarea {
 	return &Textarea{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -1579,7 +1579,7 @@ func (t *Textarea) AddStyle(k, v string) *Textarea {
 }
 
 // AddStyles adds multiple CSS properties
-func (t *Textarea) AddStyles(m map[string]string) *Textarea {
+func (t *Textarea) AddStyles(m StyleMap) *Textarea {
 	for k, v := range m {
 		t.style[k] = v
 	}
@@ -1587,7 +1587,7 @@ func (t *Textarea) AddStyles(m map[string]string) *Textarea {
 }
 
 // Style replaces all styles
-func (t *Textarea) Style(m map[string]string) *Textarea {
+func (t *Textarea) Style(m StyleMap) *Textarea {
 	t.style = cloneStyleMap(m)
 	return t
 }
@@ -1595,7 +1595,7 @@ func (t *Textarea) Style(m map[string]string) *Textarea {
 // Progress represents the HTML progress element for showing completion progress
 type Progress struct {
 	buf      bytes.Buffer
-	style    map[string]string
+	style    StyleMap
 	contents []Element
 	value    string
 	max      string
@@ -1605,7 +1605,7 @@ type Progress struct {
 // NewProgress creates a new Progress element
 func NewProgress() *Progress {
 	return &Progress{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -1684,7 +1684,7 @@ func (p *Progress) AddStyle(k, v string) *Progress {
 }
 
 // AddStyles adds multiple CSS properties
-func (p *Progress) AddStyles(m map[string]string) *Progress {
+func (p *Progress) AddStyles(m StyleMap) *Progress {
 	for k, v := range m {
 		p.style[k] = v
 	}
@@ -1692,7 +1692,7 @@ func (p *Progress) AddStyles(m map[string]string) *Progress {
 }
 
 // Style replaces all styles
-func (p *Progress) Style(m map[string]string) *Progress {
+func (p *Progress) Style(m StyleMap) *Progress {
 	p.style = cloneStyleMap(m)
 	return p
 }
@@ -1700,7 +1700,7 @@ func (p *Progress) Style(m map[string]string) *Progress {
 // Meter represents the HTML meter element for displaying scalar measurements
 type Meter struct {
 	buf      bytes.Buffer
-	style    map[string]string
+	style    StyleMap
 	contents []Element
 	value    string
 	min      string
@@ -1714,7 +1714,7 @@ type Meter struct {
 // NewMeter creates a new Meter element
 func NewMeter() *Meter {
 	return &Meter{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -1833,7 +1833,7 @@ func (m *Meter) AddStyle(k, v string) *Meter {
 }
 
 // AddStyles adds multiple CSS properties
-func (m *Meter) AddStyles(ma map[string]string) *Meter {
+func (m *Meter) AddStyles(ma StyleMap) *Meter {
 	for k, v := range ma {
 		m.style[k] = v
 	}
@@ -1841,7 +1841,7 @@ func (m *Meter) AddStyles(ma map[string]string) *Meter {
 }
 
 // Style replaces all styles
-func (m *Meter) Style(ma map[string]string) *Meter {
+func (m *Meter) Style(ma StyleMap) *Meter {
 	m.style = cloneStyleMap(ma)
 	return m
 }
@@ -1849,14 +1849,14 @@ func (m *Meter) Style(ma map[string]string) *Meter {
 // Legend represents the HTML legend element for fieldset captions
 type Legend struct {
 	buf      bytes.Buffer
-	style    map[string]string
+	style    StyleMap
 	contents []Element
 }
 
 // NewLegend creates a new Legend element
 func NewLegend() *Legend {
 	return &Legend{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -1905,7 +1905,7 @@ func (l *Legend) AddStyle(k, v string) *Legend {
 }
 
 // AddStyles adds multiple CSS properties
-func (l *Legend) AddStyles(m map[string]string) *Legend {
+func (l *Legend) AddStyles(m StyleMap) *Legend {
 	for k, v := range m {
 		l.style[k] = v
 	}
@@ -1913,7 +1913,7 @@ func (l *Legend) AddStyles(m map[string]string) *Legend {
 }
 
 // Style replaces all styles
-func (l *Legend) Style(m map[string]string) *Legend {
+func (l *Legend) Style(m StyleMap) *Legend {
 	l.style = cloneStyleMap(m)
 	return l
 }

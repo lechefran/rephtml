@@ -5,14 +5,14 @@ import "bytes"
 // Header represents the Header component or supporting type.
 type Header struct {
 	buf      bytes.Buffer
-	style    map[string]string
+	style    StyleMap
 	contents []Element
 }
 
 // NewHeader creates a new Header component.
 func NewHeader() *Header {
 	return &Header{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -23,7 +23,7 @@ func (h *Header) AddStyle(k, v string) *Header {
 }
 
 // AddStyles adds multiple inline CSS declarations to the Header component.
-func (h *Header) AddStyles(m map[string]string) *Header {
+func (h *Header) AddStyles(m StyleMap) *Header {
 	for k, v := range m {
 		h.style[k] = v
 	}
@@ -31,7 +31,7 @@ func (h *Header) AddStyles(m map[string]string) *Header {
 }
 
 // Style replaces the inline CSS declarations on the Header component.
-func (h *Header) Style(m map[string]string) *Header {
+func (h *Header) Style(m StyleMap) *Header {
 	h.style = cloneStyleMap(m)
 	return h
 }
@@ -66,7 +66,7 @@ func (h *Header) Prepare() {
 // Nav represents the Nav component or supporting type.
 type Nav struct {
 	buf      bytes.Buffer
-	style    map[string]string
+	style    StyleMap
 	contents []Element
 	role     string
 }
@@ -74,7 +74,7 @@ type Nav struct {
 // NewNav creates a new Nav component.
 func NewNav() *Nav {
 	return &Nav{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -85,7 +85,7 @@ func (n *Nav) AddStyle(k, v string) *Nav {
 }
 
 // AddStyles adds multiple inline CSS declarations to the Nav component.
-func (n *Nav) AddStyles(m map[string]string) *Nav {
+func (n *Nav) AddStyles(m StyleMap) *Nav {
 	for k, v := range m {
 		n.style[k] = v
 	}
@@ -93,7 +93,7 @@ func (n *Nav) AddStyles(m map[string]string) *Nav {
 }
 
 // Style replaces the inline CSS declarations on the Nav component.
-func (n *Nav) Style(m map[string]string) *Nav {
+func (n *Nav) Style(m StyleMap) *Nav {
 	n.style = cloneStyleMap(m)
 	return n
 }
@@ -137,14 +137,14 @@ func (n *Nav) Prepare() {
 // Main represents the Main component or supporting type.
 type Main struct {
 	buf      bytes.Buffer
-	style    map[string]string
+	style    StyleMap
 	contents []Element
 }
 
 // NewMain creates a new Main component.
 func NewMain() *Main {
 	return &Main{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -155,7 +155,7 @@ func (m *Main) AddStyle(k, v string) *Main {
 }
 
 // AddStyles adds multiple inline CSS declarations to the Main component.
-func (m *Main) AddStyles(mp map[string]string) *Main {
+func (m *Main) AddStyles(mp StyleMap) *Main {
 	for k, v := range mp {
 		m.style[k] = v
 	}
@@ -163,7 +163,7 @@ func (m *Main) AddStyles(mp map[string]string) *Main {
 }
 
 // Style replaces the inline CSS declarations on the Main component.
-func (m *Main) Style(mp map[string]string) *Main {
+func (m *Main) Style(mp StyleMap) *Main {
 	m.style = cloneStyleMap(mp)
 	return m
 }
@@ -198,7 +198,7 @@ func (m *Main) Prepare() {
 // Section represents the Section component or supporting type.
 type Section struct {
 	buf       bytes.Buffer
-	style     map[string]string
+	style     StyleMap
 	contents  []Element
 	ariaLabel string
 }
@@ -206,7 +206,7 @@ type Section struct {
 // NewSection creates a new Section component.
 func NewSection() *Section {
 	return &Section{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -217,7 +217,7 @@ func (s *Section) AddStyle(k, v string) *Section {
 }
 
 // AddStyles adds multiple inline CSS declarations to the Section component.
-func (s *Section) AddStyles(m map[string]string) *Section {
+func (s *Section) AddStyles(m StyleMap) *Section {
 	for k, v := range m {
 		s.style[k] = v
 	}
@@ -225,7 +225,7 @@ func (s *Section) AddStyles(m map[string]string) *Section {
 }
 
 // Style replaces the inline CSS declarations on the Section component.
-func (s *Section) Style(m map[string]string) *Section {
+func (s *Section) Style(m StyleMap) *Section {
 	s.style = cloneStyleMap(m)
 	return s
 }
@@ -269,14 +269,14 @@ func (s *Section) Prepare() {
 // Article represents the Article component or supporting type.
 type Article struct {
 	buf      bytes.Buffer
-	style    map[string]string
+	style    StyleMap
 	contents []Element
 }
 
 // NewArticle creates a new Article component.
 func NewArticle() *Article {
 	return &Article{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -287,7 +287,7 @@ func (a *Article) AddStyle(k, v string) *Article {
 }
 
 // AddStyles adds multiple inline CSS declarations to the Article component.
-func (a *Article) AddStyles(mp map[string]string) *Article {
+func (a *Article) AddStyles(mp StyleMap) *Article {
 	for k, v := range mp {
 		a.style[k] = v
 	}
@@ -295,7 +295,7 @@ func (a *Article) AddStyles(mp map[string]string) *Article {
 }
 
 // Style replaces the inline CSS declarations on the Article component.
-func (a *Article) Style(mp map[string]string) *Article {
+func (a *Article) Style(mp StyleMap) *Article {
 	a.style = cloneStyleMap(mp)
 	return a
 }
@@ -330,14 +330,14 @@ func (a *Article) Prepare() {
 // Aside represents the Aside component or supporting type.
 type Aside struct {
 	buf      bytes.Buffer
-	style    map[string]string
+	style    StyleMap
 	contents []Element
 }
 
 // NewAside creates a new Aside component.
 func NewAside() *Aside {
 	return &Aside{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -348,7 +348,7 @@ func (as *Aside) AddStyle(k, v string) *Aside {
 }
 
 // AddStyles adds multiple inline CSS declarations to the Aside component.
-func (as *Aside) AddStyles(mp map[string]string) *Aside {
+func (as *Aside) AddStyles(mp StyleMap) *Aside {
 	for k, v := range mp {
 		as.style[k] = v
 	}
@@ -356,7 +356,7 @@ func (as *Aside) AddStyles(mp map[string]string) *Aside {
 }
 
 // Style replaces the inline CSS declarations on the Aside component.
-func (as *Aside) Style(mp map[string]string) *Aside {
+func (as *Aside) Style(mp StyleMap) *Aside {
 	as.style = cloneStyleMap(mp)
 	return as
 }
@@ -391,14 +391,14 @@ func (as *Aside) Prepare() {
 // Footer represents the Footer component or supporting type.
 type Footer struct {
 	buf      bytes.Buffer
-	style    map[string]string
+	style    StyleMap
 	contents []Element
 }
 
 // NewFooter creates a new Footer component.
 func NewFooter() *Footer {
 	return &Footer{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -409,7 +409,7 @@ func (f *Footer) AddStyle(k, v string) *Footer {
 }
 
 // AddStyles adds multiple inline CSS declarations to the Footer component.
-func (f *Footer) AddStyles(mp map[string]string) *Footer {
+func (f *Footer) AddStyles(mp StyleMap) *Footer {
 	for k, v := range mp {
 		f.style[k] = v
 	}
@@ -417,7 +417,7 @@ func (f *Footer) AddStyles(mp map[string]string) *Footer {
 }
 
 // Style replaces the inline CSS declarations on the Footer component.
-func (f *Footer) Style(mp map[string]string) *Footer {
+func (f *Footer) Style(mp StyleMap) *Footer {
 	f.style = cloneStyleMap(mp)
 	return f
 }
@@ -452,14 +452,14 @@ func (f *Footer) Prepare() {
 // Address represents the Address component or supporting type.
 type Address struct {
 	buf      bytes.Buffer
-	style    map[string]string
+	style    StyleMap
 	contents []Element
 }
 
 // NewAddress creates a new Address component.
 func NewAddress() *Address {
 	return &Address{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -470,7 +470,7 @@ func (ad *Address) AddStyle(k, v string) *Address {
 }
 
 // AddStyles adds multiple inline CSS declarations to the Address component.
-func (ad *Address) AddStyles(mp map[string]string) *Address {
+func (ad *Address) AddStyles(mp StyleMap) *Address {
 	for k, v := range mp {
 		ad.style[k] = v
 	}
@@ -478,7 +478,7 @@ func (ad *Address) AddStyles(mp map[string]string) *Address {
 }
 
 // Style replaces the inline CSS declarations on the Address component.
-func (ad *Address) Style(mp map[string]string) *Address {
+func (ad *Address) Style(mp StyleMap) *Address {
 	ad.style = cloneStyleMap(mp)
 	return ad
 }

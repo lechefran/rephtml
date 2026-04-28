@@ -5,7 +5,7 @@ import "bytes"
 // Area represents the Area component or supporting type.
 type Area struct {
 	buf    bytes.Buffer
-	style  map[string]string
+	style  StyleMap
 	alt    string
 	coords string
 	href   string
@@ -16,7 +16,7 @@ type Area struct {
 // NewArea creates a new Area component.
 func NewArea() *Area {
 	return &Area{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -27,7 +27,7 @@ func (a *Area) AddStyle(k, v string) *Area {
 }
 
 // AddStyles adds multiple inline CSS declarations to the Area component.
-func (a *Area) AddStyles(m map[string]string) *Area {
+func (a *Area) AddStyles(m StyleMap) *Area {
 	for k, v := range m {
 		a.style[k] = v
 	}
@@ -35,7 +35,7 @@ func (a *Area) AddStyles(m map[string]string) *Area {
 }
 
 // Style replaces the inline CSS declarations on the Area component.
-func (a *Area) Style(m map[string]string) *Area {
+func (a *Area) Style(m StyleMap) *Area {
 	a.style = cloneStyleMap(m)
 	return a
 }
@@ -106,7 +106,7 @@ func (a *Area) Prepare() {
 // Img represents the Img component or supporting type.
 type Img struct {
 	buf    bytes.Buffer
-	style  map[string]string
+	style  StyleMap
 	src    string
 	alt    string
 	width  string
@@ -117,7 +117,7 @@ type Img struct {
 // NewImg creates a new Img component.
 func NewImg() *Img {
 	return &Img{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -128,7 +128,7 @@ func (i *Img) AddStyle(k, v string) *Img {
 }
 
 // AddStyles adds multiple inline CSS declarations to the Img component.
-func (i *Img) AddStyles(m map[string]string) *Img {
+func (i *Img) AddStyles(m StyleMap) *Img {
 	for k, v := range m {
 		i.style[k] = v
 	}
@@ -136,7 +136,7 @@ func (i *Img) AddStyles(m map[string]string) *Img {
 }
 
 // Style replaces the inline CSS declarations on the Img component.
-func (i *Img) Style(m map[string]string) *Img {
+func (i *Img) Style(m StyleMap) *Img {
 	i.style = cloneStyleMap(m)
 	return i
 }
@@ -207,7 +207,7 @@ func (i *Img) Prepare() {
 // Audio represents the Audio component or supporting type.
 type Audio struct {
 	buf      bytes.Buffer
-	style    map[string]string
+	style    StyleMap
 	contents []Element
 	src      string
 	controls bool
@@ -220,7 +220,7 @@ type Audio struct {
 // NewAudio creates a new Audio component.
 func NewAudio() *Audio {
 	return &Audio{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -231,7 +231,7 @@ func (a *Audio) AddStyle(k, v string) *Audio {
 }
 
 // AddStyles adds multiple inline CSS declarations to the Audio component.
-func (a *Audio) AddStyles(m map[string]string) *Audio {
+func (a *Audio) AddStyles(m StyleMap) *Audio {
 	for k, v := range m {
 		a.style[k] = v
 	}
@@ -239,7 +239,7 @@ func (a *Audio) AddStyles(m map[string]string) *Audio {
 }
 
 // Style replaces the inline CSS declarations on the Audio component.
-func (a *Audio) Style(m map[string]string) *Audio {
+func (a *Audio) Style(m StyleMap) *Audio {
 	a.style = cloneStyleMap(m)
 	return a
 }
@@ -328,7 +328,7 @@ func (a *Audio) Prepare() {
 // Track represents the Track component or supporting type.
 type Track struct {
 	buf        bytes.Buffer
-	style      map[string]string
+	style      StyleMap
 	src        string
 	kind       string
 	srclang    string
@@ -339,7 +339,7 @@ type Track struct {
 // NewTrack creates a new Track component.
 func NewTrack() *Track {
 	return &Track{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -350,7 +350,7 @@ func (t *Track) AddStyle(k, v string) *Track {
 }
 
 // AddStyles adds multiple inline CSS declarations to the Track component.
-func (t *Track) AddStyles(m map[string]string) *Track {
+func (t *Track) AddStyles(m StyleMap) *Track {
 	for k, v := range m {
 		t.style[k] = v
 	}
@@ -358,7 +358,7 @@ func (t *Track) AddStyles(m map[string]string) *Track {
 }
 
 // Style replaces the inline CSS declarations on the Track component.
-func (t *Track) Style(m map[string]string) *Track {
+func (t *Track) Style(m StyleMap) *Track {
 	t.style = cloneStyleMap(m)
 	return t
 }
@@ -429,7 +429,7 @@ func (t *Track) Prepare() {
 // Map represents the Map component or supporting type.
 type Map struct {
 	buf      bytes.Buffer
-	style    map[string]string
+	style    StyleMap
 	contents []Element
 	name     string
 }
@@ -437,7 +437,7 @@ type Map struct {
 // NewMap creates a new Map component.
 func NewMap() *Map {
 	return &Map{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -448,7 +448,7 @@ func (m *Map) AddStyle(k, v string) *Map {
 }
 
 // AddStyles adds multiple inline CSS declarations to the Map component.
-func (m *Map) AddStyles(ms map[string]string) *Map {
+func (m *Map) AddStyles(ms StyleMap) *Map {
 	for k, v := range ms {
 		m.style[k] = v
 	}
@@ -456,7 +456,7 @@ func (m *Map) AddStyles(ms map[string]string) *Map {
 }
 
 // Style replaces the inline CSS declarations on the Map component.
-func (m *Map) Style(ms map[string]string) *Map {
+func (m *Map) Style(ms StyleMap) *Map {
 	m.style = cloneStyleMap(ms)
 	return m
 }
@@ -500,7 +500,7 @@ func (m *Map) Prepare() {
 // Video represents the Video component or supporting type.
 type Video struct {
 	buf      bytes.Buffer
-	style    map[string]string
+	style    StyleMap
 	contents []Element
 	src      string
 	controls bool
@@ -516,7 +516,7 @@ type Video struct {
 // NewVideo creates a new Video component.
 func NewVideo() *Video {
 	return &Video{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -527,7 +527,7 @@ func (v *Video) AddStyle(k, val string) *Video {
 }
 
 // AddStyles adds multiple inline CSS declarations to the Video component.
-func (v *Video) AddStyles(m map[string]string) *Video {
+func (v *Video) AddStyles(m StyleMap) *Video {
 	for k, val := range m {
 		v.style[k] = val
 	}
@@ -535,7 +535,7 @@ func (v *Video) AddStyles(m map[string]string) *Video {
 }
 
 // Style replaces the inline CSS declarations on the Video component.
-func (v *Video) Style(m map[string]string) *Video {
+func (v *Video) Style(m StyleMap) *Video {
 	v.style = cloneStyleMap(m)
 	return v
 }

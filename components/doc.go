@@ -14,12 +14,12 @@ const tab = "\t"
 // HtmlFile represents the HTML element for the document root
 type HtmlFile struct {
 	buf          bytes.Buffer
-	style        map[string]string
+	style        StyleMap
 	contents     []Element
 	headContent  []Element
 	bodyContent  []Element
-	headStyle    map[string]string
-	bodyStyle    map[string]string
+	headStyle    StyleMap
+	bodyStyle    StyleMap
 	lang         string
 	dir          string
 	xmlLang      string
@@ -34,9 +34,9 @@ type HtmlFile struct {
 // NewHtmlFile creates a new HtmlFile element
 func NewHtmlFile() *HtmlFile {
 	return &HtmlFile{
-		style:     make(map[string]string),
-		headStyle: make(map[string]string),
-		bodyStyle: make(map[string]string),
+		style:     make(StyleMap),
+		headStyle: make(StyleMap),
+		bodyStyle: make(StyleMap),
 	}
 }
 
@@ -196,7 +196,7 @@ func (h *HtmlFile) AddStyle(k, v string) *HtmlFile {
 }
 
 // AddStyles adds multiple CSS properties
-func (h *HtmlFile) AddStyles(m map[string]string) *HtmlFile {
+func (h *HtmlFile) AddStyles(m StyleMap) *HtmlFile {
 	for k, v := range m {
 		h.style[k] = v
 	}
@@ -204,7 +204,7 @@ func (h *HtmlFile) AddStyles(m map[string]string) *HtmlFile {
 }
 
 // Style replaces all styles
-func (h *HtmlFile) Style(m map[string]string) *HtmlFile {
+func (h *HtmlFile) Style(m StyleMap) *HtmlFile {
 	h.style = cloneStyleMap(m)
 	return h
 }
@@ -656,14 +656,14 @@ func findTagEnd(input string, start int) int {
 // Head represents the HTML head element for document metadata
 type Head struct {
 	buf      bytes.Buffer
-	style    map[string]string
+	style    StyleMap
 	contents []Element
 }
 
 // NewHead creates a new Head element
 func NewHead() *Head {
 	return &Head{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -700,7 +700,7 @@ func (h *Head) AddStyle(k, v string) *Head {
 }
 
 // AddStyles adds multiple CSS properties
-func (h *Head) AddStyles(m map[string]string) *Head {
+func (h *Head) AddStyles(m StyleMap) *Head {
 	for k, v := range m {
 		h.style[k] = v
 	}
@@ -708,7 +708,7 @@ func (h *Head) AddStyles(m map[string]string) *Head {
 }
 
 // Style replaces all styles
-func (h *Head) Style(m map[string]string) *Head {
+func (h *Head) Style(m StyleMap) *Head {
 	h.style = cloneStyleMap(m)
 	return h
 }
@@ -716,7 +716,7 @@ func (h *Head) Style(m map[string]string) *Head {
 // Body represents the HTML body element for document content
 type Body struct {
 	buf      bytes.Buffer
-	style    map[string]string
+	style    StyleMap
 	contents []Element
 	onLoad   string
 	onUnload string
@@ -725,7 +725,7 @@ type Body struct {
 // NewBody creates a new Body element
 func NewBody() *Body {
 	return &Body{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -783,7 +783,7 @@ func (b *Body) AddStyle(k, v string) *Body {
 }
 
 // AddStyles adds multiple CSS properties
-func (b *Body) AddStyles(m map[string]string) *Body {
+func (b *Body) AddStyles(m StyleMap) *Body {
 	for k, v := range m {
 		b.style[k] = v
 	}
@@ -791,7 +791,7 @@ func (b *Body) AddStyles(m map[string]string) *Body {
 }
 
 // Style replaces all styles
-func (b *Body) Style(m map[string]string) *Body {
+func (b *Body) Style(m StyleMap) *Body {
 	b.style = cloneStyleMap(m)
 	return b
 }
@@ -799,14 +799,14 @@ func (b *Body) Style(m map[string]string) *Body {
 // Title represents the HTML title element for document title
 type Title struct {
 	buf      bytes.Buffer
-	style    map[string]string
+	style    StyleMap
 	contents []Element
 }
 
 // NewTitle creates a new Title element
 func NewTitle() *Title {
 	return &Title{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -852,7 +852,7 @@ func (t *Title) AddStyle(k, v string) *Title {
 }
 
 // AddStyles adds multiple CSS properties
-func (t *Title) AddStyles(m map[string]string) *Title {
+func (t *Title) AddStyles(m StyleMap) *Title {
 	for k, v := range m {
 		t.style[k] = v
 	}
@@ -860,7 +860,7 @@ func (t *Title) AddStyles(m map[string]string) *Title {
 }
 
 // Style replaces all styles
-func (t *Title) Style(m map[string]string) *Title {
+func (t *Title) Style(m StyleMap) *Title {
 	t.style = cloneStyleMap(m)
 	return t
 }
@@ -868,7 +868,7 @@ func (t *Title) Style(m map[string]string) *Title {
 // Base represents the HTML base element for document base URL
 type Base struct {
 	buf    bytes.Buffer
-	style  map[string]string
+	style  StyleMap
 	href   string
 	target string
 }
@@ -876,7 +876,7 @@ type Base struct {
 // NewBase creates a new Base element
 func NewBase() *Base {
 	return &Base{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -923,7 +923,7 @@ func (b *Base) AddStyle(k, v string) *Base {
 }
 
 // AddStyles adds multiple CSS properties
-func (b *Base) AddStyles(m map[string]string) *Base {
+func (b *Base) AddStyles(m StyleMap) *Base {
 	for k, v := range m {
 		b.style[k] = v
 	}
@@ -931,7 +931,7 @@ func (b *Base) AddStyles(m map[string]string) *Base {
 }
 
 // Style replaces all styles
-func (b *Base) Style(m map[string]string) *Base {
+func (b *Base) Style(m StyleMap) *Base {
 	b.style = cloneStyleMap(m)
 	return b
 }
@@ -939,7 +939,7 @@ func (b *Base) Style(m map[string]string) *Base {
 // Link represents the HTML link element for external resources
 type Link struct {
 	buf            bytes.Buffer
-	style          map[string]string
+	style          StyleMap
 	rel            string
 	href           string
 	linkType       string
@@ -954,7 +954,7 @@ type Link struct {
 // NewLink creates a new Link element
 func NewLink() *Link {
 	return &Link{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -1064,7 +1064,7 @@ func (l *Link) AddStyle(k, v string) *Link {
 }
 
 // AddStyles adds multiple CSS properties
-func (l *Link) AddStyles(m map[string]string) *Link {
+func (l *Link) AddStyles(m StyleMap) *Link {
 	for k, v := range m {
 		l.style[k] = v
 	}
@@ -1072,7 +1072,7 @@ func (l *Link) AddStyles(m map[string]string) *Link {
 }
 
 // Style replaces all styles
-func (l *Link) Style(m map[string]string) *Link {
+func (l *Link) Style(m StyleMap) *Link {
 	l.style = cloneStyleMap(m)
 	return l
 }
@@ -1080,7 +1080,7 @@ func (l *Link) Style(m map[string]string) *Link {
 // Meta represents the HTML meta element for metadata
 type Meta struct {
 	buf       bytes.Buffer
-	style     map[string]string
+	style     StyleMap
 	name      string
 	content   string
 	charset   string
@@ -1092,7 +1092,7 @@ type Meta struct {
 // NewMeta creates a new Meta element
 func NewMeta() *Meta {
 	return &Meta{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -1172,7 +1172,7 @@ func (m *Meta) AddStyle(k, v string) *Meta {
 }
 
 // AddStyles adds multiple CSS properties
-func (m *Meta) AddStyles(m2 map[string]string) *Meta {
+func (m *Meta) AddStyles(m2 StyleMap) *Meta {
 	for k, v := range m2 {
 		m.style[k] = v
 	}
@@ -1180,7 +1180,7 @@ func (m *Meta) AddStyles(m2 map[string]string) *Meta {
 }
 
 // Style replaces all styles
-func (m *Meta) Style(m2 map[string]string) *Meta {
+func (m *Meta) Style(m2 StyleMap) *Meta {
 	m.style = cloneStyleMap(m2)
 	return m
 }
@@ -1191,7 +1191,7 @@ func (m *Meta) IsHeadElement() {}
 // StyleElement represents the HTML style element for CSS styles
 type StyleElement struct {
 	buf       bytes.Buffer
-	style     map[string]string
+	style     StyleMap
 	contents  []Element
 	styleType string
 	media     string
@@ -1200,7 +1200,7 @@ type StyleElement struct {
 // NewStyleElement creates a new StyleElement element
 func NewStyleElement() *StyleElement {
 	return &StyleElement{
-		style: make(map[string]string),
+		style: make(StyleMap),
 	}
 }
 
@@ -1242,8 +1242,7 @@ func (s *StyleElement) Add(e Element) *StyleElement {
 			return s
 		}
 		return s.AddRule(&StyleRule{
-			pmap:  element.pmap,
-			Props: element.Props,
+			Props: cloneStyleMap(element.Props),
 			Tags:  append([]string(nil), element.Tags...),
 		})
 	default:
@@ -1285,7 +1284,7 @@ func (s *StyleElement) AddStyle(k, v string) *StyleElement {
 }
 
 // AddStyles adds multiple CSS properties
-func (s *StyleElement) AddStyles(m map[string]string) *StyleElement {
+func (s *StyleElement) AddStyles(m StyleMap) *StyleElement {
 	for k, v := range m {
 		s.style[k] = v
 	}
@@ -1293,7 +1292,7 @@ func (s *StyleElement) AddStyles(m map[string]string) *StyleElement {
 }
 
 // Style replaces all styles
-func (s *StyleElement) Style(m map[string]string) *StyleElement {
+func (s *StyleElement) Style(m StyleMap) *StyleElement {
 	s.style = cloneStyleMap(m)
 	return s
 }
