@@ -1,9 +1,9 @@
-package main
+package examples
 
 import (
 	"log"
 
-	rephtml "github.com/lechefran/rephtml/components"
+	rephtml "github.com/lechefran/rephtml"
 )
 
 func main() {

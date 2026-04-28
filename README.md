@@ -25,7 +25,7 @@ go get github.com/lechefran/rephtml
 ```go
 package main
 
-import rephtml "github.com/lechefran/rephtml/components"
+import rephtml "github.com/lechefran/rephtml"
 
 func main() {
 	html := rephtml.NewHtmlFile().Lang("en")
