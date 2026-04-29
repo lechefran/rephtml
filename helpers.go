@@ -113,7 +113,7 @@ type rawText string
 
 // Bytes returns a defensive copy of the rendered rawText bytes.
 func (r rawText) Bytes() []byte {
-	return []byte(r)
+	return cloneBytes([]byte(r))
 }
 
 // Render returns raw text bytes.
@@ -139,7 +139,7 @@ type escapedText string
 
 // Bytes returns a defensive copy of the rendered escapedText bytes.
 func (e escapedText) Bytes() []byte {
-	return []byte(escapeText(string(e)))
+	return cloneBytes([]byte(escapeText(string(e))))
 }
 
 // Render returns escaped text bytes.
