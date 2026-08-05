@@ -1,5 +1,7 @@
 package rephtml
 
+import "bytes"
+
 // Del represents the HTML del element for marking deleted text
 type Del struct {
 	bodyElement
@@ -16,9 +18,9 @@ func NewDel() *Del {
 }
 
 // Prepare builds the HTML for the del element
-func (d *Del) prepare() {
-	tg := openTag(&d.buf, "del")
-	tg.attr("cite", d.cite)
+func (d *Del) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "del")
+	tg.urlAttr("cite", d.cite)
 	tg.attr("datetime", d.datetime)
 	tg.styleAttr(d.style)
 	tg.children(d.contents)
@@ -52,9 +54,9 @@ func NewIns() *Ins {
 }
 
 // Prepare builds the HTML for the ins element
-func (i *Ins) prepare() {
-	tg := openTag(&i.buf, "ins")
-	tg.attr("cite", i.cite)
+func (i *Ins) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "ins")
+	tg.urlAttr("cite", i.cite)
 	tg.attr("datetime", i.datetime)
 	tg.styleAttr(i.style)
 	tg.children(i.contents)

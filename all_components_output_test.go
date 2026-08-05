@@ -27,7 +27,7 @@ func TestDocumentComponentOutputFormats(t *testing.T) {
 		AddToHead(NewTitle().Text("Doc")).
 		AddToBody(NewP().Text("Hello"))
 
-	want := `<html lang="en"><head><title>Doc</title></head><body><p>Hello</p></body></html>`
+	want := `<!DOCTYPE html><html lang="en"><head><title>Doc</title></head><body><p>Hello</p></body></html>`
 	if got, err := html.RenderString(); err != nil || got != want {
 		t.Fatalf("HtmlFile rendered unexpected HTML:\ngot  %q\nwant %q\nerr  %v", got, want, err)
 	}

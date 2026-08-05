@@ -13,7 +13,6 @@ const tab = "\t"
 
 // HtmlFile represents the HTML element for the document root
 type HtmlFile struct {
-	buf          bytes.Buffer
 	style        StyleMap
 	contents     []Element
 	headContent  []Element
@@ -40,11 +39,6 @@ func NewHtmlFile() *HtmlFile {
 	}
 }
 
-// rawBytes returns the prepared document bytes without copying them.
-func (h *HtmlFile) rawBytes() []byte {
-	return h.buf.Bytes()
-}
-
 // Err returns document structure or rendering errors recorded while building.
 func (h *HtmlFile) Err() error {
 	return h.err
@@ -55,26 +49,32 @@ func (h *HtmlFile) addError(err error) {
 	h.err = errors.Join(h.err, err)
 }
 
-// prepare builds the HTML for the html element
-func (h *HtmlFile) prepare() {
-	tg := openTag(&h.buf, "html")
+// doctype is emitted ahead of every document. Without it browsers fall back to
+// quirks mode, which changes box sizing and several inherited layout rules.
+const doctype = "<!DOCTYPE html>"
+
+// renderTo writes the document's HTML to buf.
+func (h *HtmlFile) renderTo(buf *bytes.Buffer) {
+	buf.WriteString(doctype)
+
+	tg := startTag(buf, "html")
 	tg.attr("lang", h.lang)
 	tg.attr("dir", h.dir)
 	tg.attr("xml:lang", h.xmlLang)
 	tg.attr("xmlns", h.xmlns)
-	tg.attr("manifest", h.manifest)
+	tg.urlAttr("manifest", h.manifest)
 	tg.attr("contextmenu", h.contextMenu)
 	tg.styleAttr(h.style)
 	tg.open()
 
 	if len(h.headContent) != 0 || len(h.headStyle) != 0 {
-		h.writeHeadElement()
+		h.writeHeadElement(buf)
 	}
 
-	writeElements(&h.buf, h.contents)
+	writeElements(buf, h.contents)
 
 	if len(h.bodyContent) != 0 || len(h.bodyStyle) != 0 || h.bodyOnLoad != "" || h.bodyOnUnload != "" {
-		h.writeBodyElement()
+		h.writeBodyElement(buf)
 	}
 
 	tg.end()
@@ -238,8 +238,7 @@ func (h *HtmlFile) renderDocument() (renderedDocumentHTML, error) {
 	if h.err != nil {
 		return nil, h.err
 	}
-	h.prepare()
-	return renderedDocumentHTML(cloneBytes(h.rawBytes())), nil
+	return renderedDocumentHTML(renderElement(h)), nil
 }
 
 // RenderString returns the compact HTML document as a string.
@@ -274,6 +273,11 @@ func (h *HtmlFile) mergeHead(head *Head) {
 	if head == nil {
 		return
 	}
+	// The wrapper validated its own content; carry any complaint into the
+	// document so it surfaces where callers already check for it.
+	if head.err != nil {
+		h.addError(head.err)
+	}
 	for k, v := range head.style {
 		h.headStyle[k] = v
 	}
@@ -284,6 +288,9 @@ func (h *HtmlFile) mergeHead(head *Head) {
 func (h *HtmlFile) mergeBody(body *Body) {
 	if body == nil {
 		return
+	}
+	if body.err != nil {
+		h.addError(body.err)
 	}
 	for k, v := range body.style {
 		h.bodyStyle[k] = v
@@ -303,15 +310,15 @@ func (h *HtmlFile) rejectStructuralElement(target string, e Element) {
 }
 
 // writeHeadElement writes the generated head section.
-func (h *HtmlFile) writeHeadElement() {
-	tg := appendTag(&h.buf, "head")
+func (h *HtmlFile) writeHeadElement(buf *bytes.Buffer) {
+	tg := startTag(buf, "head")
 	tg.styleAttr(h.headStyle)
 	tg.children(h.headContent)
 }
 
 // writeBodyElement writes the generated body section.
-func (h *HtmlFile) writeBodyElement() {
-	tg := appendTag(&h.buf, "body")
+func (h *HtmlFile) writeBodyElement(buf *bytes.Buffer) {
+	tg := startTag(buf, "body")
 	tg.attr("onload", h.bodyOnLoad)
 	tg.attr("onunload", h.bodyOnUnload)
 	tg.styleAttr(h.bodyStyle)
@@ -445,7 +452,13 @@ func tokenizeHTML(input string) []htmlToken {
 			if isRawTextElement(name) {
 				rawStart := end + 1
 				closeTag := "</" + name + ">"
-				closeAt := strings.Index(strings.ToLower(input[rawStart:]), closeTag)
+				// The index has to point into input, so the search folds case
+				// per byte. strings.ToLower would not do: it is not
+				// length-preserving, so a character such as U+212A KELVIN SIGN
+				// earlier in the body would shift the result and truncate the
+				// closing tag, leaving the element open for the rest of the
+				// document.
+				closeAt := indexFold(input[rawStart:], closeTag)
 				if closeAt != -1 {
 					rawEnd := rawStart + closeAt
 					tokens = append(tokens, htmlToken{
@@ -519,7 +532,8 @@ func splitRawElement(text, name string) (string, string, string, bool) {
 	}
 
 	closeTag := "</" + name + ">"
-	closeAt := strings.LastIndex(strings.ToLower(text), closeTag)
+	// Folded per byte so the index stays valid in text; see tokenizeHTML.
+	closeAt := lastIndexFold(text, closeTag)
 	if closeAt == -1 || closeAt < openEnd {
 		return "", "", "", false
 	}
@@ -615,7 +629,7 @@ func isHTMLTagStart(input string, idx int) bool {
 		return idx+2 < len(input) && isTagNameStart(input[idx+2])
 	}
 	if next == '!' {
-		return strings.HasPrefix(strings.ToLower(input[idx:]), "<!doctype")
+		return hasPrefixFold(input[idx:], "<!doctype")
 	}
 	return isTagNameStart(next)
 }
@@ -649,6 +663,7 @@ func findTagEnd(input string, start int) int {
 // Head represents the HTML head element for document metadata
 type Head struct {
 	contentNode[*Head]
+	err error
 }
 
 // NewHead creates a new Head element
@@ -658,9 +673,33 @@ func NewHead() *Head {
 	return v
 }
 
-// Prepare builds the HTML for the head element
-func (h *Head) prepare() {
-	tg := openTag(&h.buf, "head")
+// Add appends content to the head, recording an error for anything that does
+// not belong there.
+//
+// This is the same check HtmlFile.AddToHead applies. Without it a wrapper is a
+// way around that check, since AddToHead flattens a Head rather than inspecting
+// what it holds. The error travels with the wrapper and is reported by the
+// document when the wrapper is added to it.
+func (h *Head) Add(e Element) *Head {
+	if isNilElement(e) {
+		return h
+	}
+	if _, ok := e.(HeadElement); !ok {
+		h.err = errors.Join(h.err, fmt.Errorf("cannot add %s to head element", elementName(e)))
+		return h
+	}
+	h.contents = appendElement(h.contents, e)
+	return h
+}
+
+// Err returns content errors recorded while building the head.
+func (h *Head) Err() error {
+	return h.err
+}
+
+// renderTo writes the head element's HTML to buf.
+func (h *Head) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "head")
 	tg.styleAttr(h.style)
 	tg.children(h.contents)
 }
@@ -671,6 +710,7 @@ type Body struct {
 	contentNode[*Body]
 	onLoad   string
 	onUnload string
+	err      error
 }
 
 // NewBody creates a new Body element
@@ -680,9 +720,31 @@ func NewBody() *Body {
 	return v
 }
 
-// Prepare builds the HTML for the body element
-func (b *Body) prepare() {
-	tg := openTag(&b.buf, "body")
+// Add appends content to the body, recording an error for anything that does
+// not belong there.
+//
+// This mirrors Head.Add: AddToBody flattens a Body wrapper rather than
+// inspecting its contents, so the wrapper has to apply the same check itself.
+func (b *Body) Add(e Element) *Body {
+	if isNilElement(e) {
+		return b
+	}
+	if _, ok := e.(BodyElement); !ok {
+		b.err = errors.Join(b.err, fmt.Errorf("cannot add %s to body element", elementName(e)))
+		return b
+	}
+	b.contents = appendElement(b.contents, e)
+	return b
+}
+
+// Err returns content errors recorded while building the body.
+func (b *Body) Err() error {
+	return b.err
+}
+
+// renderTo writes the body element's HTML to buf.
+func (b *Body) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "body")
 	tg.attr("onload", b.onLoad)
 	tg.attr("onunload", b.onUnload)
 	tg.styleAttr(b.style)
@@ -715,8 +777,8 @@ func NewTitle() *Title {
 }
 
 // Prepare builds the HTML for the title element
-func (t *Title) prepare() {
-	tg := openTag(&t.buf, "title")
+func (t *Title) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "title")
 	tg.styleAttr(t.style)
 	tg.children(t.contents)
 }
@@ -743,9 +805,9 @@ func NewBase() *Base {
 }
 
 // Prepare builds the HTML for the base element
-func (b *Base) prepare() {
-	tg := openTag(&b.buf, "base")
-	tg.attr("href", b.href)
+func (b *Base) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "base")
+	tg.urlAttr("href", b.href)
 	tg.attr("target", b.target)
 	tg.styleAttr(b.style)
 	tg.void()
@@ -786,10 +848,10 @@ func NewLink() *Link {
 }
 
 // Prepare builds the HTML for the link element
-func (l *Link) prepare() {
-	tg := openTag(&l.buf, "link")
+func (l *Link) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "link")
 	tg.attr("rel", l.rel)
-	tg.attr("href", l.href)
+	tg.urlAttr("href", l.href)
 	tg.attr("type", l.linkType)
 	tg.attr("media", l.media)
 	tg.attr("sizes", l.sizes)
@@ -875,8 +937,8 @@ func NewMeta() *Meta {
 }
 
 // Prepare builds the HTML for the meta element
-func (m *Meta) prepare() {
-	tg := openTag(&m.buf, "meta")
+func (m *Meta) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "meta")
 	tg.attr("name", m.name)
 	tg.attr("content", m.content)
 	tg.attr("charset", m.charset)
@@ -940,8 +1002,8 @@ func NewStyleElement() *StyleElement {
 }
 
 // Prepare builds the HTML for the style element
-func (s *StyleElement) prepare() {
-	tg := openTag(&s.buf, "style")
+func (s *StyleElement) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "style")
 	tg.attr("type", s.styleType)
 	tg.attr("media", s.media)
 	tg.styleAttr(s.style)
@@ -971,7 +1033,7 @@ func (s *StyleElement) Add(e Element) *StyleElement {
 
 // AddRule appends typed CSS rule content to the style element.
 func (s *StyleElement) AddRule(rule CSSRule) *StyleElement {
-	if !isNilCSSRule(rule) {
+	if !isNilElement(rule) {
 		s.contents = appendElement(s.contents, rule)
 	}
 	return s

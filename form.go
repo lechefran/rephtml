@@ -1,5 +1,7 @@
 package rephtml
 
+import "bytes"
+
 // Form represents the HTML form element for user input
 type Form struct {
 	bodyElement
@@ -22,9 +24,9 @@ func NewForm() *Form {
 }
 
 // Prepare builds the HTML for the form element
-func (f *Form) prepare() {
-	tg := openTag(&f.buf, "form")
-	tg.attr("action", f.action)
+func (f *Form) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "form")
+	tg.urlAttr("action", f.action)
 	tg.attr("method", f.method)
 	tg.attr("enctype", f.enctype)
 	tg.attr("name", f.name)
@@ -100,8 +102,8 @@ func NewLabel() *Label {
 }
 
 // Prepare builds the HTML for the label element
-func (l *Label) prepare() {
-	tg := openTag(&l.buf, "label")
+func (l *Label) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "label")
 	tg.attr("for", l.forattr)
 	tg.attr("form", l.form)
 	tg.styleAttr(l.style)
@@ -161,8 +163,8 @@ func NewInput() *Input {
 }
 
 // Prepare builds the HTML for the input element
-func (i *Input) prepare() {
-	tg := openTag(&i.buf, "input")
+func (i *Input) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "input")
 	tg.attr("type", i.inputtype)
 	tg.attr("name", i.name)
 	tg.attr("value", i.value)
@@ -331,8 +333,8 @@ func NewOutput() *Output {
 }
 
 // Prepare builds the HTML for the output element
-func (o *Output) prepare() {
-	tg := openTag(&o.buf, "output")
+func (o *Output) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "output")
 	tg.attr("for", o.forattr)
 	tg.attr("name", o.name)
 	tg.attr("form", o.form)
@@ -381,8 +383,8 @@ func NewFieldset() *Fieldset {
 }
 
 // Prepare builds the HTML for the fieldset element
-func (f *Fieldset) prepare() {
-	tg := openTag(&f.buf, "fieldset")
+func (f *Fieldset) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "fieldset")
 	tg.attr("form", f.form)
 	tg.attr("name", f.name)
 	tg.boolAttr("disabled", f.disabled)
@@ -433,13 +435,13 @@ func NewButton() *Button {
 }
 
 // Prepare builds the HTML for the button element
-func (b *Button) prepare() {
-	tg := openTag(&b.buf, "button")
+func (b *Button) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "button")
 	tg.attr("type", b.buttonType)
 	tg.attr("name", b.name)
 	tg.attr("value", b.value)
 	tg.attr("form", b.form)
-	tg.attr("formaction", b.formAction)
+	tg.urlAttr("formaction", b.formAction)
 	tg.attr("formenctype", b.formEnctype)
 	tg.attr("formmethod", b.formMethod)
 	tg.attr("formtarget", b.formTarget)
@@ -544,8 +546,8 @@ func NewSelect() *Select {
 }
 
 // Prepare builds the HTML for the select element
-func (s *Select) prepare() {
-	tg := openTag(&s.buf, "select")
+func (s *Select) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "select")
 	tg.attr("name", s.name)
 	tg.attr("form", s.form)
 	tg.attr("size", s.size)
@@ -621,8 +623,8 @@ func NewDatalist() *Datalist {
 }
 
 // Prepare builds the HTML for the datalist element
-func (d *Datalist) prepare() {
-	tg := openTag(&d.buf, "datalist")
+func (d *Datalist) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "datalist")
 	tg.attr("id", d.id)
 	tg.styleAttr(d.style)
 	tg.children(d.contents)
@@ -650,8 +652,8 @@ func NewOptgroup() *Optgroup {
 }
 
 // Prepare builds the HTML for the optgroup element
-func (o *Optgroup) prepare() {
-	tg := openTag(&o.buf, "optgroup")
+func (o *Optgroup) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "optgroup")
 	tg.attr("label", o.label)
 	tg.boolAttr("disabled", o.disabled)
 	tg.styleAttr(o.style)
@@ -688,8 +690,8 @@ func NewOption() *Option {
 }
 
 // Prepare builds the HTML for the option element
-func (o *Option) prepare() {
-	tg := openTag(&o.buf, "option")
+func (o *Option) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "option")
 	tg.attr("value", o.value)
 	tg.attr("label", o.label)
 	tg.boolAttr("selected", o.selected)
@@ -756,8 +758,8 @@ func NewTextarea() *Textarea {
 }
 
 // Prepare builds the HTML for the textarea element
-func (t *Textarea) prepare() {
-	tg := openTag(&t.buf, "textarea")
+func (t *Textarea) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "textarea")
 	tg.attr("name", t.name)
 	tg.attr("form", t.form)
 	tg.attr("rows", t.rows)
@@ -883,8 +885,8 @@ func NewProgress() *Progress {
 }
 
 // Prepare builds the HTML for the progress element
-func (p *Progress) prepare() {
-	tg := openTag(&p.buf, "progress")
+func (p *Progress) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "progress")
 	tg.attr("value", p.value)
 	tg.attr("max", p.max)
 	tg.attr("form", p.form)
@@ -937,8 +939,8 @@ func NewMeter() *Meter {
 }
 
 // Prepare builds the HTML for the meter element
-func (m *Meter) prepare() {
-	tg := openTag(&m.buf, "meter")
+func (m *Meter) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "meter")
 	tg.attr("value", m.value)
 	tg.attr("min", m.min)
 	tg.attr("max", m.max)
@@ -1012,8 +1014,8 @@ func NewLegend() *Legend {
 }
 
 // Prepare builds the HTML for the legend element
-func (l *Legend) prepare() {
-	tg := openTag(&l.buf, "legend")
+func (l *Legend) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "legend")
 	tg.styleAttr(l.style)
 	tg.children(l.contents)
 }

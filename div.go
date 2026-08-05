@@ -1,5 +1,7 @@
 package rephtml
 
+import "bytes"
+
 // Div represents the Div component or supporting type.
 type Div struct {
 	bodyElement
@@ -13,9 +15,9 @@ func NewDiv() *Div {
 	return v
 }
 
-// prepare renders the Div component into its internal buffer.
-func (d *Div) prepare() {
-	tg := openTag(&d.buf, "div")
+// renderTo writes the Div component's HTML to buf.
+func (d *Div) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "div")
 	tg.styleAttr(d.style)
 	tg.children(d.contents)
 }

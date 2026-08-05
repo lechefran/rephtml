@@ -16,53 +16,52 @@ import (
 // The constructor is responsible for handing the base that pointer, which is
 // what init does.
 
-// base holds the render buffer and the concrete element pointer.
+// base holds the concrete element pointer.
 //
-// Render and HTML dispatch through self, so an element's own prepare method is
-// what runs even though the entry points live here.
+// Render and HTML dispatch through self, so an element's own renderTo method is
+// what runs even though the entry points live here. The element itself holds no
+// render state: the buffer belongs to whoever started the render.
 type base[Self selfElement] struct {
-	buf  bytes.Buffer
 	self Self
 }
 
 // init records the concrete element pointer. Constructors must call it before
-// returning, or the element has no way to reach its own prepare method.
+// returning, or the element has no way to reach its own renderTo method.
 func (b *base[Self]) init(self Self) {
 	b.self = self
 }
 
-// prepareSelf runs the concrete element's prepare method.
+// renderSelf writes the concrete element's HTML to buf.
 //
-// Elements reach their own prepare through the pointer recorded by init, so an
+// Elements reach their own renderTo through the pointer recorded by init, so an
 // element built as a bare composite literal instead of through its constructor
 // has nothing to dispatch to. Reporting that directly is far more useful than
 // the nil dereference it would otherwise become.
-func (b *base[Self]) prepareSelf() {
+func (b *base[Self]) renderSelf(buf *bytes.Buffer) {
 	var unbound Self
 	if b.self == unbound {
 		panic("rephtml: element was not created with its New* constructor")
 	}
-	b.self.prepare()
+	b.self.renderTo(buf)
 }
 
-// Render returns freshly prepared HTML bytes. The returned slice is a copy, so
-// callers may retain or modify it without affecting the element.
+// Render returns the element's HTML bytes.
+//
+// The returned slice is the caller's own copy, so it may be retained or
+// modified without affecting the element or any later render.
 func (b *base[Self]) Render() []byte {
-	b.prepareSelf()
-	return cloneBytes(b.buf.Bytes())
+	buf := getBuffer()
+	defer putBuffer(buf)
+	b.renderSelf(buf)
+	return cloneBytes(buf.Bytes())
 }
 
-// HTML returns freshly prepared HTML as a string.
+// HTML returns the element's HTML as a string.
 func (b *base[Self]) HTML() string {
-	b.prepareSelf()
-	return b.buf.String()
-}
-
-// rawBytes returns the prepared buffer without copying it. It is only for
-// writing one element into another's buffer, where the bytes are consumed
-// immediately and never retained.
-func (b *base[Self]) rawBytes() []byte {
-	return b.buf.Bytes()
+	buf := getBuffer()
+	defer putBuffer(buf)
+	b.renderSelf(buf)
+	return buf.String()
 }
 
 // node adds inline CSS declarations.

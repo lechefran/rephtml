@@ -1,5 +1,7 @@
 package rephtml
 
+import "bytes"
+
 // Table represents the Table component or supporting type.
 type Table struct {
 	bodyElement
@@ -80,63 +82,59 @@ func (t *Table) AddTfoot(tf *Tfoot) *Table {
 	return t
 }
 
-// AddTr sets the addtr value on the Table component.
+// AddTr appends one row directly to the table, ignoring a nil row.
 func (t *Table) AddTr(tr *Tr) *Table {
-	t.trs = append(t.trs, tr)
+	if tr != nil {
+		t.trs = append(t.trs, tr)
+	}
 	return t
 }
 
-// prepare renders the Table component into its internal buffer.
-func (t *Table) prepare() {
-	tg := openTag(&t.buf, "table")
+// renderTo writes the Table component's HTML to buf.
+func (t *Table) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "table")
 	tg.attr("id", t.id)
 	tg.classAttr(t.class)
 	tg.styleAttr(t.style)
 	tg.open()
 
-	// write caption if present
+	// write the structured children if present
 	if t.caption != nil {
-		t.buf.Write(t.caption.Render())
+		t.caption.renderTo(buf)
 	}
-
-	// write thead if present
 	if t.thead != nil {
-		t.buf.Write(t.thead.Render())
+		t.thead.renderTo(buf)
 	}
-
-	// write tbody if present
 	if t.tbody != nil {
-		t.buf.Write(t.tbody.Render())
+		t.tbody.renderTo(buf)
 	}
-
-	// write tfoot if present
 	if t.tfoot != nil {
-		t.buf.Write(t.tfoot.Render())
+		t.tfoot.renderTo(buf)
 	}
 
 	// write direct tr elements if present
 	for _, tr := range t.trs {
-		t.buf.Write(tr.Render())
+		tr.renderTo(buf)
 	}
 
 	// write legacy header and rows if no structured elements are used
 	if t.thead == nil && t.tbody == nil && t.tfoot == nil && len(t.trs) == 0 {
 		// write header
 		if len(t.headers) > 0 {
-			t.buf.WriteString("<tr>")
+			buf.WriteString("<tr>")
 			for _, h := range t.headers {
-				t.buf.WriteString("<th>" + escapeText(h) + "</th>")
+				buf.WriteString("<th>" + escapeText(h) + "</th>")
 			}
-			t.buf.WriteString("</tr>")
+			buf.WriteString("</tr>")
 		}
 
 		// write rows
 		for i := 0; i < len(t.rows); i++ {
-			t.buf.WriteString("<tr>")
+			buf.WriteString("<tr>")
 			for j := 0; j < len(t.rows[i]); j++ {
-				t.buf.WriteString("<td>" + escapeText(t.rows[i][j]) + "</td>")
+				buf.WriteString("<td>" + escapeText(t.rows[i][j]) + "</td>")
 			}
-			t.buf.WriteString("</tr>")
+			buf.WriteString("</tr>")
 		}
 	}
 
@@ -162,9 +160,9 @@ func (th *Thead) AddTr(tr *Tr) *Thead {
 	return th
 }
 
-// prepare renders the Thead component into its internal buffer.
-func (th *Thead) prepare() {
-	tg := openTag(&th.buf, "thead")
+// renderTo writes the Thead component's HTML to buf.
+func (th *Thead) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "thead")
 	tg.attr("id", th.id)
 	tg.classAttr(th.class)
 	tg.styleAttr(th.style)
@@ -190,9 +188,9 @@ func (tb *Tbody) AddTr(tr *Tr) *Tbody {
 	return tb
 }
 
-// prepare renders the Tbody component into its internal buffer.
-func (tb *Tbody) prepare() {
-	tg := openTag(&tb.buf, "tbody")
+// renderTo writes the Tbody component's HTML to buf.
+func (tb *Tbody) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "tbody")
 	tg.attr("id", tb.id)
 	tg.classAttr(tb.class)
 	tg.styleAttr(tb.style)
@@ -218,9 +216,9 @@ func (tf *Tfoot) AddTr(tr *Tr) *Tfoot {
 	return tf
 }
 
-// prepare renders the Tfoot component into its internal buffer.
-func (tf *Tfoot) prepare() {
-	tg := openTag(&tf.buf, "tfoot")
+// renderTo writes the Tfoot component's HTML to buf.
+func (tf *Tfoot) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "tfoot")
 	tg.attr("id", tf.id)
 	tg.classAttr(tf.class)
 	tg.styleAttr(tf.style)
@@ -247,9 +245,9 @@ func (c *Caption) Text(text string) *Caption {
 	return c
 }
 
-// prepare renders the Caption component into its internal buffer.
-func (c *Caption) prepare() {
-	tg := openTag(&c.buf, "caption")
+// renderTo writes the Caption component's HTML to buf.
+func (c *Caption) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "caption")
 	tg.attr("id", c.id)
 	tg.classAttr(c.class)
 	tg.styleAttr(c.style)
@@ -276,9 +274,9 @@ func (col *Col) Span(s int) *Col {
 	return col
 }
 
-// prepare renders the Col component into its internal buffer.
-func (col *Col) prepare() {
-	tg := openTag(&col.buf, "col")
+// renderTo writes the Col component's HTML to buf.
+func (col *Col) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "col")
 	tg.attr("id", col.id)
 	tg.classAttr(col.class)
 	tg.styleAttr(col.style)
@@ -306,9 +304,9 @@ func (cg *Colgroup) Span(s int) *Colgroup {
 	return cg
 }
 
-// prepare renders the Colgroup component into its internal buffer.
-func (cg *Colgroup) prepare() {
-	tg := openTag(&cg.buf, "colgroup")
+// renderTo writes the Colgroup component's HTML to buf.
+func (cg *Colgroup) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "colgroup")
 	tg.attr("id", cg.id)
 	tg.classAttr(cg.class)
 	tg.styleAttr(cg.style)
@@ -341,9 +339,9 @@ func (tr *Tr) AddTd(td *Td) *Tr {
 	return tr
 }
 
-// prepare renders the Tr component into its internal buffer.
-func (tr *Tr) prepare() {
-	tg := openTag(&tr.buf, "tr")
+// renderTo writes the Tr component's HTML to buf.
+func (tr *Tr) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "tr")
 	tg.attr("id", tr.id)
 	tg.classAttr(tr.class)
 	tg.styleAttr(tr.style)
@@ -377,9 +375,9 @@ func (td *Td) Rowspan(r int) *Td {
 	return td
 }
 
-// prepare renders the Td component into its internal buffer.
-func (td *Td) prepare() {
-	tg := openTag(&td.buf, "td")
+// renderTo writes the Td component's HTML to buf.
+func (td *Td) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "td")
 	tg.attr("id", td.id)
 	tg.classAttr(td.class)
 	tg.styleAttr(td.style)
@@ -422,9 +420,9 @@ func (th *Th) Scope(s string) *Th {
 	return th
 }
 
-// prepare renders the Th component into its internal buffer.
-func (th *Th) prepare() {
-	tg := openTag(&th.buf, "th")
+// renderTo writes the Th component's HTML to buf.
+func (th *Th) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "th")
 	tg.attr("id", th.id)
 	tg.classAttr(th.class)
 	tg.styleAttr(th.style)

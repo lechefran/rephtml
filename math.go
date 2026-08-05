@@ -1,5 +1,7 @@
 package rephtml
 
+import "bytes"
+
 // Math represents a MathML math element.
 type Math struct {
 	bodyElement
@@ -29,8 +31,8 @@ func (m *Math) Xmlns(xmlns string) *Math {
 }
 
 // Prepare renders the math element into its internal buffer.
-func (m *Math) prepare() {
-	tg := openTag(&m.buf, "math")
+func (m *Math) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "math")
 	tg.attr("xmlns", m.xmlns)
 	tg.attr("display", m.display)
 	tg.styleAttr(m.style)
@@ -101,8 +103,8 @@ func (s *Svg) PreserveAspectRatio(preserveAspectRatio string) *Svg {
 }
 
 // Prepare renders the SVG element into its internal buffer.
-func (s *Svg) prepare() {
-	tg := openTag(&s.buf, "svg")
+func (s *Svg) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "svg")
 	tg.attr("xmlns", s.xmlns)
 	tg.attr("width", s.width)
 	tg.attr("height", s.height)

@@ -31,8 +31,7 @@ func renderDocumentString(t *testing.T, html *HtmlFile) string {
 // error gate in RenderString, so tests can assert what a rejected element did
 // or did not emit.
 func renderDocumentMarkup(html *HtmlFile) string {
-	html.prepare()
-	return string(html.rawBytes())
+	return htmlElement(html)
 }
 
 func formatRenderedForTest(input []byte) string {
@@ -54,7 +53,8 @@ func TestWriteToFileFormatsDocument(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	want := "<html lang=\"en\">\n" +
+	want := "<!DOCTYPE html>\n" +
+		"<html lang=\"en\">\n" +
 		"\t<head>\n" +
 		"\t\t<title>Readable Report</title>\n" +
 		"\t</head>\n" +
@@ -99,7 +99,7 @@ func TestAddToHeadAndBodyPrepareDocumentSections(t *testing.T) {
 	html.AddToHead(NewMeta().Charset("utf-8"))
 	html.AddToBody(NewP().Text("Hello"))
 
-	want := `<html><head><meta charset="utf-8"></head><body><p>Hello</p></body></html>`
+	want := `<!DOCTYPE html><html><head><meta charset="utf-8"></head><body><p>Hello</p></body></html>`
 	if got := renderDocumentString(t, html); got != want {
 		t.Fatalf("unexpected compact html:\ngot  %q\nwant %q", got, want)
 	}
@@ -109,7 +109,7 @@ func TestAddToHeadFlattensHeadContents(t *testing.T) {
 	html := NewHtmlFile()
 	html.AddToHead(NewHead().Add(NewTitle().Text("Nested Head")))
 
-	want := `<html><head><title>Nested Head</title></head></html>`
+	want := `<!DOCTYPE html><html><head><title>Nested Head</title></head></html>`
 	if got := renderDocumentString(t, html); got != want {
 		t.Fatalf("unexpected html:\ngot  %q\nwant %q", got, want)
 	}
@@ -119,7 +119,7 @@ func TestAddToHeadFlattensHeadWrapperAndMergesStyles(t *testing.T) {
 	html := NewHtmlFile()
 	html.AddToHead(NewHead().AddStyle("color", "red").Add(NewTitle().Text("Styled Head")))
 
-	want := `<html><head style="color: red;"><title>Styled Head</title></head></html>`
+	want := `<!DOCTYPE html><html><head style="color: red;"><title>Styled Head</title></head></html>`
 	if got := renderDocumentString(t, html); got != want {
 		t.Fatalf("unexpected html:\ngot  %q\nwant %q", got, want)
 	}
@@ -129,7 +129,7 @@ func TestAddToBodyFlattensBodyContents(t *testing.T) {
 	html := NewHtmlFile()
 	html.AddToBody(NewBody().Add(NewP().Text("Nested Body")))
 
-	want := `<html><body><p>Nested Body</p></body></html>`
+	want := `<!DOCTYPE html><html><body><p>Nested Body</p></body></html>`
 	if got := renderDocumentString(t, html); got != want {
 		t.Fatalf("unexpected html:\ngot  %q\nwant %q", got, want)
 	}
@@ -145,7 +145,7 @@ func TestAddToBodyFlattensBodyWrapperAndMergesAttributes(t *testing.T) {
 			Add(NewP().Text("Loaded Body")),
 	)
 
-	want := `<html><body onload="init()" onunload="cleanup()" style="color: red;"><p>Loaded Body</p></body></html>`
+	want := `<!DOCTYPE html><html><body onload="init()" onunload="cleanup()" style="color: red;"><p>Loaded Body</p></body></html>`
 	if got := renderDocumentString(t, html); got != want {
 		t.Fatalf("unexpected html:\ngot  %q\nwant %q", got, want)
 	}
@@ -158,7 +158,7 @@ func TestAddToHeadRejectsBodyWrapper(t *testing.T) {
 		t.Fatal("expected document error")
 	}
 
-	want := `<html></html>`
+	want := `<!DOCTYPE html><html></html>`
 	if got := renderDocumentMarkup(html); got != want {
 		t.Fatalf("unexpected html:\ngot  %q\nwant %q", got, want)
 	}
@@ -171,7 +171,7 @@ func TestAddToBodyRejectsHeadWrapper(t *testing.T) {
 		t.Fatal("expected document error")
 	}
 
-	want := `<html></html>`
+	want := `<!DOCTYPE html><html></html>`
 	if got := renderDocumentMarkup(html); got != want {
 		t.Fatalf("unexpected html:\ngot  %q\nwant %q", got, want)
 	}
@@ -185,7 +185,8 @@ func TestRenderFormattedReturnsHTMLAndError(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	want := "<html lang=\"en\">\n" +
+	want := "<!DOCTYPE html>\n" +
+		"<html lang=\"en\">\n" +
 		"\t<body>\n" +
 		"\t\t<p>Hello</p>\n" +
 		"\t</body>\n" +
@@ -378,7 +379,8 @@ func TestWriteToFileFormatsNestedDocument(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	want := "<html lang=\"en\">\n" +
+	want := "<!DOCTYPE html>\n" +
+		"<html lang=\"en\">\n" +
 		"\t<head>\n" +
 		"\t\t<meta charset=\"utf-8\">\n" +
 		"\t\t<title>Report</title>\n" +
@@ -791,7 +793,7 @@ func exportedElementStructNames(t *testing.T) map[string]bool {
 
 	elements := map[string]bool{}
 	for name := range structs {
-		if methods[name]["prepare"] && !methods[name]["documentRender"] {
+		if methods[name]["renderTo"] && !methods[name]["documentRender"] {
 			elements[name] = true
 		}
 	}
@@ -812,10 +814,10 @@ func recordExportedStructs(decl *ast.GenDecl, structs map[string]bool) {
 
 // recordElementMethod records the declared methods that identify an element struct.
 //
-// prepare is the discriminator: Render, HTML and the style setters are promoted
+// renderTo is the discriminator: Render, HTML and the style setters are promoted
 // from the embedded generic bases in element.go and are no longer declared per
-// type, but every element still declares its own prepare. HtmlFile also declares
-// prepare and is not an Element, so its document-shaped Render, which returns
+// type, but every element still declares its own renderTo. HtmlFile also declares
+// renderTo and is not an Element, so its document-shaped Render, which returns
 // ([]byte, error) rather than []byte, is recorded as a disqualifier.
 func recordElementMethod(decl *ast.FuncDecl, methods map[string]map[string]bool) {
 	if decl.Recv == nil {
@@ -823,7 +825,7 @@ func recordElementMethod(decl *ast.FuncDecl, methods map[string]map[string]bool)
 	}
 	key := decl.Name.Name
 	switch key {
-	case "prepare":
+	case "renderTo":
 	case "Render":
 		if decl.Type.Results == nil || len(decl.Type.Results.List) == 1 {
 			return

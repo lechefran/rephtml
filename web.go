@@ -1,5 +1,7 @@
 package rephtml
 
+import "bytes"
+
 // Slot represents the Slot component or supporting type.
 type Slot struct {
 	bodyElement
@@ -20,9 +22,9 @@ func (s *Slot) Name(n string) *Slot {
 	return s
 }
 
-// prepare renders the Slot component into its internal buffer.
-func (s *Slot) prepare() {
-	tg := openTag(&s.buf, "slot")
+// renderTo writes the Slot component's HTML to buf.
+func (s *Slot) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "slot")
 	tg.attr("name", s.name)
 	tg.styleAttr(s.style)
 	tg.children(s.contents)
@@ -49,9 +51,9 @@ func (t *Template) Id(i string) *Template {
 	return t
 }
 
-// prepare renders the Template component into its internal buffer.
-func (t *Template) prepare() {
-	tg := openTag(&t.buf, "template")
+// renderTo writes the Template component's HTML to buf.
+func (t *Template) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "template")
 	tg.attr("id", t.id)
 	tg.styleAttr(t.style)
 	tg.children(t.contents)

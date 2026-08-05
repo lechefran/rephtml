@@ -1,5 +1,7 @@
 package rephtml
 
+import "bytes"
+
 // Hgroup represents the Hgroup component or supporting type.
 type Hgroup struct {
 	bodyElement
@@ -13,9 +15,9 @@ func NewHgroup() *Hgroup {
 	return v
 }
 
-// prepare renders the Hgroup component into its internal buffer.
-func (h *Hgroup) prepare() {
-	tg := openTag(&h.buf, "hgroup")
+// renderTo writes the Hgroup component's HTML to buf.
+func (h *Hgroup) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "hgroup")
 	tg.styleAttr(h.style)
 	tg.children(h.contents)
 }
@@ -33,9 +35,9 @@ func NewH1() *H1 {
 	return v
 }
 
-// prepare renders the H1 component into its internal buffer.
-func (h *H1) prepare() {
-	tg := openTag(&h.buf, "h1")
+// renderTo writes the H1 component's HTML to buf.
+func (h *H1) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "h1")
 	tg.styleAttr(h.style)
 	tg.text(h.text)
 }
@@ -53,9 +55,9 @@ func NewH2() *H2 {
 	return v
 }
 
-// prepare renders the H2 component into its internal buffer.
-func (h *H2) prepare() {
-	tg := openTag(&h.buf, "h2")
+// renderTo writes the H2 component's HTML to buf.
+func (h *H2) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "h2")
 	tg.styleAttr(h.style)
 	tg.text(h.text)
 }
@@ -73,9 +75,9 @@ func NewH3() *H3 {
 	return v
 }
 
-// prepare renders the H3 component into its internal buffer.
-func (h *H3) prepare() {
-	tg := openTag(&h.buf, "h3")
+// renderTo writes the H3 component's HTML to buf.
+func (h *H3) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "h3")
 	tg.styleAttr(h.style)
 	tg.text(h.text)
 }
@@ -93,9 +95,9 @@ func NewH4() *H4 {
 	return v
 }
 
-// prepare renders the H4 component into its internal buffer.
-func (h *H4) prepare() {
-	tg := openTag(&h.buf, "h4")
+// renderTo writes the H4 component's HTML to buf.
+func (h *H4) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "h4")
 	tg.styleAttr(h.style)
 	tg.text(h.text)
 }
@@ -113,9 +115,9 @@ func NewH5() *H5 {
 	return v
 }
 
-// prepare renders the H5 component into its internal buffer.
-func (h *H5) prepare() {
-	tg := openTag(&h.buf, "h5")
+// renderTo writes the H5 component's HTML to buf.
+func (h *H5) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "h5")
 	tg.styleAttr(h.style)
 	tg.text(h.text)
 }
@@ -133,9 +135,9 @@ func NewH6() *H6 {
 	return v
 }
 
-// prepare renders the H6 component into its internal buffer.
-func (h *H6) prepare() {
-	tg := openTag(&h.buf, "h6")
+// renderTo writes the H6 component's HTML to buf.
+func (h *H6) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "h6")
 	tg.styleAttr(h.style)
 	tg.text(h.text)
 }

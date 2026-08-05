@@ -1,5 +1,7 @@
 package rephtml
 
+import "bytes"
+
 // Canvas represents the Canvas component or supporting type.
 type Canvas struct {
 	bodyElement
@@ -27,9 +29,9 @@ func (c *Canvas) Height(height string) *Canvas {
 	return c
 }
 
-// prepare renders the Canvas component into its internal buffer.
-func (c *Canvas) prepare() {
-	tg := openTag(&c.buf, "canvas")
+// renderTo writes the Canvas component's HTML to buf.
+func (c *Canvas) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "canvas")
 	tg.attr("width", c.width)
 	tg.attr("height", c.height)
 	tg.styleAttr(c.style)
@@ -50,9 +52,9 @@ func NewNoscript() *Noscript {
 	return v
 }
 
-// prepare renders the Noscript component into its internal buffer.
-func (n *Noscript) prepare() {
-	tg := openTag(&n.buf, "noscript")
+// renderTo writes the Noscript component's HTML to buf.
+func (n *Noscript) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "noscript")
 	tg.styleAttr(n.style)
 	tg.children(n.contents)
 }
@@ -127,10 +129,10 @@ func (s *Script) Referrerpolicy(referrerpolicy string) *Script {
 	return s
 }
 
-// prepare renders the Script component into its internal buffer.
-func (s *Script) prepare() {
-	tg := openTag(&s.buf, "script")
-	tg.attr("src", s.src)
+// renderTo writes the Script component's HTML to buf.
+func (s *Script) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "script")
+	tg.urlAttr("src", s.src)
 	tg.attr("type", s.scriptType)
 	tg.boolAttr("async", s.async)
 	tg.boolAttr("defer", s.deferScript)

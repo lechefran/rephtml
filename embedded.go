@@ -1,5 +1,7 @@
 package rephtml
 
+import "bytes"
+
 // Embed represents the Embed component or supporting type.
 type Embed struct {
 	bodyElement
@@ -41,10 +43,10 @@ func (e *Embed) Height(height string) *Embed {
 	return e
 }
 
-// prepare renders the Embed component into its internal buffer.
-func (e *Embed) prepare() {
-	tg := openTag(&e.buf, "embed")
-	tg.attr("src", e.src)
+// renderTo writes the Embed component's HTML to buf.
+func (e *Embed) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "embed")
+	tg.urlAttr("src", e.src)
 	tg.attr("type", e.embedType)
 	tg.attr("width", e.width)
 	tg.attr("height", e.height)
@@ -135,10 +137,10 @@ func (i *Iframe) Srcdoc(srcdoc string) *Iframe {
 	return i
 }
 
-// prepare renders the Iframe component into its internal buffer.
-func (i *Iframe) prepare() {
-	tg := openTag(&i.buf, "iframe")
-	tg.attr("src", i.src)
+// renderTo writes the Iframe component's HTML to buf.
+func (i *Iframe) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "iframe")
+	tg.urlAttr("src", i.src)
 	tg.attr("width", i.width)
 	tg.attr("height", i.height)
 	tg.attr("name", i.name)
@@ -214,15 +216,15 @@ func (o *Object) Form(form string) *Object {
 	return o
 }
 
-// prepare renders the Object component into its internal buffer.
-func (o *Object) prepare() {
-	tg := openTag(&o.buf, "object")
-	tg.attr("data", o.data)
+// renderTo writes the Object component's HTML to buf.
+func (o *Object) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "object")
+	tg.urlAttr("data", o.data)
 	tg.attr("type", o.objType)
 	tg.attr("width", o.width)
 	tg.attr("height", o.height)
 	tg.attr("name", o.name)
-	tg.attr("usemap", o.usemap)
+	tg.urlAttr("usemap", o.usemap)
 	tg.attr("form", o.form)
 	tg.styleAttr(o.style)
 	tg.children(o.contents)
@@ -241,9 +243,9 @@ func NewPicture() *Picture {
 	return v
 }
 
-// prepare renders the Picture component into its internal buffer.
-func (p *Picture) prepare() {
-	tg := openTag(&p.buf, "picture")
+// renderTo writes the Picture component's HTML to buf.
+func (p *Picture) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "picture")
 	tg.styleAttr(p.style)
 	tg.children(p.contents)
 }
@@ -275,10 +277,10 @@ func (p *Portal) Referrerpolicy(referrerpolicy string) *Portal {
 	return p
 }
 
-// prepare renders the Portal component into its internal buffer.
-func (p *Portal) prepare() {
-	tg := openTag(&p.buf, "portal")
-	tg.attr("src", p.src)
+// renderTo writes the Portal component's HTML to buf.
+func (p *Portal) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "portal")
+	tg.urlAttr("src", p.src)
 	tg.attr("referrerpolicy", p.referrerpolicy)
 	tg.styleAttr(p.style)
 	tg.empty()
@@ -332,11 +334,11 @@ func (s *Source) Type(srcType string) *Source {
 	return s
 }
 
-// prepare renders the Source component into its internal buffer.
-func (s *Source) prepare() {
-	tg := openTag(&s.buf, "source")
-	tg.attr("src", s.src)
-	tg.attr("srcset", s.srcset)
+// renderTo writes the Source component's HTML to buf.
+func (s *Source) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "source")
+	tg.urlAttr("src", s.src)
+	tg.srcsetAttr("srcset", s.srcset)
 	tg.attr("media", s.media)
 	tg.attr("sizes", s.sizes)
 	tg.attr("type", s.srcType)

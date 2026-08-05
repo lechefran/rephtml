@@ -1,5 +1,7 @@
 package rephtml
 
+import "bytes"
+
 // Area represents the Area component or supporting type.
 type Area struct {
 	bodyElement
@@ -48,12 +50,12 @@ func (a *Area) Target(target string) *Area {
 	return a
 }
 
-// prepare renders the Area component into its internal buffer.
-func (a *Area) prepare() {
-	tg := openTag(&a.buf, "area")
+// renderTo writes the Area component's HTML to buf.
+func (a *Area) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "area")
 	tg.attr("alt", a.alt)
 	tg.attr("coords", a.coords)
-	tg.attr("href", a.href)
+	tg.urlAttr("href", a.href)
 	tg.attr("shape", a.shape)
 	tg.attr("target", a.target)
 	tg.styleAttr(a.style)
@@ -108,10 +110,10 @@ func (i *Img) Title(title string) *Img {
 	return i
 }
 
-// prepare renders the Img component into its internal buffer.
-func (i *Img) prepare() {
-	tg := openTag(&i.buf, "img")
-	tg.attr("src", i.src)
+// renderTo writes the Img component's HTML to buf.
+func (i *Img) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "img")
+	tg.urlAttr("src", i.src)
 	tg.attr("alt", i.alt)
 	tg.attr("width", i.width)
 	tg.attr("height", i.height)
@@ -175,10 +177,10 @@ func (a *Audio) Preload(preload string) *Audio {
 	return a
 }
 
-// prepare renders the Audio component into its internal buffer.
-func (a *Audio) prepare() {
-	tg := openTag(&a.buf, "audio")
-	tg.attr("src", a.src)
+// renderTo writes the Audio component's HTML to buf.
+func (a *Audio) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "audio")
+	tg.urlAttr("src", a.src)
 	tg.boolAttr("controls", a.controls)
 	tg.boolAttr("autoplay", a.autoplay)
 	tg.boolAttr("loop", a.loop)
@@ -236,10 +238,10 @@ func (t *Track) Default(def bool) *Track {
 	return t
 }
 
-// prepare renders the Track component into its internal buffer.
-func (t *Track) prepare() {
-	tg := openTag(&t.buf, "track")
-	tg.attr("src", t.src)
+// renderTo writes the Track component's HTML to buf.
+func (t *Track) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "track")
+	tg.urlAttr("src", t.src)
 	tg.attr("kind", t.kind)
 	tg.attr("srclang", t.srclang)
 	tg.attr("label", t.label)
@@ -268,9 +270,9 @@ func (m *Map) Name(name string) *Map {
 	return m
 }
 
-// prepare renders the Map component into its internal buffer.
-func (m *Map) prepare() {
-	tg := openTag(&m.buf, "map")
+// renderTo writes the Map component's HTML to buf.
+func (m *Map) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "map")
 	tg.attr("name", m.name)
 	tg.styleAttr(m.style)
 	tg.children(m.contents)
@@ -352,10 +354,10 @@ func (v *Video) Poster(poster string) *Video {
 	return v
 }
 
-// prepare renders the Video component into its internal buffer.
-func (v *Video) prepare() {
-	tg := openTag(&v.buf, "video")
-	tg.attr("src", v.src)
+// renderTo writes the Video component's HTML to buf.
+func (v *Video) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "video")
+	tg.urlAttr("src", v.src)
 	tg.boolAttr("controls", v.controls)
 	tg.boolAttr("autoplay", v.autoplay)
 	tg.boolAttr("loop", v.loop)
@@ -363,7 +365,7 @@ func (v *Video) prepare() {
 	tg.attr("preload", v.preload)
 	tg.attr("width", v.width)
 	tg.attr("height", v.height)
-	tg.attr("poster", v.poster)
+	tg.urlAttr("poster", v.poster)
 	tg.styleAttr(v.style)
 	tg.children(v.contents)
 }

@@ -1,5 +1,7 @@
 package rephtml
 
+import "bytes"
+
 // Element is renderable HTML content that can be appended to other elements.
 //
 // Render and HTML prepare the element internally before returning output, so
@@ -21,17 +23,16 @@ type BodyElement interface {
 	IsBodyElement()
 }
 
-// preparedElement is the internal rendering contract used by buffer-backed
-// elements. Concrete element structs satisfy both Element and preparedElement:
-// public callers use Render/HTML, while the package uses prepare/rawBytes
-// behind those methods.
+// preparedElement is the internal rendering contract. Concrete element structs
+// satisfy both Element and preparedElement: public callers use Render/HTML,
+// which allocate a buffer and hand it to renderTo.
 //
-// Every element declares its own prepare; rawBytes comes from the embedded
-// base. Because the contract is unexported, rendering into a parent's buffer
-// can skip the defensive copy that Render owes its callers.
+// Elements write to the buffer they are given and never to storage of their
+// own. That is what makes a built tree safe to render from several goroutines
+// at once, and it lets a child write straight into its parent's buffer instead
+// of being serialised separately and copied in.
 type preparedElement interface {
-	prepare()
-	rawBytes() []byte
+	renderTo(buf *bytes.Buffer)
 }
 
 // selfElement constrains the generic element bases in element.go.

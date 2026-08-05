@@ -1,6 +1,9 @@
 package rephtml
 
-import "bytes"
+import (
+	"bytes"
+	"strings"
+)
 
 // P represents the P component or supporting type.
 type P struct {
@@ -15,16 +18,19 @@ func NewP() *P {
 	return v
 }
 
-// prepare renders the P component into its internal buffer.
-func (p *P) prepare() {
-	tg := openTag(&p.buf, "p")
+// renderTo writes the P component's HTML to buf.
+func (p *P) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "p")
 	tg.styleAttr(p.style)
 	tg.text(p.text)
 }
 
-// Comment represents the Comment component or supporting type.
+// Comment represents an HTML comment.
+//
+// Comment text is sanitised rather than escaped. Character references are not
+// decoded inside a comment, so escaping would both fail to stop the text from
+// closing the comment early and leave the entities visible in the output.
 type Comment struct {
-	buf  bytes.Buffer
 	text string
 }
 
@@ -33,31 +39,63 @@ func NewComment() *Comment {
 	return &Comment{}
 }
 
-// Text sets or appends text content on the Comment component.
+// Text sets the comment's text content.
 func (c *Comment) Text(s string) *Comment {
 	c.text = s
 	return c
 }
 
-// rawBytes returns the prepared Comment bytes without copying them.
-func (c *Comment) rawBytes() []byte {
-	return c.buf.Bytes()
-}
-
-// Render returns freshly prepared Comment HTML bytes.
+// Render returns the comment's HTML bytes.
 func (c *Comment) Render() []byte {
-	return renderPrepared(c)
+	return renderElement(c)
 }
 
-// HTML returns freshly prepared Comment HTML as a string.
+// HTML returns the comment's HTML as a string.
 func (c *Comment) HTML() string {
-	return htmlPrepared(c)
+	return htmlElement(c)
 }
 
-// prepare renders the Comment component into its internal buffer.
-func (c *Comment) prepare() {
-	c.buf.Reset()
-	c.buf.WriteString("<!--" + c.text + "-->")
+// IsBodyElement implements BodyElement.
+func (c *Comment) IsBodyElement() {}
+
+// renderTo writes the Comment component's HTML to buf.
+func (c *Comment) renderTo(buf *bytes.Buffer) {
+	buf.WriteString("<!--")
+	buf.WriteString(sanitizeComment(c.text))
+	buf.WriteString("-->")
+}
+
+// sanitizeComment makes text safe to place inside an HTML comment.
+//
+// A comment ends at the first "-->", and "--!>" closes it too, so any run of
+// two hyphens is broken up with a space. Comment data also may not begin with
+// ">" or "->", which a leading space prevents. The text is otherwise left
+// alone, since nothing else inside a comment is interpreted.
+func sanitizeComment(text string) string {
+	if text == "" {
+		return ""
+	}
+
+	var b strings.Builder
+	b.Grow(len(text) + 2)
+
+	if text[0] == '>' || strings.HasPrefix(text, "->") {
+		b.WriteByte(' ')
+	}
+
+	for i := 0; i < len(text); i++ {
+		if text[i] == '-' && i+1 < len(text) && text[i+1] == '-' {
+			b.WriteString("- ")
+			continue
+		}
+		b.WriteByte(text[i])
+	}
+
+	// A trailing hyphen would pair with the closing "-->" delimiter.
+	if strings.HasSuffix(b.String(), "-") {
+		b.WriteByte(' ')
+	}
+	return b.String()
 }
 
 // Hr represents the Hr component or supporting type.
@@ -73,9 +111,9 @@ func NewHr() *Hr {
 	return v
 }
 
-// prepare renders the Hr component into its internal buffer.
-func (h *Hr) prepare() {
-	tg := openTag(&h.buf, "hr")
+// renderTo writes the Hr component's HTML to buf.
+func (h *Hr) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "hr")
 	tg.styleAttr(h.style)
 	tg.void()
 }
@@ -93,9 +131,9 @@ func NewPre() *Pre {
 	return v
 }
 
-// prepare renders the Pre component into its internal buffer.
-func (p *Pre) prepare() {
-	tg := openTag(&p.buf, "pre")
+// renderTo writes the Pre component's HTML to buf.
+func (p *Pre) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "pre")
 	tg.styleAttr(p.style)
 	tg.text(p.text)
 }
@@ -120,10 +158,10 @@ func (b *Blockquote) Cite(c string) *Blockquote {
 	return b
 }
 
-// prepare renders the Blockquote component into its internal buffer.
-func (b *Blockquote) prepare() {
-	tg := openTag(&b.buf, "blockquote")
-	tg.attr("cite", b.cite)
+// renderTo writes the Blockquote component's HTML to buf.
+func (b *Blockquote) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "blockquote")
+	tg.urlAttr("cite", b.cite)
 	tg.styleAttr(b.style)
 	tg.text(b.text)
 }
@@ -155,9 +193,9 @@ func (m *Menu) Label(l string) *Menu {
 	return m
 }
 
-// prepare renders the Menu component into its internal buffer.
-func (m *Menu) prepare() {
-	tg := openTag(&m.buf, "menu")
+// renderTo writes the Menu component's HTML to buf.
+func (m *Menu) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "menu")
 	tg.attr("type", m.menuType)
 	tg.attr("label", m.label)
 	tg.styleAttr(m.style)
@@ -198,9 +236,9 @@ func (o *Ol) Reversed(r bool) *Ol {
 	return o
 }
 
-// prepare renders the Ol component into its internal buffer.
-func (o *Ol) prepare() {
-	tg := openTag(&o.buf, "ol")
+// renderTo writes the Ol component's HTML to buf.
+func (o *Ol) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "ol")
 	tg.intAttr("start", o.start)
 	tg.attr("type", o.listType)
 	tg.boolAttr("reversed", o.reversed)
@@ -221,9 +259,9 @@ func NewUl() *Ul {
 	return v
 }
 
-// prepare renders the Ul component into its internal buffer.
-func (u *Ul) prepare() {
-	tg := openTag(&u.buf, "ul")
+// renderTo writes the Ul component's HTML to buf.
+func (u *Ul) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "ul")
 	tg.styleAttr(u.style)
 	tg.children(u.contents)
 }
@@ -248,9 +286,9 @@ func (l *Li) Value(v int) *Li {
 	return l
 }
 
-// prepare renders the Li component into its internal buffer.
-func (l *Li) prepare() {
-	tg := openTag(&l.buf, "li")
+// renderTo writes the Li component's HTML to buf.
+func (l *Li) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "li")
 	tg.intAttr("value", l.value)
 	tg.styleAttr(l.style)
 	tg.children(l.contents)
@@ -269,9 +307,9 @@ func NewDl() *Dl {
 	return v
 }
 
-// prepare renders the Dl component into its internal buffer.
-func (d *Dl) prepare() {
-	tg := openTag(&d.buf, "dl")
+// renderTo writes the Dl component's HTML to buf.
+func (d *Dl) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "dl")
 	tg.styleAttr(d.style)
 	tg.children(d.contents)
 }
@@ -289,9 +327,9 @@ func NewDt() *Dt {
 	return v
 }
 
-// prepare renders the Dt component into its internal buffer.
-func (d *Dt) prepare() {
-	tg := openTag(&d.buf, "dt")
+// renderTo writes the Dt component's HTML to buf.
+func (d *Dt) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "dt")
 	tg.styleAttr(d.style)
 	tg.children(d.contents)
 }
@@ -309,9 +347,9 @@ func NewDd() *Dd {
 	return v
 }
 
-// prepare renders the Dd component into its internal buffer.
-func (d *Dd) prepare() {
-	tg := openTag(&d.buf, "dd")
+// renderTo writes the Dd component's HTML to buf.
+func (d *Dd) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "dd")
 	tg.styleAttr(d.style)
 	tg.children(d.contents)
 }
@@ -329,9 +367,9 @@ func NewFigure() *Figure {
 	return v
 }
 
-// prepare renders the Figure component into its internal buffer.
-func (f *Figure) prepare() {
-	tg := openTag(&f.buf, "figure")
+// renderTo writes the Figure component's HTML to buf.
+func (f *Figure) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "figure")
 	tg.styleAttr(f.style)
 	tg.children(f.contents)
 }
@@ -349,9 +387,9 @@ func NewFigcaption() *Figcaption {
 	return v
 }
 
-// prepare renders the Figcaption component into its internal buffer.
-func (f *Figcaption) prepare() {
-	tg := openTag(&f.buf, "figcaption")
+// renderTo writes the Figcaption component's HTML to buf.
+func (f *Figcaption) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "figcaption")
 	tg.styleAttr(f.style)
 	tg.children(f.contents)
 }
@@ -369,12 +407,9 @@ func NewSearch() *Search {
 	return v
 }
 
-// prepare renders the Search component into its internal buffer.
-func (s *Search) prepare() {
-	tg := openTag(&s.buf, "search")
+// renderTo writes the Search component's HTML to buf.
+func (s *Search) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "search")
 	tg.styleAttr(s.style)
 	tg.children(s.contents)
 }
-
-// IsBodyElement implements the marker interface.
-func (c *Comment) IsBodyElement() {}

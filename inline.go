@@ -1,6 +1,7 @@
 package rephtml
 
 import (
+	"bytes"
 	"fmt"
 	"regexp"
 	"strings"
@@ -46,11 +47,11 @@ func (a *Anchor) Link(s string) *Anchor {
 	return a
 }
 
-// prepare renders the Anchor component into its internal buffer.
-func (a *Anchor) prepare() {
-	tg := openTag(&a.buf, "a")
+// renderTo writes the Anchor component's HTML to buf.
+func (a *Anchor) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "a")
 	tg.styleAttr(a.style)
-	tg.attr("href", a.link)
+	tg.urlAttr("href", a.link)
 	tg.text(a.text)
 }
 
@@ -74,9 +75,9 @@ func (a *Abbr) Title(s string) *Abbr {
 	return a
 }
 
-// prepare renders the Abbr component into its internal buffer.
-func (a *Abbr) prepare() {
-	tg := openTag(&a.buf, "abbr")
+// renderTo writes the Abbr component's HTML to buf.
+func (a *Abbr) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "abbr")
 	tg.styleAttr(a.style)
 	tg.attr("title", a.title)
 	tg.text(a.text)
@@ -95,9 +96,9 @@ func NewB() *B {
 	return v
 }
 
-// prepare renders the B component into its internal buffer.
-func (b *B) prepare() {
-	tg := openTag(&b.buf, "b")
+// renderTo writes the B component's HTML to buf.
+func (b *B) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "b")
 	tg.styleAttr(b.style)
 	tg.text(b.text)
 }
@@ -115,9 +116,9 @@ func NewI() *I {
 	return v
 }
 
-// prepare renders the I component into its internal buffer.
-func (i *I) prepare() {
-	tg := openTag(&i.buf, "i")
+// renderTo writes the I component's HTML to buf.
+func (i *I) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "i")
 	tg.styleAttr(i.style)
 	tg.text(i.text)
 }
@@ -142,11 +143,11 @@ func (q *Q) Cite(s string) *Q {
 	return q
 }
 
-// prepare renders the Q component into its internal buffer.
-func (q *Q) prepare() {
-	tg := openTag(&q.buf, "q")
+// renderTo writes the Q component's HTML to buf.
+func (q *Q) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "q")
 	tg.styleAttr(q.style)
-	tg.attr("cite", q.cite)
+	tg.urlAttr("cite", q.cite)
 	tg.text(q.text)
 }
 
@@ -163,9 +164,9 @@ func NewS() *S {
 	return v
 }
 
-// prepare renders the S component into its internal buffer.
-func (s *S) prepare() {
-	tg := openTag(&s.buf, "s")
+// renderTo writes the S component's HTML to buf.
+func (s *S) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "s")
 	tg.styleAttr(s.style)
 	tg.text(s.text)
 }
@@ -183,9 +184,9 @@ func NewU() *U {
 	return v
 }
 
-// prepare renders the U component into its internal buffer.
-func (u *U) prepare() {
-	tg := openTag(&u.buf, "u")
+// renderTo writes the U component's HTML to buf.
+func (u *U) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "u")
 	tg.styleAttr(u.style)
 	tg.text(u.text)
 }
@@ -203,9 +204,9 @@ func NewBdi() *Bdi {
 	return v
 }
 
-// prepare renders the Bdi component into its internal buffer.
-func (d *Bdi) prepare() {
-	tg := openTag(&d.buf, "bdi")
+// renderTo writes the Bdi component's HTML to buf.
+func (d *Bdi) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "bdi")
 	tg.styleAttr(d.style)
 	tg.text(d.text)
 }
@@ -223,9 +224,9 @@ func NewBdo() *Bdo {
 	return v
 }
 
-// prepare renders the Bdo component into its internal buffer.
-func (d *Bdo) prepare() {
-	tg := openTag(&d.buf, "bdo")
+// renderTo writes the Bdo component's HTML to buf.
+func (d *Bdo) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "bdo")
 	tg.styleAttr(d.style)
 	tg.text(d.text)
 }
@@ -243,9 +244,9 @@ func NewBr() *Br {
 	return v
 }
 
-// prepare renders the Br component into its internal buffer.
-func (br *Br) prepare() {
-	tg := openTag(&br.buf, "br")
+// renderTo writes the Br component's HTML to buf.
+func (br *Br) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "br")
 	tg.styleAttr(br.style)
 	tg.void()
 }
@@ -263,9 +264,9 @@ func NewCite() *Cite {
 	return v
 }
 
-// prepare renders the Cite component into its internal buffer.
-func (c *Cite) prepare() {
-	tg := openTag(&c.buf, "cite")
+// renderTo writes the Cite component's HTML to buf.
+func (c *Cite) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "cite")
 	tg.styleAttr(c.style)
 	tg.text(c.text)
 }
@@ -283,9 +284,9 @@ func NewCode() *Code {
 	return v
 }
 
-// prepare renders the Code component into its internal buffer.
-func (c *Code) prepare() {
-	tg := openTag(&c.buf, "code")
+// renderTo writes the Code component's HTML to buf.
+func (c *Code) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "code")
 	tg.styleAttr(c.style)
 	tg.text(c.text)
 }
@@ -310,9 +311,9 @@ func (d *Data) Value(s string) *Data {
 	return d
 }
 
-// prepare renders the Data component into its internal buffer.
-func (d *Data) prepare() {
-	tg := openTag(&d.buf, "data")
+// renderTo writes the Data component's HTML to buf.
+func (d *Data) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "data")
 	tg.styleAttr(d.style)
 	tg.attr("value", d.value)
 	tg.text(d.text)
@@ -338,9 +339,9 @@ func (d *Dfn) Title(s string) *Dfn {
 	return d
 }
 
-// prepare renders the Dfn component into its internal buffer.
-func (d *Dfn) prepare() {
-	tg := openTag(&d.buf, "dfn")
+// renderTo writes the Dfn component's HTML to buf.
+func (d *Dfn) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "dfn")
 	tg.styleAttr(d.style)
 	tg.attr("title", d.title)
 	tg.text(d.text)
@@ -359,9 +360,9 @@ func NewEm() *Em {
 	return v
 }
 
-// prepare renders the Em component into its internal buffer.
-func (e *Em) prepare() {
-	tg := openTag(&e.buf, "em")
+// renderTo writes the Em component's HTML to buf.
+func (e *Em) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "em")
 	tg.styleAttr(e.style)
 	tg.text(e.text)
 }
@@ -379,9 +380,9 @@ func NewMark() *Mark {
 	return v
 }
 
-// prepare renders the Mark component into its internal buffer.
-func (m *Mark) prepare() {
-	tg := openTag(&m.buf, "mark")
+// renderTo writes the Mark component's HTML to buf.
+func (m *Mark) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "mark")
 	tg.styleAttr(m.style)
 	tg.text(m.text)
 }
@@ -399,9 +400,9 @@ func NewRuby() *Ruby {
 	return v
 }
 
-// prepare renders the Ruby component into its internal buffer.
-func (r *Ruby) prepare() {
-	tg := openTag(&r.buf, "ruby")
+// renderTo writes the Ruby component's HTML to buf.
+func (r *Ruby) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "ruby")
 	tg.styleAttr(r.style)
 	tg.children(r.contents)
 }
@@ -419,9 +420,9 @@ func NewRb() *Rb {
 	return v
 }
 
-// prepare renders the Rb component into its internal buffer.
-func (rb *Rb) prepare() {
-	tg := openTag(&rb.buf, "rb")
+// renderTo writes the Rb component's HTML to buf.
+func (rb *Rb) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "rb")
 	tg.styleAttr(rb.style)
 	tg.text(rb.text)
 }
@@ -439,9 +440,9 @@ func NewRt() *Rt {
 	return v
 }
 
-// prepare renders the Rt component into its internal buffer.
-func (rt *Rt) prepare() {
-	tg := openTag(&rt.buf, "rt")
+// renderTo writes the Rt component's HTML to buf.
+func (rt *Rt) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "rt")
 	tg.styleAttr(rt.style)
 	tg.text(rt.text)
 }
@@ -459,9 +460,9 @@ func NewRtc() *Rtc {
 	return v
 }
 
-// prepare renders the Rtc component into its internal buffer.
-func (rtc *Rtc) prepare() {
-	tg := openTag(&rtc.buf, "rtc")
+// renderTo writes the Rtc component's HTML to buf.
+func (rtc *Rtc) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "rtc")
 	tg.styleAttr(rtc.style)
 	tg.children(rtc.contents)
 }
@@ -479,9 +480,9 @@ func NewRp() *Rp {
 	return v
 }
 
-// prepare renders the Rp component into its internal buffer.
-func (rp *Rp) prepare() {
-	tg := openTag(&rp.buf, "rp")
+// renderTo writes the Rp component's HTML to buf.
+func (rp *Rp) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "rp")
 	tg.styleAttr(rp.style)
 	tg.text(rp.text)
 }
@@ -499,9 +500,9 @@ func NewKbd() *Kbd {
 	return v
 }
 
-// prepare renders the Kbd component into its internal buffer.
-func (k *Kbd) prepare() {
-	tg := openTag(&k.buf, "kbd")
+// renderTo writes the Kbd component's HTML to buf.
+func (k *Kbd) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "kbd")
 	tg.styleAttr(k.style)
 	tg.text(k.text)
 }
@@ -519,9 +520,9 @@ func NewSub() *Sub {
 	return v
 }
 
-// prepare renders the Sub component into its internal buffer.
-func (s *Sub) prepare() {
-	tg := openTag(&s.buf, "sub")
+// renderTo writes the Sub component's HTML to buf.
+func (s *Sub) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "sub")
 	tg.styleAttr(s.style)
 	tg.text(s.text)
 }
@@ -539,9 +540,9 @@ func NewSup() *Sup {
 	return v
 }
 
-// prepare renders the Sup component into its internal buffer.
-func (s *Sup) prepare() {
-	tg := openTag(&s.buf, "sup")
+// renderTo writes the Sup component's HTML to buf.
+func (s *Sup) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "sup")
 	tg.styleAttr(s.style)
 	tg.text(s.text)
 }
@@ -559,9 +560,9 @@ func NewSamp() *Samp {
 	return v
 }
 
-// prepare renders the Samp component into its internal buffer.
-func (s *Samp) prepare() {
-	tg := openTag(&s.buf, "samp")
+// renderTo writes the Samp component's HTML to buf.
+func (s *Samp) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "samp")
 	tg.styleAttr(s.style)
 	tg.text(s.text)
 }
@@ -579,9 +580,9 @@ func NewSmall() *Small {
 	return v
 }
 
-// prepare renders the Small component into its internal buffer.
-func (s *Small) prepare() {
-	tg := openTag(&s.buf, "small")
+// renderTo writes the Small component's HTML to buf.
+func (s *Small) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "small")
 	tg.styleAttr(s.style)
 	tg.text(s.text)
 }
@@ -599,9 +600,9 @@ func NewSpan() *Span {
 	return v
 }
 
-// prepare renders the Span component into its internal buffer.
-func (s *Span) prepare() {
-	tg := openTag(&s.buf, "span")
+// renderTo writes the Span component's HTML to buf.
+func (s *Span) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "span")
 	tg.styleAttr(s.style)
 	tg.text(s.text)
 }
@@ -619,9 +620,9 @@ func NewStrong() *Strong {
 	return v
 }
 
-// prepare renders the Strong component into its internal buffer.
-func (s *Strong) prepare() {
-	tg := openTag(&s.buf, "strong")
+// renderTo writes the Strong component's HTML to buf.
+func (s *Strong) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "strong")
 	tg.styleAttr(s.style)
 	tg.text(s.text)
 }
@@ -692,9 +693,9 @@ func isValidDuration(dt string) bool {
 	return true
 }
 
-// prepare renders the Time component into its internal buffer.
-func (t *Time) prepare() {
-	tg := openTag(&t.buf, "time")
+// renderTo writes the Time component's HTML to buf.
+func (t *Time) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "time")
 	tg.attr("datetime", t.datetime)
 	tg.styleAttr(t.style)
 	tg.text(t.text)
@@ -713,9 +714,9 @@ func NewVar() *Var {
 	return v
 }
 
-// prepare renders the Var component into its internal buffer.
-func (v *Var) prepare() {
-	tg := openTag(&v.buf, "var")
+// renderTo writes the Var component's HTML to buf.
+func (v *Var) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "var")
 	tg.styleAttr(v.style)
 	tg.text(v.text)
 }
@@ -733,9 +734,9 @@ func NewWbr() *Wbr {
 	return v
 }
 
-// prepare renders the Wbr component into its internal buffer.
-func (w *Wbr) prepare() {
-	tg := openTag(&w.buf, "wbr")
+// renderTo writes the Wbr component's HTML to buf.
+func (w *Wbr) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "wbr")
 	tg.styleAttr(w.style)
 	tg.void()
 }

@@ -1,5 +1,7 @@
 package rephtml
 
+import "bytes"
+
 // Header represents the Header component or supporting type.
 type Header struct {
 	bodyElement
@@ -13,9 +15,9 @@ func NewHeader() *Header {
 	return v
 }
 
-// prepare renders the Header component into its internal buffer.
-func (h *Header) prepare() {
-	tg := openTag(&h.buf, "header")
+// renderTo writes the Header component's HTML to buf.
+func (h *Header) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "header")
 	tg.styleAttr(h.style)
 	tg.children(h.contents)
 }
@@ -40,9 +42,9 @@ func (n *Nav) Role(r string) *Nav {
 	return n
 }
 
-// prepare renders the Nav component into its internal buffer.
-func (n *Nav) prepare() {
-	tg := openTag(&n.buf, "nav")
+// renderTo writes the Nav component's HTML to buf.
+func (n *Nav) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "nav")
 	tg.attr("role", n.role)
 	tg.styleAttr(n.style)
 	tg.children(n.contents)
@@ -61,9 +63,9 @@ func NewMain() *Main {
 	return v
 }
 
-// prepare renders the Main component into its internal buffer.
-func (m *Main) prepare() {
-	tg := openTag(&m.buf, "main")
+// renderTo writes the Main component's HTML to buf.
+func (m *Main) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "main")
 	tg.styleAttr(m.style)
 	tg.children(m.contents)
 }
@@ -88,9 +90,9 @@ func (s *Section) AriaLabel(label string) *Section {
 	return s
 }
 
-// prepare renders the Section component into its internal buffer.
-func (s *Section) prepare() {
-	tg := openTag(&s.buf, "section")
+// renderTo writes the Section component's HTML to buf.
+func (s *Section) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "section")
 	tg.attr("aria-label", s.ariaLabel)
 	tg.styleAttr(s.style)
 	tg.children(s.contents)
@@ -109,9 +111,9 @@ func NewArticle() *Article {
 	return v
 }
 
-// prepare renders the Article component into its internal buffer.
-func (a *Article) prepare() {
-	tg := openTag(&a.buf, "article")
+// renderTo writes the Article component's HTML to buf.
+func (a *Article) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "article")
 	tg.styleAttr(a.style)
 	tg.children(a.contents)
 }
@@ -129,9 +131,9 @@ func NewAside() *Aside {
 	return v
 }
 
-// prepare renders the Aside component into its internal buffer.
-func (as *Aside) prepare() {
-	tg := openTag(&as.buf, "aside")
+// renderTo writes the Aside component's HTML to buf.
+func (as *Aside) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "aside")
 	tg.styleAttr(as.style)
 	tg.children(as.contents)
 }
@@ -149,9 +151,9 @@ func NewFooter() *Footer {
 	return v
 }
 
-// prepare renders the Footer component into its internal buffer.
-func (f *Footer) prepare() {
-	tg := openTag(&f.buf, "footer")
+// renderTo writes the Footer component's HTML to buf.
+func (f *Footer) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "footer")
 	tg.styleAttr(f.style)
 	tg.children(f.contents)
 }
@@ -169,9 +171,9 @@ func NewAddress() *Address {
 	return v
 }
 
-// prepare renders the Address component into its internal buffer.
-func (ad *Address) prepare() {
-	tg := openTag(&ad.buf, "address")
+// renderTo writes the Address component's HTML to buf.
+func (ad *Address) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "address")
 	tg.styleAttr(ad.style)
 	tg.children(ad.contents)
 }

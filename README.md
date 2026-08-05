@@ -5,13 +5,14 @@ rephtml is a fluent Go package for building HTML documents from typed components
 The package is designed around small composable structs:
 
 - `NewHtmlFile` creates the document root and owns the final file output.
-- `AddToHead` and `AddToBody` place components into generated `<head>` and `<body>` sections.
-- `Add` composes child elements into container elements.
+- `AddToHead` and `AddToBody` place components into generated `<head>` and `<body>` sections, rejecting content that does not belong there.
+- `Add` composes child elements into container elements, ignoring nil children.
 - `HTML` and `Render` prepare regular element components internally before returning output.
+- Rendering does not mutate the tree, so a built tree is safe to render concurrently.
 - `Text` methods escape normal text content by default.
-- Attribute setters escape attribute values by default.
+- Attribute setters escape attribute values by default, and URL attributes are filtered by scheme.
 - `StyleElement.Text` and `Script.Text` intentionally preserve raw CSS and JavaScript content.
-- `WriteToFile` writes a human-readable formatted HTML file.
+- `WriteToFile` writes a human-readable formatted HTML file, declaring `<!DOCTYPE html>`.
 - `Render`, `RenderString`, `RenderFormatted`, and `RenderFormattedString` return generated HTML plus any document error.
 
 ## Installation
@@ -116,9 +117,41 @@ Elements must be created with their `New*` constructor, which is what binds the
 element to its base. A zero value such as `&rephtml.Div{}` is not a usable
 element.
 
+`Add` ignores nil children, including a typed nil, so a builder that returns
+`nil` on a miss composes without a guard at every call site:
+
+```go
+func badge(u *User) *rephtml.Span {
+	if u == nil {
+		return nil // safe to Add; nothing is emitted
+	}
+	return rephtml.NewSpan().Text(u.Name)
+}
+```
+
+## Concurrency
+
+Rendering does not mutate the element tree. An element writes into the buffer it
+is given and keeps no render state of its own, so a tree built once can be
+rendered from any number of goroutines:
+
+```go
+page := buildPage() // once, at startup
+
+http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	w.Write(page.Render()) // safe from concurrent requests
+})
+```
+
+Building is not concurrency-safe. Calling setters on an element while another
+goroutine renders it is a data race, as it would be for any Go value. Finish
+building before you share the tree.
+
 ## Rendering Documents
 
 `HtmlFile` returns errors from render methods because document structure can be invalid. Use `RenderString` for compact HTML, `RenderFormattedString` for readable output, and `WriteToFile` for files.
+
+Documents are emitted with `<!DOCTYPE html>`, so browsers render them in standards mode.
 
 ```go
 html := rephtml.NewHtmlFile().Lang("en")
@@ -153,6 +186,19 @@ html.AddToHead(rephtml.NewP().Text("not allowed in head"))
 if err := html.Err(); err != nil {
 	fmt.Println(err)
 }
+```
+
+The `Head` and `Body` wrappers apply the same rule. `AddToHead` flattens a `Head`
+into the generated head rather than nesting it, so the wrapper checks its own
+content as it is added and carries any error into the document:
+
+```go
+head := rephtml.NewHead().Add(rephtml.NewDiv()) // div is body content
+fmt.Println(head.Err())                          // reported here
+
+html := rephtml.NewHtmlFile()
+html.AddToHead(head)
+fmt.Println(html.Err()) // and again here, once merged
 ```
 
 ## Composition Examples
@@ -239,7 +285,15 @@ fmt.Println(button.HTML())
 
 ## Formatting and Escaping
 
-rephtml escapes normal text and attribute values so characters like `<`, `>`, `&`, and quotes do not corrupt the generated HTML. Raw-text elements that commonly contain code, such as `<style>` and `<script>`, keep their content unescaped.
+rephtml escapes normal text and attribute values so characters like `<`, `>`, `&`, and quotes do not corrupt the generated HTML. Content is escaped for the context it lands in, which is not always HTML entity escaping:
+
+| Content | Handling |
+|---|---|
+| Text nodes and attribute values | HTML entity escaped |
+| Comment text | Sanitised, since character references are not decoded inside a comment. Hyphen runs are broken up so the text cannot close the comment early |
+| Structured CSS: selectors, properties, values, `@media` queries, `@keyframes` names, `@import` hrefs | Escaped so the text cannot close the surrounding `<style>` element. A `<` used legitimately, as in the media query range syntax `(400px <= width)`, is left alone |
+| URL attributes (`href`, `src`, `action`, …) | Escaped, then filtered by scheme so a `javascript:` URL cannot be emitted. See [URLs](#urls) |
+| `StyleElement.Text` and `Script.Text` | **Raw, by design.** These are the escape hatches for hand-written CSS and JavaScript. Do not pass untrusted input to them |
 
 For regular elements, call `HTML()` or `Render()` directly:
 
@@ -259,6 +313,49 @@ style := rephtml.NewStyleElement().Text(`
 
 script := rephtml.NewScript().Text(`console.log("ready <now>");`)
 ```
+
+### URLs
+
+Escaping keeps a URL inside its quotes but says nothing about what following it
+does, so URL attributes are also filtered by scheme. A URL whose scheme executes
+script is replaced with `rephtml.BlockedURL`:
+
+```go
+link := rephtml.NewAnchor().Link("javascript:alert(1)").Text("Click me")
+fmt.Println(link.HTML())
+// <a href="#rephtml-blocked-url">Click me</a>
+```
+
+The value is replaced rather than dropped so the problem is visible in the
+output instead of quietly changing where a link points. Use `IsSafeURL` to
+detect it up front and decide for yourself:
+
+```go
+if !rephtml.IsSafeURL(u) {
+	return fmt.Errorf("refusing to link to %q", u)
+}
+```
+
+What is blocked:
+
+- `javascript:`, `vbscript:`, `livescript:`, `mocha:`
+- `data:` URLs a browser would treat as a document, which is anything other than
+  an image, audio, video or font media type. `data:image/png` is fine;
+  `data:text/html` and `data:image/svg+xml` are not
+
+Everything else passes, including relative URLs, fragments, queries,
+protocol-relative URLs, and schemes like `mailto:`, `tel:`, `ftp:`, `blob:` and
+application deep links. This is a blocklist rather than an allowlist because a
+static site generator has good reason to emit custom schemes, while the set that
+actually runs script is small and has not grown in years.
+
+The check normalises the way a browser does before reading the scheme — leading
+whitespace and control characters, and tab, newline and NUL anywhere — so
+`java&#9;script:` and `  JAVASCRIPT:` are caught too.
+
+Filtering covers `href`, `src`, `srcset`, `action`, `formaction`, `data`,
+`poster`, `cite`, `manifest` and `usemap`. `srcset` is filtered per candidate,
+so one bad entry does not discard the rest of the list.
 
 `WriteToFile` and `RenderFormatted` format documents generated by rephtml with indentation and return filesystem or document structure errors. That formatter is intentionally scoped to rephtml output rather than exposed as a general-purpose HTML formatter. CSS inside `<style>` blocks is also indented for readability, while whitespace-sensitive blocks such as `<pre>` and `<textarea>` are preserved.
 

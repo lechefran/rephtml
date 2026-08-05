@@ -3,8 +3,10 @@ package rephtml
 import (
 	"bytes"
 	"html"
+	"reflect"
 	"strconv"
 	"strings"
+	"sync"
 )
 
 // parseStyle writes an inline style attribute from a StyleMap.
@@ -67,27 +69,147 @@ func cloneStrings(values []string) []string {
 	return append([]string(nil), values...)
 }
 
-// renderPrepared prepares an element and returns a snapshot of its rendered bytes.
-func renderPrepared(e preparedElement) []byte {
+// bufferPool supplies the scratch buffers rendering writes into.
+//
+// Elements no longer keep a buffer of their own, so without pooling every
+// render would grow a new one from nothing. A pooled buffer comes back already
+// sized for the last document of similar shape, which is where the growth
+// allocations went. Each render holds its buffer exclusively, so this stays
+// safe to use from several goroutines.
+var bufferPool = sync.Pool{
+	New: func() any { return new(bytes.Buffer) },
+}
+
+// maxPooledBuffer caps what goes back into the pool, so one very large document
+// does not pin its buffer in memory for the life of the process.
+const maxPooledBuffer = 1 << 20
+
+// getBuffer takes a reset buffer from the pool.
+func getBuffer() *bytes.Buffer {
+	buf := bufferPool.Get().(*bytes.Buffer)
+	buf.Reset()
+	return buf
+}
+
+// putBuffer returns a buffer to the pool unless it has grown unreasonably.
+func putBuffer(buf *bytes.Buffer) {
+	if buf.Cap() <= maxPooledBuffer {
+		bufferPool.Put(buf)
+	}
+}
+
+// renderElement renders an element and returns its bytes.
+// It backs the Render method of the types that do not embed the generic base.
+func renderElement(e preparedElement) []byte {
 	if e == nil {
 		return nil
 	}
-	e.prepare()
-	return cloneBytes(e.rawBytes())
+	buf := getBuffer()
+	defer putBuffer(buf)
+	e.renderTo(buf)
+	// Copied out at exactly the right size, so the caller owns the result and
+	// the buffer can be reused.
+	return cloneBytes(buf.Bytes())
 }
 
-// htmlPrepared prepares an element and returns its rendered HTML.
-func htmlPrepared(e preparedElement) string {
+// htmlElement renders an element and returns its HTML.
+func htmlElement(e preparedElement) string {
 	if e == nil {
 		return ""
 	}
-	e.prepare()
-	return string(e.rawBytes())
+	buf := getBuffer()
+	defer putBuffer(buf)
+	e.renderTo(buf)
+	return buf.String()
+}
+
+// asciiLower folds one ASCII letter to lower case.
+func asciiLower(c byte) byte {
+	if c >= 'A' && c <= 'Z' {
+		return c + ('a' - 'A')
+	}
+	return c
+}
+
+// hasPrefixFold reports whether s begins with prefix, comparing ASCII letters
+// case-insensitively.
+//
+// It compares byte by byte rather than folding whole strings, so a match is
+// always exactly len(prefix) bytes of s. strings.ToLower cannot be used for
+// this: it is not length-preserving, so an index into the folded string does
+// not point at the same place in the original.
+func hasPrefixFold(s, prefix string) bool {
+	if len(s) < len(prefix) {
+		return false
+	}
+	for i := 0; i < len(prefix); i++ {
+		if asciiLower(s[i]) != asciiLower(prefix[i]) {
+			return false
+		}
+	}
+	return true
+}
+
+// indexFold returns the byte index in s of the first occurrence of substr,
+// comparing ASCII letters case-insensitively, or -1 when there is none.
+func indexFold(s, substr string) int {
+	if substr == "" {
+		return 0
+	}
+	for i := 0; i+len(substr) <= len(s); i++ {
+		if hasPrefixFold(s[i:], substr) {
+			return i
+		}
+	}
+	return -1
+}
+
+// lastIndexFold returns the byte index in s of the last occurrence of substr,
+// comparing ASCII letters case-insensitively, or -1 when there is none.
+func lastIndexFold(s, substr string) int {
+	if substr == "" {
+		return len(s)
+	}
+	for i := len(s) - len(substr); i >= 0; i-- {
+		if hasPrefixFold(s[i:], substr) {
+			return i
+		}
+	}
+	return -1
 }
 
 // escapeText escapes ordinary HTML text node content.
 func escapeText(text string) string {
 	return html.EscapeString(text)
+}
+
+// escapeCSS neutralises text that would end the style element containing it.
+//
+// A style element holds raw text: the HTML tokenizer does not decode character
+// references there and ends the element at the first "</style". Entity escaping
+// is therefore useless, and the one sequence that has to be defused is that
+// one. Rewriting its "<" as the CSS character escape \3c keeps the declaration
+// meaning identical while leaving nothing for the tokenizer to match.
+//
+// Only that sequence is touched, so a "<" used legitimately, as in the media
+// query range syntax "(400px <= width)", survives untouched.
+func escapeCSS(css string) string {
+	const endTag = "</style"
+	if indexFold(css, endTag) < 0 {
+		return css
+	}
+
+	var b strings.Builder
+	b.Grow(len(css) + 8)
+	for i := 0; i < len(css); i++ {
+		if css[i] == '<' && hasPrefixFold(css[i:], endTag) {
+			// The trailing space terminates the hex escape.
+			b.WriteString(`\3c `)
+			continue
+		}
+		b.WriteByte(css[i])
+	}
+	return b.String()
 }
 
 // escapeAttr escapes HTML attribute values.
@@ -133,17 +255,9 @@ type tag struct {
 	name string
 }
 
-// openTag resets buf and begins an element start tag. Element Prepare methods
-// start here, which is also what guarantees the buffer is cleared before a
-// re-render.
-func openTag(buf *bytes.Buffer, name string) tag {
-	buf.Reset()
-	return appendTag(buf, name)
-}
-
-// appendTag begins an element start tag without resetting buf, for elements
-// written into a buffer that already holds content.
-func appendTag(buf *bytes.Buffer, name string) tag {
+// startTag begins an element start tag. It appends, because the buffer it is
+// given usually already holds the element's ancestors and preceding siblings.
+func startTag(buf *bytes.Buffer, name string) tag {
 	buf.WriteByte('<')
 	buf.WriteString(name)
 	return tag{buf: buf, name: name}
@@ -153,6 +267,22 @@ func appendTag(buf *bytes.Buffer, name string) tag {
 func (t tag) attr(name, value string) {
 	if value != "" {
 		writeAttr(t.buf, name, value)
+	}
+}
+
+// urlAttr writes a URL attribute, replacing a value whose scheme could execute
+// script. Escaping alone would not help here: a javascript: URL needs no
+// special characters to do its work.
+func (t tag) urlAttr(name, value string) {
+	if value != "" {
+		writeAttr(t.buf, name, safeURLValue(value))
+	}
+}
+
+// srcsetAttr writes a srcset attribute, filtering each candidate URL in the list.
+func (t tag) srcsetAttr(name, value string) {
+	if value != "" {
+		writeAttr(t.buf, name, filterSrcset(value))
 	}
 }
 
@@ -234,48 +364,60 @@ func (t tag) children(contents []Element) {
 // rawText stores content that should be rendered without escaping.
 type rawText string
 
-// prepare is a no-op: raw text is already its own rendered form.
-func (r rawText) prepare() {}
-
-// rawBytes returns the raw text bytes.
-func (r rawText) rawBytes() []byte {
-	return []byte(r)
+// renderTo writes the raw text to buf.
+func (r rawText) renderTo(buf *bytes.Buffer) {
+	buf.WriteString(string(r))
 }
 
 // Render returns raw text bytes.
 func (r rawText) Render() []byte {
-	return renderPrepared(r)
+	return renderElement(r)
 }
 
 // HTML returns raw text as a string.
 func (r rawText) HTML() string {
-	return htmlPrepared(r)
+	return htmlElement(r)
 }
 
 // escapedText stores content that should be escaped before rendering.
 type escapedText string
 
-// prepare is a no-op: escaping happens when the bytes are read.
-func (e escapedText) prepare() {}
-
-// rawBytes returns the escaped text bytes.
-func (e escapedText) rawBytes() []byte {
-	return []byte(escapeText(string(e)))
+// renderTo writes the escaped text to buf.
+func (e escapedText) renderTo(buf *bytes.Buffer) {
+	buf.WriteString(escapeText(string(e)))
 }
 
 // Render returns escaped text bytes.
 func (e escapedText) Render() []byte {
-	return renderPrepared(e)
+	return renderElement(e)
 }
 
 // HTML returns escaped text as a string.
 func (e escapedText) HTML() string {
-	return htmlPrepared(e)
+	return htmlElement(e)
+}
+
+// isNilElement reports whether e is nil or holds a nil pointer.
+//
+// A plain e == nil is not enough. A builder that returns a typed nil, such as
+// func() *Div { return nil }, produces an interface with a type but no value,
+// which compares unequal to nil and then panics the moment it is rendered.
+// Checking the underlying value catches that at the point it is added.
+func isNilElement(e Element) bool {
+	if e == nil {
+		return true
+	}
+	switch v := reflect.ValueOf(e); v.Kind() {
+	case reflect.Chan, reflect.Func, reflect.Interface, reflect.Map, reflect.Pointer, reflect.Slice:
+		return v.IsNil()
+	default:
+		return false
+	}
 }
 
 // appendElement appends a non-nil child element to a content slice.
 func appendElement(contents []Element, e Element) []Element {
-	if e == nil {
+	if isNilElement(e) {
 		return contents
 	}
 	return append(contents, e)
@@ -283,18 +425,16 @@ func appendElement(contents []Element, e Element) []Element {
 
 // writeElement renders and writes one element to the destination buffer.
 //
-// Elements in this package expose an unexported prepared contract, which lets
-// a parent copy a child's bytes straight out of the child's buffer. Render
-// would owe the caller a defensive copy that is thrown away immediately, so
-// taking that path saves a full copy of the subtree at every level of nesting.
-// Element implementations from outside the package fall back to Render.
+// Elements in this package can write straight into the destination, so a
+// subtree is serialised once no matter how deeply it is nested. Element
+// implementations from outside the package fall back to Render, which costs
+// one intermediate buffer for that element.
 func writeElement(buf *bytes.Buffer, e Element) {
-	if e == nil {
+	if isNilElement(e) {
 		return
 	}
 	if p, ok := e.(preparedElement); ok {
-		p.prepare()
-		buf.Write(p.rawBytes())
+		p.renderTo(buf)
 		return
 	}
 	buf.Write(e.Render())

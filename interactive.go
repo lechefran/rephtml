@@ -1,5 +1,7 @@
 package rephtml
 
+import "bytes"
+
 // Details represents the HTML details element for creating a disclosure widget
 type Details struct {
 	bodyElement
@@ -15,8 +17,8 @@ func NewDetails() *Details {
 }
 
 // Prepare builds the HTML for the details element
-func (d *Details) prepare() {
-	tg := openTag(&d.buf, "details")
+func (d *Details) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "details")
 	tg.boolAttr("open", d.open)
 	tg.styleAttr(d.style)
 	tg.children(d.contents)
@@ -43,8 +45,8 @@ func NewDialog() *Dialog {
 }
 
 // Prepare builds the HTML for the dialog element
-func (d *Dialog) prepare() {
-	tg := openTag(&d.buf, "dialog")
+func (d *Dialog) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "dialog")
 	tg.boolAttr("open", d.open)
 	tg.styleAttr(d.style)
 	tg.children(d.contents)
@@ -70,8 +72,8 @@ func NewSummary() *Summary {
 }
 
 // Prepare builds the HTML for the summary element
-func (s *Summary) prepare() {
-	tg := openTag(&s.buf, "summary")
+func (s *Summary) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, "summary")
 	tg.styleAttr(s.style)
 	tg.children(s.contents)
 }
