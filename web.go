@@ -1,46 +1,17 @@
 package rephtml
 
-import "bytes"
-
 // Slot represents the Slot component or supporting type.
 type Slot struct {
-	buf      bytes.Buffer
-	style    StyleMap
-	contents []Element
-	name     string
+	bodyElement
+	contentNode[*Slot]
+	name string
 }
 
 // NewSlot creates a new Slot component.
 func NewSlot() *Slot {
-	return &Slot{
-		style: make(StyleMap),
-	}
-}
-
-// AddStyle adds one inline CSS declaration to the Slot component.
-func (s *Slot) AddStyle(k, v string) *Slot {
-	s.style[k] = v
-	return s
-}
-
-// AddStyles adds multiple inline CSS declarations to the Slot component.
-func (s *Slot) AddStyles(m StyleMap) *Slot {
-	for k, v := range m {
-		s.style[k] = v
-	}
-	return s
-}
-
-// Style replaces the inline CSS declarations on the Slot component.
-func (s *Slot) Style(m StyleMap) *Slot {
-	s.style = cloneStyleMap(m)
-	return s
-}
-
-// Add appends child content to the Slot component.
-func (s *Slot) Add(e Element) *Slot {
-	s.contents = appendElement(s.contents, e)
-	return s
+	v := &Slot{}
+	v.init(v)
+	return v
 }
 
 // Name sets the name value on the Slot component.
@@ -49,90 +20,27 @@ func (s *Slot) Name(n string) *Slot {
 	return s
 }
 
-// Bytes returns a defensive copy of the rendered Slot bytes.
-func (s *Slot) Bytes() []byte {
-	return cloneBytes(s.buf.Bytes())
-}
-
-// Render returns freshly prepared Slot HTML bytes.
-func (s *Slot) Render() []byte {
-	return renderPrepared(s)
-}
-
-// HTML returns freshly prepared Slot HTML as a string.
-func (s *Slot) HTML() string {
-	return htmlPrepared(s)
-}
-
-// String returns freshly prepared Slot HTML as a string.
-func (s *Slot) String() string {
-	return s.HTML()
-}
-
-// IsBodyElement implements BodyElement interface
-func (s *Slot) IsBodyElement() {}
-
-// Prepare renders the Slot component into its internal buffer.
-func (s *Slot) Prepare() {
-	s.buf.Reset()
-	s.buf.WriteString("<slot")
-	if s.name != "" {
-		writeAttr(&s.buf, "name", s.name)
-	}
-	if len(s.style) != 0 {
-		parseStyle(&s.buf, s.style)
-	}
-	s.buf.WriteByte('>')
-
-	writeElements(&s.buf, s.contents)
-	s.buf.WriteString("</slot>")
+// prepare renders the Slot component into its internal buffer.
+func (s *Slot) prepare() {
+	tg := openTag(&s.buf, "slot")
+	tg.attr("name", s.name)
+	tg.styleAttr(s.style)
+	tg.children(s.contents)
 }
 
 // Template represents the Template component or supporting type.
 type Template struct {
-	buf      bytes.Buffer
-	style    StyleMap
-	contents []Element
-	id       string
+	headElement
+	bodyElement
+	contentNode[*Template]
+	id string
 }
 
 // NewTemplate creates a new Template component.
 func NewTemplate() *Template {
-	return &Template{
-		style: make(StyleMap),
-	}
-}
-
-// IsHeadElement implements HeadElement interface
-func (t *Template) IsHeadElement() {}
-
-// IsBodyElement implements BodyElement interface
-func (t *Template) IsBodyElement() {}
-
-// AddStyle adds one inline CSS declaration to the Template component.
-func (t *Template) AddStyle(k, v string) *Template {
-	t.style[k] = v
-	return t
-}
-
-// AddStyles adds multiple inline CSS declarations to the Template component.
-func (t *Template) AddStyles(m StyleMap) *Template {
-	for k, v := range m {
-		t.style[k] = v
-	}
-	return t
-}
-
-// Style replaces the inline CSS declarations on the Template component.
-func (t *Template) Style(m StyleMap) *Template {
-	t.style = cloneStyleMap(m)
-	return t
-}
-
-// Add appends child content to the Template component.
-func (t *Template) Add(e Element) *Template {
-	t.contents = appendElement(t.contents, e)
-	return t
+	v := &Template{}
+	v.init(v)
+	return v
 }
 
 // Id sets the id value on the Template component.
@@ -141,38 +49,10 @@ func (t *Template) Id(i string) *Template {
 	return t
 }
 
-// Bytes returns a defensive copy of the rendered Template bytes.
-func (t *Template) Bytes() []byte {
-	return cloneBytes(t.buf.Bytes())
-}
-
-// Render returns freshly prepared Template HTML bytes.
-func (t *Template) Render() []byte {
-	return renderPrepared(t)
-}
-
-// HTML returns freshly prepared Template HTML as a string.
-func (t *Template) HTML() string {
-	return htmlPrepared(t)
-}
-
-// String returns freshly prepared Template HTML as a string.
-func (t *Template) String() string {
-	return t.HTML()
-}
-
-// Prepare renders the Template component into its internal buffer.
-func (t *Template) Prepare() {
-	t.buf.Reset()
-	t.buf.WriteString("<template")
-	if t.id != "" {
-		writeAttr(&t.buf, "id", t.id)
-	}
-	if len(t.style) != 0 {
-		parseStyle(&t.buf, t.style)
-	}
-	t.buf.WriteByte('>')
-
-	writeElements(&t.buf, t.contents)
-	t.buf.WriteString("</template>")
+// prepare renders the Template component into its internal buffer.
+func (t *Template) prepare() {
+	tg := openTag(&t.buf, "template")
+	tg.attr("id", t.id)
+	tg.styleAttr(t.style)
+	tg.children(t.contents)
 }

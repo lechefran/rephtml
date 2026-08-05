@@ -14,8 +14,10 @@ func TestElementRenderMethodsPrepareInternally(t *testing.T) {
 	if got := string(paragraph.Render()); got != want {
 		t.Fatalf("Render rendered unexpected output:\ngot  %q\nwant %q", got, want)
 	}
-	if got := paragraph.String(); got != want {
-		t.Fatalf("String rendered unexpected output:\ngot  %q\nwant %q", got, want)
+	// Rendering twice must not double the output, which is what a prepare that
+	// failed to reset its buffer would produce.
+	if got := paragraph.HTML(); got != want {
+		t.Fatalf("second HTML rendered unexpected output:\ngot  %q\nwant %q", got, want)
 	}
 }
 
@@ -55,15 +57,14 @@ func TestTableRendersCurrentNestedChildState(t *testing.T) {
 	}
 }
 
-func TestBytesReturnsSnapshot(t *testing.T) {
+func TestRenderReturnsSnapshot(t *testing.T) {
 	paragraph := NewP().Text("Stable")
-	paragraph.Prepare()
 
-	snapshot := paragraph.Bytes()
+	snapshot := paragraph.Render()
 	snapshot[3] = 'x'
 
 	want := "<p>Stable</p>"
-	if got := string(paragraph.Bytes()); got != want {
-		t.Fatalf("Bytes returned mutable backing storage:\ngot  %q\nwant %q", got, want)
+	if got := paragraph.HTML(); got != want {
+		t.Fatalf("Render returned mutable backing storage:\ngot  %q\nwant %q", got, want)
 	}
 }

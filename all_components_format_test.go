@@ -16,6 +16,25 @@ type formatElementCase struct {
 	element Element
 }
 
+// renderDocumentString renders a document through the public API and fails the
+// test if the document recorded a structure error.
+func renderDocumentString(t *testing.T, html *HtmlFile) string {
+	t.Helper()
+	got, err := html.RenderString()
+	if err != nil {
+		t.Fatalf("RenderString: %v", err)
+	}
+	return got
+}
+
+// renderDocumentMarkup renders a document's markup directly, bypassing the
+// error gate in RenderString, so tests can assert what a rejected element did
+// or did not emit.
+func renderDocumentMarkup(html *HtmlFile) string {
+	html.prepare()
+	return string(html.rawBytes())
+}
+
 func formatRenderedForTest(input []byte) string {
 	return string(formatRenderedDocumentHTML(renderedDocumentHTML(input)))
 }
@@ -79,10 +98,9 @@ func TestAddToHeadAndBodyPrepareDocumentSections(t *testing.T) {
 	html := NewHtmlFile()
 	html.AddToHead(NewMeta().Charset("utf-8"))
 	html.AddToBody(NewP().Text("Hello"))
-	html.Prepare()
 
 	want := `<html><head><meta charset="utf-8"></head><body><p>Hello</p></body></html>`
-	if got := string(html.Bytes()); got != want {
+	if got := renderDocumentString(t, html); got != want {
 		t.Fatalf("unexpected compact html:\ngot  %q\nwant %q", got, want)
 	}
 }
@@ -90,10 +108,9 @@ func TestAddToHeadAndBodyPrepareDocumentSections(t *testing.T) {
 func TestAddToHeadFlattensHeadContents(t *testing.T) {
 	html := NewHtmlFile()
 	html.AddToHead(NewHead().Add(NewTitle().Text("Nested Head")))
-	html.Prepare()
 
 	want := `<html><head><title>Nested Head</title></head></html>`
-	if got := string(html.Bytes()); got != want {
+	if got := renderDocumentString(t, html); got != want {
 		t.Fatalf("unexpected html:\ngot  %q\nwant %q", got, want)
 	}
 }
@@ -101,10 +118,9 @@ func TestAddToHeadFlattensHeadContents(t *testing.T) {
 func TestAddToHeadFlattensHeadWrapperAndMergesStyles(t *testing.T) {
 	html := NewHtmlFile()
 	html.AddToHead(NewHead().AddStyle("color", "red").Add(NewTitle().Text("Styled Head")))
-	html.Prepare()
 
 	want := `<html><head style="color: red;"><title>Styled Head</title></head></html>`
-	if got := string(html.Bytes()); got != want {
+	if got := renderDocumentString(t, html); got != want {
 		t.Fatalf("unexpected html:\ngot  %q\nwant %q", got, want)
 	}
 }
@@ -112,10 +128,9 @@ func TestAddToHeadFlattensHeadWrapperAndMergesStyles(t *testing.T) {
 func TestAddToBodyFlattensBodyContents(t *testing.T) {
 	html := NewHtmlFile()
 	html.AddToBody(NewBody().Add(NewP().Text("Nested Body")))
-	html.Prepare()
 
 	want := `<html><body><p>Nested Body</p></body></html>`
-	if got := string(html.Bytes()); got != want {
+	if got := renderDocumentString(t, html); got != want {
 		t.Fatalf("unexpected html:\ngot  %q\nwant %q", got, want)
 	}
 }
@@ -129,10 +144,9 @@ func TestAddToBodyFlattensBodyWrapperAndMergesAttributes(t *testing.T) {
 			AddStyle("color", "red").
 			Add(NewP().Text("Loaded Body")),
 	)
-	html.Prepare()
 
 	want := `<html><body onload="init()" onunload="cleanup()" style="color: red;"><p>Loaded Body</p></body></html>`
-	if got := string(html.Bytes()); got != want {
+	if got := renderDocumentString(t, html); got != want {
 		t.Fatalf("unexpected html:\ngot  %q\nwant %q", got, want)
 	}
 }
@@ -144,9 +158,8 @@ func TestAddToHeadRejectsBodyWrapper(t *testing.T) {
 		t.Fatal("expected document error")
 	}
 
-	html.Prepare()
 	want := `<html></html>`
-	if got := string(html.Bytes()); got != want {
+	if got := renderDocumentMarkup(html); got != want {
 		t.Fatalf("unexpected html:\ngot  %q\nwant %q", got, want)
 	}
 }
@@ -158,9 +171,8 @@ func TestAddToBodyRejectsHeadWrapper(t *testing.T) {
 		t.Fatal("expected document error")
 	}
 
-	html.Prepare()
 	want := `<html></html>`
-	if got := string(html.Bytes()); got != want {
+	if got := renderDocumentMarkup(html); got != want {
 		t.Fatalf("unexpected html:\ngot  %q\nwant %q", got, want)
 	}
 }
@@ -779,7 +791,7 @@ func exportedElementStructNames(t *testing.T) map[string]bool {
 
 	elements := map[string]bool{}
 	for name := range structs {
-		if methods[name]["Render"] && methods[name]["HTML"] {
+		if methods[name]["prepare"] && !methods[name]["documentRender"] {
 			elements[name] = true
 		}
 	}
@@ -798,18 +810,37 @@ func recordExportedStructs(decl *ast.GenDecl, structs map[string]bool) {
 	}
 }
 
+// recordElementMethod records the declared methods that identify an element struct.
+//
+// prepare is the discriminator: Render, HTML and the style setters are promoted
+// from the embedded generic bases in element.go and are no longer declared per
+// type, but every element still declares its own prepare. HtmlFile also declares
+// prepare and is not an Element, so its document-shaped Render, which returns
+// ([]byte, error) rather than []byte, is recorded as a disqualifier.
 func recordElementMethod(decl *ast.FuncDecl, methods map[string]map[string]bool) {
-	if decl.Recv == nil || (decl.Name.Name != "Render" && decl.Name.Name != "HTML") {
+	if decl.Recv == nil {
+		return
+	}
+	key := decl.Name.Name
+	switch key {
+	case "prepare":
+	case "Render":
+		if decl.Type.Results == nil || len(decl.Type.Results.List) == 1 {
+			return
+		}
+		key = "documentRender"
+	default:
 		return
 	}
 	name := receiverName(decl.Recv.List[0].Type)
 	if name == "" {
+		// Generic receivers such as *node[Self] are shared bases, not elements.
 		return
 	}
 	if methods[name] == nil {
 		methods[name] = map[string]bool{}
 	}
-	methods[name][decl.Name.Name] = true
+	methods[name][key] = true
 }
 
 func receiverName(expr ast.Expr) string {

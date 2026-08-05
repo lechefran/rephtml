@@ -60,7 +60,7 @@ main {
 
 ## Rendering Elements
 
-Regular elements prepare themselves when you call `HTML`, `Render`, or `String`. You do not need to call `Prepare` before reading output.
+Regular elements prepare themselves when you call `HTML` or `Render`. There is no separate preparation step to remember.
 
 ```go
 package main
@@ -96,6 +96,25 @@ card := rephtml.NewSection().
 
 fmt.Println(card.HTML())
 ```
+
+## How Elements Are Built
+
+Elements embed a shared generic base that supplies the render entry points
+(`Render`, `HTML`) and the common setters (`AddStyle`, `AddStyles`, `Style`, and
+`Add` on containers). The base is parameterised by the concrete element type, so
+those setters return the element's own type and chaining works as usual:
+
+```go
+div := rephtml.NewDiv().AddStyle("color", "red").Add(rephtml.NewP()) // *Div
+```
+
+Because the methods are promoted rather than declared per element, godoc renders
+their result type as `Self`. The concrete result is always the element's own
+pointer type, for example `*Div` above.
+
+Elements must be created with their `New*` constructor, which is what binds the
+element to its base. A zero value such as `&rephtml.Div{}` is not a usable
+element.
 
 ## Rendering Documents
 

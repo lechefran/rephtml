@@ -1,47 +1,18 @@
 package rephtml
 
-import "bytes"
-
 // Canvas represents the Canvas component or supporting type.
 type Canvas struct {
-	buf      bytes.Buffer
-	style    StyleMap
-	contents []Element
-	width    string
-	height   string
+	bodyElement
+	contentNode[*Canvas]
+	width  string
+	height string
 }
 
 // NewCanvas creates a new Canvas component.
 func NewCanvas() *Canvas {
-	return &Canvas{
-		style: make(StyleMap),
-	}
-}
-
-// AddStyle adds one inline CSS declaration to the Canvas component.
-func (c *Canvas) AddStyle(k, v string) *Canvas {
-	c.style[k] = v
-	return c
-}
-
-// AddStyles adds multiple inline CSS declarations to the Canvas component.
-func (c *Canvas) AddStyles(m StyleMap) *Canvas {
-	for k, v := range m {
-		c.style[k] = v
-	}
-	return c
-}
-
-// Style replaces the inline CSS declarations on the Canvas component.
-func (c *Canvas) Style(m StyleMap) *Canvas {
-	c.style = cloneStyleMap(m)
-	return c
-}
-
-// Add appends child content to the Canvas component.
-func (c *Canvas) Add(e Element) *Canvas {
-	c.contents = appendElement(c.contents, e)
-	return c
+	v := &Canvas{}
+	v.init(v)
+	return v
 }
 
 // Width sets the width value on the Canvas component.
@@ -56,131 +27,41 @@ func (c *Canvas) Height(height string) *Canvas {
 	return c
 }
 
-// Bytes returns a defensive copy of the rendered Canvas bytes.
-func (c *Canvas) Bytes() []byte {
-	return cloneBytes(c.buf.Bytes())
-}
-
-// Render returns freshly prepared Canvas HTML bytes.
-func (c *Canvas) Render() []byte {
-	return renderPrepared(c)
-}
-
-// HTML returns freshly prepared Canvas HTML as a string.
-func (c *Canvas) HTML() string {
-	return htmlPrepared(c)
-}
-
-// String returns freshly prepared Canvas HTML as a string.
-func (c *Canvas) String() string {
-	return c.HTML()
-}
-
-// IsBodyElement implements BodyElement interface
-func (c *Canvas) IsBodyElement() {}
-
-// Prepare renders the Canvas component into its internal buffer.
-func (c *Canvas) Prepare() {
-	c.buf.Reset()
-	c.buf.WriteString("<canvas")
-	if c.width != "" {
-		writeAttr(&c.buf, "width", c.width)
-	}
-	if c.height != "" {
-		writeAttr(&c.buf, "height", c.height)
-	}
-	if len(c.style) != 0 {
-		parseStyle(&c.buf, c.style)
-	}
-	c.buf.WriteByte('>')
-
-	writeElements(&c.buf, c.contents)
-	c.buf.WriteString("</canvas>")
+// prepare renders the Canvas component into its internal buffer.
+func (c *Canvas) prepare() {
+	tg := openTag(&c.buf, "canvas")
+	tg.attr("width", c.width)
+	tg.attr("height", c.height)
+	tg.styleAttr(c.style)
+	tg.children(c.contents)
 }
 
 // Noscript represents the Noscript component or supporting type.
 type Noscript struct {
-	buf      bytes.Buffer
-	style    StyleMap
-	contents []Element
+	headElement
+	bodyElement
+	contentNode[*Noscript]
 }
 
 // NewNoscript creates a new Noscript component.
 func NewNoscript() *Noscript {
-	return &Noscript{
-		style: make(StyleMap),
-	}
+	v := &Noscript{}
+	v.init(v)
+	return v
 }
 
-// IsHeadElement implements HeadElement interface
-func (n *Noscript) IsHeadElement() {}
-
-// IsBodyElement implements BodyElement interface
-func (n *Noscript) IsBodyElement() {}
-
-// AddStyle adds one inline CSS declaration to the Noscript component.
-func (n *Noscript) AddStyle(k, v string) *Noscript {
-	n.style[k] = v
-	return n
-}
-
-// AddStyles adds multiple inline CSS declarations to the Noscript component.
-func (n *Noscript) AddStyles(m StyleMap) *Noscript {
-	for k, v := range m {
-		n.style[k] = v
-	}
-	return n
-}
-
-// Style replaces the inline CSS declarations on the Noscript component.
-func (n *Noscript) Style(m StyleMap) *Noscript {
-	n.style = cloneStyleMap(m)
-	return n
-}
-
-// Add appends child content to the Noscript component.
-func (n *Noscript) Add(e Element) *Noscript {
-	n.contents = appendElement(n.contents, e)
-	return n
-}
-
-// Bytes returns a defensive copy of the rendered Noscript bytes.
-func (n *Noscript) Bytes() []byte {
-	return cloneBytes(n.buf.Bytes())
-}
-
-// Render returns freshly prepared Noscript HTML bytes.
-func (n *Noscript) Render() []byte {
-	return renderPrepared(n)
-}
-
-// HTML returns freshly prepared Noscript HTML as a string.
-func (n *Noscript) HTML() string {
-	return htmlPrepared(n)
-}
-
-// String returns freshly prepared Noscript HTML as a string.
-func (n *Noscript) String() string {
-	return n.HTML()
-}
-
-// Prepare renders the Noscript component into its internal buffer.
-func (n *Noscript) Prepare() {
-	n.buf.Reset()
-	n.buf.WriteString("<noscript")
-	if len(n.style) != 0 {
-		parseStyle(&n.buf, n.style)
-	}
-	n.buf.WriteByte('>')
-
-	writeElements(&n.buf, n.contents)
-	n.buf.WriteString("</noscript>")
+// prepare renders the Noscript component into its internal buffer.
+func (n *Noscript) prepare() {
+	tg := openTag(&n.buf, "noscript")
+	tg.styleAttr(n.style)
+	tg.children(n.contents)
 }
 
 // Script represents the Script component or supporting type.
 type Script struct {
-	buf            bytes.Buffer
-	style          StyleMap
+	headElement
+	bodyElement
+	textNode[*Script]
 	src            string
 	scriptType     string
 	async          bool
@@ -189,40 +70,13 @@ type Script struct {
 	integrity      string
 	noModule       bool
 	referrerPolicy string
-	text           string
 }
 
 // NewScript creates a new Script component.
 func NewScript() *Script {
-	return &Script{
-		style: make(StyleMap),
-	}
-}
-
-// IsHeadElement implements HeadElement interface
-func (s *Script) IsHeadElement() {}
-
-// IsBodyElement implements BodyElement interface
-func (s *Script) IsBodyElement() {}
-
-// AddStyle adds one inline CSS declaration to the Script component.
-func (s *Script) AddStyle(k, v string) *Script {
-	s.style[k] = v
-	return s
-}
-
-// AddStyles adds multiple inline CSS declarations to the Script component.
-func (s *Script) AddStyles(m StyleMap) *Script {
-	for k, v := range m {
-		s.style[k] = v
-	}
-	return s
-}
-
-// Style replaces the inline CSS declarations on the Script component.
-func (s *Script) Style(m StyleMap) *Script {
-	s.style = cloneStyleMap(m)
-	return s
+	v := &Script{}
+	v.init(v)
+	return v
 }
 
 // Src sets the src value on the Script component.
@@ -273,67 +127,18 @@ func (s *Script) Referrerpolicy(referrerpolicy string) *Script {
 	return s
 }
 
-// Text sets or appends text content on the Script component.
-func (s *Script) Text(text string) *Script {
-	s.text = text
-	return s
-}
-
-// Bytes returns a defensive copy of the rendered Script bytes.
-func (s *Script) Bytes() []byte {
-	return cloneBytes(s.buf.Bytes())
-}
-
-// Render returns freshly prepared Script HTML bytes.
-func (s *Script) Render() []byte {
-	return renderPrepared(s)
-}
-
-// HTML returns freshly prepared Script HTML as a string.
-func (s *Script) HTML() string {
-	return htmlPrepared(s)
-}
-
-// String returns freshly prepared Script HTML as a string.
-func (s *Script) String() string {
-	return s.HTML()
-}
-
-// Prepare renders the Script component into its internal buffer.
-func (s *Script) Prepare() {
-	s.buf.Reset()
-	s.buf.WriteString("<script")
-	if s.src != "" {
-		writeAttr(&s.buf, "src", s.src)
-	}
-	if s.scriptType != "" {
-		writeAttr(&s.buf, "type", s.scriptType)
-	}
-	if s.async {
-		s.buf.WriteString(" async")
-	}
-	if s.deferScript {
-		s.buf.WriteString(" defer")
-	}
-	if s.crossOrigin != "" {
-		writeAttr(&s.buf, "crossorigin", s.crossOrigin)
-	}
-	if s.integrity != "" {
-		writeAttr(&s.buf, "integrity", s.integrity)
-	}
-	if s.noModule {
-		s.buf.WriteString(" nomodule")
-	}
-	if s.referrerPolicy != "" {
-		writeAttr(&s.buf, "referrerpolicy", s.referrerPolicy)
-	}
-	if len(s.style) != 0 {
-		parseStyle(&s.buf, s.style)
-	}
-	s.buf.WriteByte('>')
-
-	if s.text != "" {
-		s.buf.WriteString(s.text)
-	}
-	s.buf.WriteString("</script>")
+// prepare renders the Script component into its internal buffer.
+func (s *Script) prepare() {
+	tg := openTag(&s.buf, "script")
+	tg.attr("src", s.src)
+	tg.attr("type", s.scriptType)
+	tg.boolAttr("async", s.async)
+	tg.boolAttr("defer", s.deferScript)
+	tg.attr("crossorigin", s.crossOrigin)
+	tg.attr("integrity", s.integrity)
+	tg.boolAttr("nomodule", s.noModule)
+	tg.attr("referrerpolicy", s.referrerPolicy)
+	tg.styleAttr(s.style)
+	// Script content is JavaScript, not HTML, so it is written unescaped.
+	tg.raw(s.text)
 }

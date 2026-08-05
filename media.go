@@ -1,11 +1,9 @@
 package rephtml
 
-import "bytes"
-
 // Area represents the Area component or supporting type.
 type Area struct {
-	buf    bytes.Buffer
-	style  StyleMap
+	bodyElement
+	node[*Area]
 	alt    string
 	coords string
 	href   string
@@ -15,29 +13,9 @@ type Area struct {
 
 // NewArea creates a new Area component.
 func NewArea() *Area {
-	return &Area{
-		style: make(StyleMap),
-	}
-}
-
-// AddStyle adds one inline CSS declaration to the Area component.
-func (a *Area) AddStyle(k, v string) *Area {
-	a.style[k] = v
-	return a
-}
-
-// AddStyles adds multiple inline CSS declarations to the Area component.
-func (a *Area) AddStyles(m StyleMap) *Area {
-	for k, v := range m {
-		a.style[k] = v
-	}
-	return a
-}
-
-// Style replaces the inline CSS declarations on the Area component.
-func (a *Area) Style(m StyleMap) *Area {
-	a.style = cloneStyleMap(m)
-	return a
+	v := &Area{}
+	v.init(v)
+	return v
 }
 
 // Alt sets the alt value on the Area component.
@@ -70,58 +48,22 @@ func (a *Area) Target(target string) *Area {
 	return a
 }
 
-// Bytes returns a defensive copy of the rendered Area bytes.
-func (a *Area) Bytes() []byte {
-	return cloneBytes(a.buf.Bytes())
-}
-
-// Render returns freshly prepared Area HTML bytes.
-func (a *Area) Render() []byte {
-	return renderPrepared(a)
-}
-
-// HTML returns freshly prepared Area HTML as a string.
-func (a *Area) HTML() string {
-	return htmlPrepared(a)
-}
-
-// String returns freshly prepared Area HTML as a string.
-func (a *Area) String() string {
-	return a.HTML()
-}
-
-// IsBodyElement implements BodyElement interface
-func (a *Area) IsBodyElement() {}
-
-// Prepare renders the Area component into its internal buffer.
-func (a *Area) Prepare() {
-	a.buf.Reset()
-	a.buf.WriteString("<area")
-	if a.alt != "" {
-		writeAttr(&a.buf, "alt", a.alt)
-	}
-	if a.coords != "" {
-		writeAttr(&a.buf, "coords", a.coords)
-	}
-	if a.href != "" {
-		writeAttr(&a.buf, "href", a.href)
-	}
-	if a.shape != "" {
-		writeAttr(&a.buf, "shape", a.shape)
-	}
-	if a.target != "" {
-		writeAttr(&a.buf, "target", a.target)
-	}
-	if len(a.style) != 0 {
-		parseStyle(&a.buf, a.style)
-	}
-	a.buf.WriteString(">")
+// prepare renders the Area component into its internal buffer.
+func (a *Area) prepare() {
+	tg := openTag(&a.buf, "area")
+	tg.attr("alt", a.alt)
+	tg.attr("coords", a.coords)
+	tg.attr("href", a.href)
+	tg.attr("shape", a.shape)
+	tg.attr("target", a.target)
+	tg.styleAttr(a.style)
+	tg.void()
 }
 
 // Img represents the Img component or supporting type.
 type Img struct {
-	buf    bytes.Buffer
-	style  StyleMap
+	bodyElement
+	node[*Img]
 	src    string
 	alt    string
 	width  string
@@ -131,29 +73,9 @@ type Img struct {
 
 // NewImg creates a new Img component.
 func NewImg() *Img {
-	return &Img{
-		style: make(StyleMap),
-	}
-}
-
-// AddStyle adds one inline CSS declaration to the Img component.
-func (i *Img) AddStyle(k, v string) *Img {
-	i.style[k] = v
-	return i
-}
-
-// AddStyles adds multiple inline CSS declarations to the Img component.
-func (i *Img) AddStyles(m StyleMap) *Img {
-	for k, v := range m {
-		i.style[k] = v
-	}
-	return i
-}
-
-// Style replaces the inline CSS declarations on the Img component.
-func (i *Img) Style(m StyleMap) *Img {
-	i.style = cloneStyleMap(m)
-	return i
+	v := &Img{}
+	v.init(v)
+	return v
 }
 
 // Src sets the src value on the Img component.
@@ -186,59 +108,22 @@ func (i *Img) Title(title string) *Img {
 	return i
 }
 
-// Bytes returns a defensive copy of the rendered Img bytes.
-func (i *Img) Bytes() []byte {
-	return cloneBytes(i.buf.Bytes())
-}
-
-// Render returns freshly prepared Img HTML bytes.
-func (i *Img) Render() []byte {
-	return renderPrepared(i)
-}
-
-// HTML returns freshly prepared Img HTML as a string.
-func (i *Img) HTML() string {
-	return htmlPrepared(i)
-}
-
-// String returns freshly prepared Img HTML as a string.
-func (i *Img) String() string {
-	return i.HTML()
-}
-
-// IsBodyElement implements BodyElement interface
-func (i *Img) IsBodyElement() {}
-
-// Prepare renders the Img component into its internal buffer.
-func (i *Img) Prepare() {
-	i.buf.Reset()
-	i.buf.WriteString("<img")
-	if i.src != "" {
-		writeAttr(&i.buf, "src", i.src)
-	}
-	if i.alt != "" {
-		writeAttr(&i.buf, "alt", i.alt)
-	}
-	if i.width != "" {
-		writeAttr(&i.buf, "width", i.width)
-	}
-	if i.height != "" {
-		writeAttr(&i.buf, "height", i.height)
-	}
-	if i.title != "" {
-		writeAttr(&i.buf, "title", i.title)
-	}
-	if len(i.style) != 0 {
-		parseStyle(&i.buf, i.style)
-	}
-	i.buf.WriteString(">")
+// prepare renders the Img component into its internal buffer.
+func (i *Img) prepare() {
+	tg := openTag(&i.buf, "img")
+	tg.attr("src", i.src)
+	tg.attr("alt", i.alt)
+	tg.attr("width", i.width)
+	tg.attr("height", i.height)
+	tg.attr("title", i.title)
+	tg.styleAttr(i.style)
+	tg.void()
 }
 
 // Audio represents the Audio component or supporting type.
 type Audio struct {
-	buf      bytes.Buffer
-	style    StyleMap
-	contents []Element
+	bodyElement
+	contentNode[*Audio]
 	src      string
 	controls bool
 	autoplay bool
@@ -249,35 +134,9 @@ type Audio struct {
 
 // NewAudio creates a new Audio component.
 func NewAudio() *Audio {
-	return &Audio{
-		style: make(StyleMap),
-	}
-}
-
-// AddStyle adds one inline CSS declaration to the Audio component.
-func (a *Audio) AddStyle(k, v string) *Audio {
-	a.style[k] = v
-	return a
-}
-
-// AddStyles adds multiple inline CSS declarations to the Audio component.
-func (a *Audio) AddStyles(m StyleMap) *Audio {
-	for k, v := range m {
-		a.style[k] = v
-	}
-	return a
-}
-
-// Style replaces the inline CSS declarations on the Audio component.
-func (a *Audio) Style(m StyleMap) *Audio {
-	a.style = cloneStyleMap(m)
-	return a
-}
-
-// Add appends child content to the Audio component.
-func (a *Audio) Add(e Element) *Audio {
-	a.contents = appendElement(a.contents, e)
-	return a
+	v := &Audio{}
+	v.init(v)
+	return v
 }
 
 // Src sets the src value on the Audio component.
@@ -316,64 +175,23 @@ func (a *Audio) Preload(preload string) *Audio {
 	return a
 }
 
-// Bytes returns a defensive copy of the rendered Audio bytes.
-func (a *Audio) Bytes() []byte {
-	return cloneBytes(a.buf.Bytes())
-}
-
-// Render returns freshly prepared Audio HTML bytes.
-func (a *Audio) Render() []byte {
-	return renderPrepared(a)
-}
-
-// HTML returns freshly prepared Audio HTML as a string.
-func (a *Audio) HTML() string {
-	return htmlPrepared(a)
-}
-
-// String returns freshly prepared Audio HTML as a string.
-func (a *Audio) String() string {
-	return a.HTML()
-}
-
-// IsBodyElement implements BodyElement interface
-func (a *Audio) IsBodyElement() {}
-
-// Prepare renders the Audio component into its internal buffer.
-func (a *Audio) Prepare() {
-	a.buf.Reset()
-	a.buf.WriteString("<audio")
-	if a.src != "" {
-		writeAttr(&a.buf, "src", a.src)
-	}
-	if a.controls {
-		a.buf.WriteString(" controls")
-	}
-	if a.autoplay {
-		a.buf.WriteString(" autoplay")
-	}
-	if a.loop {
-		a.buf.WriteString(" loop")
-	}
-	if a.muted {
-		a.buf.WriteString(" muted")
-	}
-	if a.preload != "" {
-		writeAttr(&a.buf, "preload", a.preload)
-	}
-	if len(a.style) != 0 {
-		parseStyle(&a.buf, a.style)
-	}
-	a.buf.WriteByte('>')
-
-	writeElements(&a.buf, a.contents)
-	a.buf.WriteString("</audio>")
+// prepare renders the Audio component into its internal buffer.
+func (a *Audio) prepare() {
+	tg := openTag(&a.buf, "audio")
+	tg.attr("src", a.src)
+	tg.boolAttr("controls", a.controls)
+	tg.boolAttr("autoplay", a.autoplay)
+	tg.boolAttr("loop", a.loop)
+	tg.boolAttr("muted", a.muted)
+	tg.attr("preload", a.preload)
+	tg.styleAttr(a.style)
+	tg.children(a.contents)
 }
 
 // Track represents the Track component or supporting type.
 type Track struct {
-	buf        bytes.Buffer
-	style      StyleMap
+	bodyElement
+	node[*Track]
 	src        string
 	kind       string
 	srclang    string
@@ -383,29 +201,9 @@ type Track struct {
 
 // NewTrack creates a new Track component.
 func NewTrack() *Track {
-	return &Track{
-		style: make(StyleMap),
-	}
-}
-
-// AddStyle adds one inline CSS declaration to the Track component.
-func (t *Track) AddStyle(k, v string) *Track {
-	t.style[k] = v
-	return t
-}
-
-// AddStyles adds multiple inline CSS declarations to the Track component.
-func (t *Track) AddStyles(m StyleMap) *Track {
-	for k, v := range m {
-		t.style[k] = v
-	}
-	return t
-}
-
-// Style replaces the inline CSS declarations on the Track component.
-func (t *Track) Style(m StyleMap) *Track {
-	t.style = cloneStyleMap(m)
-	return t
+	v := &Track{}
+	v.init(v)
+	return v
 }
 
 // Src sets the src value on the Track component.
@@ -438,93 +236,30 @@ func (t *Track) Default(def bool) *Track {
 	return t
 }
 
-// Bytes returns a defensive copy of the rendered Track bytes.
-func (t *Track) Bytes() []byte {
-	return cloneBytes(t.buf.Bytes())
-}
-
-// Render returns freshly prepared Track HTML bytes.
-func (t *Track) Render() []byte {
-	return renderPrepared(t)
-}
-
-// HTML returns freshly prepared Track HTML as a string.
-func (t *Track) HTML() string {
-	return htmlPrepared(t)
-}
-
-// String returns freshly prepared Track HTML as a string.
-func (t *Track) String() string {
-	return t.HTML()
-}
-
-// IsBodyElement implements BodyElement interface
-func (t *Track) IsBodyElement() {}
-
-// Prepare renders the Track component into its internal buffer.
-func (t *Track) Prepare() {
-	t.buf.Reset()
-	t.buf.WriteString("<track")
-	if t.src != "" {
-		writeAttr(&t.buf, "src", t.src)
-	}
-	if t.kind != "" {
-		writeAttr(&t.buf, "kind", t.kind)
-	}
-	if t.srclang != "" {
-		writeAttr(&t.buf, "srclang", t.srclang)
-	}
-	if t.label != "" {
-		writeAttr(&t.buf, "label", t.label)
-	}
-	if t.defaultVal {
-		t.buf.WriteString(" default")
-	}
-	if len(t.style) != 0 {
-		parseStyle(&t.buf, t.style)
-	}
-	t.buf.WriteString(">")
+// prepare renders the Track component into its internal buffer.
+func (t *Track) prepare() {
+	tg := openTag(&t.buf, "track")
+	tg.attr("src", t.src)
+	tg.attr("kind", t.kind)
+	tg.attr("srclang", t.srclang)
+	tg.attr("label", t.label)
+	tg.boolAttr("default", t.defaultVal)
+	tg.styleAttr(t.style)
+	tg.void()
 }
 
 // Map represents the Map component or supporting type.
 type Map struct {
-	buf      bytes.Buffer
-	style    StyleMap
-	contents []Element
-	name     string
+	bodyElement
+	contentNode[*Map]
+	name string
 }
 
 // NewMap creates a new Map component.
 func NewMap() *Map {
-	return &Map{
-		style: make(StyleMap),
-	}
-}
-
-// AddStyle adds one inline CSS declaration to the Map component.
-func (m *Map) AddStyle(k, v string) *Map {
-	m.style[k] = v
-	return m
-}
-
-// AddStyles adds multiple inline CSS declarations to the Map component.
-func (m *Map) AddStyles(ms StyleMap) *Map {
-	for k, v := range ms {
-		m.style[k] = v
-	}
-	return m
-}
-
-// Style replaces the inline CSS declarations on the Map component.
-func (m *Map) Style(ms StyleMap) *Map {
-	m.style = cloneStyleMap(ms)
-	return m
-}
-
-// Add appends child content to the Map component.
-func (m *Map) Add(e Element) *Map {
-	m.contents = appendElement(m.contents, e)
-	return m
+	v := &Map{}
+	v.init(v)
+	return v
 }
 
 // Name sets the name value on the Map component.
@@ -533,50 +268,18 @@ func (m *Map) Name(name string) *Map {
 	return m
 }
 
-// Bytes returns a defensive copy of the rendered Map bytes.
-func (m *Map) Bytes() []byte {
-	return cloneBytes(m.buf.Bytes())
-}
-
-// Render returns freshly prepared Map HTML bytes.
-func (m *Map) Render() []byte {
-	return renderPrepared(m)
-}
-
-// HTML returns freshly prepared Map HTML as a string.
-func (m *Map) HTML() string {
-	return htmlPrepared(m)
-}
-
-// String returns freshly prepared Map HTML as a string.
-func (m *Map) String() string {
-	return m.HTML()
-}
-
-// IsBodyElement implements BodyElement interface
-func (m *Map) IsBodyElement() {}
-
-// Prepare renders the Map component into its internal buffer.
-func (m *Map) Prepare() {
-	m.buf.Reset()
-	m.buf.WriteString("<map")
-	if m.name != "" {
-		writeAttr(&m.buf, "name", m.name)
-	}
-	if len(m.style) != 0 {
-		parseStyle(&m.buf, m.style)
-	}
-	m.buf.WriteByte('>')
-
-	writeElements(&m.buf, m.contents)
-	m.buf.WriteString("</map>")
+// prepare renders the Map component into its internal buffer.
+func (m *Map) prepare() {
+	tg := openTag(&m.buf, "map")
+	tg.attr("name", m.name)
+	tg.styleAttr(m.style)
+	tg.children(m.contents)
 }
 
 // Video represents the Video component or supporting type.
 type Video struct {
-	buf      bytes.Buffer
-	style    StyleMap
-	contents []Element
+	bodyElement
+	contentNode[*Video]
 	src      string
 	controls bool
 	autoplay bool
@@ -590,34 +293,8 @@ type Video struct {
 
 // NewVideo creates a new Video component.
 func NewVideo() *Video {
-	return &Video{
-		style: make(StyleMap),
-	}
-}
-
-// AddStyle adds one inline CSS declaration to the Video component.
-func (v *Video) AddStyle(k, val string) *Video {
-	v.style[k] = val
-	return v
-}
-
-// AddStyles adds multiple inline CSS declarations to the Video component.
-func (v *Video) AddStyles(m StyleMap) *Video {
-	for k, val := range m {
-		v.style[k] = val
-	}
-	return v
-}
-
-// Style replaces the inline CSS declarations on the Video component.
-func (v *Video) Style(m StyleMap) *Video {
-	v.style = cloneStyleMap(m)
-	return v
-}
-
-// Add appends child content to the Video component.
-func (v *Video) Add(e Element) *Video {
-	v.contents = appendElement(v.contents, e)
+	v := &Video{}
+	v.init(v)
 	return v
 }
 
@@ -675,65 +352,18 @@ func (v *Video) Poster(poster string) *Video {
 	return v
 }
 
-// Bytes returns a defensive copy of the rendered Video bytes.
-func (v *Video) Bytes() []byte {
-	return cloneBytes(v.buf.Bytes())
-}
-
-// Render returns freshly prepared Video HTML bytes.
-func (v *Video) Render() []byte {
-	return renderPrepared(v)
-}
-
-// HTML returns freshly prepared Video HTML as a string.
-func (v *Video) HTML() string {
-	return htmlPrepared(v)
-}
-
-// String returns freshly prepared Video HTML as a string.
-func (v *Video) String() string {
-	return v.HTML()
-}
-
-// IsBodyElement implements BodyElement interface
-func (v *Video) IsBodyElement() {}
-
-// Prepare renders the Video component into its internal buffer.
-func (v *Video) Prepare() {
-	v.buf.Reset()
-	v.buf.WriteString("<video")
-	if v.src != "" {
-		writeAttr(&v.buf, "src", v.src)
-	}
-	if v.controls {
-		v.buf.WriteString(" controls")
-	}
-	if v.autoplay {
-		v.buf.WriteString(" autoplay")
-	}
-	if v.loop {
-		v.buf.WriteString(" loop")
-	}
-	if v.muted {
-		v.buf.WriteString(" muted")
-	}
-	if v.preload != "" {
-		writeAttr(&v.buf, "preload", v.preload)
-	}
-	if v.width != "" {
-		writeAttr(&v.buf, "width", v.width)
-	}
-	if v.height != "" {
-		writeAttr(&v.buf, "height", v.height)
-	}
-	if v.poster != "" {
-		writeAttr(&v.buf, "poster", v.poster)
-	}
-	if len(v.style) != 0 {
-		parseStyle(&v.buf, v.style)
-	}
-	v.buf.WriteByte('>')
-
-	writeElements(&v.buf, v.contents)
-	v.buf.WriteString("</video>")
+// prepare renders the Video component into its internal buffer.
+func (v *Video) prepare() {
+	tg := openTag(&v.buf, "video")
+	tg.attr("src", v.src)
+	tg.boolAttr("controls", v.controls)
+	tg.boolAttr("autoplay", v.autoplay)
+	tg.boolAttr("loop", v.loop)
+	tg.boolAttr("muted", v.muted)
+	tg.attr("preload", v.preload)
+	tg.attr("width", v.width)
+	tg.attr("height", v.height)
+	tg.attr("poster", v.poster)
+	tg.styleAttr(v.style)
+	tg.children(v.contents)
 }

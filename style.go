@@ -35,9 +35,9 @@ func NewStyle(tags ...string) *Style {
 	}
 }
 
-// Bytes returns a defensive copy of the rendered Style bytes.
-func (s *Style) Bytes() []byte {
-	return cloneBytes(s.buf.Bytes())
+// rawBytes returns the prepared Style bytes without copying them.
+func (s *Style) rawBytes() []byte {
+	return s.buf.Bytes()
 }
 
 // Render returns freshly prepared Style HTML bytes.
@@ -50,21 +50,13 @@ func (s *Style) HTML() string {
 	return htmlPrepared(s)
 }
 
-// String returns freshly prepared Style HTML as a string.
-func (s *Style) String() string {
-	return s.HTML()
-}
-
-// Prepare renders the Style component into its internal buffer.
-func (s *Style) Prepare() {
+// prepare renders the Style component into its internal buffer.
+func (s *Style) prepare() {
 	s.buf.Reset()
 	s.buf.WriteString("<style>")
 	s.buf.WriteString(formatStyleRule(s.Tags, s.Props))
 	s.buf.WriteString("</style>")
 }
-
-// IsHeadElement implements HeadElement interface.
-func (s *Style) IsHeadElement() {}
 
 // AddStyle adds one CSS declaration to the style rule.
 func (s *Style) AddStyle(k, v string) *Style {
@@ -113,9 +105,9 @@ func NewStyleRule(tags ...string) *StyleRule {
 	}
 }
 
-// Bytes returns a defensive copy of the rendered StyleRule bytes.
-func (s *StyleRule) Bytes() []byte {
-	return cloneBytes(s.buf.Bytes())
+// rawBytes returns the prepared StyleRule bytes without copying them.
+func (s *StyleRule) rawBytes() []byte {
+	return s.buf.Bytes()
 }
 
 // Render returns freshly prepared StyleRule HTML bytes.
@@ -128,13 +120,8 @@ func (s *StyleRule) HTML() string {
 	return htmlPrepared(s)
 }
 
-// String returns freshly prepared StyleRule HTML as a string.
-func (s *StyleRule) String() string {
-	return s.HTML()
-}
-
-// Prepare renders the StyleRule component into its internal buffer.
-func (s *StyleRule) Prepare() {
+// prepare renders the StyleRule component into its internal buffer.
+func (s *StyleRule) prepare() {
 	s.buf.Reset()
 	s.buf.WriteString(formatStyleRule(s.Tags, s.Props))
 }
@@ -185,9 +172,9 @@ func (r *RawCSSRule) Text(css string) *RawCSSRule {
 	return r
 }
 
-// Bytes returns a defensive copy of the rendered RawCSSRule bytes.
-func (r *RawCSSRule) Bytes() []byte {
-	return cloneBytes(r.buf.Bytes())
+// rawBytes returns the prepared RawCSSRule bytes without copying them.
+func (r *RawCSSRule) rawBytes() []byte {
+	return r.buf.Bytes()
 }
 
 // Render returns freshly prepared RawCSSRule HTML bytes.
@@ -200,13 +187,8 @@ func (r *RawCSSRule) HTML() string {
 	return htmlPrepared(r)
 }
 
-// String returns freshly prepared RawCSSRule HTML as a string.
-func (r *RawCSSRule) String() string {
-	return r.HTML()
-}
-
-// Prepare renders the RawCSSRule component into its internal buffer.
-func (r *RawCSSRule) Prepare() {
+// prepare renders the RawCSSRule component into its internal buffer.
+func (r *RawCSSRule) prepare() {
 	r.buf.Reset()
 	css := strings.Trim(r.css, "\n")
 	if css == "" {
@@ -231,9 +213,9 @@ func NewCharsetRule(charset string) *CharsetRule {
 	return &CharsetRule{Charset: charset}
 }
 
-// Bytes returns a defensive copy of the rendered CharsetRule bytes.
-func (c *CharsetRule) Bytes() []byte {
-	return cloneBytes(c.buf.Bytes())
+// rawBytes returns the prepared CharsetRule bytes without copying them.
+func (c *CharsetRule) rawBytes() []byte {
+	return c.buf.Bytes()
 }
 
 // Render returns freshly prepared CharsetRule HTML bytes.
@@ -246,13 +228,8 @@ func (c *CharsetRule) HTML() string {
 	return htmlPrepared(c)
 }
 
-// String returns freshly prepared CharsetRule HTML as a string.
-func (c *CharsetRule) String() string {
-	return c.HTML()
-}
-
-// Prepare renders the CharsetRule component into its internal buffer.
-func (c *CharsetRule) Prepare() {
+// prepare renders the CharsetRule component into its internal buffer.
+func (c *CharsetRule) prepare() {
 	c.buf.Reset()
 	if c.Charset == "" {
 		return
@@ -289,9 +266,9 @@ func (i *ImportRule) ConditionsList(conditions []string) *ImportRule {
 	return i
 }
 
-// Bytes returns a defensive copy of the rendered ImportRule bytes.
-func (i *ImportRule) Bytes() []byte {
-	return cloneBytes(i.buf.Bytes())
+// rawBytes returns the prepared ImportRule bytes without copying them.
+func (i *ImportRule) rawBytes() []byte {
+	return i.buf.Bytes()
 }
 
 // Render returns freshly prepared ImportRule HTML bytes.
@@ -304,13 +281,8 @@ func (i *ImportRule) HTML() string {
 	return htmlPrepared(i)
 }
 
-// String returns freshly prepared ImportRule HTML as a string.
-func (i *ImportRule) String() string {
-	return i.HTML()
-}
-
-// Prepare renders the ImportRule component into its internal buffer.
-func (i *ImportRule) Prepare() {
+// prepare renders the ImportRule component into its internal buffer.
+func (i *ImportRule) prepare() {
 	i.buf.Reset()
 	if i.Href == "" {
 		return
@@ -338,9 +310,9 @@ func NewFontFaceRule() *FontFaceRule {
 	return &FontFaceRule{Props: StyleMap{}}
 }
 
-// Bytes returns a defensive copy of the rendered FontFaceRule bytes.
-func (f *FontFaceRule) Bytes() []byte {
-	return cloneBytes(f.buf.Bytes())
+// rawBytes returns the prepared FontFaceRule bytes without copying them.
+func (f *FontFaceRule) rawBytes() []byte {
+	return f.buf.Bytes()
 }
 
 // Render returns freshly prepared FontFaceRule HTML bytes.
@@ -353,13 +325,8 @@ func (f *FontFaceRule) HTML() string {
 	return htmlPrepared(f)
 }
 
-// String returns freshly prepared FontFaceRule HTML as a string.
-func (f *FontFaceRule) String() string {
-	return f.HTML()
-}
-
-// Prepare renders the FontFaceRule component into its internal buffer.
-func (f *FontFaceRule) Prepare() {
+// prepare renders the FontFaceRule component into its internal buffer.
+func (f *FontFaceRule) prepare() {
 	f.buf.Reset()
 	f.buf.WriteString(formatDeclarationBlock("@font-face", "", f.Props))
 }
@@ -411,9 +378,9 @@ func (f *FontFeatureValuesRule) Text(content string) *FontFeatureValuesRule {
 	return f
 }
 
-// Bytes returns a defensive copy of the rendered FontFeatureValuesRule bytes.
-func (f *FontFeatureValuesRule) Bytes() []byte {
-	return cloneBytes(f.buf.Bytes())
+// rawBytes returns the prepared FontFeatureValuesRule bytes without copying them.
+func (f *FontFeatureValuesRule) rawBytes() []byte {
+	return f.buf.Bytes()
 }
 
 // Render returns freshly prepared FontFeatureValuesRule HTML bytes.
@@ -426,13 +393,8 @@ func (f *FontFeatureValuesRule) HTML() string {
 	return htmlPrepared(f)
 }
 
-// String returns freshly prepared FontFeatureValuesRule HTML as a string.
-func (f *FontFeatureValuesRule) String() string {
-	return f.HTML()
-}
-
-// Prepare renders the FontFeatureValuesRule component into its internal buffer.
-func (f *FontFeatureValuesRule) Prepare() {
+// prepare renders the FontFeatureValuesRule component into its internal buffer.
+func (f *FontFeatureValuesRule) prepare() {
 	f.buf.Reset()
 	f.buf.WriteString("\n@font-feature-values")
 	if f.Family != "" {
@@ -487,9 +449,9 @@ func (m *MediaRule) Add(e Element) *MediaRule {
 	}
 }
 
-// Bytes returns a defensive copy of the rendered MediaRule bytes.
-func (m *MediaRule) Bytes() []byte {
-	return cloneBytes(m.buf.Bytes())
+// rawBytes returns the prepared MediaRule bytes without copying them.
+func (m *MediaRule) rawBytes() []byte {
+	return m.buf.Bytes()
 }
 
 // Render returns freshly prepared MediaRule HTML bytes.
@@ -502,13 +464,8 @@ func (m *MediaRule) HTML() string {
 	return htmlPrepared(m)
 }
 
-// String returns freshly prepared MediaRule HTML as a string.
-func (m *MediaRule) String() string {
-	return m.HTML()
-}
-
-// Prepare renders the MediaRule component into its internal buffer.
-func (m *MediaRule) Prepare() {
+// prepare renders the MediaRule component into its internal buffer.
+func (m *MediaRule) prepare() {
 	m.buf.Reset()
 	m.buf.WriteString(formatGroupingAtRule("@media", m.Query, m.Rules))
 }
@@ -531,9 +488,9 @@ func NewKeyframeBlock(selector string) *KeyframeBlock {
 	}
 }
 
-// Bytes returns a defensive copy of the rendered KeyframeBlock bytes.
-func (k *KeyframeBlock) Bytes() []byte {
-	return cloneBytes(k.buf.Bytes())
+// rawBytes returns the prepared KeyframeBlock bytes without copying them.
+func (k *KeyframeBlock) rawBytes() []byte {
+	return k.buf.Bytes()
 }
 
 // Render returns freshly prepared KeyframeBlock HTML bytes.
@@ -546,13 +503,8 @@ func (k *KeyframeBlock) HTML() string {
 	return htmlPrepared(k)
 }
 
-// String returns freshly prepared KeyframeBlock HTML as a string.
-func (k *KeyframeBlock) String() string {
-	return k.HTML()
-}
-
-// Prepare renders the KeyframeBlock component into its internal buffer.
-func (k *KeyframeBlock) Prepare() {
+// prepare renders the KeyframeBlock component into its internal buffer.
+func (k *KeyframeBlock) prepare() {
 	k.buf.Reset()
 	k.buf.WriteString(formatStyleRule([]string{k.Selector}, k.Props))
 }
@@ -609,9 +561,9 @@ func (k *KeyframesRule) AddBlock(frame *KeyframeBlock) *KeyframesRule {
 	return k
 }
 
-// Bytes returns a defensive copy of the rendered KeyframesRule bytes.
-func (k *KeyframesRule) Bytes() []byte {
-	return cloneBytes(k.buf.Bytes())
+// rawBytes returns the prepared KeyframesRule bytes without copying them.
+func (k *KeyframesRule) rawBytes() []byte {
+	return k.buf.Bytes()
 }
 
 // Render returns freshly prepared KeyframesRule HTML bytes.
@@ -624,13 +576,8 @@ func (k *KeyframesRule) HTML() string {
 	return htmlPrepared(k)
 }
 
-// String returns freshly prepared KeyframesRule HTML as a string.
-func (k *KeyframesRule) String() string {
-	return k.HTML()
-}
-
-// Prepare renders the KeyframesRule component into its internal buffer.
-func (k *KeyframesRule) Prepare() {
+// prepare renders the KeyframesRule component into its internal buffer.
+func (k *KeyframesRule) prepare() {
 	k.buf.Reset()
 	k.buf.WriteString("\n@keyframes ")
 	k.buf.WriteString(k.Name)
@@ -774,3 +721,6 @@ func isNilCSSRule(rule CSSRule) bool {
 		return false
 	}
 }
+
+// IsHeadElement implements the marker interface.
+func (s *Style) IsHeadElement() {}

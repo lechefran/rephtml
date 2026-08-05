@@ -1,17 +1,11 @@
 package rephtml
 
-import (
-	"bytes"
-)
-
 // Table represents the Table component or supporting type.
 type Table struct {
-	buf     bytes.Buffer
-	class   []string
+	bodyElement
+	tabular[*Table]
 	headers []string
-	id      string
 	rows    [][]string
-	style   StyleMap
 	caption *Caption
 	thead   *Thead
 	tbody   *Tbody
@@ -21,27 +15,9 @@ type Table struct {
 
 // NewTable creates a new Table component.
 func NewTable() *Table {
-	return &Table{
-		style: make(StyleMap),
-	}
-}
-
-// AddClass sets the addclass value on the Table component.
-func (t *Table) AddClass(s string) *Table {
-	t.class = append(t.class, s)
-	return t
-}
-
-// AddClasses sets the addclasses value on the Table component.
-func (t *Table) AddClasses(s []string) *Table {
-	t.class = append(t.class, s...)
-	return t
-}
-
-// Class sets the class value on the Table component.
-func (t *Table) Class(s []string) *Table {
-	t.class = cloneStrings(s)
-	return t
+	v := &Table{}
+	v.init(v)
+	return v
 }
 
 // AddHeader sets the addheader value on the Table component.
@@ -62,18 +38,6 @@ func (t *Table) Headers(s []string) *Table {
 	return t
 }
 
-// AddId sets the addid value on the Table component.
-func (t *Table) AddId(s string) *Table {
-	t.id = s
-	return t
-}
-
-// Id sets the id value on the Table component.
-func (t *Table) Id(s string) *Table {
-	t.id = s
-	return t
-}
-
 // AddRow sets the addrow value on the Table component.
 func (t *Table) AddRow(s []string) *Table {
 	t.rows = append(t.rows, s)
@@ -89,26 +53,6 @@ func (t *Table) AddRows(s [][]string) *Table {
 // Rows sets the rows value on the Table component.
 func (t *Table) Rows(s [][]string) *Table {
 	t.rows = s
-	return t
-}
-
-// AddStyle adds one inline CSS declaration to the Table component.
-func (t *Table) AddStyle(k, v string) *Table {
-	t.style[k] = v
-	return t
-}
-
-// AddStyles adds multiple inline CSS declarations to the Table component.
-func (t *Table) AddStyles(m StyleMap) *Table {
-	for k, v := range m {
-		t.style[k] = v
-	}
-	return t
-}
-
-// Styles replaces the inline CSS declarations on the Table component.
-func (t *Table) Styles(m StyleMap) *Table {
-	t.style = cloneStyleMap(m)
 	return t
 }
 
@@ -142,21 +86,13 @@ func (t *Table) AddTr(tr *Tr) *Table {
 	return t
 }
 
-// Prepare renders the Table component into its internal buffer.
-func (t *Table) Prepare() {
-	t.buf.Reset()
-	// see if table has id, class, and style tags to add
-	t.buf.WriteString("<table")
-	if t.id != "" {
-		writeAttr(&t.buf, "id", t.id)
-	}
-	if len(t.class) != 0 {
-		writeClassAttr(&t.buf, t.class)
-	}
-	if len(t.style) != 0 {
-		parseStyle(&t.buf, t.style)
-	}
-	t.buf.WriteByte('>')
+// prepare renders the Table component into its internal buffer.
+func (t *Table) prepare() {
+	tg := openTag(&t.buf, "table")
+	tg.attr("id", t.id)
+	tg.classAttr(t.class)
+	tg.styleAttr(t.style)
+	tg.open()
 
 	// write caption if present
 	if t.caption != nil {
@@ -204,96 +140,20 @@ func (t *Table) Prepare() {
 		}
 	}
 
-	t.buf.WriteString("</table>")
+	tg.end()
 }
-
-// Bytes returns a defensive copy of the rendered Table bytes.
-func (t *Table) Bytes() []byte {
-	return cloneBytes(t.buf.Bytes())
-}
-
-// Render returns freshly prepared Table HTML bytes.
-func (t *Table) Render() []byte {
-	return renderPrepared(t)
-}
-
-// HTML returns freshly prepared Table HTML as a string.
-func (t *Table) HTML() string {
-	return htmlPrepared(t)
-}
-
-// String returns freshly prepared Table HTML as a string.
-func (t *Table) String() string {
-	return t.HTML()
-}
-
-// IsBodyElement implements BodyElement interface
-func (t *Table) IsBodyElement() {}
 
 // Thead represents the Thead component or supporting type.
 type Thead struct {
-	buf      bytes.Buffer
-	class    []string
-	id       string
-	style    StyleMap
-	contents []Element
+	bodyElement
+	tabularNode[*Thead]
 }
 
 // NewThead creates a new Thead component.
 func NewThead() *Thead {
-	return &Thead{
-		style: make(StyleMap),
-	}
-}
-
-// AddClass sets the addclass value on the Thead component.
-func (th *Thead) AddClass(s string) *Thead {
-	th.class = append(th.class, s)
-	return th
-}
-
-// AddClasses sets the addclasses value on the Thead component.
-func (th *Thead) AddClasses(s []string) *Thead {
-	th.class = append(th.class, s...)
-	return th
-}
-
-// Class sets the class value on the Thead component.
-func (th *Thead) Class(s []string) *Thead {
-	th.class = cloneStrings(s)
-	return th
-}
-
-// AddId sets the addid value on the Thead component.
-func (th *Thead) AddId(s string) *Thead {
-	th.id = s
-	return th
-}
-
-// Id sets the id value on the Thead component.
-func (th *Thead) Id(s string) *Thead {
-	th.id = s
-	return th
-}
-
-// AddStyle adds one inline CSS declaration to the Thead component.
-func (th *Thead) AddStyle(k, v string) *Thead {
-	th.style[k] = v
-	return th
-}
-
-// AddStyles adds multiple inline CSS declarations to the Thead component.
-func (th *Thead) AddStyles(m StyleMap) *Thead {
-	for k, v := range m {
-		th.style[k] = v
-	}
-	return th
-}
-
-// Styles replaces the inline CSS declarations on the Thead component.
-func (th *Thead) Styles(m StyleMap) *Thead {
-	th.style = cloneStyleMap(m)
-	return th
+	v := &Thead{}
+	v.init(v)
+	return v
 }
 
 // AddTr sets the addtr value on the Thead component.
@@ -302,112 +162,26 @@ func (th *Thead) AddTr(tr *Tr) *Thead {
 	return th
 }
 
-// Prepare renders the Thead component into its internal buffer.
-func (th *Thead) Prepare() {
-	th.buf.Reset()
-	th.buf.WriteString("<thead")
-	if th.id != "" {
-		writeAttr(&th.buf, "id", th.id)
-	}
-	if len(th.class) != 0 {
-		writeClassAttr(&th.buf, th.class)
-	}
-	if len(th.style) != 0 {
-		parseStyle(&th.buf, th.style)
-	}
-	th.buf.WriteByte('>')
-
-	writeElements(&th.buf, th.contents)
-	th.buf.WriteString("</thead>")
+// prepare renders the Thead component into its internal buffer.
+func (th *Thead) prepare() {
+	tg := openTag(&th.buf, "thead")
+	tg.attr("id", th.id)
+	tg.classAttr(th.class)
+	tg.styleAttr(th.style)
+	tg.children(th.contents)
 }
-
-// Bytes returns a defensive copy of the rendered Thead bytes.
-func (th *Thead) Bytes() []byte {
-	return cloneBytes(th.buf.Bytes())
-}
-
-// Render returns freshly prepared Thead HTML bytes.
-func (t *Thead) Render() []byte {
-	return renderPrepared(t)
-}
-
-// HTML returns freshly prepared Thead HTML as a string.
-func (t *Thead) HTML() string {
-	return htmlPrepared(t)
-}
-
-// String returns freshly prepared Thead HTML as a string.
-func (t *Thead) String() string {
-	return t.HTML()
-}
-
-// IsBodyElement implements BodyElement interface
-func (th *Thead) IsBodyElement() {}
 
 // Tbody represents the Tbody component or supporting type.
 type Tbody struct {
-	buf      bytes.Buffer
-	class    []string
-	id       string
-	style    StyleMap
-	contents []Element
+	bodyElement
+	tabularNode[*Tbody]
 }
 
 // NewTbody creates a new Tbody component.
 func NewTbody() *Tbody {
-	return &Tbody{
-		style: make(StyleMap),
-	}
-}
-
-// AddClass sets the addclass value on the Tbody component.
-func (tb *Tbody) AddClass(s string) *Tbody {
-	tb.class = append(tb.class, s)
-	return tb
-}
-
-// AddClasses sets the addclasses value on the Tbody component.
-func (tb *Tbody) AddClasses(s []string) *Tbody {
-	tb.class = append(tb.class, s...)
-	return tb
-}
-
-// Class sets the class value on the Tbody component.
-func (tb *Tbody) Class(s []string) *Tbody {
-	tb.class = cloneStrings(s)
-	return tb
-}
-
-// AddId sets the addid value on the Tbody component.
-func (tb *Tbody) AddId(s string) *Tbody {
-	tb.id = s
-	return tb
-}
-
-// Id sets the id value on the Tbody component.
-func (tb *Tbody) Id(s string) *Tbody {
-	tb.id = s
-	return tb
-}
-
-// AddStyle adds one inline CSS declaration to the Tbody component.
-func (tb *Tbody) AddStyle(k, v string) *Tbody {
-	tb.style[k] = v
-	return tb
-}
-
-// AddStyles adds multiple inline CSS declarations to the Tbody component.
-func (tb *Tbody) AddStyles(m StyleMap) *Tbody {
-	for k, v := range m {
-		tb.style[k] = v
-	}
-	return tb
-}
-
-// Styles replaces the inline CSS declarations on the Tbody component.
-func (tb *Tbody) Styles(m StyleMap) *Tbody {
-	tb.style = cloneStyleMap(m)
-	return tb
+	v := &Tbody{}
+	v.init(v)
+	return v
 }
 
 // AddTr sets the addtr value on the Tbody component.
@@ -416,112 +190,26 @@ func (tb *Tbody) AddTr(tr *Tr) *Tbody {
 	return tb
 }
 
-// Prepare renders the Tbody component into its internal buffer.
-func (tb *Tbody) Prepare() {
-	tb.buf.Reset()
-	tb.buf.WriteString("<tbody")
-	if tb.id != "" {
-		writeAttr(&tb.buf, "id", tb.id)
-	}
-	if len(tb.class) != 0 {
-		writeClassAttr(&tb.buf, tb.class)
-	}
-	if len(tb.style) != 0 {
-		parseStyle(&tb.buf, tb.style)
-	}
-	tb.buf.WriteByte('>')
-
-	writeElements(&tb.buf, tb.contents)
-	tb.buf.WriteString("</tbody>")
+// prepare renders the Tbody component into its internal buffer.
+func (tb *Tbody) prepare() {
+	tg := openTag(&tb.buf, "tbody")
+	tg.attr("id", tb.id)
+	tg.classAttr(tb.class)
+	tg.styleAttr(tb.style)
+	tg.children(tb.contents)
 }
-
-// Bytes returns a defensive copy of the rendered Tbody bytes.
-func (tb *Tbody) Bytes() []byte {
-	return cloneBytes(tb.buf.Bytes())
-}
-
-// Render returns freshly prepared Tbody HTML bytes.
-func (t *Tbody) Render() []byte {
-	return renderPrepared(t)
-}
-
-// HTML returns freshly prepared Tbody HTML as a string.
-func (t *Tbody) HTML() string {
-	return htmlPrepared(t)
-}
-
-// String returns freshly prepared Tbody HTML as a string.
-func (t *Tbody) String() string {
-	return t.HTML()
-}
-
-// IsBodyElement implements BodyElement interface
-func (tb *Tbody) IsBodyElement() {}
 
 // Tfoot represents the Tfoot component or supporting type.
 type Tfoot struct {
-	buf      bytes.Buffer
-	class    []string
-	id       string
-	style    StyleMap
-	contents []Element
+	bodyElement
+	tabularNode[*Tfoot]
 }
 
 // NewTfoot creates a new Tfoot component.
 func NewTfoot() *Tfoot {
-	return &Tfoot{
-		style: make(StyleMap),
-	}
-}
-
-// AddClass sets the addclass value on the Tfoot component.
-func (tf *Tfoot) AddClass(s string) *Tfoot {
-	tf.class = append(tf.class, s)
-	return tf
-}
-
-// AddClasses sets the addclasses value on the Tfoot component.
-func (tf *Tfoot) AddClasses(s []string) *Tfoot {
-	tf.class = append(tf.class, s...)
-	return tf
-}
-
-// Class sets the class value on the Tfoot component.
-func (tf *Tfoot) Class(s []string) *Tfoot {
-	tf.class = cloneStrings(s)
-	return tf
-}
-
-// AddId sets the addid value on the Tfoot component.
-func (tf *Tfoot) AddId(s string) *Tfoot {
-	tf.id = s
-	return tf
-}
-
-// Id sets the id value on the Tfoot component.
-func (tf *Tfoot) Id(s string) *Tfoot {
-	tf.id = s
-	return tf
-}
-
-// AddStyle adds one inline CSS declaration to the Tfoot component.
-func (tf *Tfoot) AddStyle(k, v string) *Tfoot {
-	tf.style[k] = v
-	return tf
-}
-
-// AddStyles adds multiple inline CSS declarations to the Tfoot component.
-func (tf *Tfoot) AddStyles(m StyleMap) *Tfoot {
-	for k, v := range m {
-		tf.style[k] = v
-	}
-	return tf
-}
-
-// Styles replaces the inline CSS declarations on the Tfoot component.
-func (tf *Tfoot) Styles(m StyleMap) *Tfoot {
-	tf.style = cloneStyleMap(m)
-	return tf
+	v := &Tfoot{}
+	v.init(v)
+	return v
 }
 
 // AddTr sets the addtr value on the Tfoot component.
@@ -530,112 +218,27 @@ func (tf *Tfoot) AddTr(tr *Tr) *Tfoot {
 	return tf
 }
 
-// Prepare renders the Tfoot component into its internal buffer.
-func (tf *Tfoot) Prepare() {
-	tf.buf.Reset()
-	tf.buf.WriteString("<tfoot")
-	if tf.id != "" {
-		writeAttr(&tf.buf, "id", tf.id)
-	}
-	if len(tf.class) != 0 {
-		writeClassAttr(&tf.buf, tf.class)
-	}
-	if len(tf.style) != 0 {
-		parseStyle(&tf.buf, tf.style)
-	}
-	tf.buf.WriteByte('>')
-
-	writeElements(&tf.buf, tf.contents)
-	tf.buf.WriteString("</tfoot>")
+// prepare renders the Tfoot component into its internal buffer.
+func (tf *Tfoot) prepare() {
+	tg := openTag(&tf.buf, "tfoot")
+	tg.attr("id", tf.id)
+	tg.classAttr(tf.class)
+	tg.styleAttr(tf.style)
+	tg.children(tf.contents)
 }
-
-// Bytes returns a defensive copy of the rendered Tfoot bytes.
-func (tf *Tfoot) Bytes() []byte {
-	return cloneBytes(tf.buf.Bytes())
-}
-
-// Render returns freshly prepared Tfoot HTML bytes.
-func (t *Tfoot) Render() []byte {
-	return renderPrepared(t)
-}
-
-// HTML returns freshly prepared Tfoot HTML as a string.
-func (t *Tfoot) HTML() string {
-	return htmlPrepared(t)
-}
-
-// String returns freshly prepared Tfoot HTML as a string.
-func (t *Tfoot) String() string {
-	return t.HTML()
-}
-
-// IsBodyElement implements BodyElement interface
-func (tf *Tfoot) IsBodyElement() {}
 
 // Caption represents the Caption component or supporting type.
 type Caption struct {
-	buf   bytes.Buffer
-	class []string
-	id    string
-	style StyleMap
-	text  string
+	bodyElement
+	tabular[*Caption]
+	text string
 }
 
 // NewCaption creates a new Caption component.
 func NewCaption() *Caption {
-	return &Caption{
-		style: make(StyleMap),
-	}
-}
-
-// AddClass sets the addclass value on the Caption component.
-func (c *Caption) AddClass(s string) *Caption {
-	c.class = append(c.class, s)
-	return c
-}
-
-// AddClasses sets the addclasses value on the Caption component.
-func (c *Caption) AddClasses(s []string) *Caption {
-	c.class = append(c.class, s...)
-	return c
-}
-
-// Class sets the class value on the Caption component.
-func (c *Caption) Class(s []string) *Caption {
-	c.class = cloneStrings(s)
-	return c
-}
-
-// AddId sets the addid value on the Caption component.
-func (c *Caption) AddId(s string) *Caption {
-	c.id = s
-	return c
-}
-
-// Id sets the id value on the Caption component.
-func (c *Caption) Id(s string) *Caption {
-	c.id = s
-	return c
-}
-
-// AddStyle adds one inline CSS declaration to the Caption component.
-func (c *Caption) AddStyle(k, v string) *Caption {
-	c.style[k] = v
-	return c
-}
-
-// AddStyles adds multiple inline CSS declarations to the Caption component.
-func (c *Caption) AddStyles(m StyleMap) *Caption {
-	for k, v := range m {
-		c.style[k] = v
-	}
-	return c
-}
-
-// Styles replaces the inline CSS declarations on the Caption component.
-func (c *Caption) Styles(m StyleMap) *Caption {
-	c.style = cloneStyleMap(m)
-	return c
+	v := &Caption{}
+	v.init(v)
+	return v
 }
 
 // Text sets or appends text content on the Caption component.
@@ -644,112 +247,27 @@ func (c *Caption) Text(text string) *Caption {
 	return c
 }
 
-// Prepare renders the Caption component into its internal buffer.
-func (c *Caption) Prepare() {
-	c.buf.Reset()
-	c.buf.WriteString("<caption")
-	if c.id != "" {
-		writeAttr(&c.buf, "id", c.id)
-	}
-	if len(c.class) != 0 {
-		writeClassAttr(&c.buf, c.class)
-	}
-	if len(c.style) != 0 {
-		parseStyle(&c.buf, c.style)
-	}
-	c.buf.WriteByte('>')
-
-	c.buf.WriteString(escapeText(c.text))
-	c.buf.WriteString("</caption>")
+// prepare renders the Caption component into its internal buffer.
+func (c *Caption) prepare() {
+	tg := openTag(&c.buf, "caption")
+	tg.attr("id", c.id)
+	tg.classAttr(c.class)
+	tg.styleAttr(c.style)
+	tg.text(c.text)
 }
-
-// Bytes returns a defensive copy of the rendered Caption bytes.
-func (c *Caption) Bytes() []byte {
-	return cloneBytes(c.buf.Bytes())
-}
-
-// Render returns freshly prepared Caption HTML bytes.
-func (c *Caption) Render() []byte {
-	return renderPrepared(c)
-}
-
-// HTML returns freshly prepared Caption HTML as a string.
-func (c *Caption) HTML() string {
-	return htmlPrepared(c)
-}
-
-// String returns freshly prepared Caption HTML as a string.
-func (c *Caption) String() string {
-	return c.HTML()
-}
-
-// IsBodyElement implements BodyElement interface
-func (c *Caption) IsBodyElement() {}
 
 // Col represents the Col component or supporting type.
 type Col struct {
-	buf   bytes.Buffer
-	class []string
-	id    string
-	style StyleMap
-	span  int
+	bodyElement
+	tabular[*Col]
+	span int
 }
 
 // NewCol creates a new Col component.
 func NewCol() *Col {
-	return &Col{
-		style: make(StyleMap),
-	}
-}
-
-// AddClass sets the addclass value on the Col component.
-func (col *Col) AddClass(s string) *Col {
-	col.class = append(col.class, s)
-	return col
-}
-
-// AddClasses sets the addclasses value on the Col component.
-func (col *Col) AddClasses(s []string) *Col {
-	col.class = append(col.class, s...)
-	return col
-}
-
-// Class sets the class value on the Col component.
-func (col *Col) Class(s []string) *Col {
-	col.class = cloneStrings(s)
-	return col
-}
-
-// AddId sets the addid value on the Col component.
-func (col *Col) AddId(s string) *Col {
-	col.id = s
-	return col
-}
-
-// Id sets the id value on the Col component.
-func (col *Col) Id(s string) *Col {
-	col.id = s
-	return col
-}
-
-// AddStyle adds one inline CSS declaration to the Col component.
-func (col *Col) AddStyle(k, v string) *Col {
-	col.style[k] = v
-	return col
-}
-
-// AddStyles adds multiple inline CSS declarations to the Col component.
-func (col *Col) AddStyles(m StyleMap) *Col {
-	for k, v := range m {
-		col.style[k] = v
-	}
-	return col
-}
-
-// Styles replaces the inline CSS declarations on the Col component.
-func (col *Col) Styles(m StyleMap) *Col {
-	col.style = cloneStyleMap(m)
-	return col
+	v := &Col{}
+	v.init(v)
+	return v
 }
 
 // Span sets the span value on the Col component.
@@ -758,119 +276,28 @@ func (col *Col) Span(s int) *Col {
 	return col
 }
 
-// Prepare renders the Col component into its internal buffer.
-func (col *Col) Prepare() {
-	col.buf.Reset()
-	col.buf.WriteString("<col")
-	if col.id != "" {
-		writeAttr(&col.buf, "id", col.id)
-	}
-	if len(col.class) != 0 {
-		writeClassAttr(&col.buf, col.class)
-	}
-	if len(col.style) != 0 {
-		parseStyle(&col.buf, col.style)
-	}
-	if col.span > 0 {
-		writeIntAttr(&col.buf, "span", col.span)
-	}
-	col.buf.WriteString(">")
+// prepare renders the Col component into its internal buffer.
+func (col *Col) prepare() {
+	tg := openTag(&col.buf, "col")
+	tg.attr("id", col.id)
+	tg.classAttr(col.class)
+	tg.styleAttr(col.style)
+	tg.intAttr("span", col.span)
+	tg.void()
 }
-
-// Bytes returns a defensive copy of the rendered Col bytes.
-func (col *Col) Bytes() []byte {
-	return cloneBytes(col.buf.Bytes())
-}
-
-// Render returns freshly prepared Col HTML bytes.
-func (c *Col) Render() []byte {
-	return renderPrepared(c)
-}
-
-// HTML returns freshly prepared Col HTML as a string.
-func (c *Col) HTML() string {
-	return htmlPrepared(c)
-}
-
-// String returns freshly prepared Col HTML as a string.
-func (c *Col) String() string {
-	return c.HTML()
-}
-
-// IsBodyElement implements BodyElement interface
-func (col *Col) IsBodyElement() {}
 
 // Colgroup represents the Colgroup component or supporting type.
 type Colgroup struct {
-	buf      bytes.Buffer
-	class    []string
-	id       string
-	style    StyleMap
-	contents []Element
-	span     int
+	bodyElement
+	tabularNode[*Colgroup]
+	span int
 }
 
 // NewColgroup creates a new Colgroup component.
 func NewColgroup() *Colgroup {
-	return &Colgroup{
-		style: make(StyleMap),
-	}
-}
-
-// AddClass sets the addclass value on the Colgroup component.
-func (cg *Colgroup) AddClass(s string) *Colgroup {
-	cg.class = append(cg.class, s)
-	return cg
-}
-
-// AddClasses sets the addclasses value on the Colgroup component.
-func (cg *Colgroup) AddClasses(s []string) *Colgroup {
-	cg.class = append(cg.class, s...)
-	return cg
-}
-
-// Class sets the class value on the Colgroup component.
-func (cg *Colgroup) Class(s []string) *Colgroup {
-	cg.class = cloneStrings(s)
-	return cg
-}
-
-// AddId sets the addid value on the Colgroup component.
-func (cg *Colgroup) AddId(s string) *Colgroup {
-	cg.id = s
-	return cg
-}
-
-// Id sets the id value on the Colgroup component.
-func (cg *Colgroup) Id(s string) *Colgroup {
-	cg.id = s
-	return cg
-}
-
-// AddStyle adds one inline CSS declaration to the Colgroup component.
-func (cg *Colgroup) AddStyle(k, v string) *Colgroup {
-	cg.style[k] = v
-	return cg
-}
-
-// AddStyles adds multiple inline CSS declarations to the Colgroup component.
-func (cg *Colgroup) AddStyles(m StyleMap) *Colgroup {
-	for k, v := range m {
-		cg.style[k] = v
-	}
-	return cg
-}
-
-// Styles replaces the inline CSS declarations on the Colgroup component.
-func (cg *Colgroup) Styles(m StyleMap) *Colgroup {
-	cg.style = cloneStyleMap(m)
-	return cg
-}
-
-// Add appends child content to the Colgroup component.
-func (cg *Colgroup) Add(e Element) *Colgroup {
-	cg.contents = appendElement(cg.contents, e)
-	return cg
+	v := &Colgroup{}
+	v.init(v)
+	return v
 }
 
 // Span sets the span value on the Colgroup component.
@@ -879,115 +306,27 @@ func (cg *Colgroup) Span(s int) *Colgroup {
 	return cg
 }
 
-// Prepare renders the Colgroup component into its internal buffer.
-func (cg *Colgroup) Prepare() {
-	cg.buf.Reset()
-	cg.buf.WriteString("<colgroup")
-	if cg.id != "" {
-		writeAttr(&cg.buf, "id", cg.id)
-	}
-	if len(cg.class) != 0 {
-		writeClassAttr(&cg.buf, cg.class)
-	}
-	if len(cg.style) != 0 {
-		parseStyle(&cg.buf, cg.style)
-	}
-	if cg.span > 0 {
-		writeIntAttr(&cg.buf, "span", cg.span)
-	}
-	cg.buf.WriteByte('>')
-
-	writeElements(&cg.buf, cg.contents)
-	cg.buf.WriteString("</colgroup>")
+// prepare renders the Colgroup component into its internal buffer.
+func (cg *Colgroup) prepare() {
+	tg := openTag(&cg.buf, "colgroup")
+	tg.attr("id", cg.id)
+	tg.classAttr(cg.class)
+	tg.styleAttr(cg.style)
+	tg.intAttr("span", cg.span)
+	tg.children(cg.contents)
 }
-
-// Bytes returns a defensive copy of the rendered Colgroup bytes.
-func (cg *Colgroup) Bytes() []byte {
-	return cloneBytes(cg.buf.Bytes())
-}
-
-// Render returns freshly prepared Colgroup HTML bytes.
-func (c *Colgroup) Render() []byte {
-	return renderPrepared(c)
-}
-
-// HTML returns freshly prepared Colgroup HTML as a string.
-func (c *Colgroup) HTML() string {
-	return htmlPrepared(c)
-}
-
-// String returns freshly prepared Colgroup HTML as a string.
-func (c *Colgroup) String() string {
-	return c.HTML()
-}
-
-// IsBodyElement implements BodyElement interface
-func (cg *Colgroup) IsBodyElement() {}
 
 // Tr represents the Tr component or supporting type.
 type Tr struct {
-	buf      bytes.Buffer
-	class    []string
-	id       string
-	style    StyleMap
-	contents []Element
+	bodyElement
+	tabularNode[*Tr]
 }
 
 // NewTr creates a new Tr component.
 func NewTr() *Tr {
-	return &Tr{
-		style: make(StyleMap),
-	}
-}
-
-// AddClass sets the addclass value on the Tr component.
-func (tr *Tr) AddClass(s string) *Tr {
-	tr.class = append(tr.class, s)
-	return tr
-}
-
-// AddClasses sets the addclasses value on the Tr component.
-func (tr *Tr) AddClasses(s []string) *Tr {
-	tr.class = append(tr.class, s...)
-	return tr
-}
-
-// Class sets the class value on the Tr component.
-func (tr *Tr) Class(s []string) *Tr {
-	tr.class = cloneStrings(s)
-	return tr
-}
-
-// AddId sets the addid value on the Tr component.
-func (tr *Tr) AddId(s string) *Tr {
-	tr.id = s
-	return tr
-}
-
-// Id sets the id value on the Tr component.
-func (tr *Tr) Id(s string) *Tr {
-	tr.id = s
-	return tr
-}
-
-// AddStyle adds one inline CSS declaration to the Tr component.
-func (tr *Tr) AddStyle(k, v string) *Tr {
-	tr.style[k] = v
-	return tr
-}
-
-// AddStyles adds multiple inline CSS declarations to the Tr component.
-func (tr *Tr) AddStyles(m StyleMap) *Tr {
-	for k, v := range m {
-		tr.style[k] = v
-	}
-	return tr
-}
-
-// Styles replaces the inline CSS declarations on the Tr component.
-func (tr *Tr) Styles(m StyleMap) *Tr {
-	tr.style = cloneStyleMap(m)
-	return tr
+	v := &Tr{}
+	v.init(v)
+	return v
 }
 
 // AddTh sets the addth value on the Tr component.
@@ -1002,120 +341,28 @@ func (tr *Tr) AddTd(td *Td) *Tr {
 	return tr
 }
 
-// Prepare renders the Tr component into its internal buffer.
-func (tr *Tr) Prepare() {
-	tr.buf.Reset()
-	tr.buf.WriteString("<tr")
-	if tr.id != "" {
-		writeAttr(&tr.buf, "id", tr.id)
-	}
-	if len(tr.class) != 0 {
-		writeClassAttr(&tr.buf, tr.class)
-	}
-	if len(tr.style) != 0 {
-		parseStyle(&tr.buf, tr.style)
-	}
-	tr.buf.WriteByte('>')
-
-	writeElements(&tr.buf, tr.contents)
-	tr.buf.WriteString("</tr>")
+// prepare renders the Tr component into its internal buffer.
+func (tr *Tr) prepare() {
+	tg := openTag(&tr.buf, "tr")
+	tg.attr("id", tr.id)
+	tg.classAttr(tr.class)
+	tg.styleAttr(tr.style)
+	tg.children(tr.contents)
 }
-
-// Bytes returns a defensive copy of the rendered Tr bytes.
-func (tr *Tr) Bytes() []byte {
-	return cloneBytes(tr.buf.Bytes())
-}
-
-// Render returns freshly prepared Tr HTML bytes.
-func (t *Tr) Render() []byte {
-	return renderPrepared(t)
-}
-
-// HTML returns freshly prepared Tr HTML as a string.
-func (t *Tr) HTML() string {
-	return htmlPrepared(t)
-}
-
-// String returns freshly prepared Tr HTML as a string.
-func (t *Tr) String() string {
-	return t.HTML()
-}
-
-// IsBodyElement implements BodyElement interface
-func (tr *Tr) IsBodyElement() {}
 
 // Td represents the Td component or supporting type.
 type Td struct {
-	buf      bytes.Buffer
-	class    []string
-	id       string
-	style    StyleMap
-	contents []Element
-	colspan  int
-	rowspan  int
+	bodyElement
+	tabularNode[*Td]
+	colspan int
+	rowspan int
 }
 
 // NewTd creates a new Td component.
 func NewTd() *Td {
-	return &Td{
-		style: make(StyleMap),
-	}
-}
-
-// AddClass sets the addclass value on the Td component.
-func (td *Td) AddClass(s string) *Td {
-	td.class = append(td.class, s)
-	return td
-}
-
-// AddClasses sets the addclasses value on the Td component.
-func (td *Td) AddClasses(s []string) *Td {
-	td.class = append(td.class, s...)
-	return td
-}
-
-// Class sets the class value on the Td component.
-func (td *Td) Class(s []string) *Td {
-	td.class = cloneStrings(s)
-	return td
-}
-
-// AddId sets the addid value on the Td component.
-func (td *Td) AddId(s string) *Td {
-	td.id = s
-	return td
-}
-
-// Id sets the id value on the Td component.
-func (td *Td) Id(s string) *Td {
-	td.id = s
-	return td
-}
-
-// AddStyle adds one inline CSS declaration to the Td component.
-func (td *Td) AddStyle(k, v string) *Td {
-	td.style[k] = v
-	return td
-}
-
-// AddStyles adds multiple inline CSS declarations to the Td component.
-func (td *Td) AddStyles(m StyleMap) *Td {
-	for k, v := range m {
-		td.style[k] = v
-	}
-	return td
-}
-
-// Styles replaces the inline CSS declarations on the Td component.
-func (td *Td) Styles(m StyleMap) *Td {
-	td.style = cloneStyleMap(m)
-	return td
-}
-
-// Add appends child content to the Td component.
-func (td *Td) Add(e Element) *Td {
-	td.contents = appendElement(td.contents, e)
-	return td
+	v := &Td{}
+	v.init(v)
+	return v
 }
 
 // Colspan sets the colspan value on the Td component.
@@ -1130,127 +377,31 @@ func (td *Td) Rowspan(r int) *Td {
 	return td
 }
 
-// Prepare renders the Td component into its internal buffer.
-func (td *Td) Prepare() {
-	td.buf.Reset()
-	td.buf.WriteString("<td")
-	if td.id != "" {
-		writeAttr(&td.buf, "id", td.id)
-	}
-	if len(td.class) != 0 {
-		writeClassAttr(&td.buf, td.class)
-	}
-	if len(td.style) != 0 {
-		parseStyle(&td.buf, td.style)
-	}
-	if td.colspan > 0 {
-		writeIntAttr(&td.buf, "colspan", td.colspan)
-	}
-	if td.rowspan > 0 {
-		writeIntAttr(&td.buf, "rowspan", td.rowspan)
-	}
-	td.buf.WriteByte('>')
-
-	writeElements(&td.buf, td.contents)
-	td.buf.WriteString("</td>")
+// prepare renders the Td component into its internal buffer.
+func (td *Td) prepare() {
+	tg := openTag(&td.buf, "td")
+	tg.attr("id", td.id)
+	tg.classAttr(td.class)
+	tg.styleAttr(td.style)
+	tg.intAttr("colspan", td.colspan)
+	tg.intAttr("rowspan", td.rowspan)
+	tg.children(td.contents)
 }
-
-// Bytes returns a defensive copy of the rendered Td bytes.
-func (td *Td) Bytes() []byte {
-	return cloneBytes(td.buf.Bytes())
-}
-
-// Render returns freshly prepared Td HTML bytes.
-func (t *Td) Render() []byte {
-	return renderPrepared(t)
-}
-
-// HTML returns freshly prepared Td HTML as a string.
-func (t *Td) HTML() string {
-	return htmlPrepared(t)
-}
-
-// String returns freshly prepared Td HTML as a string.
-func (t *Td) String() string {
-	return t.HTML()
-}
-
-// IsBodyElement implements BodyElement interface
-func (td *Td) IsBodyElement() {}
 
 // Th represents the Th component or supporting type.
 type Th struct {
-	buf      bytes.Buffer
-	class    []string
-	id       string
-	style    StyleMap
-	contents []Element
-	colspan  int
-	rowspan  int
-	scope    string
+	bodyElement
+	tabularNode[*Th]
+	colspan int
+	rowspan int
+	scope   string
 }
 
 // NewTh creates a new Th component.
 func NewTh() *Th {
-	return &Th{
-		style: make(StyleMap),
-	}
-}
-
-// AddClass sets the addclass value on the Th component.
-func (th *Th) AddClass(s string) *Th {
-	th.class = append(th.class, s)
-	return th
-}
-
-// AddClasses sets the addclasses value on the Th component.
-func (th *Th) AddClasses(s []string) *Th {
-	th.class = append(th.class, s...)
-	return th
-}
-
-// Class sets the class value on the Th component.
-func (th *Th) Class(s []string) *Th {
-	th.class = cloneStrings(s)
-	return th
-}
-
-// AddId sets the addid value on the Th component.
-func (th *Th) AddId(s string) *Th {
-	th.id = s
-	return th
-}
-
-// Id sets the id value on the Th component.
-func (th *Th) Id(s string) *Th {
-	th.id = s
-	return th
-}
-
-// AddStyle adds one inline CSS declaration to the Th component.
-func (th *Th) AddStyle(k, v string) *Th {
-	th.style[k] = v
-	return th
-}
-
-// AddStyles adds multiple inline CSS declarations to the Th component.
-func (th *Th) AddStyles(m StyleMap) *Th {
-	for k, v := range m {
-		th.style[k] = v
-	}
-	return th
-}
-
-// Styles replaces the inline CSS declarations on the Th component.
-func (th *Th) Styles(m StyleMap) *Th {
-	th.style = cloneStyleMap(m)
-	return th
-}
-
-// Add appends child content to the Th component.
-func (th *Th) Add(e Element) *Th {
-	th.contents = appendElement(th.contents, e)
-	return th
+	v := &Th{}
+	v.init(v)
+	return v
 }
 
 // Colspan sets the colspan value on the Th component.
@@ -1271,53 +422,14 @@ func (th *Th) Scope(s string) *Th {
 	return th
 }
 
-// Prepare renders the Th component into its internal buffer.
-func (th *Th) Prepare() {
-	th.buf.Reset()
-	th.buf.WriteString("<th")
-	if th.id != "" {
-		writeAttr(&th.buf, "id", th.id)
-	}
-	if len(th.class) != 0 {
-		writeClassAttr(&th.buf, th.class)
-	}
-	if len(th.style) != 0 {
-		parseStyle(&th.buf, th.style)
-	}
-	if th.colspan > 0 {
-		writeIntAttr(&th.buf, "colspan", th.colspan)
-	}
-	if th.rowspan > 0 {
-		writeIntAttr(&th.buf, "rowspan", th.rowspan)
-	}
-	if th.scope != "" {
-		writeAttr(&th.buf, "scope", th.scope)
-	}
-	th.buf.WriteByte('>')
-
-	writeElements(&th.buf, th.contents)
-	th.buf.WriteString("</th>")
+// prepare renders the Th component into its internal buffer.
+func (th *Th) prepare() {
+	tg := openTag(&th.buf, "th")
+	tg.attr("id", th.id)
+	tg.classAttr(th.class)
+	tg.styleAttr(th.style)
+	tg.intAttr("colspan", th.colspan)
+	tg.intAttr("rowspan", th.rowspan)
+	tg.attr("scope", th.scope)
+	tg.children(th.contents)
 }
-
-// Bytes returns a defensive copy of the rendered Th bytes.
-func (th *Th) Bytes() []byte {
-	return cloneBytes(th.buf.Bytes())
-}
-
-// Render returns freshly prepared Th HTML bytes.
-func (t *Th) Render() []byte {
-	return renderPrepared(t)
-}
-
-// HTML returns freshly prepared Th HTML as a string.
-func (t *Th) HTML() string {
-	return htmlPrepared(t)
-}
-
-// String returns freshly prepared Th HTML as a string.
-func (t *Th) String() string {
-	return t.HTML()
-}
-
-// IsBodyElement implements BodyElement interface
-func (th *Th) IsBodyElement() {}

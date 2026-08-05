@@ -40,9 +40,9 @@ func NewHtmlFile() *HtmlFile {
 	}
 }
 
-// Bytes returns the buffer contents
-func (h *HtmlFile) Bytes() []byte {
-	return cloneBytes(h.buf.Bytes())
+// rawBytes returns the prepared document bytes without copying them.
+func (h *HtmlFile) rawBytes() []byte {
+	return h.buf.Bytes()
 }
 
 // Err returns document structure or rendering errors recorded while building.
@@ -55,32 +55,17 @@ func (h *HtmlFile) addError(err error) {
 	h.err = errors.Join(h.err, err)
 }
 
-// Prepare builds the HTML for the html element
-func (h *HtmlFile) Prepare() {
-	h.buf.Reset()
-	h.buf.WriteString("<html")
-	if h.lang != "" {
-		writeAttr(&h.buf, "lang", h.lang)
-	}
-	if h.dir != "" {
-		writeAttr(&h.buf, "dir", h.dir)
-	}
-	if h.xmlLang != "" {
-		writeAttr(&h.buf, "xml:lang", h.xmlLang)
-	}
-	if h.xmlns != "" {
-		writeAttr(&h.buf, "xmlns", h.xmlns)
-	}
-	if h.manifest != "" {
-		writeAttr(&h.buf, "manifest", h.manifest)
-	}
-	if h.contextMenu != "" {
-		writeAttr(&h.buf, "contextmenu", h.contextMenu)
-	}
-	if len(h.style) != 0 {
-		parseStyle(&h.buf, h.style)
-	}
-	h.buf.WriteByte('>')
+// prepare builds the HTML for the html element
+func (h *HtmlFile) prepare() {
+	tg := openTag(&h.buf, "html")
+	tg.attr("lang", h.lang)
+	tg.attr("dir", h.dir)
+	tg.attr("xml:lang", h.xmlLang)
+	tg.attr("xmlns", h.xmlns)
+	tg.attr("manifest", h.manifest)
+	tg.attr("contextmenu", h.contextMenu)
+	tg.styleAttr(h.style)
+	tg.open()
 
 	if len(h.headContent) != 0 || len(h.headStyle) != 0 {
 		h.writeHeadElement()
@@ -92,7 +77,7 @@ func (h *HtmlFile) Prepare() {
 		h.writeBodyElement()
 	}
 
-	h.buf.WriteString("</html>")
+	tg.end()
 }
 
 // Add adds content to the html element
@@ -253,8 +238,8 @@ func (h *HtmlFile) renderDocument() (renderedDocumentHTML, error) {
 	if h.err != nil {
 		return nil, h.err
 	}
-	h.Prepare()
-	return renderedDocumentHTML(h.Bytes()), nil
+	h.prepare()
+	return renderedDocumentHTML(cloneBytes(h.rawBytes())), nil
 }
 
 // RenderString returns the compact HTML document as a string.
@@ -319,30 +304,18 @@ func (h *HtmlFile) rejectStructuralElement(target string, e Element) {
 
 // writeHeadElement writes the generated head section.
 func (h *HtmlFile) writeHeadElement() {
-	h.buf.WriteString("<head")
-	if len(h.headStyle) != 0 {
-		parseStyle(&h.buf, h.headStyle)
-	}
-	h.buf.WriteByte('>')
-	writeElements(&h.buf, h.headContent)
-	h.buf.WriteString("</head>")
+	tg := appendTag(&h.buf, "head")
+	tg.styleAttr(h.headStyle)
+	tg.children(h.headContent)
 }
 
 // writeBodyElement writes the generated body section.
 func (h *HtmlFile) writeBodyElement() {
-	h.buf.WriteString("<body")
-	if h.bodyOnLoad != "" {
-		writeAttr(&h.buf, "onload", h.bodyOnLoad)
-	}
-	if h.bodyOnUnload != "" {
-		writeAttr(&h.buf, "onunload", h.bodyOnUnload)
-	}
-	if len(h.bodyStyle) != 0 {
-		parseStyle(&h.buf, h.bodyStyle)
-	}
-	h.buf.WriteByte('>')
-	writeElements(&h.buf, h.bodyContent)
-	h.buf.WriteString("</body>")
+	tg := appendTag(&h.buf, "body")
+	tg.attr("onload", h.bodyOnLoad)
+	tg.attr("onunload", h.bodyOnUnload)
+	tg.styleAttr(h.bodyStyle)
+	tg.children(h.bodyContent)
 }
 
 // elementName returns a stable type name for error and warning messages.
@@ -675,143 +648,45 @@ func findTagEnd(input string, start int) int {
 
 // Head represents the HTML head element for document metadata
 type Head struct {
-	buf      bytes.Buffer
-	style    StyleMap
-	contents []Element
+	contentNode[*Head]
 }
 
 // NewHead creates a new Head element
 func NewHead() *Head {
-	return &Head{
-		style: make(StyleMap),
-	}
-}
-
-// Bytes returns the buffer contents
-func (h *Head) Bytes() []byte {
-	return cloneBytes(h.buf.Bytes())
-}
-
-// Render returns freshly prepared Head HTML bytes.
-func (h *Head) Render() []byte {
-	return renderPrepared(h)
-}
-
-// HTML returns freshly prepared Head HTML as a string.
-func (h *Head) HTML() string {
-	return htmlPrepared(h)
-}
-
-// String returns freshly prepared Head HTML as a string.
-func (h *Head) String() string {
-	return h.HTML()
+	v := &Head{}
+	v.init(v)
+	return v
 }
 
 // Prepare builds the HTML for the head element
-func (h *Head) Prepare() {
-	h.buf.Reset()
-	h.buf.WriteString("<head")
-	if len(h.style) != 0 {
-		parseStyle(&h.buf, h.style)
-	}
-	h.buf.WriteByte('>')
-
-	writeElements(&h.buf, h.contents)
-	h.buf.WriteString("</head>")
-}
-
-// Add adds content to the head element
-func (h *Head) Add(e Element) *Head {
-	if e != nil {
-		h.contents = appendElement(h.contents, e)
-	}
-	return h
-}
-
-// AddStyle adds a single CSS property
-func (h *Head) AddStyle(k, v string) *Head {
-	h.style[k] = v
-	return h
-}
-
-// AddStyles adds multiple CSS properties
-func (h *Head) AddStyles(m StyleMap) *Head {
-	for k, v := range m {
-		h.style[k] = v
-	}
-	return h
-}
-
-// Style replaces all styles
-func (h *Head) Style(m StyleMap) *Head {
-	h.style = cloneStyleMap(m)
-	return h
+func (h *Head) prepare() {
+	tg := openTag(&h.buf, "head")
+	tg.styleAttr(h.style)
+	tg.children(h.contents)
 }
 
 // Body represents the HTML body element for document content
 type Body struct {
-	buf      bytes.Buffer
-	style    StyleMap
-	contents []Element
+	bodyElement
+	contentNode[*Body]
 	onLoad   string
 	onUnload string
 }
 
 // NewBody creates a new Body element
 func NewBody() *Body {
-	return &Body{
-		style: make(StyleMap),
-	}
+	v := &Body{}
+	v.init(v)
+	return v
 }
-
-// Bytes returns the buffer contents
-func (b *Body) Bytes() []byte {
-	return cloneBytes(b.buf.Bytes())
-}
-
-// Render returns freshly prepared Body HTML bytes.
-func (b *Body) Render() []byte {
-	return renderPrepared(b)
-}
-
-// HTML returns freshly prepared Body HTML as a string.
-func (b *Body) HTML() string {
-	return htmlPrepared(b)
-}
-
-// String returns freshly prepared Body HTML as a string.
-func (b *Body) String() string {
-	return b.HTML()
-}
-
-// IsBodyElement implements BodyElement interface
-func (b *Body) IsBodyElement() {}
 
 // Prepare builds the HTML for the body element
-func (b *Body) Prepare() {
-	b.buf.Reset()
-	b.buf.WriteString("<body")
-	if b.onLoad != "" {
-		writeAttr(&b.buf, "onload", b.onLoad)
-	}
-	if b.onUnload != "" {
-		writeAttr(&b.buf, "onunload", b.onUnload)
-	}
-	if len(b.style) != 0 {
-		parseStyle(&b.buf, b.style)
-	}
-	b.buf.WriteByte('>')
-
-	writeElements(&b.buf, b.contents)
-	b.buf.WriteString("</body>")
-}
-
-// Add adds content to the body element
-func (b *Body) Add(e Element) *Body {
-	if e != nil {
-		b.contents = appendElement(b.contents, e)
-	}
-	return b
+func (b *Body) prepare() {
+	tg := openTag(&b.buf, "body")
+	tg.attr("onload", b.onLoad)
+	tg.attr("onunload", b.onUnload)
+	tg.styleAttr(b.style)
+	tg.children(b.contents)
 }
 
 // OnLoad sets the onload attribute
@@ -826,83 +701,25 @@ func (b *Body) OnUnload(onUnload string) *Body {
 	return b
 }
 
-// AddStyle adds a single CSS property
-func (b *Body) AddStyle(k, v string) *Body {
-	b.style[k] = v
-	return b
-}
-
-// AddStyles adds multiple CSS properties
-func (b *Body) AddStyles(m StyleMap) *Body {
-	for k, v := range m {
-		b.style[k] = v
-	}
-	return b
-}
-
-// Style replaces all styles
-func (b *Body) Style(m StyleMap) *Body {
-	b.style = cloneStyleMap(m)
-	return b
-}
-
 // Title represents the HTML title element for document title
 type Title struct {
-	buf      bytes.Buffer
-	style    StyleMap
-	contents []Element
+	headElement
+	contentNode[*Title]
 }
 
 // NewTitle creates a new Title element
 func NewTitle() *Title {
-	return &Title{
-		style: make(StyleMap),
-	}
-}
-
-// Bytes returns the buffer contents
-func (t *Title) Bytes() []byte {
-	return cloneBytes(t.buf.Bytes())
-}
-
-// Render returns freshly prepared Title HTML bytes.
-func (t *Title) Render() []byte {
-	return renderPrepared(t)
-}
-
-// HTML returns freshly prepared Title HTML as a string.
-func (t *Title) HTML() string {
-	return htmlPrepared(t)
-}
-
-// String returns freshly prepared Title HTML as a string.
-func (t *Title) String() string {
-	return t.HTML()
+	v := &Title{}
+	v.init(v)
+	return v
 }
 
 // Prepare builds the HTML for the title element
-func (t *Title) Prepare() {
-	t.buf.Reset()
-	t.buf.WriteString("<title")
-	if len(t.style) != 0 {
-		parseStyle(&t.buf, t.style)
-	}
-	t.buf.WriteByte('>')
-
-	writeElements(&t.buf, t.contents)
-	t.buf.WriteString("</title>")
+func (t *Title) prepare() {
+	tg := openTag(&t.buf, "title")
+	tg.styleAttr(t.style)
+	tg.children(t.contents)
 }
-
-// Add adds content to the title element
-func (t *Title) Add(e Element) *Title {
-	if e != nil {
-		t.contents = appendElement(t.contents, e)
-	}
-	return t
-}
-
-// IsHeadElement implements HeadElement interface
-func (t *Title) IsHeadElement() {}
 
 // Text adds text content to the title element
 func (t *Title) Text(text string) *Title {
@@ -910,79 +727,29 @@ func (t *Title) Text(text string) *Title {
 	return t
 }
 
-// AddStyle adds a single CSS property
-func (t *Title) AddStyle(k, v string) *Title {
-	t.style[k] = v
-	return t
-}
-
-// AddStyles adds multiple CSS properties
-func (t *Title) AddStyles(m StyleMap) *Title {
-	for k, v := range m {
-		t.style[k] = v
-	}
-	return t
-}
-
-// Style replaces all styles
-func (t *Title) Style(m StyleMap) *Title {
-	t.style = cloneStyleMap(m)
-	return t
-}
-
 // Base represents the HTML base element for document base URL
 type Base struct {
-	buf    bytes.Buffer
-	style  StyleMap
+	headElement
+	node[*Base]
 	href   string
 	target string
 }
 
 // NewBase creates a new Base element
 func NewBase() *Base {
-	return &Base{
-		style: make(StyleMap),
-	}
-}
-
-// Bytes returns the buffer contents
-func (b *Base) Bytes() []byte {
-	return cloneBytes(b.buf.Bytes())
-}
-
-// Render returns freshly prepared Base HTML bytes.
-func (b *Base) Render() []byte {
-	return renderPrepared(b)
-}
-
-// HTML returns freshly prepared Base HTML as a string.
-func (b *Base) HTML() string {
-	return htmlPrepared(b)
-}
-
-// String returns freshly prepared Base HTML as a string.
-func (b *Base) String() string {
-	return b.HTML()
+	v := &Base{}
+	v.init(v)
+	return v
 }
 
 // Prepare builds the HTML for the base element
-func (b *Base) Prepare() {
-	b.buf.Reset()
-	b.buf.WriteString("<base")
-	if b.href != "" {
-		writeAttr(&b.buf, "href", b.href)
-	}
-	if b.target != "" {
-		writeAttr(&b.buf, "target", b.target)
-	}
-	if len(b.style) != 0 {
-		parseStyle(&b.buf, b.style)
-	}
-	b.buf.WriteString(">")
+func (b *Base) prepare() {
+	tg := openTag(&b.buf, "base")
+	tg.attr("href", b.href)
+	tg.attr("target", b.target)
+	tg.styleAttr(b.style)
+	tg.void()
 }
-
-// IsHeadElement implements HeadElement interface
-func (b *Base) IsHeadElement() {}
 
 // Href sets the href attribute
 func (b *Base) Href(href string) *Base {
@@ -996,30 +763,10 @@ func (b *Base) Target(target string) *Base {
 	return b
 }
 
-// AddStyle adds a single CSS property
-func (b *Base) AddStyle(k, v string) *Base {
-	b.style[k] = v
-	return b
-}
-
-// AddStyles adds multiple CSS properties
-func (b *Base) AddStyles(m StyleMap) *Base {
-	for k, v := range m {
-		b.style[k] = v
-	}
-	return b
-}
-
-// Style replaces all styles
-func (b *Base) Style(m StyleMap) *Base {
-	b.style = cloneStyleMap(m)
-	return b
-}
-
 // Link represents the HTML link element for external resources
 type Link struct {
-	buf            bytes.Buffer
-	style          StyleMap
+	headElement
+	node[*Link]
 	rel            string
 	href           string
 	linkType       string
@@ -1033,70 +780,26 @@ type Link struct {
 
 // NewLink creates a new Link element
 func NewLink() *Link {
-	return &Link{
-		style: make(StyleMap),
-	}
-}
-
-// Bytes returns the buffer contents
-func (l *Link) Bytes() []byte {
-	return cloneBytes(l.buf.Bytes())
-}
-
-// Render returns freshly prepared Link HTML bytes.
-func (l *Link) Render() []byte {
-	return renderPrepared(l)
-}
-
-// HTML returns freshly prepared Link HTML as a string.
-func (l *Link) HTML() string {
-	return htmlPrepared(l)
-}
-
-// String returns freshly prepared Link HTML as a string.
-func (l *Link) String() string {
-	return l.HTML()
+	v := &Link{}
+	v.init(v)
+	return v
 }
 
 // Prepare builds the HTML for the link element
-func (l *Link) Prepare() {
-	l.buf.Reset()
-	l.buf.WriteString("<link")
-	if l.rel != "" {
-		writeAttr(&l.buf, "rel", l.rel)
-	}
-	if l.href != "" {
-		writeAttr(&l.buf, "href", l.href)
-	}
-	if l.linkType != "" {
-		writeAttr(&l.buf, "type", l.linkType)
-	}
-	if l.media != "" {
-		writeAttr(&l.buf, "media", l.media)
-	}
-	if l.sizes != "" {
-		writeAttr(&l.buf, "sizes", l.sizes)
-	}
-	if l.crossOrigin != "" {
-		writeAttr(&l.buf, "crossOrigin", l.crossOrigin)
-	}
-	if l.integrity != "" {
-		writeAttr(&l.buf, "integrity", l.integrity)
-	}
-	if l.referrerPolicy != "" {
-		writeAttr(&l.buf, "referrerPolicy", l.referrerPolicy)
-	}
-	if l.hreflang != "" {
-		writeAttr(&l.buf, "hreflang", l.hreflang)
-	}
-	if len(l.style) != 0 {
-		parseStyle(&l.buf, l.style)
-	}
-	l.buf.WriteString(">")
+func (l *Link) prepare() {
+	tg := openTag(&l.buf, "link")
+	tg.attr("rel", l.rel)
+	tg.attr("href", l.href)
+	tg.attr("type", l.linkType)
+	tg.attr("media", l.media)
+	tg.attr("sizes", l.sizes)
+	tg.attr("crossOrigin", l.crossOrigin)
+	tg.attr("integrity", l.integrity)
+	tg.attr("referrerPolicy", l.referrerPolicy)
+	tg.attr("hreflang", l.hreflang)
+	tg.styleAttr(l.style)
+	tg.void()
 }
-
-// IsHeadElement implements HeadElement interface
-func (l *Link) IsHeadElement() {}
 
 // Rel sets the rel attribute
 func (l *Link) Rel(rel string) *Link {
@@ -1152,30 +855,10 @@ func (l *Link) Hreflang(hreflang string) *Link {
 	return l
 }
 
-// AddStyle adds a single CSS property
-func (l *Link) AddStyle(k, v string) *Link {
-	l.style[k] = v
-	return l
-}
-
-// AddStyles adds multiple CSS properties
-func (l *Link) AddStyles(m StyleMap) *Link {
-	for k, v := range m {
-		l.style[k] = v
-	}
-	return l
-}
-
-// Style replaces all styles
-func (l *Link) Style(m StyleMap) *Link {
-	l.style = cloneStyleMap(m)
-	return l
-}
-
 // Meta represents the HTML meta element for metadata
 type Meta struct {
-	buf       bytes.Buffer
-	style     StyleMap
+	headElement
+	node[*Meta]
 	name      string
 	content   string
 	charset   string
@@ -1186,57 +869,22 @@ type Meta struct {
 
 // NewMeta creates a new Meta element
 func NewMeta() *Meta {
-	return &Meta{
-		style: make(StyleMap),
-	}
-}
-
-// Bytes returns the buffer contents
-func (m *Meta) Bytes() []byte {
-	return cloneBytes(m.buf.Bytes())
-}
-
-// Render returns freshly prepared Meta HTML bytes.
-func (m *Meta) Render() []byte {
-	return renderPrepared(m)
-}
-
-// HTML returns freshly prepared Meta HTML as a string.
-func (m *Meta) HTML() string {
-	return htmlPrepared(m)
-}
-
-// String returns freshly prepared Meta HTML as a string.
-func (m *Meta) String() string {
-	return m.HTML()
+	v := &Meta{}
+	v.init(v)
+	return v
 }
 
 // Prepare builds the HTML for the meta element
-func (m *Meta) Prepare() {
-	m.buf.Reset()
-	m.buf.WriteString("<meta")
-	if m.name != "" {
-		writeAttr(&m.buf, "name", m.name)
-	}
-	if m.content != "" {
-		writeAttr(&m.buf, "content", m.content)
-	}
-	if m.charset != "" {
-		writeAttr(&m.buf, "charset", m.charset)
-	}
-	if m.property != "" {
-		writeAttr(&m.buf, "property", m.property)
-	}
-	if m.httpEquiv != "" {
-		writeAttr(&m.buf, "http-equiv", m.httpEquiv)
-	}
-	if m.scheme != "" {
-		writeAttr(&m.buf, "scheme", m.scheme)
-	}
-	if len(m.style) != 0 {
-		parseStyle(&m.buf, m.style)
-	}
-	m.buf.WriteString(">")
+func (m *Meta) prepare() {
+	tg := openTag(&m.buf, "meta")
+	tg.attr("name", m.name)
+	tg.attr("content", m.content)
+	tg.attr("charset", m.charset)
+	tg.attr("property", m.property)
+	tg.attr("http-equiv", m.httpEquiv)
+	tg.attr("scheme", m.scheme)
+	tg.styleAttr(m.style)
+	tg.void()
 }
 
 // Name sets the name attribute
@@ -1275,84 +923,29 @@ func (m *Meta) Scheme(scheme string) *Meta {
 	return m
 }
 
-// AddStyle adds a single CSS property
-func (m *Meta) AddStyle(k, v string) *Meta {
-	m.style[k] = v
-	return m
-}
-
-// AddStyles adds multiple CSS properties
-func (m *Meta) AddStyles(m2 StyleMap) *Meta {
-	for k, v := range m2 {
-		m.style[k] = v
-	}
-	return m
-}
-
-// Style replaces all styles
-func (m *Meta) Style(m2 StyleMap) *Meta {
-	m.style = cloneStyleMap(m2)
-	return m
-}
-
-// IsHeadElement implements HeadElement interface
-func (m *Meta) IsHeadElement() {}
-
 // StyleElement represents the HTML style element for CSS styles
 type StyleElement struct {
-	buf       bytes.Buffer
-	style     StyleMap
-	contents  []Element
+	headElement
+	bodyElement
+	contentNode[*StyleElement]
 	styleType string
 	media     string
 }
 
 // NewStyleElement creates a new StyleElement element
 func NewStyleElement() *StyleElement {
-	return &StyleElement{
-		style: make(StyleMap),
-	}
-}
-
-// Bytes returns the buffer contents
-func (s *StyleElement) Bytes() []byte {
-	return cloneBytes(s.buf.Bytes())
-}
-
-// Render returns freshly prepared StyleElement HTML bytes.
-func (s *StyleElement) Render() []byte {
-	return renderPrepared(s)
-}
-
-// HTML returns freshly prepared StyleElement HTML as a string.
-func (s *StyleElement) HTML() string {
-	return htmlPrepared(s)
-}
-
-// String returns freshly prepared StyleElement HTML as a string.
-func (s *StyleElement) String() string {
-	return s.HTML()
+	v := &StyleElement{}
+	v.init(v)
+	return v
 }
 
 // Prepare builds the HTML for the style element
-func (s *StyleElement) Prepare() {
-	s.buf.Reset()
-	s.buf.WriteString("<style")
-	if s.styleType != "" {
-		writeAttr(&s.buf, "type", s.styleType)
-	}
-	if s.media != "" {
-		writeAttr(&s.buf, "media", s.media)
-	}
-	if len(s.style) != 0 {
-		parseStyle(&s.buf, s.style)
-	}
-
-	s.buf.WriteByte('>')
-
-	writeElements(&s.buf, s.contents)
-
-	s.buf.WriteString("</style>")
+func (s *StyleElement) prepare() {
+	tg := openTag(&s.buf, "style")
+	tg.attr("type", s.styleType)
+	tg.attr("media", s.media)
+	tg.styleAttr(s.style)
+	tg.children(s.contents)
 }
 
 // Add adds content to the style element
@@ -1401,29 +994,3 @@ func (s *StyleElement) Media(media string) *StyleElement {
 	s.media = media
 	return s
 }
-
-// AddStyle adds a single CSS property
-func (s *StyleElement) AddStyle(k, v string) *StyleElement {
-	s.style[k] = v
-	return s
-}
-
-// AddStyles adds multiple CSS properties
-func (s *StyleElement) AddStyles(m StyleMap) *StyleElement {
-	for k, v := range m {
-		s.style[k] = v
-	}
-	return s
-}
-
-// Style replaces all styles
-func (s *StyleElement) Style(m StyleMap) *StyleElement {
-	s.style = cloneStyleMap(m)
-	return s
-}
-
-// IsHeadElement implements HeadElement interface
-func (s *StyleElement) IsHeadElement() {}
-
-// IsBodyElement implements BodyElement interface
-func (s *StyleElement) IsBodyElement() {}
