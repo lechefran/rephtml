@@ -4,8 +4,9 @@ import "bytes"
 
 // Element is renderable HTML content that can be appended to other elements.
 //
-// Render and HTML prepare the element internally before returning output, so
-// callers do not need to call Prepare before reading rendered bytes.
+// Render and HTML build the output on each call and the element keeps no render
+// state, so there is no separate preparation step and a built element can be
+// rendered from several goroutines at once.
 type Element interface {
 	Render() []byte
 	HTML() string

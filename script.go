@@ -2,7 +2,7 @@ package rephtml
 
 import "bytes"
 
-// Canvas represents the Canvas component or supporting type.
+// Canvas represents the HTML <canvas> element, a drawing surface for scripts.
 type Canvas struct {
 	bodyElement
 	contentNode[*Canvas]
@@ -17,13 +17,13 @@ func NewCanvas() *Canvas {
 	return v
 }
 
-// Width sets the width value on the Canvas component.
+// Width sets the width attribute.
 func (c *Canvas) Width(width string) *Canvas {
 	c.width = width
 	return c
 }
 
-// Height sets the height value on the Canvas component.
+// Height sets the height attribute.
 func (c *Canvas) Height(height string) *Canvas {
 	c.height = height
 	return c
@@ -38,7 +38,7 @@ func (c *Canvas) renderTo(buf *bytes.Buffer) {
 	tg.children(c.contents)
 }
 
-// Noscript represents the Noscript component or supporting type.
+// Noscript represents the HTML <noscript> element, content shown when scripting is unsupported or disabled.
 type Noscript struct {
 	headElement
 	bodyElement
@@ -59,7 +59,7 @@ func (n *Noscript) renderTo(buf *bytes.Buffer) {
 	tg.children(n.contents)
 }
 
-// Script represents the Script component or supporting type.
+// Script represents the HTML <script> element, embedded or referenced executable code.
 type Script struct {
 	headElement
 	bodyElement
@@ -81,25 +81,25 @@ func NewScript() *Script {
 	return v
 }
 
-// Src sets the src value on the Script component.
+// Src sets the src attribute.
 func (s *Script) Src(src string) *Script {
 	s.src = src
 	return s
 }
 
-// Type sets the type value on the Script component.
+// Type sets the type attribute.
 func (s *Script) Type(scriptType string) *Script {
 	s.scriptType = scriptType
 	return s
 }
 
-// Async sets the async value on the Script component.
+// Async sets the async attribute.
 func (s *Script) Async(async bool) *Script {
 	s.async = async
 	return s
 }
 
-// Defer sets the defer value on the Script component.
+// Defer sets the defer attribute.
 func (s *Script) Defer(deferScript bool) *Script {
 	s.deferScript = deferScript
 	return s
@@ -118,13 +118,13 @@ func (s *Script) Crossorigin(crossorigin string) *Script {
 	return s.CrossOrigin(crossorigin)
 }
 
-// Integrity sets the integrity value on the Script component.
+// Integrity sets the integrity attribute.
 func (s *Script) Integrity(integrity string) *Script {
 	s.integrity = integrity
 	return s
 }
 
-// Nomodule sets the nomodule value on the Script component.
+// Nomodule sets the nomodule attribute.
 func (s *Script) Nomodule(nomodule bool) *Script {
 	s.noModule = nomodule
 	return s

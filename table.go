@@ -2,7 +2,7 @@ package rephtml
 
 import "bytes"
 
-// Table represents the Table component or supporting type.
+// Table represents the HTML <table> element, tabular data in rows and columns.
 type Table struct {
 	bodyElement
 	tabular[*Table]
@@ -22,13 +22,13 @@ func NewTable() *Table {
 	return v
 }
 
-// AddHeader sets the addheader value on the Table component.
+// AddHeader appends one header cell to the table's first row.
 func (t *Table) AddHeader(s string) *Table {
 	t.headers = append(t.headers, s)
 	return t
 }
 
-// AddHeaders sets the addheaders value on the Table component.
+// AddHeaders appends several header cells to the table's first row.
 func (t *Table) AddHeaders(s []string) *Table {
 	t.headers = append(t.headers, s...)
 	return t
@@ -59,25 +59,25 @@ func (t *Table) Rows(s [][]string) *Table {
 	return t
 }
 
-// AddCaption sets the addcaption value on the Table component.
+// AddCaption sets the table's caption, replacing any earlier one.
 func (t *Table) AddCaption(c *Caption) *Table {
 	t.caption = c
 	return t
 }
 
-// AddThead sets the addthead value on the Table component.
+// AddThead sets the table's thead, replacing any earlier one.
 func (t *Table) AddThead(th *Thead) *Table {
 	t.thead = th
 	return t
 }
 
-// AddTbody sets the addtbody value on the Table component.
+// AddTbody sets the table's tbody, replacing any earlier one.
 func (t *Table) AddTbody(tb *Tbody) *Table {
 	t.tbody = tb
 	return t
 }
 
-// AddTfoot sets the addtfoot value on the Table component.
+// AddTfoot sets the table's tfoot, replacing any earlier one.
 func (t *Table) AddTfoot(tf *Tfoot) *Table {
 	t.tfoot = tf
 	return t
@@ -142,7 +142,7 @@ func (t *Table) renderTo(buf *bytes.Buffer) {
 	tg.end()
 }
 
-// Thead represents the Thead component or supporting type.
+// Thead represents the HTML <thead> element, the header rows of a table.
 type Thead struct {
 	bodyElement
 	tabularNode[*Thead]
@@ -155,7 +155,7 @@ func NewThead() *Thead {
 	return v
 }
 
-// AddTr sets the addtr value on the Thead component.
+// AddTr appends a row to the table head.
 func (th *Thead) AddTr(tr *Tr) *Thead {
 	th.contents = appendElement(th.contents, tr)
 	return th
@@ -170,7 +170,7 @@ func (th *Thead) renderTo(buf *bytes.Buffer) {
 	tg.children(th.contents)
 }
 
-// Tbody represents the Tbody component or supporting type.
+// Tbody represents the HTML <tbody> element, the body rows of a table.
 type Tbody struct {
 	bodyElement
 	tabularNode[*Tbody]
@@ -183,7 +183,7 @@ func NewTbody() *Tbody {
 	return v
 }
 
-// AddTr sets the addtr value on the Tbody component.
+// AddTr appends a row to the table body.
 func (tb *Tbody) AddTr(tr *Tr) *Tbody {
 	tb.contents = appendElement(tb.contents, tr)
 	return tb
@@ -198,7 +198,7 @@ func (tb *Tbody) renderTo(buf *bytes.Buffer) {
 	tg.children(tb.contents)
 }
 
-// Tfoot represents the Tfoot component or supporting type.
+// Tfoot represents the HTML <tfoot> element, the footer rows of a table.
 type Tfoot struct {
 	bodyElement
 	tabularNode[*Tfoot]
@@ -211,7 +211,7 @@ func NewTfoot() *Tfoot {
 	return v
 }
 
-// AddTr sets the addtr value on the Tfoot component.
+// AddTr appends a row to the table foot.
 func (tf *Tfoot) AddTr(tr *Tr) *Tfoot {
 	tf.contents = appendElement(tf.contents, tr)
 	return tf
@@ -226,7 +226,7 @@ func (tf *Tfoot) renderTo(buf *bytes.Buffer) {
 	tg.children(tf.contents)
 }
 
-// Caption represents the Caption component or supporting type.
+// Caption represents the HTML <caption> element, the title of a table.
 type Caption struct {
 	bodyElement
 	tabular[*Caption]
@@ -240,7 +240,7 @@ func NewCaption() *Caption {
 	return v
 }
 
-// Text sets or appends text content on the Caption component.
+// Text sets the caption text, replacing any earlier text.
 func (c *Caption) Text(text string) *Caption {
 	c.text = text
 	return c
@@ -255,7 +255,7 @@ func (c *Caption) renderTo(buf *bytes.Buffer) {
 	tg.text(c.text)
 }
 
-// Col represents the Col component or supporting type.
+// Col represents the HTML <col> element, a column in a colgroup, used to share properties across a column.
 type Col struct {
 	bodyElement
 	tabular[*Col]
@@ -269,7 +269,7 @@ func NewCol() *Col {
 	return v
 }
 
-// Span sets the span value on the Col component.
+// Span sets the span attribute.
 func (col *Col) Span(s int) *Col {
 	col.span = s
 	return col
@@ -285,7 +285,7 @@ func (col *Col) renderTo(buf *bytes.Buffer) {
 	tg.void()
 }
 
-// Colgroup represents the Colgroup component or supporting type.
+// Colgroup represents the HTML <colgroup> element, a group of columns in a table.
 type Colgroup struct {
 	bodyElement
 	tabularNode[*Colgroup]
@@ -299,7 +299,7 @@ func NewColgroup() *Colgroup {
 	return v
 }
 
-// Span sets the span value on the Colgroup component.
+// Span sets the span attribute.
 func (cg *Colgroup) Span(s int) *Colgroup {
 	cg.span = s
 	return cg
@@ -315,7 +315,7 @@ func (cg *Colgroup) renderTo(buf *bytes.Buffer) {
 	tg.children(cg.contents)
 }
 
-// Tr represents the Tr component or supporting type.
+// Tr represents the HTML <tr> element, a row of cells in a table.
 type Tr struct {
 	bodyElement
 	tabularNode[*Tr]
@@ -328,13 +328,13 @@ func NewTr() *Tr {
 	return v
 }
 
-// AddTh sets the addth value on the Tr component.
+// AddTh appends a header cell to the row.
 func (tr *Tr) AddTh(th *Th) *Tr {
 	tr.contents = appendElement(tr.contents, th)
 	return tr
 }
 
-// AddTd sets the addtd value on the Tr component.
+// AddTd appends a data cell to the row.
 func (tr *Tr) AddTd(td *Td) *Tr {
 	tr.contents = appendElement(tr.contents, td)
 	return tr
@@ -349,7 +349,7 @@ func (tr *Tr) renderTo(buf *bytes.Buffer) {
 	tg.children(tr.contents)
 }
 
-// Td represents the Td component or supporting type.
+// Td represents the HTML <td> element, a data cell in a table.
 type Td struct {
 	bodyElement
 	tabularNode[*Td]
@@ -364,13 +364,13 @@ func NewTd() *Td {
 	return v
 }
 
-// Colspan sets the colspan value on the Td component.
+// Colspan sets the colspan attribute.
 func (td *Td) Colspan(c int) *Td {
 	td.colspan = c
 	return td
 }
 
-// Rowspan sets the rowspan value on the Td component.
+// Rowspan sets the rowspan attribute.
 func (td *Td) Rowspan(r int) *Td {
 	td.rowspan = r
 	return td
@@ -387,7 +387,7 @@ func (td *Td) renderTo(buf *bytes.Buffer) {
 	tg.children(td.contents)
 }
 
-// Th represents the Th component or supporting type.
+// Th represents the HTML <th> element, a header cell in a table.
 type Th struct {
 	bodyElement
 	tabularNode[*Th]
@@ -403,19 +403,19 @@ func NewTh() *Th {
 	return v
 }
 
-// Colspan sets the colspan value on the Th component.
+// Colspan sets the colspan attribute.
 func (th *Th) Colspan(c int) *Th {
 	th.colspan = c
 	return th
 }
 
-// Rowspan sets the rowspan value on the Th component.
+// Rowspan sets the rowspan attribute.
 func (th *Th) Rowspan(r int) *Th {
 	th.rowspan = r
 	return th
 }
 
-// Scope sets the scope value on the Th component.
+// Scope sets the scope attribute.
 func (th *Th) Scope(s string) *Th {
 	th.scope = s
 	return th

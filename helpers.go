@@ -300,7 +300,7 @@ func writeClassAttr(buf *bytes.Buffer, classes []string) {
 //
 // Element rendering is otherwise the same three lines repeated per attribute:
 // test whether the field is set, then write it. tag folds that test into each
-// write so a prepare method reads as a description of the element's output.
+// write so a renderTo method reads as a description of the element's output.
 // Attributes are emitted in call order, so each element keeps control of its
 // own attribute layout, including where the style attribute sits.
 type tag struct {

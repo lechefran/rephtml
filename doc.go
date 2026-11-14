@@ -92,7 +92,9 @@ func (h *HtmlFile) Add(e Element) *HtmlFile {
 	return h
 }
 
-// AddToHead sets the addtohead value on the HtmlFile component.
+// AddToHead adds e to the document head. A *Head wrapper is merged into the
+// document, and an element that is not valid head content is rejected and
+// recorded on Err.
 func (h *HtmlFile) AddToHead(e Element) *HtmlFile {
 	if e == nil {
 		return h
@@ -117,7 +119,9 @@ func (h *HtmlFile) AddToHead(e Element) *HtmlFile {
 	return h
 }
 
-// AddToBody sets the addtobody value on the HtmlFile component.
+// AddToBody adds e to the document body. A *Body wrapper is merged into the
+// document, and an element that is not valid body content is rejected and
+// recorded on Err.
 func (h *HtmlFile) AddToBody(e Element) *HtmlFile {
 	if e == nil {
 		return h
@@ -846,7 +850,7 @@ func NewTitle() *Title {
 	return v
 }
 
-// Prepare builds the HTML for the title element
+// renderTo writes the title element's HTML to buf.
 func (t *Title) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "title")
 	tg.styleAttr(t.style)
@@ -874,7 +878,7 @@ func NewBase() *Base {
 	return v
 }
 
-// Prepare builds the HTML for the base element
+// renderTo writes the base element's HTML to buf.
 func (b *Base) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "base")
 	tg.urlAttr("href", b.href)
@@ -917,7 +921,7 @@ func NewLink() *Link {
 	return v
 }
 
-// Prepare builds the HTML for the link element
+// renderTo writes the link element's HTML to buf.
 func (l *Link) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "link")
 	tg.attr("rel", l.rel)
@@ -1006,7 +1010,7 @@ func NewMeta() *Meta {
 	return v
 }
 
-// Prepare builds the HTML for the meta element
+// renderTo writes the meta element's HTML to buf.
 func (m *Meta) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "meta")
 	tg.attr("name", m.name)
@@ -1119,7 +1123,7 @@ func NewStyleElement() *StyleElement {
 	return v
 }
 
-// Prepare builds the HTML for the style element
+// renderTo writes the style element's HTML to buf.
 func (s *StyleElement) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "style")
 	tg.attr("type", s.styleType)

@@ -2,7 +2,7 @@ package rephtml
 
 import "bytes"
 
-// Embed represents the Embed component or supporting type.
+// Embed represents the HTML <embed> element, an external resource, such as a plugin or PDF, embedded at this point.
 type Embed struct {
 	bodyElement
 	node[*Embed]
@@ -19,25 +19,25 @@ func NewEmbed() *Embed {
 	return v
 }
 
-// Src sets the src value on the Embed component.
+// Src sets the src attribute.
 func (e *Embed) Src(src string) *Embed {
 	e.src = src
 	return e
 }
 
-// Type sets the type value on the Embed component.
+// Type sets the type attribute.
 func (e *Embed) Type(embedType string) *Embed {
 	e.embedType = embedType
 	return e
 }
 
-// Width sets the width value on the Embed component.
+// Width sets the width attribute.
 func (e *Embed) Width(width string) *Embed {
 	e.width = width
 	return e
 }
 
-// Height sets the height value on the Embed component.
+// Height sets the height attribute.
 func (e *Embed) Height(height string) *Embed {
 	e.height = height
 	return e
@@ -54,7 +54,7 @@ func (e *Embed) renderTo(buf *bytes.Buffer) {
 	tg.void()
 }
 
-// Iframe represents the Iframe component or supporting type.
+// Iframe represents the HTML <iframe> element, a nested browsing context that embeds another HTML page.
 type Iframe struct {
 	bodyElement
 	node[*Iframe]
@@ -77,37 +77,37 @@ func NewIframe() *Iframe {
 	return v
 }
 
-// Src sets the src value on the Iframe component.
+// Src sets the src attribute.
 func (i *Iframe) Src(src string) *Iframe {
 	i.src = src
 	return i
 }
 
-// Width sets the width value on the Iframe component.
+// Width sets the width attribute.
 func (i *Iframe) Width(width string) *Iframe {
 	i.width = width
 	return i
 }
 
-// Height sets the height value on the Iframe component.
+// Height sets the height attribute.
 func (i *Iframe) Height(height string) *Iframe {
 	i.height = height
 	return i
 }
 
-// Name sets the name value on the Iframe component.
+// Name sets the name attribute.
 func (i *Iframe) Name(name string) *Iframe {
 	i.name = name
 	return i
 }
 
-// Sandbox sets the sandbox value on the Iframe component.
+// Sandbox sets the sandbox attribute.
 func (i *Iframe) Sandbox(sandbox string) *Iframe {
 	i.sandbox = sandbox
 	return i
 }
 
-// Allow sets the allow value on the Iframe component.
+// Allow sets the allow attribute.
 func (i *Iframe) Allow(allow string) *Iframe {
 	i.allow = allow
 	return i
@@ -126,7 +126,7 @@ func (i *Iframe) Allowfullscreen(allowfullscreen bool) *Iframe {
 	return i.AllowFullscreen(allowfullscreen)
 }
 
-// Loading sets the loading value on the Iframe component.
+// Loading sets the loading attribute.
 func (i *Iframe) Loading(loading string) *Iframe {
 	i.loading = loading
 	return i
@@ -172,7 +172,7 @@ func (i *Iframe) renderTo(buf *bytes.Buffer) {
 	tg.empty()
 }
 
-// Object represents the Object component or supporting type.
+// Object represents the HTML <object> element, an external resource treated as an image, a nested browsing context or a plugin.
 type Object struct {
 	bodyElement
 	contentNode[*Object]
@@ -192,43 +192,43 @@ func NewObject() *Object {
 	return v
 }
 
-// Data sets the data value on the Object component.
+// Data sets the data attribute.
 func (o *Object) Data(data string) *Object {
 	o.data = data
 	return o
 }
 
-// Type sets the type value on the Object component.
+// Type sets the type attribute.
 func (o *Object) Type(objType string) *Object {
 	o.objType = objType
 	return o
 }
 
-// Width sets the width value on the Object component.
+// Width sets the width attribute.
 func (o *Object) Width(width string) *Object {
 	o.width = width
 	return o
 }
 
-// Height sets the height value on the Object component.
+// Height sets the height attribute.
 func (o *Object) Height(height string) *Object {
 	o.height = height
 	return o
 }
 
-// Name sets the name value on the Object component.
+// Name sets the name attribute.
 func (o *Object) Name(name string) *Object {
 	o.name = name
 	return o
 }
 
-// Usemap sets the usemap value on the Object component.
+// Usemap sets the usemap attribute.
 func (o *Object) Usemap(usemap string) *Object {
 	o.usemap = usemap
 	return o
 }
 
-// Form sets the form value on the Object component.
+// Form sets the form attribute.
 func (o *Object) Form(form string) *Object {
 	o.form = form
 	return o
@@ -248,7 +248,7 @@ func (o *Object) renderTo(buf *bytes.Buffer) {
 	tg.children(o.contents)
 }
 
-// Picture represents the Picture component or supporting type.
+// Picture represents the HTML <picture> element, a container that offers alternative sources for an image.
 type Picture struct {
 	bodyElement
 	contentNode[*Picture]
@@ -268,7 +268,7 @@ func (p *Picture) renderTo(buf *bytes.Buffer) {
 	tg.children(p.contents)
 }
 
-// Portal represents the Portal component or supporting type.
+// Portal represents the HTML <portal> element, a preview of another page embedded in this one. It is obsolete and was never widely supported.
 type Portal struct {
 	bodyElement
 	node[*Portal]
@@ -283,7 +283,7 @@ func NewPortal() *Portal {
 	return v
 }
 
-// Src sets the src value on the Portal component.
+// Src sets the src attribute.
 func (p *Portal) Src(src string) *Portal {
 	p.src = src
 	return p
@@ -311,7 +311,7 @@ func (p *Portal) renderTo(buf *bytes.Buffer) {
 	tg.empty()
 }
 
-// Source represents the Source component or supporting type.
+// Source represents the HTML <source> element, a media resource for a picture, audio or video element.
 type Source struct {
 	bodyElement
 	node[*Source]
@@ -329,31 +329,31 @@ func NewSource() *Source {
 	return v
 }
 
-// Src sets the src value on the Source component.
+// Src sets the src attribute.
 func (s *Source) Src(src string) *Source {
 	s.src = src
 	return s
 }
 
-// Srcset sets the srcset value on the Source component.
+// Srcset sets the srcset attribute.
 func (s *Source) Srcset(srcset string) *Source {
 	s.srcset = srcset
 	return s
 }
 
-// Media sets the media value on the Source component.
+// Media sets the media attribute.
 func (s *Source) Media(media string) *Source {
 	s.media = media
 	return s
 }
 
-// Sizes sets the sizes value on the Source component.
+// Sizes sets the sizes attribute.
 func (s *Source) Sizes(sizes string) *Source {
 	s.sizes = sizes
 	return s
 }
 
-// Type sets the type value on the Source component.
+// Type sets the type attribute.
 func (s *Source) Type(srcType string) *Source {
 	s.srcType = srcType
 	return s

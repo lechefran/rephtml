@@ -2,7 +2,7 @@ package rephtml
 
 import "bytes"
 
-// Div represents the Div component or supporting type.
+// Div represents the HTML <div> element, a generic container for flow content with no semantic meaning.
 type Div struct {
 	bodyElement
 	contentNode[*Div]

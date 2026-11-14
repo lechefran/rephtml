@@ -17,7 +17,7 @@ func NewDel() *Del {
 	return v
 }
 
-// Prepare builds the HTML for the del element
+// renderTo writes the del element's HTML to buf.
 func (d *Del) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "del")
 	tg.urlAttr("cite", d.cite)
@@ -53,7 +53,7 @@ func NewIns() *Ins {
 	return v
 }
 
-// Prepare builds the HTML for the ins element
+// renderTo writes the ins element's HTML to buf.
 func (i *Ins) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "ins")
 	tg.urlAttr("cite", i.cite)
