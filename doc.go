@@ -82,9 +82,7 @@ func (h *HtmlFile) renderTo(buf *bytes.Buffer) {
 
 // Add adds content to the html element
 func (h *HtmlFile) Add(e Element) *HtmlFile {
-	if e != nil {
-		h.contents = appendElement(h.contents, e)
-	}
+	h.contents = appendElement(h.contents, e)
 	return h
 }
 
@@ -855,9 +853,9 @@ func (l *Link) renderTo(buf *bytes.Buffer) {
 	tg.attr("type", l.linkType)
 	tg.attr("media", l.media)
 	tg.attr("sizes", l.sizes)
-	tg.attr("crossOrigin", l.crossOrigin)
+	tg.attr("crossorigin", l.crossOrigin)
 	tg.attr("integrity", l.integrity)
-	tg.attr("referrerPolicy", l.referrerPolicy)
+	tg.attr("referrerpolicy", l.referrerPolicy)
 	tg.attr("hreflang", l.hreflang)
 	tg.styleAttr(l.style)
 	tg.void()

@@ -215,6 +215,7 @@ func (d *Bdi) renderTo(buf *bytes.Buffer) {
 type Bdo struct {
 	bodyElement
 	textNode[*Bdo]
+	dir string
 }
 
 // NewBdo creates a new bdo component.
@@ -224,9 +225,17 @@ func NewBdo() *Bdo {
 	return v
 }
 
+// Dir sets the dir attribute, the text direction to force: "ltr" or "rtl". The
+// bdo element has no effect without it.
+func (d *Bdo) Dir(dir string) *Bdo {
+	d.dir = dir
+	return d
+}
+
 // renderTo writes the Bdo component's HTML to buf.
 func (d *Bdo) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "bdo")
+	tg.attr("dir", d.dir)
 	tg.styleAttr(d.style)
 	tg.text(d.text)
 }
@@ -646,7 +655,7 @@ func NewTime() *Time {
 func (t *Time) Datetime(dt string) *Time {
 	if !isValidDatetime(dt) {
 		t.datetime = ""
-		t.err = fmt.Errorf("invalid datetime value: %s", dt)
+		t.err = fmt.Errorf("invalid datetime value: %q", dt)
 		return t
 	}
 	t.datetime = dt
