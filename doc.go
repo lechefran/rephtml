@@ -940,13 +940,60 @@ func NewMeta() *Meta {
 func (m *Meta) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "meta")
 	tg.attr("name", m.name)
-	tg.attr("content", m.content)
+	if strings.EqualFold(strings.TrimSpace(m.httpEquiv), "refresh") {
+		tg.attr("content", filterRefreshContent(m.content))
+	} else {
+		tg.attr("content", m.content)
+	}
 	tg.attr("charset", m.charset)
 	tg.attr("property", m.property)
 	tg.attr("http-equiv", m.httpEquiv)
 	tg.attr("scheme", m.scheme)
 	tg.styleAttr(m.style)
 	tg.void()
+}
+
+// filterRefreshContent replaces the target of a meta refresh when it is not a
+// safe URL.
+//
+// A refresh value reads "<seconds>; url=<target>", and browsers navigate to the
+// target, so a javascript: target would run code just as it would in an href.
+// The delay, the separators and an optional "url=" prefix are kept as written.
+func filterRefreshContent(content string) string {
+	const space = " \t\n\r\f"
+
+	i := 0
+	for i < len(content) && (content[i] >= '0' && content[i] <= '9' || content[i] == '.') {
+		i++
+	}
+	for i < len(content) && strings.IndexByte(space+";,", content[i]) >= 0 {
+		i++
+	}
+	if i == len(content) {
+		return content
+	}
+
+	if hasPrefixFold(content[i:], "url") {
+		j := i + len("url")
+		for j < len(content) && strings.IndexByte(space, content[j]) >= 0 {
+			j++
+		}
+		if j < len(content) && content[j] == '=' {
+			j++
+			for j < len(content) && strings.IndexByte(space, content[j]) >= 0 {
+				j++
+			}
+			i = j
+		}
+	}
+	if i < len(content) && (content[i] == '"' || content[i] == '\'') {
+		i++
+	}
+
+	if IsSafeURL(content[i:]) {
+		return content
+	}
+	return content[:i] + BlockedURL
 }
 
 // Name sets the name attribute
@@ -992,6 +1039,7 @@ type StyleElement struct {
 	contentNode[*StyleElement]
 	styleType string
 	media     string
+	err       error
 }
 
 // NewStyleElement creates a new StyleElement element
@@ -1010,7 +1058,12 @@ func (s *StyleElement) renderTo(buf *bytes.Buffer) {
 	tg.children(s.contents)
 }
 
-// Add adds content to the style element
+// Add adds CSS rule content to the style element.
+//
+// A style element holds raw CSS text, so only CSS rules (including *Style) are
+// accepted. Any other element is dropped, because rendering HTML inside a style
+// element produces markup the browser reads as CSS text, and the drop is
+// recorded on Err.
 func (s *StyleElement) Add(e Element) *StyleElement {
 	switch element := e.(type) {
 	case nil:
@@ -1026,9 +1079,17 @@ func (s *StyleElement) Add(e Element) *StyleElement {
 			Tags:  append([]string(nil), element.Tags...),
 		})
 	default:
-		s.contents = appendElement(s.contents, e)
+		if !isNilElement(e) {
+			s.err = errors.Join(s.err, fmt.Errorf("cannot add %s to style element: only CSS rules are allowed", elementName(e)))
+		}
 	}
 	return s
+}
+
+// Err returns the errors recorded when content that is not CSS was added to the
+// style element.
+func (s *StyleElement) Err() error {
+	return s.err
 }
 
 // AddRule appends typed CSS rule content to the style element.
@@ -1041,7 +1102,7 @@ func (s *StyleElement) AddRule(rule CSSRule) *StyleElement {
 
 // Text adds CSS text content to the style element
 func (s *StyleElement) Text(text string) *StyleElement {
-	s.contents = appendElement(s.contents, rawText(text))
+	s.contents = appendElement(s.contents, rawText(escapeCSS(text)))
 	return s
 }
 

@@ -131,7 +131,11 @@ func (i *Iframe) Referrerpolicy(referrerpolicy string) *Iframe {
 	return i
 }
 
-// Srcdoc sets the srcdoc value on the Iframe component.
+// Srcdoc sets the srcdoc attribute, the HTML document the frame displays.
+//
+// The value is escaped as an attribute, but its content is not otherwise
+// checked: the browser parses it as a full document and runs any script in it.
+// Do not pass untrusted HTML unless the frame also has a restrictive Sandbox.
 func (i *Iframe) Srcdoc(srcdoc string) *Iframe {
 	i.srcdoc = srcdoc
 	return i

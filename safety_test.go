@@ -251,3 +251,116 @@ func TestDocumentsDeclareHTML5Doctype(t *testing.T) {
 		t.Errorf("formatted document does not start with a doctype:\n%s", formatted)
 	}
 }
+
+// --- raw-text elements: closing-tag breakout ---
+
+func TestStyleElementTextCannotCloseStyleElement(t *testing.T) {
+	got := NewStyleElement().Text(`a{color:red}</StYlE><script>alert(1)</script>`).HTML()
+
+	body := strings.TrimSuffix(strings.TrimPrefix(got, "<style>"), "</style>")
+	assertNoStyleBreakout(t, "StyleElement.Text", body)
+	if !strings.Contains(body, `\3c `) {
+		t.Errorf("expected a CSS escape in %q", body)
+	}
+}
+
+func TestStyleElementTextKeepsLegitimateAngleBrackets(t *testing.T) {
+	css := `@media (400px <= width) { a { color: red; } }`
+	if got, want := NewStyleElement().Text(css).HTML(), "<style>"+css+"</style>"; got != want {
+		t.Errorf("HTML() = %q, want %q", got, want)
+	}
+}
+
+func TestRawCSSRuleCannotCloseStyleElement(t *testing.T) {
+	assertNoStyleBreakout(t, "RawCSSRule",
+		NewRawCSSRule(`a{}</style><script>alert(1)</script>`).HTML())
+}
+
+func TestImportRuleConditionsCannotCloseStyleElement(t *testing.T) {
+	rule := NewImportRule("theme.css")
+	rule.Conditions = []string{`screen</style><script>alert(1)</script>`}
+	assertNoStyleBreakout(t, "ImportRule conditions", rule.HTML())
+}
+
+func TestScriptTextCannotCloseScriptElement(t *testing.T) {
+	tests := []struct {
+		name, text, want string
+	}{
+		{"lower case", `var s = "</script><b>x</b>";`, `<script>var s = "<\/script><b>x</b>";</script>`},
+		{"mixed case keeps casing", `x = "</ScRiPt>"`, `<script>x = "<\/ScRiPt>"</script>`},
+		{"several", `"</script></script>"`, `<script>"<\/script><\/script>"</script>`},
+		{"no end tag untouched", `if (a < b && c > d) { go("<b>") }`, `<script>if (a < b && c > d) { go("<b>") }</script>`},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := NewScript().Text(tt.text).HTML(); got != tt.want {
+				t.Errorf("HTML() = %q, want %q", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestEscapeScriptLeavesNoClosingTag(t *testing.T) {
+	got := escapeScript("a</script>b</SCRIPT >c<")
+	if indexFold(got, "</script") >= 0 {
+		t.Errorf("escapeScript left a closing tag in %q", got)
+	}
+}
+
+// --- style element content ---
+
+func TestStyleElementRejectsNonCSSElements(t *testing.T) {
+	s := NewStyleElement().
+		Add(NewDiv()).
+		Add(NewStyleRule("a").AddStyle("color", "red"))
+
+	if got, want := s.HTML(), "<style>\na {\n\tcolor: red;\n}\n</style>"; got != want {
+		t.Errorf("HTML() = %q, want %q", got, want)
+	}
+	if err := s.Err(); err == nil || !strings.Contains(err.Error(), "Div") {
+		t.Errorf("Err() = %v, want an error naming Div", err)
+	}
+}
+
+func TestStyleElementAddIgnoresTypedNil(t *testing.T) {
+	s := NewStyleElement().Add(nilDiv())
+	if s.Err() != nil {
+		t.Errorf("Err() = %v, want nil for a typed nil child", s.Err())
+	}
+}
+
+// --- meta refresh ---
+
+func TestMetaRefreshTargetIsFiltered(t *testing.T) {
+	tests := []struct {
+		name, content, want string
+	}{
+		{"safe url", "5; url=https://example.com/next", "5; url=https://example.com/next"},
+		{"relative url", "0;url=/home", "0;url=/home"},
+		{"delay only", "30", "30"},
+		{"javascript", "0;url=javascript:alert(1)", "0;url=" + BlockedURL},
+		{"mixed case and space", "0; URL = JaVaScRiPt:alert(1)", "0; URL = " + BlockedURL},
+		{"no url prefix", "0;javascript:alert(1)", "0;" + BlockedURL},
+		{"quoted", `0;url='javascript:alert(1)'`, `0;url='` + BlockedURL},
+		{"tab inside scheme", "0;url=java\tscript:alert(1)", "0;url=" + BlockedURL},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := NewMeta().HttpEquiv("refresh").Content(tt.content).HTML()
+			want := `<meta content="` + escapeAttr(tt.want) + `" http-equiv="refresh">`
+			if got != want {
+				t.Errorf("HTML() = %q, want %q", got, want)
+			}
+		})
+	}
+}
+
+func TestMetaContentUntouchedWithoutRefresh(t *testing.T) {
+	got := NewMeta().Name("description").Content("0;url=javascript:alert(1)").HTML()
+	want := `<meta name="description" content="0;url=javascript:alert(1)">`
+	if got != want {
+		t.Errorf("HTML() = %q, want %q", got, want)
+	}
+}

@@ -168,7 +168,7 @@ func (r *RawCSSRule) HTML() string {
 
 // renderTo writes the RawCSSRule component's HTML to buf.
 func (r *RawCSSRule) renderTo(buf *bytes.Buffer) {
-	css := strings.Trim(r.css, "\n")
+	css := escapeCSS(strings.Trim(r.css, "\n"))
 	if css == "" {
 		return
 	}
@@ -255,7 +255,7 @@ func (i *ImportRule) renderTo(buf *bytes.Buffer) {
 	buf.WriteString(formatImportHref(i.Href))
 	if len(i.Conditions) != 0 {
 		buf.WriteByte(' ')
-		buf.WriteString(strings.Join(i.Conditions, " "))
+		buf.WriteString(escapeCSS(strings.Join(i.Conditions, " ")))
 	}
 	buf.WriteString(";\n")
 }

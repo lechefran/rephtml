@@ -141,6 +141,7 @@ func (s *Script) renderTo(buf *bytes.Buffer) {
 	tg.boolAttr("nomodule", s.noModule)
 	tg.attr("referrerpolicy", s.referrerPolicy)
 	tg.styleAttr(s.style)
-	// Script content is JavaScript, not HTML, so it is written unescaped.
-	tg.raw(s.text)
+	// Script content is JavaScript, not HTML, so it is not entity-escaped. Only
+	// the sequence that would end the element is defused.
+	tg.raw(escapeScript(s.text))
 }
