@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"path/filepath"
 	"reflect"
 	"strings"
 )
@@ -193,32 +194,71 @@ func (h *HtmlFile) Style(m StyleMap) *HtmlFile {
 }
 
 // WriteToFile writes the formatted HTML document to path.
+//
+// The document is written to a temporary file in the same directory and then
+// renamed over path, so a failed write never leaves a truncated file behind and
+// readers never see a half-written one. The file is created with mode 0644
+// (before the umask), and an existing file at path is replaced.
 func (h *HtmlFile) WriteToFile(path string) error {
 	html, err := h.RenderFormatted()
 	if err != nil {
 		return err
 	}
+	return writeFileAtomic(path, html)
+}
 
-	file, err := os.Create(path)
+// writeFileAtomic writes data to path through a temporary file in the same
+// directory, so the final rename stays on one filesystem.
+func writeFileAtomic(path string, data []byte) (err error) {
+	file, err := os.CreateTemp(filepath.Dir(path), ".rephtml-*.tmp")
 	if err != nil {
 		return fmt.Errorf("create html file %q: %w", path, err)
 	}
-
-	if _, err := file.Write(html); err != nil {
-		closeErr := file.Close()
-		if closeErr != nil {
-			return errors.Join(
-				fmt.Errorf("write html file %q: %w", path, err),
-				fmt.Errorf("close html file %q: %w", path, closeErr),
-			)
+	tmp := file.Name()
+	defer func() {
+		if err != nil {
+			err = errors.Join(err, removeIfExists(tmp))
 		}
-		return fmt.Errorf("write html file %q: %w", path, err)
-	}
+	}()
 
+	if _, err := file.Write(data); err != nil {
+		return errors.Join(
+			fmt.Errorf("write html file %q: %w", path, err),
+			closeQuietly(file, path),
+		)
+	}
+	if err := file.Sync(); err != nil {
+		return errors.Join(
+			fmt.Errorf("sync html file %q: %w", path, err),
+			closeQuietly(file, path),
+		)
+	}
 	if err := file.Close(); err != nil {
 		return fmt.Errorf("close html file %q: %w", path, err)
 	}
+	if err := os.Chmod(tmp, 0o644); err != nil {
+		return fmt.Errorf("set mode on html file %q: %w", path, err)
+	}
+	if err := os.Rename(tmp, path); err != nil {
+		return fmt.Errorf("replace html file %q: %w", path, err)
+	}
+	return nil
+}
 
+// closeQuietly closes file after a failed write, returning a close error only
+// as additional context.
+func closeQuietly(file *os.File, path string) error {
+	if err := file.Close(); err != nil {
+		return fmt.Errorf("close html file %q: %w", path, err)
+	}
+	return nil
+}
+
+// removeIfExists deletes a leftover temporary file.
+func removeIfExists(path string) error {
+	if err := os.Remove(path); err != nil && !errors.Is(err, os.ErrNotExist) {
+		return fmt.Errorf("remove temporary file %q: %w", path, err)
+	}
 	return nil
 }
 
