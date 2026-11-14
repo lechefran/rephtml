@@ -2,7 +2,7 @@ package rephtml
 
 import "bytes"
 
-// Header represents the Header component or supporting type.
+// Header represents the HTML <header> element, introductory content for a page or section.
 type Header struct {
 	bodyElement
 	contentNode[*Header]
@@ -22,7 +22,7 @@ func (h *Header) renderTo(buf *bytes.Buffer) {
 	tg.children(h.contents)
 }
 
-// Nav represents the Nav component or supporting type.
+// Nav represents the HTML <nav> element, a section of navigation links.
 type Nav struct {
 	bodyElement
 	contentNode[*Nav]
@@ -36,7 +36,7 @@ func NewNav() *Nav {
 	return v
 }
 
-// Role sets the role value on the Nav component.
+// Role sets the role attribute.
 func (n *Nav) Role(r string) *Nav {
 	n.role = r
 	return n
@@ -50,7 +50,7 @@ func (n *Nav) renderTo(buf *bytes.Buffer) {
 	tg.children(n.contents)
 }
 
-// Main represents the Main component or supporting type.
+// Main represents the HTML <main> element, the dominant content of the document body.
 type Main struct {
 	bodyElement
 	contentNode[*Main]
@@ -70,7 +70,7 @@ func (m *Main) renderTo(buf *bytes.Buffer) {
 	tg.children(m.contents)
 }
 
-// Section represents the Section component or supporting type.
+// Section represents the HTML <section> element, a generic standalone section of a document.
 type Section struct {
 	bodyElement
 	contentNode[*Section]
@@ -84,7 +84,7 @@ func NewSection() *Section {
 	return v
 }
 
-// AriaLabel sets the arialabel value on the Section component.
+// AriaLabel sets the arialabel attribute.
 func (s *Section) AriaLabel(label string) *Section {
 	s.ariaLabel = label
 	return s
@@ -98,7 +98,7 @@ func (s *Section) renderTo(buf *bytes.Buffer) {
 	tg.children(s.contents)
 }
 
-// Article represents the Article component or supporting type.
+// Article represents the HTML <article> element, self-contained content that could be distributed on its own.
 type Article struct {
 	bodyElement
 	contentNode[*Article]
@@ -118,7 +118,7 @@ func (a *Article) renderTo(buf *bytes.Buffer) {
 	tg.children(a.contents)
 }
 
-// Aside represents the Aside component or supporting type.
+// Aside represents the HTML <aside> element, content tangentially related to the content around it.
 type Aside struct {
 	bodyElement
 	contentNode[*Aside]
@@ -138,7 +138,7 @@ func (as *Aside) renderTo(buf *bytes.Buffer) {
 	tg.children(as.contents)
 }
 
-// Footer represents the Footer component or supporting type.
+// Footer represents the HTML <footer> element, the footer of a page or section.
 type Footer struct {
 	bodyElement
 	contentNode[*Footer]
@@ -158,7 +158,7 @@ func (f *Footer) renderTo(buf *bytes.Buffer) {
 	tg.children(f.contents)
 }
 
-// Address represents the Address component or supporting type.
+// Address represents the HTML <address> element, contact information for its nearest article or body ancestor.
 type Address struct {
 	bodyElement
 	contentNode[*Address]

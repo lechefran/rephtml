@@ -5,10 +5,10 @@ import (
 	"maps"
 )
 
-// The types in this file hold the machinery every element shares: a render
-// buffer, an inline style map, child content, and the render entry points.
-// Elements embed the tier they need and declare only what makes them
-// different, which is their attributes and their prepare method.
+// The types in this file hold the machinery every element shares: an inline
+// style map, child content, and the Render and HTML entry points. Elements
+// embed the tier they need and declare only what makes them different, which is
+// their attributes and their renderTo method.
 //
 // Each tier is parameterised by the concrete element pointer type, named Self.
 // That is what lets a promoted setter return the element's own type, so

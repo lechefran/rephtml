@@ -2,6 +2,7 @@ package rephtml
 
 import (
 	"bytes"
+	"maps"
 	"slices"
 	"strconv"
 	"strings"
@@ -29,16 +30,16 @@ type Style struct {
 func NewStyle(tags ...string) *Style {
 	return &Style{
 		Props: StyleMap{},
-		Tags:  append([]string(nil), tags...),
+		Tags:  cloneStrings(tags),
 	}
 }
 
-// Render returns freshly prepared Style HTML bytes.
+// Render returns the Style's HTML bytes.
 func (s *Style) Render() []byte {
 	return renderElement(s)
 }
 
-// HTML returns freshly prepared Style HTML as a string.
+// HTML returns the Style's HTML as a string.
 func (s *Style) HTML() string {
 	return htmlElement(s)
 }
@@ -64,9 +65,7 @@ func (s *Style) AddStyles(styles StyleMap) *Style {
 	if s.Props == nil {
 		s.Props = StyleMap{}
 	}
-	for k, v := range styles {
-		s.Props[k] = v
-	}
+	maps.Copy(s.Props, styles)
 	return s
 }
 
@@ -74,6 +73,15 @@ func (s *Style) AddStyles(styles StyleMap) *Style {
 func (s *Style) Style(styles StyleMap) *Style {
 	s.Props = cloneStyleMap(styles)
 	return s
+}
+
+// ruleFromStyle converts a Style into an equivalent StyleRule, copying its
+// selectors and declarations so the two do not share storage.
+func ruleFromStyle(s *Style) *StyleRule {
+	return &StyleRule{
+		Props: cloneStyleMap(s.Props),
+		Tags:  cloneStrings(s.Tags),
+	}
 }
 
 // CSSRule represents renderable CSS that can be placed inside a style element.
@@ -92,16 +100,16 @@ type StyleRule struct {
 func NewStyleRule(tags ...string) *StyleRule {
 	return &StyleRule{
 		Props: StyleMap{},
-		Tags:  append([]string(nil), tags...),
+		Tags:  cloneStrings(tags),
 	}
 }
 
-// Render returns freshly prepared StyleRule HTML bytes.
+// Render returns the StyleRule's HTML bytes.
 func (s *StyleRule) Render() []byte {
 	return renderElement(s)
 }
 
-// HTML returns freshly prepared StyleRule HTML as a string.
+// HTML returns the StyleRule's HTML as a string.
 func (s *StyleRule) HTML() string {
 	return htmlElement(s)
 }
@@ -125,9 +133,7 @@ func (s *StyleRule) AddStyles(styles StyleMap) *StyleRule {
 	if s.Props == nil {
 		s.Props = StyleMap{}
 	}
-	for k, v := range styles {
-		s.Props[k] = v
-	}
+	maps.Copy(s.Props, styles)
 	return s
 }
 
@@ -156,19 +162,19 @@ func (r *RawCSSRule) Text(css string) *RawCSSRule {
 	return r
 }
 
-// Render returns freshly prepared RawCSSRule HTML bytes.
+// Render returns the RawCSSRule's HTML bytes.
 func (r *RawCSSRule) Render() []byte {
 	return renderElement(r)
 }
 
-// HTML returns freshly prepared RawCSSRule HTML as a string.
+// HTML returns the RawCSSRule's HTML as a string.
 func (r *RawCSSRule) HTML() string {
 	return htmlElement(r)
 }
 
 // renderTo writes the RawCSSRule component's HTML to buf.
 func (r *RawCSSRule) renderTo(buf *bytes.Buffer) {
-	css := strings.Trim(r.css, "\n")
+	css := escapeCSS(strings.Trim(r.css, "\n"))
 	if css == "" {
 		return
 	}
@@ -190,12 +196,12 @@ func NewCharsetRule(charset string) *CharsetRule {
 	return &CharsetRule{Charset: charset}
 }
 
-// Render returns freshly prepared CharsetRule HTML bytes.
+// Render returns the CharsetRule's HTML bytes.
 func (c *CharsetRule) Render() []byte {
 	return renderElement(c)
 }
 
-// HTML returns freshly prepared CharsetRule HTML as a string.
+// HTML returns the CharsetRule's HTML as a string.
 func (c *CharsetRule) HTML() string {
 	return htmlElement(c)
 }
@@ -236,12 +242,12 @@ func (i *ImportRule) ConditionsList(conditions []string) *ImportRule {
 	return i
 }
 
-// Render returns freshly prepared ImportRule HTML bytes.
+// Render returns the ImportRule's HTML bytes.
 func (i *ImportRule) Render() []byte {
 	return renderElement(i)
 }
 
-// HTML returns freshly prepared ImportRule HTML as a string.
+// HTML returns the ImportRule's HTML as a string.
 func (i *ImportRule) HTML() string {
 	return htmlElement(i)
 }
@@ -255,7 +261,7 @@ func (i *ImportRule) renderTo(buf *bytes.Buffer) {
 	buf.WriteString(formatImportHref(i.Href))
 	if len(i.Conditions) != 0 {
 		buf.WriteByte(' ')
-		buf.WriteString(strings.Join(i.Conditions, " "))
+		buf.WriteString(escapeCSS(strings.Join(i.Conditions, " ")))
 	}
 	buf.WriteString(";\n")
 }
@@ -273,12 +279,12 @@ func NewFontFaceRule() *FontFaceRule {
 	return &FontFaceRule{Props: StyleMap{}}
 }
 
-// Render returns freshly prepared FontFaceRule HTML bytes.
+// Render returns the FontFaceRule's HTML bytes.
 func (f *FontFaceRule) Render() []byte {
 	return renderElement(f)
 }
 
-// HTML returns freshly prepared FontFaceRule HTML as a string.
+// HTML returns the FontFaceRule's HTML as a string.
 func (f *FontFaceRule) HTML() string {
 	return htmlElement(f)
 }
@@ -302,9 +308,7 @@ func (f *FontFaceRule) AddStyles(styles StyleMap) *FontFaceRule {
 	if f.Props == nil {
 		f.Props = StyleMap{}
 	}
-	for k, v := range styles {
-		f.Props[k] = v
-	}
+	maps.Copy(f.Props, styles)
 	return f
 }
 
@@ -334,12 +338,12 @@ func (f *FontFeatureValuesRule) Text(content string) *FontFeatureValuesRule {
 	return f
 }
 
-// Render returns freshly prepared FontFeatureValuesRule HTML bytes.
+// Render returns the FontFeatureValuesRule's HTML bytes.
 func (f *FontFeatureValuesRule) Render() []byte {
 	return renderElement(f)
 }
 
-// HTML returns freshly prepared FontFeatureValuesRule HTML as a string.
+// HTML returns the FontFeatureValuesRule's HTML as a string.
 func (f *FontFeatureValuesRule) HTML() string {
 	return htmlElement(f)
 }
@@ -389,21 +393,18 @@ func (m *MediaRule) Add(e Element) *MediaRule {
 		if element == nil {
 			return m
 		}
-		return m.AddRule(&StyleRule{
-			Props: cloneStyleMap(element.Props),
-			Tags:  append([]string(nil), element.Tags...),
-		})
+		return m.AddRule(ruleFromStyle(element))
 	default:
 		return m
 	}
 }
 
-// Render returns freshly prepared MediaRule HTML bytes.
+// Render returns the MediaRule's HTML bytes.
 func (m *MediaRule) Render() []byte {
 	return renderElement(m)
 }
 
-// HTML returns freshly prepared MediaRule HTML as a string.
+// HTML returns the MediaRule's HTML as a string.
 func (m *MediaRule) HTML() string {
 	return htmlElement(m)
 }
@@ -430,12 +431,12 @@ func NewKeyframeBlock(selector string) *KeyframeBlock {
 	}
 }
 
-// Render returns freshly prepared KeyframeBlock HTML bytes.
+// Render returns the KeyframeBlock's HTML bytes.
 func (k *KeyframeBlock) Render() []byte {
 	return renderElement(k)
 }
 
-// HTML returns freshly prepared KeyframeBlock HTML as a string.
+// HTML returns the KeyframeBlock's HTML as a string.
 func (k *KeyframeBlock) HTML() string {
 	return htmlElement(k)
 }
@@ -496,12 +497,12 @@ func (k *KeyframesRule) AddBlock(frame *KeyframeBlock) *KeyframesRule {
 	return k
 }
 
-// Render returns freshly prepared KeyframesRule HTML bytes.
+// Render returns the KeyframesRule's HTML bytes.
 func (k *KeyframesRule) Render() []byte {
 	return renderElement(k)
 }
 
-// HTML returns freshly prepared KeyframesRule HTML as a string.
+// HTML returns the KeyframesRule's HTML as a string.
 func (k *KeyframesRule) HTML() string {
 	return htmlElement(k)
 }

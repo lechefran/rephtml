@@ -30,7 +30,7 @@ func (m *Math) Xmlns(xmlns string) *Math {
 	return m
 }
 
-// Prepare renders the math element into its internal buffer.
+// renderTo writes the math element's HTML to buf.
 func (m *Math) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "math")
 	tg.attr("xmlns", m.xmlns)
@@ -102,7 +102,7 @@ func (s *Svg) PreserveAspectRatio(preserveAspectRatio string) *Svg {
 	return s
 }
 
-// Prepare renders the SVG element into its internal buffer.
+// renderTo writes the SVG element's HTML to buf.
 func (s *Svg) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "svg")
 	tg.attr("xmlns", s.xmlns)
