@@ -3,7 +3,6 @@ package rephtml
 import (
 	"bytes"
 	"fmt"
-	"regexp"
 	"strings"
 	"time"
 )
@@ -22,9 +21,6 @@ var (
 		"15:04:05",
 		"15:04",
 	}
-
-	timeWeekPattern     = regexp.MustCompile(`^\d{4}-W(0[1-9]|[1-4]\d|5[0-3])$`)
-	timeDurationPattern = regexp.MustCompile(`^P(?:\d+Y)?(?:\d+M)?(?:\d+W)?(?:\d+D)?(?:T(?:\d+H)?(?:\d+M)?(?:\d+(?:\.\d+)?S)?)?$`)
 )
 
 // Anchor represents the HTML <a> element, a hyperlink to another page, a location on the page or another URL.
@@ -674,7 +670,7 @@ func isValidDatetime(dt string) bool {
 		return true
 	}
 
-	if timeWeekPattern.MatchString(dt) {
+	if isValidWeek(dt) {
 		return true
 	}
 
@@ -691,13 +687,81 @@ func isValidDatetime(dt string) bool {
 	return false
 }
 
-// isValidDuration reports whether a value matches a non-empty ISO-like duration.
-func isValidDuration(dt string) bool {
-	if !timeDurationPattern.MatchString(dt) {
+// isValidWeek reports whether a value is a year and week such as 2024-W07,
+// with a week from 01 to 53.
+func isValidWeek(dt string) bool {
+	if len(dt) != 8 || dt[4] != '-' || dt[5] != 'W' || !isDigits(dt[:4]) || !isDigits(dt[6:]) {
 		return false
 	}
-	if dt == "P" || dt == "PT" || strings.HasSuffix(dt, "T") {
+	week := int(dt[6]-'0')*10 + int(dt[7]-'0')
+	return week >= 1 && week <= 53
+}
+
+// isValidDuration reports whether a value is a non-empty ISO-like duration
+// such as P1DT2H30M: date units Y, M, W, D in order, then an optional T followed
+// by time units H, M, S in order. Only seconds may carry a fraction.
+func isValidDuration(dt string) bool {
+	if dt == "" || dt[0] != 'P' || dt == "P" || dt == "PT" || strings.HasSuffix(dt, "T") {
 		return false
+	}
+	i, ok := scanDurationUnits(dt, 1, "YMWD", false)
+	if !ok {
+		return false
+	}
+	if i < len(dt) && dt[i] == 'T' {
+		i, ok = scanDurationUnits(dt, i+1, "HMS", true)
+		if !ok {
+			return false
+		}
+	}
+	return i == len(dt)
+}
+
+// scanDurationUnits consumes number-and-unit pairs from s starting at i. The
+// units must appear in the order given. When fractionLast is set, the final
+// unit may have a decimal fraction. It returns the index after the last pair,
+// and false if a number is not followed by a valid unit.
+func scanDurationUnits(s string, i int, units string, fractionLast bool) (int, bool) {
+	next := 0
+	for {
+		start := i
+		for i < len(s) && isDigit(s[i]) {
+			i++
+		}
+		if i == start {
+			return i, true
+		}
+		fraction := false
+		if fractionLast && i+1 < len(s) && s[i] == '.' && isDigit(s[i+1]) {
+			fraction = true
+			i++
+			for i < len(s) && isDigit(s[i]) {
+				i++
+			}
+		}
+		if i >= len(s) {
+			return i, false
+		}
+		unit := strings.IndexByte(units[next:], s[i])
+		if unit < 0 || (fraction && next+unit != len(units)-1) {
+			return i, false
+		}
+		next += unit + 1
+		i++
+	}
+}
+
+// isDigit reports whether c is an ASCII digit.
+func isDigit(c byte) bool {
+	return c >= '0' && c <= '9'
+}
+
+// isDigits reports whether s is made up only of ASCII digits.
+func isDigits(s string) bool {
+	for i := 0; i < len(s); i++ {
+		if !isDigit(s[i]) {
+			return false
+		}
 	}
 	return true
 }
