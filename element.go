@@ -107,9 +107,28 @@ func (n *contentNode[Self]) Add(e Element) Self {
 }
 
 // textNode adds a single escaped text body.
+//
+// Elements that are nothing more than a tag around text record their tag name
+// with initTag and use the shared renderTo below. Elements with attributes of
+// their own call init and define their own renderTo, which takes precedence.
 type textNode[Self selfElement] struct {
 	node[Self]
+	name string
 	text string
+}
+
+// initTag records the concrete element pointer and the tag name that the
+// shared renderTo writes.
+func (n *textNode[Self]) initTag(self Self, name string) {
+	n.init(self)
+	n.name = name
+}
+
+// renderTo writes the element as its tag, inline style and escaped text.
+func (n *textNode[Self]) renderTo(buf *bytes.Buffer) {
+	tg := startTag(buf, n.name)
+	tg.styleAttr(n.style)
+	tg.text(n.text)
 }
 
 // Text replaces the text content.

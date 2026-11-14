@@ -770,6 +770,7 @@ func exportedElementStructNames(t *testing.T) map[string]bool {
 	}
 
 	structs := map[string]bool{}
+	embeds := map[string][]string{}
 	methods := map[string]map[string]bool{}
 	for _, entry := range entries {
 		name := entry.Name()
@@ -784,7 +785,7 @@ func exportedElementStructNames(t *testing.T) map[string]bool {
 		for _, decl := range file.Decls {
 			switch d := decl.(type) {
 			case *ast.GenDecl:
-				recordExportedStructs(d, structs)
+				recordExportedStructs(d, structs, embeds)
 			case *ast.FuncDecl:
 				recordElementMethod(d, methods)
 			}
@@ -793,30 +794,62 @@ func exportedElementStructNames(t *testing.T) map[string]bool {
 
 	elements := map[string]bool{}
 	for name := range structs {
-		if methods[name]["renderTo"] && !methods[name]["documentRender"] {
+		renders := methods[name]["renderTo"]
+		for _, base := range embeds[name] {
+			renders = renders || methods[base]["renderTo"]
+		}
+		if renders && !methods[name]["documentRender"] {
 			elements[name] = true
 		}
 	}
 	return elements
 }
 
-func recordExportedStructs(decl *ast.GenDecl, structs map[string]bool) {
+// recordExportedStructs records the exported struct types, and for each one the
+// names of the types it embeds, so a renderTo promoted from a generic tier such
+// as textNode still identifies the struct as an element.
+func recordExportedStructs(decl *ast.GenDecl, structs map[string]bool, embeds map[string][]string) {
 	for _, spec := range decl.Specs {
 		typeSpec, ok := spec.(*ast.TypeSpec)
 		if !ok || !typeSpec.Name.IsExported() {
 			continue
 		}
-		if _, ok := typeSpec.Type.(*ast.StructType); ok {
-			structs[typeSpec.Name.Name] = true
+		st, ok := typeSpec.Type.(*ast.StructType)
+		if !ok {
+			continue
 		}
+		name := typeSpec.Name.Name
+		structs[name] = true
+		for _, field := range st.Fields.List {
+			if len(field.Names) == 0 {
+				embeds[name] = append(embeds[name], baseTypeName(field.Type))
+			}
+		}
+	}
+}
+
+// baseTypeName returns the type name of an embedded field or method receiver,
+// without any pointer or type arguments: *textNode[Self] is textNode.
+func baseTypeName(expr ast.Expr) string {
+	switch t := expr.(type) {
+	case *ast.Ident:
+		return t.Name
+	case *ast.StarExpr:
+		return baseTypeName(t.X)
+	case *ast.IndexExpr:
+		return baseTypeName(t.X)
+	default:
+		return ""
 	}
 }
 
 // recordElementMethod records the declared methods that identify an element struct.
 //
 // renderTo is the discriminator: Render, HTML and the style setters are promoted
-// from the embedded generic bases in element.go and are no longer declared per
-// type, but every element still declares its own renderTo. HtmlFile also declares
+// from the embedded generic bases in element.go and are not declared per type.
+// An element either declares its own renderTo or embeds a generic tier that
+// declares one, such as textNode, so generic receivers are recorded under the
+// tier's name. HtmlFile also declares
 // renderTo and is not an Element, so its document-shaped Render, which returns
 // ([]byte, error) rather than []byte, is recorded as a disqualifier.
 func recordElementMethod(decl *ast.FuncDecl, methods map[string]map[string]bool) {
@@ -834,24 +867,12 @@ func recordElementMethod(decl *ast.FuncDecl, methods map[string]map[string]bool)
 	default:
 		return
 	}
-	name := receiverName(decl.Recv.List[0].Type)
+	name := baseTypeName(decl.Recv.List[0].Type)
 	if name == "" {
-		// Generic receivers such as *node[Self] are shared bases, not elements.
 		return
 	}
 	if methods[name] == nil {
 		methods[name] = map[string]bool{}
 	}
 	methods[name][key] = true
-}
-
-func receiverName(expr ast.Expr) string {
-	switch t := expr.(type) {
-	case *ast.Ident:
-		return t.Name
-	case *ast.StarExpr:
-		return receiverName(t.X)
-	default:
-		return ""
-	}
 }
