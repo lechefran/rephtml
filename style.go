@@ -2,6 +2,7 @@ package rephtml
 
 import (
 	"bytes"
+	"maps"
 	"slices"
 	"strconv"
 	"strings"
@@ -29,7 +30,7 @@ type Style struct {
 func NewStyle(tags ...string) *Style {
 	return &Style{
 		Props: StyleMap{},
-		Tags:  append([]string(nil), tags...),
+		Tags:  cloneStrings(tags),
 	}
 }
 
@@ -64,9 +65,7 @@ func (s *Style) AddStyles(styles StyleMap) *Style {
 	if s.Props == nil {
 		s.Props = StyleMap{}
 	}
-	for k, v := range styles {
-		s.Props[k] = v
-	}
+	maps.Copy(s.Props, styles)
 	return s
 }
 
@@ -74,6 +73,15 @@ func (s *Style) AddStyles(styles StyleMap) *Style {
 func (s *Style) Style(styles StyleMap) *Style {
 	s.Props = cloneStyleMap(styles)
 	return s
+}
+
+// ruleFromStyle converts a Style into an equivalent StyleRule, copying its
+// selectors and declarations so the two do not share storage.
+func ruleFromStyle(s *Style) *StyleRule {
+	return &StyleRule{
+		Props: cloneStyleMap(s.Props),
+		Tags:  cloneStrings(s.Tags),
+	}
 }
 
 // CSSRule represents renderable CSS that can be placed inside a style element.
@@ -92,7 +100,7 @@ type StyleRule struct {
 func NewStyleRule(tags ...string) *StyleRule {
 	return &StyleRule{
 		Props: StyleMap{},
-		Tags:  append([]string(nil), tags...),
+		Tags:  cloneStrings(tags),
 	}
 }
 
@@ -125,9 +133,7 @@ func (s *StyleRule) AddStyles(styles StyleMap) *StyleRule {
 	if s.Props == nil {
 		s.Props = StyleMap{}
 	}
-	for k, v := range styles {
-		s.Props[k] = v
-	}
+	maps.Copy(s.Props, styles)
 	return s
 }
 
@@ -302,9 +308,7 @@ func (f *FontFaceRule) AddStyles(styles StyleMap) *FontFaceRule {
 	if f.Props == nil {
 		f.Props = StyleMap{}
 	}
-	for k, v := range styles {
-		f.Props[k] = v
-	}
+	maps.Copy(f.Props, styles)
 	return f
 }
 
@@ -389,10 +393,7 @@ func (m *MediaRule) Add(e Element) *MediaRule {
 		if element == nil {
 			return m
 		}
-		return m.AddRule(&StyleRule{
-			Props: cloneStyleMap(element.Props),
-			Tags:  append([]string(nil), element.Tags...),
-		})
+		return m.AddRule(ruleFromStyle(element))
 	default:
 		return m
 	}

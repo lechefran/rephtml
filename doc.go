@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"maps"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -185,9 +186,7 @@ func (h *HtmlFile) AddStyle(k, v string) *HtmlFile {
 
 // AddStyles adds multiple CSS properties
 func (h *HtmlFile) AddStyles(m StyleMap) *HtmlFile {
-	for k, v := range m {
-		h.style[k] = v
-	}
+	maps.Copy(h.style, m)
 	return h
 }
 
@@ -353,9 +352,7 @@ func (h *HtmlFile) mergeHead(head *Head) {
 	if head.err != nil {
 		h.addError(head.err)
 	}
-	for k, v := range head.style {
-		h.headStyle[k] = v
-	}
+	maps.Copy(h.headStyle, head.style)
 	h.headContent = append(h.headContent, head.contents...)
 }
 
@@ -367,9 +364,7 @@ func (h *HtmlFile) mergeBody(body *Body) {
 	if body.err != nil {
 		h.addError(body.err)
 	}
-	for k, v := range body.style {
-		h.bodyStyle[k] = v
-	}
+	maps.Copy(h.bodyStyle, body.style)
 	if body.onLoad != "" {
 		h.bodyOnLoad = body.onLoad
 	}
@@ -1149,10 +1144,7 @@ func (s *StyleElement) Add(e Element) *StyleElement {
 		if element == nil {
 			return s
 		}
-		return s.AddRule(&StyleRule{
-			Props: cloneStyleMap(element.Props),
-			Tags:  append([]string(nil), element.Tags...),
-		})
+		return s.AddRule(ruleFromStyle(element))
 	default:
 		if !isNilElement(e) {
 			s.err = errors.Join(s.err, fmt.Errorf("cannot add %s to style element: only CSS rules are allowed", elementName(e)))
@@ -1169,9 +1161,7 @@ func (s *StyleElement) Err() error {
 
 // AddRule appends typed CSS rule content to the style element.
 func (s *StyleElement) AddRule(rule CSSRule) *StyleElement {
-	if !isNilElement(rule) {
-		s.contents = appendElement(s.contents, rule)
-	}
+	s.contents = appendElement(s.contents, rule)
 	return s
 }
 

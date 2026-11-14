@@ -68,10 +68,17 @@ func (f *Form) Target(target string) *Form {
 	return f
 }
 
-// Autocomplete sets the autocomplete attribute
-func (f *Form) Autocomplete(autocomplete string) *Form {
+// AutoComplete sets the autocomplete attribute.
+func (f *Form) AutoComplete(autocomplete string) *Form {
 	f.autocomplete = autocomplete
 	return f
+}
+
+// Autocomplete sets the autocomplete attribute.
+//
+// Deprecated: use AutoComplete.
+func (f *Form) Autocomplete(autocomplete string) *Form {
+	return f.AutoComplete(autocomplete)
 }
 
 // AcceptCharset sets the accept-charset attribute
@@ -80,10 +87,17 @@ func (f *Form) AcceptCharset(acceptcharset string) *Form {
 	return f
 }
 
-// Novalidate sets the novalidate attribute
-func (f *Form) Novalidate(novalidate bool) *Form {
+// NoValidate sets the novalidate attribute.
+func (f *Form) NoValidate(novalidate bool) *Form {
 	f.novalidate = novalidate
 	return f
+}
+
+// Novalidate sets the novalidate attribute.
+//
+// Deprecated: use NoValidate.
+func (f *Form) Novalidate(novalidate bool) *Form {
+	return f.NoValidate(novalidate)
 }
 
 // Label represents the HTML label element for form controls
@@ -250,10 +264,17 @@ func (i *Input) Autofocus(autofocus bool) *Input {
 	return i
 }
 
-// Autocomplete sets the autocomplete attribute
-func (i *Input) Autocomplete(autocomplete string) *Input {
+// AutoComplete sets the autocomplete attribute.
+func (i *Input) AutoComplete(autocomplete string) *Input {
 	i.autocomplete = autocomplete
 	return i
+}
+
+// Autocomplete sets the autocomplete attribute.
+//
+// Deprecated: use AutoComplete.
+func (i *Input) Autocomplete(autocomplete string) *Input {
+	return i.AutoComplete(autocomplete)
 }
 
 // Min sets the min attribute
@@ -286,16 +307,30 @@ func (i *Input) Size(size string) *Input {
 	return i
 }
 
-// Maxlength sets the maxlength attribute
-func (i *Input) Maxlength(maxlength string) *Input {
+// MaxLength sets the maxlength attribute.
+func (i *Input) MaxLength(maxlength string) *Input {
 	i.maxlength = maxlength
 	return i
 }
 
-// Minlength sets the minlength attribute
-func (i *Input) Minlength(minlength string) *Input {
+// Maxlength sets the maxlength attribute.
+//
+// Deprecated: use MaxLength.
+func (i *Input) Maxlength(maxlength string) *Input {
+	return i.MaxLength(maxlength)
+}
+
+// MinLength sets the minlength attribute.
+func (i *Input) MinLength(minlength string) *Input {
 	i.minlength = minlength
 	return i
+}
+
+// Minlength sets the minlength attribute.
+//
+// Deprecated: use MinLength.
+func (i *Input) Minlength(minlength string) *Input {
+	return i.MinLength(minlength)
 }
 
 // Multiple sets the multiple attribute
