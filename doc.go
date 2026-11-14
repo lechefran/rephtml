@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -11,6 +12,9 @@ import (
 )
 
 const tab = "\t"
+
+// HtmlFile streams its output through io.WriterTo.
+var _ io.WriterTo = (*HtmlFile)(nil)
 
 // HtmlFile represents the HTML element for the document root
 type HtmlFile struct {
@@ -260,6 +264,39 @@ func removeIfExists(path string) error {
 		return fmt.Errorf("remove temporary file %q: %w", path, err)
 	}
 	return nil
+}
+
+// WriteTo writes the compact HTML document to w and implements io.WriterTo.
+//
+// It renders straight into a pooled buffer and copies that to w, so unlike
+// Render it makes no intermediate copy of the document. A document error is
+// returned before anything is written. Because rendering does not mutate the
+// tree, WriteTo is safe to call from several goroutines on one built document,
+// for example from an http.Handler.
+func (h *HtmlFile) WriteTo(w io.Writer) (int64, error) {
+	if h.err != nil {
+		return 0, h.err
+	}
+	buf := getBuffer()
+	defer putBuffer(buf)
+	h.renderTo(buf)
+	return buf.WriteTo(w)
+}
+
+// WriteFormattedTo writes the human-readable formatted HTML document to w.
+//
+// Like WriteTo it returns a document error before writing anything. Formatting
+// adds whitespace between tags, so use WriteTo when exact output matters.
+func (h *HtmlFile) WriteFormattedTo(w io.Writer) (int64, error) {
+	html, err := h.RenderFormatted()
+	if err != nil {
+		return 0, err
+	}
+	n, err := w.Write(html)
+	if err == nil && n < len(html) {
+		err = io.ErrShortWrite
+	}
+	return int64(n), err
 }
 
 // Render returns the compact HTML document bytes.
