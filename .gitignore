@@ -1,5 +1,8 @@
-# ignore all html files
-./*.html
+# ignore generated html files in the repo root
+/*.html
+
+# ignore IDE state
+.idea/
 
 # ignore local agent/skill instruction files anywhere in the tree
 skills.md
