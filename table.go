@@ -34,27 +34,28 @@ func (t *Table) AddHeaders(s []string) *Table {
 	return t
 }
 
-// Headers sets the headers value on the Table component.
+// Headers sets the header cells of the table's first row, copying the caller's
+// slice.
 func (t *Table) Headers(s []string) *Table {
-	t.headers = s
+	t.headers = cloneStrings(s)
 	return t
 }
 
-// AddRow sets the addrow value on the Table component.
+// AddRow appends one row of cells, copying the caller's slice.
 func (t *Table) AddRow(s []string) *Table {
-	t.rows = append(t.rows, s)
+	t.rows = append(t.rows, cloneStrings(s))
 	return t
 }
 
-// AddRows sets the addrows value on the Table component.
+// AddRows appends several rows of cells, copying the caller's slices.
 func (t *Table) AddRows(s [][]string) *Table {
-	t.rows = append(t.rows, s...)
+	t.rows = append(t.rows, cloneRows(s)...)
 	return t
 }
 
-// Rows sets the rows value on the Table component.
+// Rows replaces the rows of cells, copying the caller's slices.
 func (t *Table) Rows(s [][]string) *Table {
-	t.rows = s
+	t.rows = cloneRows(s)
 	return t
 }
 
@@ -123,16 +124,16 @@ func (t *Table) renderTo(buf *bytes.Buffer) {
 		if len(t.headers) > 0 {
 			buf.WriteString("<tr>")
 			for _, h := range t.headers {
-				buf.WriteString("<th>" + escapeText(h) + "</th>")
+				startTag(buf, "th").text(h)
 			}
 			buf.WriteString("</tr>")
 		}
 
 		// write rows
-		for i := 0; i < len(t.rows); i++ {
+		for _, row := range t.rows {
 			buf.WriteString("<tr>")
-			for j := 0; j < len(t.rows[i]); j++ {
-				buf.WriteString("<td>" + escapeText(t.rows[i][j]) + "</td>")
+			for _, cell := range row {
+				startTag(buf, "td").text(cell)
 			}
 			buf.WriteString("</tr>")
 		}

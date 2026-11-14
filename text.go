@@ -207,6 +207,7 @@ type Ol struct {
 	bodyElement
 	contentNode[*Ol]
 	start    int
+	startSet bool
 	listType string
 	reversed bool
 }
@@ -218,9 +219,11 @@ func NewOl() *Ol {
 	return v
 }
 
-// Start sets the start value on the Ol component.
+// Start sets the start attribute, the number the first list item is counted
+// as. Zero and negative numbers are valid starting points and are emitted.
 func (o *Ol) Start(s int) *Ol {
 	o.start = s
+	o.startSet = true
 	return o
 }
 
@@ -239,7 +242,9 @@ func (o *Ol) Reversed(r bool) *Ol {
 // renderTo writes the Ol component's HTML to buf.
 func (o *Ol) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "ol")
-	tg.intAttr("start", o.start)
+	if o.startSet {
+		writeIntAttr(buf, "start", o.start)
+	}
 	tg.attr("type", o.listType)
 	tg.boolAttr("reversed", o.reversed)
 	tg.styleAttr(o.style)
@@ -270,7 +275,8 @@ func (u *Ul) renderTo(buf *bytes.Buffer) {
 type Li struct {
 	bodyElement
 	contentNode[*Li]
-	value int
+	value    int
+	valueSet bool
 }
 
 // NewLi creates a new Li component.
@@ -280,16 +286,20 @@ func NewLi() *Li {
 	return v
 }
 
-// Value sets the value value on the Li component.
+// Value sets the value attribute, the ordinal value of this item in an ordered
+// list. Zero and negative numbers are valid and are emitted.
 func (l *Li) Value(v int) *Li {
 	l.value = v
+	l.valueSet = true
 	return l
 }
 
 // renderTo writes the Li component's HTML to buf.
 func (l *Li) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "li")
-	tg.intAttr("value", l.value)
+	if l.valueSet {
+		writeIntAttr(buf, "value", l.value)
+	}
 	tg.styleAttr(l.style)
 	tg.children(l.contents)
 }
