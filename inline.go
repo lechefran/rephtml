@@ -27,7 +27,7 @@ var (
 	timeDurationPattern = regexp.MustCompile(`^P(?:\d+Y)?(?:\d+M)?(?:\d+W)?(?:\d+D)?(?:T(?:\d+H)?(?:\d+M)?(?:\d+(?:\.\d+)?S)?)?$`)
 )
 
-// Anchor represents the Anchor component or supporting type.
+// Anchor represents the HTML <a> element, a hyperlink to another page, a location on the page or another URL.
 type Anchor struct {
 	bodyElement
 	textNode[*Anchor]
@@ -41,7 +41,7 @@ func NewAnchor() *Anchor {
 	return v
 }
 
-// Link sets the link value on the Anchor component.
+// Link sets the link attribute.
 func (a *Anchor) Link(s string) *Anchor {
 	a.link = s
 	return a
@@ -55,7 +55,7 @@ func (a *Anchor) renderTo(buf *bytes.Buffer) {
 	tg.text(a.text)
 }
 
-// Abbr represents the Abbr component or supporting type.
+// Abbr represents the HTML <abbr> element, an abbreviation or acronym.
 type Abbr struct {
 	bodyElement
 	textNode[*Abbr]
@@ -69,7 +69,7 @@ func NewAbbr() *Abbr {
 	return v
 }
 
-// Title sets the title value on the Abbr component.
+// Title sets the title attribute.
 func (a *Abbr) Title(s string) *Abbr {
 	a.title = s
 	return a
@@ -83,7 +83,7 @@ func (a *Abbr) renderTo(buf *bytes.Buffer) {
 	tg.text(a.text)
 }
 
-// B represents the B component or supporting type.
+// B represents the HTML <b> element, text drawn to attention without conveying extra importance.
 type B struct {
 	bodyElement
 	textNode[*B]
@@ -103,7 +103,7 @@ func (b *B) renderTo(buf *bytes.Buffer) {
 	tg.text(b.text)
 }
 
-// I represents the I component or supporting type.
+// I represents the HTML <i> element, text in an alternate voice or mood, such as a technical term.
 type I struct {
 	bodyElement
 	textNode[*I]
@@ -123,7 +123,7 @@ func (i *I) renderTo(buf *bytes.Buffer) {
 	tg.text(i.text)
 }
 
-// Q represents the Q component or supporting type.
+// Q represents the HTML <q> element, a short inline quotation.
 type Q struct {
 	bodyElement
 	textNode[*Q]
@@ -137,7 +137,7 @@ func NewQ() *Q {
 	return v
 }
 
-// Cite sets the cite value on the Q component.
+// Cite sets the cite attribute.
 func (q *Q) Cite(s string) *Q {
 	q.cite = s
 	return q
@@ -151,7 +151,7 @@ func (q *Q) renderTo(buf *bytes.Buffer) {
 	tg.text(q.text)
 }
 
-// S represents the S component or supporting type.
+// S represents the HTML <s> element, text that is no longer accurate or relevant, rendered struck through.
 type S struct {
 	bodyElement
 	textNode[*S]
@@ -171,7 +171,7 @@ func (s *S) renderTo(buf *bytes.Buffer) {
 	tg.text(s.text)
 }
 
-// U represents the U component or supporting type.
+// U represents the HTML <u> element, text with an unarticulated annotation, rendered underlined.
 type U struct {
 	bodyElement
 	textNode[*U]
@@ -191,7 +191,7 @@ func (u *U) renderTo(buf *bytes.Buffer) {
 	tg.text(u.text)
 }
 
-// Bdi represents the bdi component or supporting type.
+// Bdi represents the HTML <bdi> element, text isolated from its surroundings for bidirectional text formatting.
 type Bdi struct {
 	bodyElement
 	textNode[*Bdi]
@@ -211,7 +211,7 @@ func (d *Bdi) renderTo(buf *bytes.Buffer) {
 	tg.text(d.text)
 }
 
-// Bdo represents the bdo component or supporting type.
+// Bdo represents the HTML <bdo> element, text whose bidirectional direction is overridden.
 type Bdo struct {
 	bodyElement
 	textNode[*Bdo]
@@ -240,7 +240,7 @@ func (d *Bdo) renderTo(buf *bytes.Buffer) {
 	tg.text(d.text)
 }
 
-// Br represents the Br component or supporting type.
+// Br represents the HTML <br> element, a line break.
 type Br struct {
 	bodyElement
 	node[*Br]
@@ -260,7 +260,7 @@ func (br *Br) renderTo(buf *bytes.Buffer) {
 	tg.void()
 }
 
-// Cite represents the Cite component or supporting type.
+// Cite represents the HTML <cite> element, the title of a creative work.
 type Cite struct {
 	bodyElement
 	textNode[*Cite]
@@ -280,7 +280,7 @@ func (c *Cite) renderTo(buf *bytes.Buffer) {
 	tg.text(c.text)
 }
 
-// Code represents the Code component or supporting type.
+// Code represents the HTML <code> element, a fragment of computer code.
 type Code struct {
 	bodyElement
 	textNode[*Code]
@@ -300,7 +300,7 @@ func (c *Code) renderTo(buf *bytes.Buffer) {
 	tg.text(c.text)
 }
 
-// Data represents the Data component or supporting type.
+// Data represents the HTML <data> element, content together with a machine-readable translation of it.
 type Data struct {
 	bodyElement
 	textNode[*Data]
@@ -314,7 +314,7 @@ func NewData() *Data {
 	return v
 }
 
-// Value sets the value value on the Data component.
+// Value sets the value attribute.
 func (d *Data) Value(s string) *Data {
 	d.value = s
 	return d
@@ -328,7 +328,7 @@ func (d *Data) renderTo(buf *bytes.Buffer) {
 	tg.text(d.text)
 }
 
-// Dfn represents the Dfn component or supporting type.
+// Dfn represents the HTML <dfn> element, the term being defined.
 type Dfn struct {
 	bodyElement
 	textNode[*Dfn]
@@ -342,7 +342,7 @@ func NewDfn() *Dfn {
 	return v
 }
 
-// Title sets the title value on the Dfn component.
+// Title sets the title attribute.
 func (d *Dfn) Title(s string) *Dfn {
 	d.title = s
 	return d
@@ -356,7 +356,7 @@ func (d *Dfn) renderTo(buf *bytes.Buffer) {
 	tg.text(d.text)
 }
 
-// Em represents the em component or supporting type.
+// Em represents the HTML <em> element, text with stress emphasis.
 type Em struct {
 	bodyElement
 	textNode[*Em]
@@ -376,7 +376,7 @@ func (e *Em) renderTo(buf *bytes.Buffer) {
 	tg.text(e.text)
 }
 
-// Mark represents the Mark component or supporting type.
+// Mark represents the HTML <mark> element, text highlighted for reference.
 type Mark struct {
 	bodyElement
 	textNode[*Mark]
@@ -396,7 +396,7 @@ func (m *Mark) renderTo(buf *bytes.Buffer) {
 	tg.text(m.text)
 }
 
-// Ruby represents the Ruby component or supporting type.
+// Ruby represents the HTML <ruby> element, a ruby annotation, used for East Asian pronunciation guides.
 type Ruby struct {
 	bodyElement
 	contentNode[*Ruby]
@@ -416,7 +416,7 @@ func (r *Ruby) renderTo(buf *bytes.Buffer) {
 	tg.children(r.contents)
 }
 
-// Rb represents the Rb component or supporting type.
+// Rb represents the HTML <rb> element, the base text of a ruby annotation. It is obsolete.
 type Rb struct {
 	bodyElement
 	textNode[*Rb]
@@ -436,7 +436,7 @@ func (rb *Rb) renderTo(buf *bytes.Buffer) {
 	tg.text(rb.text)
 }
 
-// Rt represents the Rt component or supporting type.
+// Rt represents the HTML <rt> element, the ruby text of a ruby annotation, such as a pronunciation.
 type Rt struct {
 	bodyElement
 	textNode[*Rt]
@@ -456,7 +456,7 @@ func (rt *Rt) renderTo(buf *bytes.Buffer) {
 	tg.text(rt.text)
 }
 
-// Rtc represents the Rtc component or supporting type.
+// Rtc represents the HTML <rtc> element, a container for ruby text components. It is obsolete.
 type Rtc struct {
 	bodyElement
 	contentNode[*Rtc]
@@ -476,7 +476,7 @@ func (rtc *Rtc) renderTo(buf *bytes.Buffer) {
 	tg.children(rtc.contents)
 }
 
-// Rp represents the Rp component or supporting type.
+// Rp represents the HTML <rp> element, fallback parentheses for browsers that do not support ruby annotations.
 type Rp struct {
 	bodyElement
 	textNode[*Rp]
@@ -496,7 +496,7 @@ func (rp *Rp) renderTo(buf *bytes.Buffer) {
 	tg.text(rp.text)
 }
 
-// Kbd represents the Kbd component or supporting type.
+// Kbd represents the HTML <kbd> element, keyboard or other text input.
 type Kbd struct {
 	bodyElement
 	textNode[*Kbd]
@@ -516,7 +516,7 @@ func (k *Kbd) renderTo(buf *bytes.Buffer) {
 	tg.text(k.text)
 }
 
-// Sub represents the Sub component or supporting type.
+// Sub represents the HTML <sub> element, subscript text.
 type Sub struct {
 	bodyElement
 	textNode[*Sub]
@@ -536,7 +536,7 @@ func (s *Sub) renderTo(buf *bytes.Buffer) {
 	tg.text(s.text)
 }
 
-// Sup represents the Sup component or supporting type.
+// Sup represents the HTML <sup> element, superscript text.
 type Sup struct {
 	bodyElement
 	textNode[*Sup]
@@ -556,7 +556,7 @@ func (s *Sup) renderTo(buf *bytes.Buffer) {
 	tg.text(s.text)
 }
 
-// Samp represents the Samp component or supporting type.
+// Samp represents the HTML <samp> element, sample output from a computer program.
 type Samp struct {
 	bodyElement
 	textNode[*Samp]
@@ -576,7 +576,7 @@ func (s *Samp) renderTo(buf *bytes.Buffer) {
 	tg.text(s.text)
 }
 
-// Small represents the Small component or supporting type.
+// Small represents the HTML <small> element, side comments and small print.
 type Small struct {
 	bodyElement
 	textNode[*Small]
@@ -596,7 +596,7 @@ func (s *Small) renderTo(buf *bytes.Buffer) {
 	tg.text(s.text)
 }
 
-// Span represents the Span component or supporting type.
+// Span represents the HTML <span> element, a generic inline container with no semantic meaning.
 type Span struct {
 	bodyElement
 	textNode[*Span]
@@ -616,7 +616,7 @@ func (s *Span) renderTo(buf *bytes.Buffer) {
 	tg.text(s.text)
 }
 
-// Strong represents the Strong component or supporting type.
+// Strong represents the HTML <strong> element, text of strong importance.
 type Strong struct {
 	bodyElement
 	textNode[*Strong]
@@ -710,7 +710,7 @@ func (t *Time) renderTo(buf *bytes.Buffer) {
 	tg.text(t.text)
 }
 
-// Var represents the Var component or supporting type.
+// Var represents the HTML <var> element, a variable in a mathematical expression or program.
 type Var struct {
 	bodyElement
 	textNode[*Var]
@@ -730,7 +730,7 @@ func (v *Var) renderTo(buf *bytes.Buffer) {
 	tg.text(v.text)
 }
 
-// Wbr represents the Wbr component or supporting type.
+// Wbr represents the HTML <wbr> element, a position where the browser may break a line.
 type Wbr struct {
 	bodyElement
 	node[*Wbr]

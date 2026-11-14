@@ -2,7 +2,7 @@ package rephtml
 
 import "bytes"
 
-// Slot represents the Slot component or supporting type.
+// Slot represents the HTML <slot> element, a placeholder inside a web component that you fill with your own markup.
 type Slot struct {
 	bodyElement
 	contentNode[*Slot]
@@ -16,7 +16,7 @@ func NewSlot() *Slot {
 	return v
 }
 
-// Name sets the name value on the Slot component.
+// Name sets the name attribute.
 func (s *Slot) Name(n string) *Slot {
 	s.name = n
 	return s
@@ -30,7 +30,7 @@ func (s *Slot) renderTo(buf *bytes.Buffer) {
 	tg.children(s.contents)
 }
 
-// Template represents the Template component or supporting type.
+// Template represents the HTML <template> element, markup that is not rendered when the page loads but can be cloned by script.
 type Template struct {
 	headElement
 	bodyElement
@@ -45,7 +45,7 @@ func NewTemplate() *Template {
 	return v
 }
 
-// Id sets the id value on the Template component.
+// Id sets the id attribute.
 func (t *Template) Id(i string) *Template {
 	t.id = i
 	return t
