@@ -1,5 +1,11 @@
 # rephtml
 
+[![CI](https://github.com/lechefran/rephtml/actions/workflows/ci.yml/badge.svg)](https://github.com/lechefran/rephtml/actions/workflows/ci.yml)
+[![Go Reference](https://pkg.go.dev/badge/github.com/lechefran/rephtml.svg)](https://pkg.go.dev/github.com/lechefran/rephtml)
+[![Latest release](https://img.shields.io/github/v/release/lechefran/rephtml)](https://github.com/lechefran/rephtml/releases/latest)
+[![Go version](https://img.shields.io/github/go-mod/go-version/lechefran/rephtml)](go.mod)
+[![License](https://img.shields.io/github/license/lechefran/rephtml)](LICENSE)
+
 rephtml is a fluent Go package for building HTML documents from typed components. Regular HTML element components implement the `Element` interface and can render themselves through `Render` or `HTML` without requiring callers to manage an explicit preparation step. The document root uses error-returning render methods so document structure errors are not hidden.
 
 The package is designed around small composable structs:
@@ -12,14 +18,19 @@ The package is designed around small composable structs:
 - `Text` methods escape normal text content by default.
 - Attribute setters escape attribute values by default, and URL attributes are filtered by scheme.
 - `StyleElement.Text` and `Script.Text` intentionally preserve raw CSS and JavaScript content, only rewriting the `</style` and `</script` sequences that would end the element early.
-- `WriteToFile` writes a human-readable formatted HTML file, declaring `<!DOCTYPE html>`.
+- `WriteToFile` writes a human-readable formatted HTML file, declaring `<!DOCTYPE html>`. The write is atomic, so a failure never leaves a truncated file.
 - `Render`, `RenderString`, `RenderFormatted`, and `RenderFormattedString` return generated HTML plus any document error.
+- `WriteTo` and `WriteFormattedTo` stream a document to any `io.Writer`, such as an `http.ResponseWriter`.
+
+The current release is **v0.2.0**. The module is still below v1, so a minor release may contain breaking changes. Deprecated names are kept for at least one minor release, and every release is described in the [changelog](CHANGELOG.md).
 
 ## Installation
 
 ```sh
-go get github.com/lechefran/rephtml
+go get github.com/lechefran/rephtml@v0.2.0
 ```
+
+Use `@latest` to follow new releases. The module requires the Go version declared in [go.mod](go.mod).
 
 ## Quick Start
 
@@ -136,12 +147,19 @@ is given and keeps no render state of its own, so a tree built once can be
 rendered from any number of goroutines:
 
 ```go
-page := buildPage() // once, at startup
+page := buildPage() // a *rephtml.HtmlFile, built once at startup
 
 http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-	w.Write(page.Render()) // safe from concurrent requests
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	if _, err := page.WriteTo(w); err != nil { // safe from concurrent requests
+		log.Printf("write page: %v", err)
+	}
 })
 ```
+
+`WriteTo` renders into a pooled buffer and copies it to the writer, so it avoids
+the extra copy that `Render` makes. A document error is returned before anything
+is written, so a broken page never produces a partial response.
 
 Building is not concurrency-safe. Calling setters on an element while another
 goroutine renders it is a data race, as it would be for any Go value. Finish
@@ -149,7 +167,21 @@ building before you share the tree.
 
 ## Rendering Documents
 
-`HtmlFile` returns errors from render methods because document structure can be invalid. Use `RenderString` for compact HTML, `RenderFormattedString` for readable output, and `WriteToFile` for files.
+`HtmlFile` returns errors from render methods because document structure can be invalid. Every output method returns the document error before producing any output:
+
+| Method | Output | Destination |
+|---|---|---|
+| `Render` | Compact | `[]byte` |
+| `RenderString` | Compact | `string` |
+| `RenderFormatted` | Indented, human-readable | `[]byte` |
+| `RenderFormattedString` | Indented, human-readable | `string` |
+| `WriteTo` | Compact | Any `io.Writer`. Implements `io.WriterTo` |
+| `WriteFormattedTo` | Indented, human-readable | Any `io.Writer` |
+| `WriteToFile` | Indented, human-readable | A file, written atomically |
+
+Use `WriteTo` when serving a page or copying it somewhere, since it makes no intermediate copy. Use the formatted variants for files and debugging; formatting adds whitespace between tags, so prefer the compact form when exact output matters.
+
+`WriteToFile` writes to a temporary file in the destination directory, syncs it, and renames it over `path`. A failed write therefore never leaves a truncated file, and an existing file is only replaced once the whole document is written. The file is created with mode 0644 (before the umask).
 
 Documents are emitted with `<!DOCTYPE html>`, so browsers render them in standards mode.
 
@@ -317,6 +349,38 @@ style := rephtml.NewStyleElement().Text(`
 script := rephtml.NewScript().Text(`console.log("ready <now>");`)
 ```
 
+### Raw-text elements
+
+`<style>` and `<script>` hold raw text: the browser does not decode entities inside them and ends the element at the first `</style` or `</script`, whatever the CSS or JavaScript around it says. rephtml leaves your code alone except for that one sequence, which it rewrites so the text cannot close the element:
+
+```go
+style := rephtml.NewStyleElement().Text("a{color:red}</style><script>alert(1)</script>")
+fmt.Println(style.HTML())
+// <style>a{color:red}\3c /style><script>alert(1)</script></style>
+
+script := rephtml.NewScript().Text(`var tpl = "</script><b>x</b>";`)
+fmt.Println(script.HTML())
+// <script>var tpl = "<\/script><b>x</b>";</script>
+```
+
+Inside CSS, `\3c ` is the escape for `<`. Inside a JavaScript string, `\/` is just `/`, which is the same rewrite `encoding/json` and `html/template` use. Matching is case-insensitive, and a `<` that is not part of a closing tag, such as the `<=` in a media query, is untouched. This applies to `StyleElement.Text`, `RawCSSRule`, `ImportRule` conditions and `Script.Text`.
+
+This is a guard against accidentally closing the element, not a way to run untrusted code safely. Do not pass untrusted input to either `Text` method.
+
+A `<style>` element can only hold CSS, so `StyleElement.Add` accepts CSS rules and drops any other element, recording the problem on `StyleElement.Err`:
+
+```go
+style := rephtml.NewStyleElement().Add(rephtml.NewDiv())
+fmt.Println(style.Err())
+// cannot add Div to style element: only CSS rules are allowed
+```
+
+A few other values get the same care:
+
+- `<meta http-equiv="refresh">` filters the redirect target in `content` by scheme, like a URL attribute: `0; url=javascript:alert(1)` is rendered as `0; url=#rephtml-blocked-url`.
+- `Iframe.Srcdoc` is escaped as an attribute, but the browser runs the document inside it. Use `Sandbox` for anything untrusted.
+- Inline `style` attributes skip declarations with an empty property or value, so `AddStyle("margin", "")` writes nothing instead of `margin: ;`, and no `style` attribute is written when nothing remains.
+
 ### URLs
 
 Escaping keeps a URL inside its quotes but says nothing about what following it
@@ -364,7 +428,39 @@ so one bad entry does not discard the rest of the list.
 
 ## Examples
 
-The examples above are self-contained and use the root package import path: `github.com/lechefran/rephtml`.
+The examples above are self-contained and use the root package import path: `github.com/lechefran/rephtml`. Runnable examples also appear on [pkg.go.dev](https://pkg.go.dev/github.com/lechefran/rephtml#pkg-examples).
+
+## Upgrading from v0.1.0-beta
+
+v0.2.0 does not remove any API, so code that compiled against `v0.1.0-beta` still compiles. Some setters have new, consistently capitalised names, and the old names are deprecated. They still work and will be removed in a future minor release:
+
+| Deprecated | Use instead |
+|---|---|
+| `Form.Autocomplete`, `Input.Autocomplete` | `AutoComplete` |
+| `Form.Novalidate` | `NoValidate` |
+| `Input.Maxlength`, `Input.Minlength` | `MaxLength`, `MinLength` |
+| `Iframe.Allowfullscreen` | `AllowFullscreen` |
+| `Iframe.Referrerpolicy`, `Portal.Referrerpolicy`, `Script.Referrerpolicy` | `ReferrerPolicy` |
+| `Script.Crossorigin` | `CrossOrigin` |
+
+`go vet` and staticcheck report uses of deprecated names, so they are easy to find.
+
+Some rendered output changes, all of them corrections:
+
+- `</style` in `StyleElement.Text`, `RawCSSRule` and `ImportRule` conditions, and `</script` in `Script.Text`, are rewritten so the text cannot close its element. See [Raw-text elements](#raw-text-elements).
+- `<meta http-equiv="refresh">` replaces an unsafe redirect target with `BlockedURL`.
+- `StyleElement.Add` drops elements that are not CSS rules and reports them through `Err`.
+- `Ol.Start(0)` and `Li.Value(0)` now emit the attribute. Zero was previously treated as unset.
+- Inline `style` attributes no longer include declarations with empty values.
+- `Link` writes `crossorigin` and `referrerpolicy` in lower case.
+- `Table.Headers`, `Rows`, `AddRow` and `AddRows` copy the slices you pass in, so changing a slice after the call no longer changes the table.
+- `WriteToFile` writes atomically and creates files with mode 0644.
+
+New in v0.2.0: `WriteTo`, `WriteFormattedTo`, `Bdo.Dir` and `StyleElement.Err`.
+
+## Releases
+
+Release notes for every version are in the [changelog](CHANGELOG.md) and on the [GitHub releases page](https://github.com/lechefran/rephtml/releases). Versions follow [semantic versioning](https://semver.org/), and the Go module proxy serves each tagged version, so `go get github.com/lechefran/rephtml@v0.2.0` pins an exact release.
 
 ## Supported Elements
 ### Document Structure
@@ -395,10 +491,10 @@ The examples above are self-contained and use the root package import path: `git
 - [X] `<hr>` - Horizontal rule
 - [X] `<pre>` - Preformatted text
 - [X] `<blockquote>` - Block quotation
-- [X] `<ol>` - Ordered list
+- [X] `<ol>` - Ordered list (`Start` accepts zero and negative numbers)
 - [X] `<ul>` - Unordered list
 - [X] `<menu>` - Menu list
-- [X] `<li>` - List item
+- [X] `<li>` - List item (`Value` accepts zero and negative numbers)
 - [X] `<dl>` - Description list
 - [X] `<dt>` - Description term
 - [X] `<dd>` - Description details
@@ -411,7 +507,7 @@ The examples above are self-contained and use the root package import path: `git
 - [X] `<abbr>` - Abbreviation
 - [X] `<b>` - Bold text
 - [X] `<bdi>` - Bidirectional isolate
-- [X] `<bdo>` - Bidirectional override
+- [X] `<bdo>` - Bidirectional override (set the direction with `Dir`)
 - [X] `<br>` - Line break
 - [X] `<cite>` - Citation
 - [X] `<code>` - Code
