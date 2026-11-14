@@ -212,6 +212,37 @@ func escapeCSS(css string) string {
 	return b.String()
 }
 
+// escapeScript neutralises text that would end the script element containing it.
+//
+// A script element holds raw text, so the tokenizer ends it at the first
+// "</script" regardless of JavaScript syntax. Rewriting that sequence as
+// "<\/script" keeps its meaning inside a JavaScript string or regular
+// expression literal while leaving nothing for the tokenizer to match. This is
+// the same rewrite encoding/json and html/template rely on.
+//
+// Only that sequence is touched, so ordinary "<" operators and markup inside
+// string literals survive untouched.
+func escapeScript(js string) string {
+	const endTag = "</script"
+	if indexFold(js, endTag) < 0 {
+		return js
+	}
+
+	var b strings.Builder
+	b.Grow(len(js) + 8)
+	for i := 0; i < len(js); i++ {
+		if js[i] == '<' && hasPrefixFold(js[i:], endTag) {
+			b.WriteString(`<\/`)
+			// Skip "</" and keep the caller's casing of the tag name.
+			b.WriteString(js[i+2 : i+len(endTag)])
+			i += len(endTag) - 1
+			continue
+		}
+		b.WriteByte(js[i])
+	}
+	return b.String()
+}
+
 // escapeAttr escapes HTML attribute values.
 func escapeAttr(value string) string {
 	return html.EscapeString(value)

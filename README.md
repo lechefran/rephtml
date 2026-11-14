@@ -11,7 +11,7 @@ The package is designed around small composable structs:
 - Rendering does not mutate the tree, so a built tree is safe to render concurrently.
 - `Text` methods escape normal text content by default.
 - Attribute setters escape attribute values by default, and URL attributes are filtered by scheme.
-- `StyleElement.Text` and `Script.Text` intentionally preserve raw CSS and JavaScript content.
+- `StyleElement.Text` and `Script.Text` intentionally preserve raw CSS and JavaScript content, only rewriting the `</style` and `</script` sequences that would end the element early.
 - `WriteToFile` writes a human-readable formatted HTML file, declaring `<!DOCTYPE html>`.
 - `Render`, `RenderString`, `RenderFormatted`, and `RenderFormattedString` return generated HTML plus any document error.
 
@@ -293,7 +293,10 @@ rephtml escapes normal text and attribute values so characters like `<`, `>`, `&
 | Comment text | Sanitised, since character references are not decoded inside a comment. Hyphen runs are broken up so the text cannot close the comment early |
 | Structured CSS: selectors, properties, values, `@media` queries, `@keyframes` names, `@import` hrefs | Escaped so the text cannot close the surrounding `<style>` element. A `<` used legitimately, as in the media query range syntax `(400px <= width)`, is left alone |
 | URL attributes (`href`, `src`, `action`, …) | Escaped, then filtered by scheme so a `javascript:` URL cannot be emitted. See [URLs](#urls) |
-| `StyleElement.Text` and `Script.Text` | **Raw, by design.** These are the escape hatches for hand-written CSS and JavaScript. Do not pass untrusted input to them |
+| `StyleElement.Text`, `RawCSSRule` and `ImportRule` conditions | Raw CSS, by design, except that a `</style` sequence is rewritten as `\3c /style` so the text cannot close the element. Do not pass untrusted input as CSS |
+| `Script.Text` | Raw JavaScript, by design, except that a `</script` sequence is rewritten as `<\/script`, which means the same thing inside a JavaScript string. Do not pass untrusted input as code |
+| `Meta` with `http-equiv="refresh"` | The redirect target in `content` is filtered by scheme like a URL attribute |
+| `Iframe.Srcdoc` | Escaped as an attribute, but the document inside runs. Pair untrusted content with `Sandbox` |
 
 For regular elements, call `HTML()` or `Render()` directly:
 
