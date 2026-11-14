@@ -3,6 +3,7 @@ package rephtml
 import (
 	"bytes"
 	"html"
+	"maps"
 	"reflect"
 	"strconv"
 	"strings"
@@ -13,20 +14,30 @@ import (
 //
 // Declarations are emitted in sorted key order, since Go map iteration order is
 // unspecified and rendered output has to be stable.
+//
+// Declarations with an empty property or value are skipped, matching how style
+// elements treat them, and no attribute is written when nothing is left.
 func parseStyle(buf *bytes.Buffer, style StyleMap) {
-	buf.WriteString(" style=\"")
-
-	keys := sortedStyleKeys(style)
-	for idx, k := range keys {
+	wrote := false
+	for _, k := range sortedStyleKeys(style) {
+		v := style[k]
+		if k == "" || v == "" {
+			continue
+		}
+		if wrote {
+			buf.WriteByte(' ')
+		} else {
+			buf.WriteString(" style=\"")
+			wrote = true
+		}
 		buf.WriteString(escapeAttr(k))
 		buf.WriteString(": ")
-		buf.WriteString(escapeAttr(style[k]))
+		buf.WriteString(escapeAttr(v))
 		buf.WriteByte(';')
-		if idx != len(keys)-1 {
-			buf.WriteByte(' ')
-		}
 	}
-	buf.WriteString("\"")
+	if wrote {
+		buf.WriteByte('"')
+	}
 }
 
 // indentCache holds pre-built indentation strings for the common nesting
@@ -58,15 +69,26 @@ func cloneBytes(b []byte) []byte {
 // cloneStyleMap returns a copy of CSS declarations so callers can reuse maps safely.
 func cloneStyleMap(style StyleMap) StyleMap {
 	clone := make(StyleMap, len(style))
-	for k, v := range style {
-		clone[k] = v
-	}
+	maps.Copy(clone, style)
 	return clone
 }
 
 // cloneStrings returns a copy of a string slice so callers can reuse slices safely.
 func cloneStrings(values []string) []string {
 	return append([]string(nil), values...)
+}
+
+// cloneRows returns a deep copy of rows of cells, so callers can reuse both the
+// outer slice and every row safely.
+func cloneRows(rows [][]string) [][]string {
+	if rows == nil {
+		return nil
+	}
+	clone := make([][]string, len(rows))
+	for i, row := range rows {
+		clone[i] = cloneStrings(row)
+	}
+	return clone
 }
 
 // bufferPool supplies the scratch buffers rendering writes into.
@@ -212,6 +234,37 @@ func escapeCSS(css string) string {
 	return b.String()
 }
 
+// escapeScript neutralises text that would end the script element containing it.
+//
+// A script element holds raw text, so the tokenizer ends it at the first
+// "</script" regardless of JavaScript syntax. Rewriting that sequence as
+// "<\/script" keeps its meaning inside a JavaScript string or regular
+// expression literal while leaving nothing for the tokenizer to match. This is
+// the same rewrite encoding/json and html/template rely on.
+//
+// Only that sequence is touched, so ordinary "<" operators and markup inside
+// string literals survive untouched.
+func escapeScript(js string) string {
+	const endTag = "</script"
+	if indexFold(js, endTag) < 0 {
+		return js
+	}
+
+	var b strings.Builder
+	b.Grow(len(js) + 8)
+	for i := 0; i < len(js); i++ {
+		if js[i] == '<' && hasPrefixFold(js[i:], endTag) {
+			b.WriteString(`<\/`)
+			// Skip "</" and keep the caller's casing of the tag name.
+			b.WriteString(js[i+2 : i+len(endTag)])
+			i += len(endTag) - 1
+			continue
+		}
+		b.WriteByte(js[i])
+	}
+	return b.String()
+}
+
 // escapeAttr escapes HTML attribute values.
 func escapeAttr(value string) string {
 	return html.EscapeString(value)
@@ -247,7 +300,7 @@ func writeClassAttr(buf *bytes.Buffer, classes []string) {
 //
 // Element rendering is otherwise the same three lines repeated per attribute:
 // test whether the field is set, then write it. tag folds that test into each
-// write so a prepare method reads as a description of the element's output.
+// write so a renderTo method reads as a description of the element's output.
 // Attributes are emitted in call order, so each element keeps control of its
 // own attribute layout, including where the style attribute sits.
 type tag struct {

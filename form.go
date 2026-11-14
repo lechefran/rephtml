@@ -23,7 +23,7 @@ func NewForm() *Form {
 	return v
 }
 
-// Prepare builds the HTML for the form element
+// renderTo writes the form element's HTML to buf.
 func (f *Form) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "form")
 	tg.urlAttr("action", f.action)
@@ -68,10 +68,17 @@ func (f *Form) Target(target string) *Form {
 	return f
 }
 
-// Autocomplete sets the autocomplete attribute
-func (f *Form) Autocomplete(autocomplete string) *Form {
+// AutoComplete sets the autocomplete attribute.
+func (f *Form) AutoComplete(autocomplete string) *Form {
 	f.autocomplete = autocomplete
 	return f
+}
+
+// Autocomplete sets the autocomplete attribute.
+//
+// Deprecated: use AutoComplete.
+func (f *Form) Autocomplete(autocomplete string) *Form {
+	return f.AutoComplete(autocomplete)
 }
 
 // AcceptCharset sets the accept-charset attribute
@@ -80,10 +87,17 @@ func (f *Form) AcceptCharset(acceptcharset string) *Form {
 	return f
 }
 
-// Novalidate sets the novalidate attribute
-func (f *Form) Novalidate(novalidate bool) *Form {
+// NoValidate sets the novalidate attribute.
+func (f *Form) NoValidate(novalidate bool) *Form {
 	f.novalidate = novalidate
 	return f
+}
+
+// Novalidate sets the novalidate attribute.
+//
+// Deprecated: use NoValidate.
+func (f *Form) Novalidate(novalidate bool) *Form {
+	return f.NoValidate(novalidate)
 }
 
 // Label represents the HTML label element for form controls
@@ -101,7 +115,7 @@ func NewLabel() *Label {
 	return v
 }
 
-// Prepare builds the HTML for the label element
+// renderTo writes the label element's HTML to buf.
 func (l *Label) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "label")
 	tg.attr("for", l.forattr)
@@ -162,7 +176,7 @@ func NewInput() *Input {
 	return v
 }
 
-// Prepare builds the HTML for the input element
+// renderTo writes the input element's HTML to buf.
 func (i *Input) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "input")
 	tg.attr("type", i.inputtype)
@@ -250,10 +264,17 @@ func (i *Input) Autofocus(autofocus bool) *Input {
 	return i
 }
 
-// Autocomplete sets the autocomplete attribute
-func (i *Input) Autocomplete(autocomplete string) *Input {
+// AutoComplete sets the autocomplete attribute.
+func (i *Input) AutoComplete(autocomplete string) *Input {
 	i.autocomplete = autocomplete
 	return i
+}
+
+// Autocomplete sets the autocomplete attribute.
+//
+// Deprecated: use AutoComplete.
+func (i *Input) Autocomplete(autocomplete string) *Input {
+	return i.AutoComplete(autocomplete)
 }
 
 // Min sets the min attribute
@@ -286,16 +307,30 @@ func (i *Input) Size(size string) *Input {
 	return i
 }
 
-// Maxlength sets the maxlength attribute
-func (i *Input) Maxlength(maxlength string) *Input {
+// MaxLength sets the maxlength attribute.
+func (i *Input) MaxLength(maxlength string) *Input {
 	i.maxlength = maxlength
 	return i
 }
 
-// Minlength sets the minlength attribute
-func (i *Input) Minlength(minlength string) *Input {
+// Maxlength sets the maxlength attribute.
+//
+// Deprecated: use MaxLength.
+func (i *Input) Maxlength(maxlength string) *Input {
+	return i.MaxLength(maxlength)
+}
+
+// MinLength sets the minlength attribute.
+func (i *Input) MinLength(minlength string) *Input {
 	i.minlength = minlength
 	return i
+}
+
+// Minlength sets the minlength attribute.
+//
+// Deprecated: use MinLength.
+func (i *Input) Minlength(minlength string) *Input {
+	return i.MinLength(minlength)
 }
 
 // Multiple sets the multiple attribute
@@ -332,7 +367,7 @@ func NewOutput() *Output {
 	return v
 }
 
-// Prepare builds the HTML for the output element
+// renderTo writes the output element's HTML to buf.
 func (o *Output) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "output")
 	tg.attr("for", o.forattr)
@@ -382,7 +417,7 @@ func NewFieldset() *Fieldset {
 	return v
 }
 
-// Prepare builds the HTML for the fieldset element
+// renderTo writes the fieldset element's HTML to buf.
 func (f *Fieldset) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "fieldset")
 	tg.attr("form", f.form)
@@ -434,7 +469,7 @@ func NewButton() *Button {
 	return v
 }
 
-// Prepare builds the HTML for the button element
+// renderTo writes the button element's HTML to buf.
 func (b *Button) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "button")
 	tg.attr("type", b.buttonType)
@@ -545,7 +580,7 @@ func NewSelect() *Select {
 	return v
 }
 
-// Prepare builds the HTML for the select element
+// renderTo writes the select element's HTML to buf.
 func (s *Select) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "select")
 	tg.attr("name", s.name)
@@ -622,7 +657,7 @@ func NewDatalist() *Datalist {
 	return v
 }
 
-// Prepare builds the HTML for the datalist element
+// renderTo writes the datalist element's HTML to buf.
 func (d *Datalist) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "datalist")
 	tg.attr("id", d.id)
@@ -651,7 +686,7 @@ func NewOptgroup() *Optgroup {
 	return v
 }
 
-// Prepare builds the HTML for the optgroup element
+// renderTo writes the optgroup element's HTML to buf.
 func (o *Optgroup) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "optgroup")
 	tg.attr("label", o.label)
@@ -689,7 +724,7 @@ func NewOption() *Option {
 	return v
 }
 
-// Prepare builds the HTML for the option element
+// renderTo writes the option element's HTML to buf.
 func (o *Option) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "option")
 	tg.attr("value", o.value)
@@ -757,7 +792,7 @@ func NewTextarea() *Textarea {
 	return v
 }
 
-// Prepare builds the HTML for the textarea element
+// renderTo writes the textarea element's HTML to buf.
 func (t *Textarea) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "textarea")
 	tg.attr("name", t.name)
@@ -884,7 +919,7 @@ func NewProgress() *Progress {
 	return v
 }
 
-// Prepare builds the HTML for the progress element
+// renderTo writes the progress element's HTML to buf.
 func (p *Progress) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "progress")
 	tg.attr("value", p.value)
@@ -938,7 +973,7 @@ func NewMeter() *Meter {
 	return v
 }
 
-// Prepare builds the HTML for the meter element
+// renderTo writes the meter element's HTML to buf.
 func (m *Meter) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "meter")
 	tg.attr("value", m.value)
@@ -1013,7 +1048,7 @@ func NewLegend() *Legend {
 	return v
 }
 
-// Prepare builds the HTML for the legend element
+// renderTo writes the legend element's HTML to buf.
 func (l *Legend) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "legend")
 	tg.styleAttr(l.style)

@@ -4,12 +4,18 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"io"
+	"maps"
 	"os"
+	"path/filepath"
 	"reflect"
 	"strings"
 )
 
 const tab = "\t"
+
+// HtmlFile streams its output through io.WriterTo.
+var _ io.WriterTo = (*HtmlFile)(nil)
 
 // HtmlFile represents the HTML element for the document root
 type HtmlFile struct {
@@ -82,13 +88,13 @@ func (h *HtmlFile) renderTo(buf *bytes.Buffer) {
 
 // Add adds content to the html element
 func (h *HtmlFile) Add(e Element) *HtmlFile {
-	if e != nil {
-		h.contents = appendElement(h.contents, e)
-	}
+	h.contents = appendElement(h.contents, e)
 	return h
 }
 
-// AddToHead sets the addtohead value on the HtmlFile component.
+// AddToHead adds e to the document head. A *Head wrapper is merged into the
+// document, and an element that is not valid head content is rejected and
+// recorded on Err.
 func (h *HtmlFile) AddToHead(e Element) *HtmlFile {
 	if e == nil {
 		return h
@@ -113,7 +119,9 @@ func (h *HtmlFile) AddToHead(e Element) *HtmlFile {
 	return h
 }
 
-// AddToBody sets the addtobody value on the HtmlFile component.
+// AddToBody adds e to the document body. A *Body wrapper is merged into the
+// document, and an element that is not valid body content is rejected and
+// recorded on Err.
 func (h *HtmlFile) AddToBody(e Element) *HtmlFile {
 	if e == nil {
 		return h
@@ -182,9 +190,7 @@ func (h *HtmlFile) AddStyle(k, v string) *HtmlFile {
 
 // AddStyles adds multiple CSS properties
 func (h *HtmlFile) AddStyles(m StyleMap) *HtmlFile {
-	for k, v := range m {
-		h.style[k] = v
-	}
+	maps.Copy(h.style, m)
 	return h
 }
 
@@ -195,33 +201,105 @@ func (h *HtmlFile) Style(m StyleMap) *HtmlFile {
 }
 
 // WriteToFile writes the formatted HTML document to path.
+//
+// The document is written to a temporary file in the same directory and then
+// renamed over path, so a failed write never leaves a truncated file behind and
+// readers never see a half-written one. The file is created with mode 0644
+// (before the umask), and an existing file at path is replaced.
 func (h *HtmlFile) WriteToFile(path string) error {
 	html, err := h.RenderFormatted()
 	if err != nil {
 		return err
 	}
+	return writeFileAtomic(path, html)
+}
 
-	file, err := os.Create(path)
+// writeFileAtomic writes data to path through a temporary file in the same
+// directory, so the final rename stays on one filesystem.
+func writeFileAtomic(path string, data []byte) (err error) {
+	file, err := os.CreateTemp(filepath.Dir(path), ".rephtml-*.tmp")
 	if err != nil {
 		return fmt.Errorf("create html file %q: %w", path, err)
 	}
-
-	if _, err := file.Write(html); err != nil {
-		closeErr := file.Close()
-		if closeErr != nil {
-			return errors.Join(
-				fmt.Errorf("write html file %q: %w", path, err),
-				fmt.Errorf("close html file %q: %w", path, closeErr),
-			)
+	tmp := file.Name()
+	defer func() {
+		if err != nil {
+			err = errors.Join(err, removeIfExists(tmp))
 		}
-		return fmt.Errorf("write html file %q: %w", path, err)
-	}
+	}()
 
+	if _, err := file.Write(data); err != nil {
+		return errors.Join(
+			fmt.Errorf("write html file %q: %w", path, err),
+			closeQuietly(file, path),
+		)
+	}
+	if err := file.Sync(); err != nil {
+		return errors.Join(
+			fmt.Errorf("sync html file %q: %w", path, err),
+			closeQuietly(file, path),
+		)
+	}
 	if err := file.Close(); err != nil {
 		return fmt.Errorf("close html file %q: %w", path, err)
 	}
-
+	if err := os.Chmod(tmp, 0o644); err != nil {
+		return fmt.Errorf("set mode on html file %q: %w", path, err)
+	}
+	if err := os.Rename(tmp, path); err != nil {
+		return fmt.Errorf("replace html file %q: %w", path, err)
+	}
 	return nil
+}
+
+// closeQuietly closes file after a failed write, returning a close error only
+// as additional context.
+func closeQuietly(file *os.File, path string) error {
+	if err := file.Close(); err != nil {
+		return fmt.Errorf("close html file %q: %w", path, err)
+	}
+	return nil
+}
+
+// removeIfExists deletes a leftover temporary file.
+func removeIfExists(path string) error {
+	if err := os.Remove(path); err != nil && !errors.Is(err, os.ErrNotExist) {
+		return fmt.Errorf("remove temporary file %q: %w", path, err)
+	}
+	return nil
+}
+
+// WriteTo writes the compact HTML document to w and implements io.WriterTo.
+//
+// It renders straight into a pooled buffer and copies that to w, so unlike
+// Render it makes no intermediate copy of the document. A document error is
+// returned before anything is written. Because rendering does not mutate the
+// tree, WriteTo is safe to call from several goroutines on one built document,
+// for example from an http.Handler.
+func (h *HtmlFile) WriteTo(w io.Writer) (int64, error) {
+	if h.err != nil {
+		return 0, h.err
+	}
+	buf := getBuffer()
+	defer putBuffer(buf)
+	h.renderTo(buf)
+	return buf.WriteTo(w)
+}
+
+// WriteFormattedTo writes the human-readable formatted HTML document to w.
+//
+// Like WriteTo it returns a document error before writing anything. Formatting
+// adds whitespace between tags, so use WriteTo when exact output matters.
+func (h *HtmlFile) WriteFormattedTo(w io.Writer) (int64, error) {
+	html, err := h.RenderFormatted()
+	if err != nil {
+		return 0, err
+	}
+	n, err := w.Write(html)
+	if err == nil && n < len(html) {
+		err = io.ErrShortWrite
+	}
+	return int64(n), err
 }
 
 // Render returns the compact HTML document bytes.
@@ -278,9 +356,7 @@ func (h *HtmlFile) mergeHead(head *Head) {
 	if head.err != nil {
 		h.addError(head.err)
 	}
-	for k, v := range head.style {
-		h.headStyle[k] = v
-	}
+	maps.Copy(h.headStyle, head.style)
 	h.headContent = append(h.headContent, head.contents...)
 }
 
@@ -292,9 +368,7 @@ func (h *HtmlFile) mergeBody(body *Body) {
 	if body.err != nil {
 		h.addError(body.err)
 	}
-	for k, v := range body.style {
-		h.bodyStyle[k] = v
-	}
+	maps.Copy(h.bodyStyle, body.style)
 	if body.onLoad != "" {
 		h.bodyOnLoad = body.onLoad
 	}
@@ -776,7 +850,7 @@ func NewTitle() *Title {
 	return v
 }
 
-// Prepare builds the HTML for the title element
+// renderTo writes the title element's HTML to buf.
 func (t *Title) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "title")
 	tg.styleAttr(t.style)
@@ -804,7 +878,7 @@ func NewBase() *Base {
 	return v
 }
 
-// Prepare builds the HTML for the base element
+// renderTo writes the base element's HTML to buf.
 func (b *Base) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "base")
 	tg.urlAttr("href", b.href)
@@ -847,7 +921,7 @@ func NewLink() *Link {
 	return v
 }
 
-// Prepare builds the HTML for the link element
+// renderTo writes the link element's HTML to buf.
 func (l *Link) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "link")
 	tg.attr("rel", l.rel)
@@ -855,9 +929,9 @@ func (l *Link) renderTo(buf *bytes.Buffer) {
 	tg.attr("type", l.linkType)
 	tg.attr("media", l.media)
 	tg.attr("sizes", l.sizes)
-	tg.attr("crossOrigin", l.crossOrigin)
+	tg.attr("crossorigin", l.crossOrigin)
 	tg.attr("integrity", l.integrity)
-	tg.attr("referrerPolicy", l.referrerPolicy)
+	tg.attr("referrerpolicy", l.referrerPolicy)
 	tg.attr("hreflang", l.hreflang)
 	tg.styleAttr(l.style)
 	tg.void()
@@ -936,17 +1010,64 @@ func NewMeta() *Meta {
 	return v
 }
 
-// Prepare builds the HTML for the meta element
+// renderTo writes the meta element's HTML to buf.
 func (m *Meta) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "meta")
 	tg.attr("name", m.name)
-	tg.attr("content", m.content)
+	if strings.EqualFold(strings.TrimSpace(m.httpEquiv), "refresh") {
+		tg.attr("content", filterRefreshContent(m.content))
+	} else {
+		tg.attr("content", m.content)
+	}
 	tg.attr("charset", m.charset)
 	tg.attr("property", m.property)
 	tg.attr("http-equiv", m.httpEquiv)
 	tg.attr("scheme", m.scheme)
 	tg.styleAttr(m.style)
 	tg.void()
+}
+
+// filterRefreshContent replaces the target of a meta refresh when it is not a
+// safe URL.
+//
+// A refresh value reads "<seconds>; url=<target>", and browsers navigate to the
+// target, so a javascript: target would run code just as it would in an href.
+// The delay, the separators and an optional "url=" prefix are kept as written.
+func filterRefreshContent(content string) string {
+	const space = " \t\n\r\f"
+
+	i := 0
+	for i < len(content) && (content[i] >= '0' && content[i] <= '9' || content[i] == '.') {
+		i++
+	}
+	for i < len(content) && strings.IndexByte(space+";,", content[i]) >= 0 {
+		i++
+	}
+	if i == len(content) {
+		return content
+	}
+
+	if hasPrefixFold(content[i:], "url") {
+		j := i + len("url")
+		for j < len(content) && strings.IndexByte(space, content[j]) >= 0 {
+			j++
+		}
+		if j < len(content) && content[j] == '=' {
+			j++
+			for j < len(content) && strings.IndexByte(space, content[j]) >= 0 {
+				j++
+			}
+			i = j
+		}
+	}
+	if i < len(content) && (content[i] == '"' || content[i] == '\'') {
+		i++
+	}
+
+	if IsSafeURL(content[i:]) {
+		return content
+	}
+	return content[:i] + BlockedURL
 }
 
 // Name sets the name attribute
@@ -992,6 +1113,7 @@ type StyleElement struct {
 	contentNode[*StyleElement]
 	styleType string
 	media     string
+	err       error
 }
 
 // NewStyleElement creates a new StyleElement element
@@ -1001,7 +1123,7 @@ func NewStyleElement() *StyleElement {
 	return v
 }
 
-// Prepare builds the HTML for the style element
+// renderTo writes the style element's HTML to buf.
 func (s *StyleElement) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "style")
 	tg.attr("type", s.styleType)
@@ -1010,7 +1132,12 @@ func (s *StyleElement) renderTo(buf *bytes.Buffer) {
 	tg.children(s.contents)
 }
 
-// Add adds content to the style element
+// Add adds CSS rule content to the style element.
+//
+// A style element holds raw CSS text, so only CSS rules (including *Style) are
+// accepted. Any other element is dropped, because rendering HTML inside a style
+// element produces markup the browser reads as CSS text, and the drop is
+// recorded on Err.
 func (s *StyleElement) Add(e Element) *StyleElement {
 	switch element := e.(type) {
 	case nil:
@@ -1021,27 +1148,30 @@ func (s *StyleElement) Add(e Element) *StyleElement {
 		if element == nil {
 			return s
 		}
-		return s.AddRule(&StyleRule{
-			Props: cloneStyleMap(element.Props),
-			Tags:  append([]string(nil), element.Tags...),
-		})
+		return s.AddRule(ruleFromStyle(element))
 	default:
-		s.contents = appendElement(s.contents, e)
+		if !isNilElement(e) {
+			s.err = errors.Join(s.err, fmt.Errorf("cannot add %s to style element: only CSS rules are allowed", elementName(e)))
+		}
 	}
 	return s
 }
 
+// Err returns the errors recorded when content that is not CSS was added to the
+// style element.
+func (s *StyleElement) Err() error {
+	return s.err
+}
+
 // AddRule appends typed CSS rule content to the style element.
 func (s *StyleElement) AddRule(rule CSSRule) *StyleElement {
-	if !isNilElement(rule) {
-		s.contents = appendElement(s.contents, rule)
-	}
+	s.contents = appendElement(s.contents, rule)
 	return s
 }
 
 // Text adds CSS text content to the style element
 func (s *StyleElement) Text(text string) *StyleElement {
-	s.contents = appendElement(s.contents, rawText(text))
+	s.contents = appendElement(s.contents, rawText(escapeCSS(text)))
 	return s
 }
 

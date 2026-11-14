@@ -341,10 +341,10 @@ func TestEmbeddedComponentOutputFormats(t *testing.T) {
 		want    string
 	}{
 		{name: "Embed", element: NewEmbed().Src("file.pdf").Type("application/pdf").Width("640").Height("480"), want: `<embed src="file.pdf" type="application/pdf" width="640" height="480">`},
-		{name: "Iframe", element: NewIframe().Src("/frame").Width("640").Height("480").Name("frame").Allowfullscreen(true), want: `<iframe src="/frame" width="640" height="480" name="frame" allowfullscreen></iframe>`},
+		{name: "Iframe", element: NewIframe().Src("/frame").Width("640").Height("480").Name("frame").AllowFullscreen(true), want: `<iframe src="/frame" width="640" height="480" name="frame" allowfullscreen></iframe>`},
 		{name: "Object", element: NewObject().Data("movie.swf").Type("application/x-shockwave-flash").Width("640").Height("480").Add(NewP().Text("Fallback")), want: `<object data="movie.swf" type="application/x-shockwave-flash" width="640" height="480"><p>Fallback</p></object>`},
 		{name: "Picture", element: NewPicture().Add(NewSource().Srcset("large.webp").Type("image/webp")).Add(NewImg().Src("fallback.png").Alt("Fallback")), want: `<picture><source srcset="large.webp" type="image/webp"><img src="fallback.png" alt="Fallback"></picture>`},
-		{name: "Portal", element: NewPortal().Src("/portal").Referrerpolicy("no-referrer"), want: `<portal src="/portal" referrerpolicy="no-referrer"></portal>`},
+		{name: "Portal", element: NewPortal().Src("/portal").ReferrerPolicy("no-referrer"), want: `<portal src="/portal" referrerpolicy="no-referrer"></portal>`},
 		{name: "Source", element: NewSource().Src("media.mp4").Srcset("media.webp").Media("(min-width: 800px)").Sizes("100vw").Type("video/mp4"), want: `<source src="media.mp4" srcset="media.webp" media="(min-width: 800px)" sizes="100vw" type="video/mp4">`},
 	}
 

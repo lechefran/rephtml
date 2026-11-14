@@ -2,7 +2,7 @@ package rephtml
 
 import "bytes"
 
-// Hgroup represents the Hgroup component or supporting type.
+// Hgroup represents the HTML <hgroup> element, a heading together with related content such as a subheading.
 type Hgroup struct {
 	bodyElement
 	contentNode[*Hgroup]
@@ -22,7 +22,7 @@ func (h *Hgroup) renderTo(buf *bytes.Buffer) {
 	tg.children(h.contents)
 }
 
-// H1 represents the H1 component or supporting type.
+// H1 represents the HTML <h1> element, a top-level section heading.
 type H1 struct {
 	bodyElement
 	textNode[*H1]
@@ -42,7 +42,7 @@ func (h *H1) renderTo(buf *bytes.Buffer) {
 	tg.text(h.text)
 }
 
-// H2 represents the H2 component or supporting type.
+// H2 represents the HTML <h2> element, a second-level section heading.
 type H2 struct {
 	bodyElement
 	textNode[*H2]
@@ -62,7 +62,7 @@ func (h *H2) renderTo(buf *bytes.Buffer) {
 	tg.text(h.text)
 }
 
-// H3 represents the H3 component or supporting type.
+// H3 represents the HTML <h3> element, a third-level section heading.
 type H3 struct {
 	bodyElement
 	textNode[*H3]
@@ -82,7 +82,7 @@ func (h *H3) renderTo(buf *bytes.Buffer) {
 	tg.text(h.text)
 }
 
-// H4 represents the H4 component or supporting type.
+// H4 represents the HTML <h4> element, a fourth-level section heading.
 type H4 struct {
 	bodyElement
 	textNode[*H4]
@@ -102,7 +102,7 @@ func (h *H4) renderTo(buf *bytes.Buffer) {
 	tg.text(h.text)
 }
 
-// H5 represents the H5 component or supporting type.
+// H5 represents the HTML <h5> element, a fifth-level section heading.
 type H5 struct {
 	bodyElement
 	textNode[*H5]
@@ -122,7 +122,7 @@ func (h *H5) renderTo(buf *bytes.Buffer) {
 	tg.text(h.text)
 }
 
-// H6 represents the H6 component or supporting type.
+// H6 represents the HTML <h6> element, a sixth-level section heading.
 type H6 struct {
 	bodyElement
 	textNode[*H6]

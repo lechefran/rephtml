@@ -16,7 +16,7 @@ func NewDetails() *Details {
 	return v
 }
 
-// Prepare builds the HTML for the details element
+// renderTo writes the details element's HTML to buf.
 func (d *Details) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "details")
 	tg.boolAttr("open", d.open)
@@ -44,7 +44,7 @@ func NewDialog() *Dialog {
 	return v
 }
 
-// Prepare builds the HTML for the dialog element
+// renderTo writes the dialog element's HTML to buf.
 func (d *Dialog) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "dialog")
 	tg.boolAttr("open", d.open)
@@ -71,7 +71,7 @@ func NewSummary() *Summary {
 	return v
 }
 
-// Prepare builds the HTML for the summary element
+// renderTo writes the summary element's HTML to buf.
 func (s *Summary) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "summary")
 	tg.styleAttr(s.style)

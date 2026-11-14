@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-// P represents the P component or supporting type.
+// P represents the HTML <p> element, a paragraph.
 type P struct {
 	bodyElement
 	textNode[*P]
@@ -98,7 +98,7 @@ func sanitizeComment(text string) string {
 	return b.String()
 }
 
-// Hr represents the Hr component or supporting type.
+// Hr represents the HTML <hr> element, a thematic break between paragraph-level elements.
 type Hr struct {
 	bodyElement
 	node[*Hr]
@@ -118,7 +118,7 @@ func (h *Hr) renderTo(buf *bytes.Buffer) {
 	tg.void()
 }
 
-// Pre represents the Pre component or supporting type.
+// Pre represents the HTML <pre> element, preformatted text whose whitespace is preserved.
 type Pre struct {
 	bodyElement
 	textNode[*Pre]
@@ -138,7 +138,7 @@ func (p *Pre) renderTo(buf *bytes.Buffer) {
 	tg.text(p.text)
 }
 
-// Blockquote represents the Blockquote component or supporting type.
+// Blockquote represents the HTML <blockquote> element, an extended quotation.
 type Blockquote struct {
 	bodyElement
 	textNode[*Blockquote]
@@ -152,7 +152,7 @@ func NewBlockquote() *Blockquote {
 	return v
 }
 
-// Cite sets the cite value on the Blockquote component.
+// Cite sets the cite attribute.
 func (b *Blockquote) Cite(c string) *Blockquote {
 	b.cite = c
 	return b
@@ -166,7 +166,7 @@ func (b *Blockquote) renderTo(buf *bytes.Buffer) {
 	tg.text(b.text)
 }
 
-// Menu represents the Menu component or supporting type.
+// Menu represents the HTML <menu> element, a list of commands, semantically an unordered list.
 type Menu struct {
 	bodyElement
 	contentNode[*Menu]
@@ -181,13 +181,13 @@ func NewMenu() *Menu {
 	return v
 }
 
-// Type sets the type value on the Menu component.
+// Type sets the type attribute.
 func (m *Menu) Type(t string) *Menu {
 	m.menuType = t
 	return m
 }
 
-// Label sets the label value on the Menu component.
+// Label sets the label attribute.
 func (m *Menu) Label(l string) *Menu {
 	m.label = l
 	return m
@@ -202,11 +202,12 @@ func (m *Menu) renderTo(buf *bytes.Buffer) {
 	tg.children(m.contents)
 }
 
-// Ol represents the Ol component or supporting type.
+// Ol represents the HTML <ol> element, an ordered list.
 type Ol struct {
 	bodyElement
 	contentNode[*Ol]
 	start    int
+	startSet bool
 	listType string
 	reversed bool
 }
@@ -218,19 +219,21 @@ func NewOl() *Ol {
 	return v
 }
 
-// Start sets the start value on the Ol component.
+// Start sets the start attribute, the number the first list item is counted
+// as. Zero and negative numbers are valid starting points and are emitted.
 func (o *Ol) Start(s int) *Ol {
 	o.start = s
+	o.startSet = true
 	return o
 }
 
-// Type sets the type value on the Ol component.
+// Type sets the type attribute.
 func (o *Ol) Type(t string) *Ol {
 	o.listType = t
 	return o
 }
 
-// Reversed sets the reversed value on the Ol component.
+// Reversed sets the reversed attribute.
 func (o *Ol) Reversed(r bool) *Ol {
 	o.reversed = r
 	return o
@@ -239,14 +242,16 @@ func (o *Ol) Reversed(r bool) *Ol {
 // renderTo writes the Ol component's HTML to buf.
 func (o *Ol) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "ol")
-	tg.intAttr("start", o.start)
+	if o.startSet {
+		writeIntAttr(buf, "start", o.start)
+	}
 	tg.attr("type", o.listType)
 	tg.boolAttr("reversed", o.reversed)
 	tg.styleAttr(o.style)
 	tg.children(o.contents)
 }
 
-// Ul represents the Ul component or supporting type.
+// Ul represents the HTML <ul> element, an unordered list.
 type Ul struct {
 	bodyElement
 	contentNode[*Ul]
@@ -266,11 +271,12 @@ func (u *Ul) renderTo(buf *bytes.Buffer) {
 	tg.children(u.contents)
 }
 
-// Li represents the Li component or supporting type.
+// Li represents the HTML <li> element, a list item.
 type Li struct {
 	bodyElement
 	contentNode[*Li]
-	value int
+	value    int
+	valueSet bool
 }
 
 // NewLi creates a new Li component.
@@ -280,21 +286,25 @@ func NewLi() *Li {
 	return v
 }
 
-// Value sets the value value on the Li component.
+// Value sets the value attribute, the ordinal value of this item in an ordered
+// list. Zero and negative numbers are valid and are emitted.
 func (l *Li) Value(v int) *Li {
 	l.value = v
+	l.valueSet = true
 	return l
 }
 
 // renderTo writes the Li component's HTML to buf.
 func (l *Li) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "li")
-	tg.intAttr("value", l.value)
+	if l.valueSet {
+		writeIntAttr(buf, "value", l.value)
+	}
 	tg.styleAttr(l.style)
 	tg.children(l.contents)
 }
 
-// Dl represents the Dl component or supporting type.
+// Dl represents the HTML <dl> element, a description list of terms and their descriptions.
 type Dl struct {
 	bodyElement
 	contentNode[*Dl]
@@ -314,7 +324,7 @@ func (d *Dl) renderTo(buf *bytes.Buffer) {
 	tg.children(d.contents)
 }
 
-// Dt represents the Dt component or supporting type.
+// Dt represents the HTML <dt> element, a term in a description list.
 type Dt struct {
 	bodyElement
 	contentNode[*Dt]
@@ -334,7 +344,7 @@ func (d *Dt) renderTo(buf *bytes.Buffer) {
 	tg.children(d.contents)
 }
 
-// Dd represents the Dd component or supporting type.
+// Dd represents the HTML <dd> element, the description of a term in a description list.
 type Dd struct {
 	bodyElement
 	contentNode[*Dd]
@@ -354,7 +364,7 @@ func (d *Dd) renderTo(buf *bytes.Buffer) {
 	tg.children(d.contents)
 }
 
-// Figure represents the Figure component or supporting type.
+// Figure represents the HTML <figure> element, self-contained content, optionally with a caption.
 type Figure struct {
 	bodyElement
 	contentNode[*Figure]
@@ -374,7 +384,7 @@ func (f *Figure) renderTo(buf *bytes.Buffer) {
 	tg.children(f.contents)
 }
 
-// Figcaption represents the Figcaption component or supporting type.
+// Figcaption represents the HTML <figcaption> element, the caption of a figure.
 type Figcaption struct {
 	bodyElement
 	contentNode[*Figcaption]
@@ -394,7 +404,7 @@ func (f *Figcaption) renderTo(buf *bytes.Buffer) {
 	tg.children(f.contents)
 }
 
-// Search represents the Search component or supporting type.
+// Search represents the HTML <search> element, a part of the page with search or filtering controls.
 type Search struct {
 	bodyElement
 	contentNode[*Search]
