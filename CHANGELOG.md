@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 While the major version is 0, a minor release may contain breaking changes;
 deprecated names are kept for at least one minor release before removal.
 
+## [Unreleased]
+
+### Changed
+
+- `Time.Datetime` validates week and duration values with small hand-written
+  scanners instead of regular expressions. The accepted values are unchanged,
+  and the package no longer links `regexp`, which makes programs that use it
+  about 250 KB smaller.
+
 ## [0.2.0] - 2026-11-14
 
 First official release, following `v0.1.0-beta`.
