@@ -105,10 +105,17 @@ func (s *Script) Defer(deferScript bool) *Script {
 	return s
 }
 
-// Crossorigin sets the crossorigin value on the Script component.
-func (s *Script) Crossorigin(crossorigin string) *Script {
+// CrossOrigin sets the crossorigin attribute.
+func (s *Script) CrossOrigin(crossorigin string) *Script {
 	s.crossOrigin = crossorigin
 	return s
+}
+
+// Crossorigin sets the crossorigin attribute.
+//
+// Deprecated: use CrossOrigin.
+func (s *Script) Crossorigin(crossorigin string) *Script {
+	return s.CrossOrigin(crossorigin)
 }
 
 // Integrity sets the integrity value on the Script component.
@@ -123,10 +130,17 @@ func (s *Script) Nomodule(nomodule bool) *Script {
 	return s
 }
 
-// Referrerpolicy sets the referrerpolicy value on the Script component.
-func (s *Script) Referrerpolicy(referrerpolicy string) *Script {
+// ReferrerPolicy sets the referrerpolicy attribute.
+func (s *Script) ReferrerPolicy(referrerpolicy string) *Script {
 	s.referrerPolicy = referrerpolicy
 	return s
+}
+
+// Referrerpolicy sets the referrerpolicy attribute.
+//
+// Deprecated: use ReferrerPolicy.
+func (s *Script) Referrerpolicy(referrerpolicy string) *Script {
+	return s.ReferrerPolicy(referrerpolicy)
 }
 
 // renderTo writes the Script component's HTML to buf.

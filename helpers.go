@@ -3,6 +3,7 @@ package rephtml
 import (
 	"bytes"
 	"html"
+	"maps"
 	"reflect"
 	"strconv"
 	"strings"
@@ -68,9 +69,7 @@ func cloneBytes(b []byte) []byte {
 // cloneStyleMap returns a copy of CSS declarations so callers can reuse maps safely.
 func cloneStyleMap(style StyleMap) StyleMap {
 	clone := make(StyleMap, len(style))
-	for k, v := range style {
-		clone[k] = v
-	}
+	maps.Copy(clone, style)
 	return clone
 }
 

@@ -113,10 +113,17 @@ func (i *Iframe) Allow(allow string) *Iframe {
 	return i
 }
 
-// Allowfullscreen sets the allowfullscreen value on the Iframe component.
-func (i *Iframe) Allowfullscreen(allowfullscreen bool) *Iframe {
+// AllowFullscreen sets the allowfullscreen attribute.
+func (i *Iframe) AllowFullscreen(allowfullscreen bool) *Iframe {
 	i.allowfullscreen = allowfullscreen
 	return i
+}
+
+// Allowfullscreen sets the allowfullscreen attribute.
+//
+// Deprecated: use AllowFullscreen.
+func (i *Iframe) Allowfullscreen(allowfullscreen bool) *Iframe {
+	return i.AllowFullscreen(allowfullscreen)
 }
 
 // Loading sets the loading value on the Iframe component.
@@ -125,10 +132,17 @@ func (i *Iframe) Loading(loading string) *Iframe {
 	return i
 }
 
-// Referrerpolicy sets the referrerpolicy value on the Iframe component.
-func (i *Iframe) Referrerpolicy(referrerpolicy string) *Iframe {
+// ReferrerPolicy sets the referrerpolicy attribute.
+func (i *Iframe) ReferrerPolicy(referrerpolicy string) *Iframe {
 	i.referrerpolicy = referrerpolicy
 	return i
+}
+
+// Referrerpolicy sets the referrerpolicy attribute.
+//
+// Deprecated: use ReferrerPolicy.
+func (i *Iframe) Referrerpolicy(referrerpolicy string) *Iframe {
+	return i.ReferrerPolicy(referrerpolicy)
 }
 
 // Srcdoc sets the srcdoc attribute, the HTML document the frame displays.
@@ -275,10 +289,17 @@ func (p *Portal) Src(src string) *Portal {
 	return p
 }
 
-// Referrerpolicy sets the referrerpolicy value on the Portal component.
-func (p *Portal) Referrerpolicy(referrerpolicy string) *Portal {
+// ReferrerPolicy sets the referrerpolicy attribute.
+func (p *Portal) ReferrerPolicy(referrerpolicy string) *Portal {
 	p.referrerpolicy = referrerpolicy
 	return p
+}
+
+// Referrerpolicy sets the referrerpolicy attribute.
+//
+// Deprecated: use ReferrerPolicy.
+func (p *Portal) Referrerpolicy(referrerpolicy string) *Portal {
+	return p.ReferrerPolicy(referrerpolicy)
 }
 
 // renderTo writes the Portal component's HTML to buf.
