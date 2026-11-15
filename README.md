@@ -22,7 +22,7 @@ The package is designed around small composable structs:
 - `Render`, `RenderString`, `RenderFormatted`, and `RenderFormattedString` return generated HTML plus any document error.
 - `WriteTo` and `WriteFormattedTo` stream a document to any `io.Writer`, such as an `http.ResponseWriter`.
 
-The current release is **v0.2.0**. The module is still below v1, so a minor release may contain breaking changes. Deprecated names are kept for at least one minor release, and every release is described in the [changelog](CHANGELOG.md).
+The current release is **v0.2.0**. The module is still below v1, so a minor release may contain breaking changes. Deprecated names keep working until v1.0, and every release is described in the [changelog](CHANGELOG.md).
 
 ## Installation
 
@@ -160,6 +160,19 @@ func badge(u *User) *rephtml.Span {
 	return rephtml.NewSpan().Text(u.Name)
 }
 ```
+
+### Attribute value types
+
+A setter takes an `int` when the attribute is always a whole number, such as
+`Td.Colspan`, `Col.Span`, `Ol.Start` and `Li.Value`. It takes a `string` when
+the value can carry units, dates, decimals or keywords, such as `Img.Width`,
+`Input.Min` and `Meter.Value`. The string is written as given.
+
+A few older setters take a `string` for an attribute that is always a whole
+number: `Input.Size`, `Input.MaxLength`, `Input.MinLength`, `Select.Size`,
+`Textarea.Rows`, `Textarea.Cols`, `Textarea.MaxLength` and
+`Textarea.MinLength`. They keep that signature until v1.0, so pass the number
+as text, for example `Rows("4")`.
 
 ## Concurrency
 
@@ -466,7 +479,7 @@ The examples above are self-contained and use the root package import path: `git
 
 ## Upgrading from v0.1.0-beta
 
-v0.2.0 does not remove any API, so code that compiled against `v0.1.0-beta` still compiles. Some setters have new, consistently capitalised names, and the old names are deprecated. They still work and will be removed in a future minor release:
+v0.2.0 does not remove any API, so code that compiled against `v0.1.0-beta` still compiles. Some setters have new, consistently capitalised names, and the old names are deprecated. They still work and are kept until v1.0:
 
 | Deprecated | Use instead |
 |---|---|
