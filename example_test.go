@@ -61,6 +61,19 @@ func ExampleLabel_AddText() {
 	// <label for="email">Email <strong>required</strong> &amp; private</label>
 }
 
+func ExampleTable_AddColgroup() {
+	table := rephtml.NewTable().
+		AddCaption(rephtml.NewCaption().Text("Totals")).
+		AddColgroup(rephtml.NewColgroup().Add(rephtml.NewCol().Span(2).AddClass("label"))).
+		AddTbody(rephtml.NewTbody().AddTr(rephtml.NewTr().
+			AddTd(rephtml.NewTd().Add(rephtml.NewSpan().Text("North"))).
+			AddTd(rephtml.NewTd().Add(rephtml.NewSpan().Text("125")))))
+
+	fmt.Println(table.HTML())
+	// Output:
+	// <table><caption>Totals</caption><colgroup><col class="label" span="2"></colgroup><tbody><tr><td><span>North</span></td><td><span>125</span></td></tr></tbody></table>
+}
+
 func ExampleNewDiv() {
 	div := rephtml.NewDiv().
 		AddStyle("color", "red").

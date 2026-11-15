@@ -21,8 +21,41 @@ deprecated names are kept for at least one minor release before removal.
   `HtmlFile`.
 - `AddText` on every text element always appends, whether `Text` replaces or
   appends on that element. See the README for which does which.
+- `Table.AddColgroup` adds a `<colgroup>`, rendered after the caption and
+  before the thead. It appends, since a table can have several.
+- `Table.Err` reports a table that mixes legacy `Headers` / `Rows` with
+  structured sections.
 
 ### Fixed
+
+- ⚠️ **POTENTIALLY BREAKING:** errors recorded by elements anywhere in a
+  document now reach `HtmlFile.Err()`, so every output method returns them
+  instead of rendering. Before, they were only visible on the element itself.
+  This covers:
+  - an invalid `Time.Datetime` value;
+  - a `StyleElement` given content that is not CSS;
+  - a `Head` or `Body` wrapper nested in other content instead of merged;
+  - a `Table` that mixes legacy `Headers` / `Rows` with `thead`, `tbody`,
+    `tfoot` or `tr` rows. Its legacy cells were silently not rendered; the new
+    `Table.Err()` reports it.
+
+  ```go
+  doc := rephtml.NewHtmlFile().
+      AddToBody(rephtml.NewTime().Datetime("tomorrow").Text("soon"))
+  out, err := doc.RenderString()
+  ```
+
+  Before: `out` is `<!DOCTYPE html><html><body><time>soon</time></body></html>`,
+  `err` is nil. After: `out` is empty, and `err` is `invalid datetime value:
+  "tomorrow"`.
+
+  The errors are read when `Err()` is called, so correcting the element, for
+  example by setting a valid datetime, clears the document's error.
+
+  *Who is affected:* documents that contain one of these mistakes and were
+  rendering without them. *Migration:* check `HtmlFile.Err()` (or the output
+  method's error), and fix the reported element. For a table, use either the
+  legacy `Headers` / `Rows` or the structured sections, not both.
 
 - ⚠️ **POTENTIALLY BREAKING:** `Head` and `Body` wrappers added with
   `AddToHead` / `AddToBody` are now read when the document renders, not copied
@@ -46,6 +79,21 @@ deprecated names are kept for at least one minor release before removal.
   *Who is affected:* code that kept changing a wrapper after adding it to a
   document and relied on those changes being ignored. *Migration:* finish
   building the wrapper before adding it, or add a fresh wrapper.
+
+- ⚠️ **POTENTIALLY BREAKING:** rows added directly to a `Table` with `AddTr`
+  now render before the `<tfoot>`, as the HTML table content model requires,
+  instead of after it.
+
+  ```go
+  rephtml.NewTable().AddTfoot(foot).AddTr(row)
+  ```
+
+  Before: `<table><tfoot>…</tfoot><tr>…</tr></table>`.
+  After: `<table><tr>…</tr><tfoot>…</tfoot></table>`.
+
+  Browsers already displayed the footer last, so pages look the same; the
+  markup changes. *Who is affected:* code that compares or post-processes the
+  exact table markup. *Migration:* update the expected output.
 
 ### Changed
 

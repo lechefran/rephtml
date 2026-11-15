@@ -169,6 +169,39 @@ func (n *contentNode[Self]) Add(e Element) Self {
 	return n.self
 }
 
+// collectErrors appends the errors recorded anywhere among the children.
+func (n *contentNode[Self]) collectErrors(errs []error) []error {
+	return collectChildErrors(errs, n.contents)
+}
+
+// errorReporter is implemented by elements that can record an error while
+// being built, or that hold children which can. HtmlFile.Err walks the document
+// through it, so an error recorded deep in the tree, such as an invalid Time
+// datetime, stops the document from rendering instead of being lost.
+type errorReporter interface {
+	collectErrors(errs []error) []error
+}
+
+// collectChildErrors appends the errors recorded by each child and its
+// descendants, in document order. Elements from outside the package are not
+// inspected.
+func collectChildErrors(errs []error, contents []Element) []error {
+	for _, e := range contents {
+		if r, ok := e.(errorReporter); ok {
+			errs = r.collectErrors(errs)
+		}
+	}
+	return errs
+}
+
+// appendError appends err when it is not nil.
+func appendError(errs []error, err error) []error {
+	if err != nil {
+		errs = append(errs, err)
+	}
+	return errs
+}
+
 // textContent is a content element whose text is added as escaped child
 // content, so text and child elements can be interleaved.
 type textContent[Self selfElement] struct {
@@ -253,6 +286,11 @@ type tabularNode[Self selfElement] struct {
 func (n *tabularNode[Self]) Add(e Element) Self {
 	n.contents = appendElement(n.contents, e)
 	return n.self
+}
+
+// collectErrors appends the errors recorded anywhere among the children.
+func (n *tabularNode[Self]) collectErrors(errs []error) []error {
+	return collectChildErrors(errs, n.contents)
 }
 
 // bodyElement marks an element as valid document body content.
