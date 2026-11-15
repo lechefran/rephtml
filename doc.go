@@ -33,6 +33,10 @@ type HtmlFile struct {
 	contextMenu  string
 	bodyOnLoad   string
 	bodyOnUnload string
+	headID       string
+	headClass    []string
+	bodyID       string
+	bodyClass    []string
 	err          error
 }
 
@@ -73,13 +77,14 @@ func (h *HtmlFile) renderTo(buf *bytes.Buffer) {
 	tg.styleAttr(h.style)
 	tg.open()
 
-	if len(h.headContent) != 0 || len(h.headStyle) != 0 {
+	if len(h.headContent) != 0 || len(h.headStyle) != 0 || h.headID != "" || len(h.headClass) != 0 {
 		h.writeHeadElement(buf)
 	}
 
 	writeElements(buf, h.contents)
 
-	if len(h.bodyContent) != 0 || len(h.bodyStyle) != 0 || h.bodyOnLoad != "" || h.bodyOnUnload != "" {
+	if len(h.bodyContent) != 0 || len(h.bodyStyle) != 0 || h.bodyOnLoad != "" || h.bodyOnUnload != "" ||
+		h.bodyID != "" || len(h.bodyClass) != 0 {
 		h.writeBodyElement(buf)
 	}
 
@@ -357,6 +362,10 @@ func (h *HtmlFile) mergeHead(head *Head) {
 		h.addError(head.err)
 	}
 	maps.Copy(h.headStyle, head.style)
+	if head.id != "" {
+		h.headID = head.id
+	}
+	h.headClass = append(h.headClass, head.class...)
 	h.headContent = append(h.headContent, head.contents...)
 }
 
@@ -375,6 +384,10 @@ func (h *HtmlFile) mergeBody(body *Body) {
 	if body.onUnload != "" {
 		h.bodyOnUnload = body.onUnload
 	}
+	if body.id != "" {
+		h.bodyID = body.id
+	}
+	h.bodyClass = append(h.bodyClass, body.class...)
 	h.bodyContent = append(h.bodyContent, body.contents...)
 }
 
@@ -386,6 +399,8 @@ func (h *HtmlFile) rejectStructuralElement(target string, e Element) {
 // writeHeadElement writes the generated head section.
 func (h *HtmlFile) writeHeadElement(buf *bytes.Buffer) {
 	tg := startTag(buf, "head")
+	tg.attr("id", h.headID)
+	tg.classAttr(h.headClass)
 	tg.styleAttr(h.headStyle)
 	tg.children(h.headContent)
 }
@@ -395,6 +410,8 @@ func (h *HtmlFile) writeBodyElement(buf *bytes.Buffer) {
 	tg := startTag(buf, "body")
 	tg.attr("onload", h.bodyOnLoad)
 	tg.attr("onunload", h.bodyOnUnload)
+	tg.attr("id", h.bodyID)
+	tg.classAttr(h.bodyClass)
 	tg.styleAttr(h.bodyStyle)
 	tg.children(h.bodyContent)
 }
@@ -774,7 +791,7 @@ func (h *Head) Err() error {
 // renderTo writes the head element's HTML to buf.
 func (h *Head) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "head")
-	tg.styleAttr(h.style)
+	h.attrs(tg)
 	tg.children(h.contents)
 }
 
@@ -821,7 +838,7 @@ func (b *Body) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "body")
 	tg.attr("onload", b.onLoad)
 	tg.attr("onunload", b.onUnload)
-	tg.styleAttr(b.style)
+	b.attrs(tg)
 	tg.children(b.contents)
 }
 
@@ -840,7 +857,7 @@ func (b *Body) OnUnload(onUnload string) *Body {
 // Title represents the HTML title element for document title
 type Title struct {
 	headElement
-	contentNode[*Title]
+	textContent[*Title]
 }
 
 // NewTitle creates a new Title element
@@ -853,14 +870,8 @@ func NewTitle() *Title {
 // renderTo writes the title element's HTML to buf.
 func (t *Title) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "title")
-	tg.styleAttr(t.style)
+	t.attrs(tg)
 	tg.children(t.contents)
-}
-
-// Text adds text content to the title element
-func (t *Title) Text(text string) *Title {
-	t.contents = appendElement(t.contents, escapedText(text))
-	return t
 }
 
 // Base represents the HTML base element for document base URL
@@ -883,7 +894,7 @@ func (b *Base) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "base")
 	tg.urlAttr("href", b.href)
 	tg.attr("target", b.target)
-	tg.styleAttr(b.style)
+	b.attrs(tg)
 	tg.void()
 }
 
@@ -933,7 +944,7 @@ func (l *Link) renderTo(buf *bytes.Buffer) {
 	tg.attr("integrity", l.integrity)
 	tg.attr("referrerpolicy", l.referrerPolicy)
 	tg.attr("hreflang", l.hreflang)
-	tg.styleAttr(l.style)
+	l.attrs(tg)
 	tg.void()
 }
 
@@ -1023,7 +1034,7 @@ func (m *Meta) renderTo(buf *bytes.Buffer) {
 	tg.attr("property", m.property)
 	tg.attr("http-equiv", m.httpEquiv)
 	tg.attr("scheme", m.scheme)
-	tg.styleAttr(m.style)
+	m.attrs(tg)
 	tg.void()
 }
 
@@ -1128,7 +1139,7 @@ func (s *StyleElement) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "style")
 	tg.attr("type", s.styleType)
 	tg.attr("media", s.media)
-	tg.styleAttr(s.style)
+	s.attrs(tg)
 	tg.children(s.contents)
 }
 
@@ -1171,6 +1182,12 @@ func (s *StyleElement) AddRule(rule CSSRule) *StyleElement {
 
 // Text adds CSS text content to the style element
 func (s *StyleElement) Text(text string) *StyleElement {
+	return s.AddText(text)
+}
+
+// AddText appends CSS text content to the style element. It is the same as
+// Text, which also appends.
+func (s *StyleElement) AddText(text string) *StyleElement {
 	s.contents = appendElement(s.contents, rawText(escapeCSS(text)))
 	return s
 }

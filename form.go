@@ -34,7 +34,7 @@ func (f *Form) renderTo(buf *bytes.Buffer) {
 	tg.attr("autocomplete", f.autocomplete)
 	tg.attr("accept-charset", f.acceptcharset)
 	tg.boolAttr("novalidate", f.novalidate)
-	tg.styleAttr(f.style)
+	f.attrs(tg)
 	tg.children(f.contents)
 }
 
@@ -103,7 +103,7 @@ func (f *Form) Novalidate(novalidate bool) *Form {
 // Label represents the HTML label element for form controls
 type Label struct {
 	bodyElement
-	contentNode[*Label]
+	textContent[*Label]
 	forattr string
 	form    string
 }
@@ -120,14 +120,8 @@ func (l *Label) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "label")
 	tg.attr("for", l.forattr)
 	tg.attr("form", l.form)
-	tg.styleAttr(l.style)
+	l.attrs(tg)
 	tg.children(l.contents)
-}
-
-// Text adds text content to the label element
-func (l *Label) Text(text string) *Label {
-	l.contents = appendElement(l.contents, escapedText(text))
-	return l
 }
 
 // For sets the for attribute
@@ -150,7 +144,6 @@ type Input struct {
 	name         string
 	value        string
 	placeholder  string
-	id           string
 	form         string
 	required     bool
 	disabled     bool
@@ -200,7 +193,7 @@ func (i *Input) renderTo(buf *bytes.Buffer) {
 	tg.boolAttr("autofocus", i.autofocus)
 	tg.boolAttr("multiple", i.multiple)
 	tg.boolAttr("checked", i.checked)
-	tg.styleAttr(i.style)
+	i.classStyle(tg)
 	tg.void()
 }
 
@@ -225,12 +218,6 @@ func (i *Input) Value(value string) *Input {
 // Placeholder sets the placeholder attribute
 func (i *Input) Placeholder(placeholder string) *Input {
 	i.placeholder = placeholder
-	return i
-}
-
-// Id sets the id attribute
-func (i *Input) Id(id string) *Input {
-	i.id = id
 	return i
 }
 
@@ -354,7 +341,7 @@ func (i *Input) Checked(checked bool) *Input {
 // Output represents the HTML output element for calculation results
 type Output struct {
 	bodyElement
-	contentNode[*Output]
+	textContent[*Output]
 	forattr string
 	name    string
 	form    string
@@ -373,14 +360,8 @@ func (o *Output) renderTo(buf *bytes.Buffer) {
 	tg.attr("for", o.forattr)
 	tg.attr("name", o.name)
 	tg.attr("form", o.form)
-	tg.styleAttr(o.style)
+	o.attrs(tg)
 	tg.children(o.contents)
-}
-
-// Text adds text content to the output element
-func (o *Output) Text(text string) *Output {
-	o.contents = appendElement(o.contents, escapedText(text))
-	return o
 }
 
 // For sets the for attribute
@@ -423,7 +404,7 @@ func (f *Fieldset) renderTo(buf *bytes.Buffer) {
 	tg.attr("form", f.form)
 	tg.attr("name", f.name)
 	tg.boolAttr("disabled", f.disabled)
-	tg.styleAttr(f.style)
+	f.attrs(tg)
 	tg.children(f.contents)
 }
 
@@ -448,7 +429,7 @@ func (f *Fieldset) Disabled(disabled bool) *Fieldset {
 // Button represents the HTML button element for clickable buttons
 type Button struct {
 	bodyElement
-	contentNode[*Button]
+	textContent[*Button]
 	buttonType     string
 	name           string
 	value          string
@@ -483,14 +464,8 @@ func (b *Button) renderTo(buf *bytes.Buffer) {
 	tg.boolAttr("formnovalidate", b.formNovalidate)
 	tg.boolAttr("disabled", b.disabled)
 	tg.boolAttr("autofocus", b.autofocus)
-	tg.styleAttr(b.style)
+	b.attrs(tg)
 	tg.children(b.contents)
-}
-
-// Text adds text content to the button element
-func (b *Button) Text(text string) *Button {
-	b.contents = appendElement(b.contents, escapedText(text))
-	return b
 }
 
 // Type sets the type attribute
@@ -591,7 +566,7 @@ func (s *Select) renderTo(buf *bytes.Buffer) {
 	tg.boolAttr("required", s.required)
 	tg.boolAttr("disabled", s.disabled)
 	tg.boolAttr("autofocus", s.autofocus)
-	tg.styleAttr(s.style)
+	s.attrs(tg)
 	tg.children(s.contents)
 }
 
@@ -647,7 +622,6 @@ func (s *Select) AutoComplete(autoComplete string) *Select {
 type Datalist struct {
 	bodyElement
 	contentNode[*Datalist]
-	id string
 }
 
 // NewDatalist creates a new Datalist element
@@ -660,15 +634,8 @@ func NewDatalist() *Datalist {
 // renderTo writes the datalist element's HTML to buf.
 func (d *Datalist) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "datalist")
-	tg.attr("id", d.id)
-	tg.styleAttr(d.style)
+	d.attrs(tg)
 	tg.children(d.contents)
-}
-
-// Id sets the id attribute
-func (d *Datalist) Id(id string) *Datalist {
-	d.id = id
-	return d
 }
 
 // Optgroup represents the HTML optgroup element for grouping options
@@ -691,7 +658,7 @@ func (o *Optgroup) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "optgroup")
 	tg.attr("label", o.label)
 	tg.boolAttr("disabled", o.disabled)
-	tg.styleAttr(o.style)
+	o.attrs(tg)
 	tg.children(o.contents)
 }
 
@@ -710,7 +677,7 @@ func (o *Optgroup) Disabled(disabled bool) *Optgroup {
 // Option represents the HTML option element for select options
 type Option struct {
 	bodyElement
-	contentNode[*Option]
+	textContent[*Option]
 	value    string
 	label    string
 	selected bool
@@ -731,14 +698,8 @@ func (o *Option) renderTo(buf *bytes.Buffer) {
 	tg.attr("label", o.label)
 	tg.boolAttr("selected", o.selected)
 	tg.boolAttr("disabled", o.disabled)
-	tg.styleAttr(o.style)
+	o.attrs(tg)
 	tg.children(o.contents)
-}
-
-// Text adds text content to the option element
-func (o *Option) Text(text string) *Option {
-	o.contents = appendElement(o.contents, escapedText(text))
-	return o
 }
 
 // Value sets the value attribute
@@ -768,7 +729,7 @@ func (o *Option) Disabled(disabled bool) *Option {
 // Textarea represents the HTML textarea element for multi-line text input
 type Textarea struct {
 	bodyElement
-	contentNode[*Textarea]
+	textContent[*Textarea]
 	name         string
 	form         string
 	rows         string
@@ -809,14 +770,8 @@ func (t *Textarea) renderTo(buf *bytes.Buffer) {
 	tg.boolAttr("disabled", t.disabled)
 	tg.boolAttr("readonly", t.readonly)
 	tg.boolAttr("autofocus", t.autofocus)
-	tg.styleAttr(t.style)
+	t.attrs(tg)
 	tg.children(t.contents)
-}
-
-// Text adds text content to the textarea element
-func (t *Textarea) Text(text string) *Textarea {
-	t.contents = appendElement(t.contents, escapedText(text))
-	return t
 }
 
 // Name sets the name attribute
@@ -906,7 +861,7 @@ func (t *Textarea) Spellcheck(spellcheck string) *Textarea {
 // Progress represents the HTML progress element for showing completion progress
 type Progress struct {
 	bodyElement
-	contentNode[*Progress]
+	textContent[*Progress]
 	value string
 	max   string
 	form  string
@@ -925,14 +880,8 @@ func (p *Progress) renderTo(buf *bytes.Buffer) {
 	tg.attr("value", p.value)
 	tg.attr("max", p.max)
 	tg.attr("form", p.form)
-	tg.styleAttr(p.style)
+	p.attrs(tg)
 	tg.children(p.contents)
-}
-
-// Text adds text content to the progress element (fallback for non-supporting browsers)
-func (p *Progress) Text(text string) *Progress {
-	p.contents = appendElement(p.contents, escapedText(text))
-	return p
 }
 
 // Value sets the value attribute
@@ -956,7 +905,7 @@ func (p *Progress) Form(form string) *Progress {
 // Meter represents the HTML meter element for displaying scalar measurements
 type Meter struct {
 	bodyElement
-	contentNode[*Meter]
+	textContent[*Meter]
 	value   string
 	min     string
 	max     string
@@ -983,14 +932,8 @@ func (m *Meter) renderTo(buf *bytes.Buffer) {
 	tg.attr("high", m.high)
 	tg.attr("optimum", m.optimum)
 	tg.attr("form", m.form)
-	tg.styleAttr(m.style)
+	m.attrs(tg)
 	tg.children(m.contents)
-}
-
-// Text adds text content to the meter element (fallback for non-supporting browsers)
-func (m *Meter) Text(text string) *Meter {
-	m.contents = appendElement(m.contents, escapedText(text))
-	return m
 }
 
 // Value sets the value attribute
@@ -1038,7 +981,7 @@ func (m *Meter) Form(form string) *Meter {
 // Legend represents the HTML legend element for fieldset captions
 type Legend struct {
 	bodyElement
-	contentNode[*Legend]
+	textContent[*Legend]
 }
 
 // NewLegend creates a new Legend element
@@ -1051,12 +994,6 @@ func NewLegend() *Legend {
 // renderTo writes the legend element's HTML to buf.
 func (l *Legend) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "legend")
-	tg.styleAttr(l.style)
+	l.attrs(tg)
 	tg.children(l.contents)
-}
-
-// Text adds text content to the legend element
-func (l *Legend) Text(text string) *Legend {
-	l.contents = appendElement(l.contents, escapedText(text))
-	return l
 }

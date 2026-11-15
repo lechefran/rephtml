@@ -37,6 +37,30 @@ func ExampleHtmlFile_WriteFormattedTo() {
 	// </html>
 }
 
+func ExampleDiv_Id() {
+	nav := rephtml.NewDiv().
+		Id("menu").
+		AddClass("nav").
+		AddClasses([]string{"sticky", "dark"}).
+		Add(rephtml.NewSpan().AddClass("item").Text("Home"))
+
+	fmt.Println(nav.HTML())
+	// Output:
+	// <div id="menu" class="nav sticky dark"><span class="item">Home</span></div>
+}
+
+func ExampleLabel_AddText() {
+	label := rephtml.NewLabel().
+		For("email").
+		AddText("Email ").
+		Add(rephtml.NewStrong().Text("required")).
+		AddText(" & private")
+
+	fmt.Println(label.HTML())
+	// Output:
+	// <label for="email">Email <strong>required</strong> &amp; private</label>
+}
+
 func ExampleNewDiv() {
 	div := rephtml.NewDiv().
 		AddStyle("color", "red").

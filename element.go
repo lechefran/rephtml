@@ -64,10 +64,49 @@ func (b *base[Self]) HTML() string {
 	return buf.String()
 }
 
-// node adds inline CSS declarations.
+// node adds the global id, class and inline style attributes.
 type node[Self selfElement] struct {
 	base[Self]
+	globalAttrs
+}
+
+// globalAttrs holds the attributes every element shares.
+//
+// It is a plain struct rather than part of the generic node so that attrs and
+// classStyle compile to ordinary, inlinable methods. Every element calls one of
+// them on each render.
+type globalAttrs struct {
 	style StyleMap
+	class []string
+	id    string
+}
+
+// attrs writes the id, class and style attributes, in that order, omitting
+// any that are unset. Elements call it where their inline style belongs.
+//
+// The check is kept separate from the writing so that it inlines: most
+// elements set none of these, and then rendering them costs no call.
+func (a *globalAttrs) attrs(tg tag) {
+	if a.id != "" || len(a.class) != 0 || len(a.style) != 0 {
+		a.writeAttrs(tg, true)
+	}
+}
+
+// classStyle writes the class and style attributes, for an element that writes
+// its id attribute at a position of its own.
+func (a *globalAttrs) classStyle(tg tag) {
+	if len(a.class) != 0 || len(a.style) != 0 {
+		a.writeAttrs(tg, false)
+	}
+}
+
+// writeAttrs writes the attributes for attrs and classStyle.
+func (a *globalAttrs) writeAttrs(tg tag, withID bool) {
+	if withID {
+		tg.attr("id", a.id)
+	}
+	tg.classAttr(a.class)
+	tg.styleAttr(a.style)
 }
 
 // init records the concrete element pointer and prepares the style map.
@@ -94,6 +133,30 @@ func (n *node[Self]) Style(m StyleMap) Self {
 	return n.self
 }
 
+// AddClass appends one class name.
+func (n *node[Self]) AddClass(s string) Self {
+	n.class = append(n.class, s)
+	return n.self
+}
+
+// AddClasses appends multiple class names.
+func (n *node[Self]) AddClasses(s []string) Self {
+	n.class = append(n.class, s...)
+	return n.self
+}
+
+// Class replaces the class names, copying the caller's slice.
+func (n *node[Self]) Class(s []string) Self {
+	n.class = cloneStrings(s)
+	return n.self
+}
+
+// Id sets the id attribute.
+func (n *node[Self]) Id(s string) Self {
+	n.id = s
+	return n.self
+}
+
 // contentNode adds child elements.
 type contentNode[Self selfElement] struct {
 	node[Self]
@@ -103,6 +166,23 @@ type contentNode[Self selfElement] struct {
 // Add appends child content, ignoring nil children.
 func (n *contentNode[Self]) Add(e Element) Self {
 	n.contents = appendElement(n.contents, e)
+	return n.self
+}
+
+// textContent is a content element whose text is added as escaped child
+// content, so text and child elements can be interleaved.
+type textContent[Self selfElement] struct {
+	contentNode[Self]
+}
+
+// Text appends escaped text content after any existing content.
+func (n *textContent[Self]) Text(s string) Self {
+	return n.AddText(s)
+}
+
+// AddText appends escaped text content after any existing content.
+func (n *textContent[Self]) AddText(s string) Self {
+	n.contents = appendElement(n.contents, escapedText(s))
 	return n.self
 }
 
@@ -127,7 +207,7 @@ func (n *textNode[Self]) initTag(self Self, name string) {
 // renderTo writes the element as its tag, inline style and escaped text.
 func (n *textNode[Self]) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, n.name)
-	tg.styleAttr(n.style)
+	n.attrs(tg)
 	tg.text(n.text)
 }
 
@@ -137,35 +217,16 @@ func (n *textNode[Self]) Text(s string) Self {
 	return n.self
 }
 
-// tabular adds the id and class attributes shared by the table elements.
+// AddText appends to the text content.
+func (n *textNode[Self]) AddText(s string) Self {
+	n.text += s
+	return n.self
+}
+
+// tabular carries the deprecated setters that only the table elements have.
+// The id and class attributes they introduced are now on every element.
 type tabular[Self selfElement] struct {
 	node[Self]
-	class []string
-	id    string
-}
-
-// AddClass appends one class name.
-func (n *tabular[Self]) AddClass(s string) Self {
-	n.class = append(n.class, s)
-	return n.self
-}
-
-// AddClasses appends multiple class names.
-func (n *tabular[Self]) AddClasses(s []string) Self {
-	n.class = append(n.class, s...)
-	return n.self
-}
-
-// Class replaces the class names, copying the caller's slice.
-func (n *tabular[Self]) Class(s []string) Self {
-	n.class = cloneStrings(s)
-	return n.self
-}
-
-// Id sets the id attribute.
-func (n *tabular[Self]) Id(s string) Self {
-	n.id = s
-	return n.self
 }
 
 // AddId sets the id attribute.

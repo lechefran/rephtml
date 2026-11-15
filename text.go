@@ -38,6 +38,12 @@ func (c *Comment) Text(s string) *Comment {
 	return c
 }
 
+// AddText appends to the comment's text content.
+func (c *Comment) AddText(s string) *Comment {
+	c.text += s
+	return c
+}
+
 // Render returns the comment's HTML bytes.
 func (c *Comment) Render() []byte {
 	return renderElement(c)
@@ -107,7 +113,7 @@ func NewHr() *Hr {
 // renderTo writes the Hr component's HTML to buf.
 func (h *Hr) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "hr")
-	tg.styleAttr(h.style)
+	h.attrs(tg)
 	tg.void()
 }
 
@@ -148,7 +154,7 @@ func (b *Blockquote) Cite(c string) *Blockquote {
 func (b *Blockquote) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "blockquote")
 	tg.urlAttr("cite", b.cite)
-	tg.styleAttr(b.style)
+	b.attrs(tg)
 	tg.text(b.text)
 }
 
@@ -184,7 +190,7 @@ func (m *Menu) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "menu")
 	tg.attr("type", m.menuType)
 	tg.attr("label", m.label)
-	tg.styleAttr(m.style)
+	m.attrs(tg)
 	tg.children(m.contents)
 }
 
@@ -233,7 +239,7 @@ func (o *Ol) renderTo(buf *bytes.Buffer) {
 	}
 	tg.attr("type", o.listType)
 	tg.boolAttr("reversed", o.reversed)
-	tg.styleAttr(o.style)
+	o.attrs(tg)
 	tg.children(o.contents)
 }
 
@@ -253,7 +259,7 @@ func NewUl() *Ul {
 // renderTo writes the Ul component's HTML to buf.
 func (u *Ul) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "ul")
-	tg.styleAttr(u.style)
+	u.attrs(tg)
 	tg.children(u.contents)
 }
 
@@ -286,7 +292,7 @@ func (l *Li) renderTo(buf *bytes.Buffer) {
 	if l.valueSet {
 		writeIntAttr(buf, "value", l.value)
 	}
-	tg.styleAttr(l.style)
+	l.attrs(tg)
 	tg.children(l.contents)
 }
 
@@ -306,7 +312,7 @@ func NewDl() *Dl {
 // renderTo writes the Dl component's HTML to buf.
 func (d *Dl) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "dl")
-	tg.styleAttr(d.style)
+	d.attrs(tg)
 	tg.children(d.contents)
 }
 
@@ -326,7 +332,7 @@ func NewDt() *Dt {
 // renderTo writes the Dt component's HTML to buf.
 func (d *Dt) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "dt")
-	tg.styleAttr(d.style)
+	d.attrs(tg)
 	tg.children(d.contents)
 }
 
@@ -346,7 +352,7 @@ func NewDd() *Dd {
 // renderTo writes the Dd component's HTML to buf.
 func (d *Dd) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "dd")
-	tg.styleAttr(d.style)
+	d.attrs(tg)
 	tg.children(d.contents)
 }
 
@@ -366,7 +372,7 @@ func NewFigure() *Figure {
 // renderTo writes the Figure component's HTML to buf.
 func (f *Figure) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "figure")
-	tg.styleAttr(f.style)
+	f.attrs(tg)
 	tg.children(f.contents)
 }
 
@@ -386,7 +392,7 @@ func NewFigcaption() *Figcaption {
 // renderTo writes the Figcaption component's HTML to buf.
 func (f *Figcaption) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "figcaption")
-	tg.styleAttr(f.style)
+	f.attrs(tg)
 	tg.children(f.contents)
 }
 
@@ -406,6 +412,6 @@ func NewSearch() *Search {
 // renderTo writes the Search component's HTML to buf.
 func (s *Search) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "search")
-	tg.styleAttr(s.style)
+	s.attrs(tg)
 	tg.children(s.contents)
 }

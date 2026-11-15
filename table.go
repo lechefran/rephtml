@@ -94,9 +94,7 @@ func (t *Table) AddTr(tr *Tr) *Table {
 // renderTo writes the Table component's HTML to buf.
 func (t *Table) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "table")
-	tg.attr("id", t.id)
-	tg.classAttr(t.class)
-	tg.styleAttr(t.style)
+	t.attrs(tg)
 	tg.open()
 
 	// write the structured children if present
@@ -164,9 +162,7 @@ func (th *Thead) AddTr(tr *Tr) *Thead {
 // renderTo writes the Thead component's HTML to buf.
 func (th *Thead) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "thead")
-	tg.attr("id", th.id)
-	tg.classAttr(th.class)
-	tg.styleAttr(th.style)
+	th.attrs(tg)
 	tg.children(th.contents)
 }
 
@@ -192,9 +188,7 @@ func (tb *Tbody) AddTr(tr *Tr) *Tbody {
 // renderTo writes the Tbody component's HTML to buf.
 func (tb *Tbody) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "tbody")
-	tg.attr("id", tb.id)
-	tg.classAttr(tb.class)
-	tg.styleAttr(tb.style)
+	tb.attrs(tg)
 	tg.children(tb.contents)
 }
 
@@ -220,9 +214,7 @@ func (tf *Tfoot) AddTr(tr *Tr) *Tfoot {
 // renderTo writes the Tfoot component's HTML to buf.
 func (tf *Tfoot) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "tfoot")
-	tg.attr("id", tf.id)
-	tg.classAttr(tf.class)
-	tg.styleAttr(tf.style)
+	tf.attrs(tg)
 	tg.children(tf.contents)
 }
 
@@ -246,12 +238,16 @@ func (c *Caption) Text(text string) *Caption {
 	return c
 }
 
+// AddText appends to the caption text.
+func (c *Caption) AddText(text string) *Caption {
+	c.text += text
+	return c
+}
+
 // renderTo writes the Caption component's HTML to buf.
 func (c *Caption) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "caption")
-	tg.attr("id", c.id)
-	tg.classAttr(c.class)
-	tg.styleAttr(c.style)
+	c.attrs(tg)
 	tg.text(c.text)
 }
 
@@ -278,9 +274,7 @@ func (col *Col) Span(s int) *Col {
 // renderTo writes the Col component's HTML to buf.
 func (col *Col) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "col")
-	tg.attr("id", col.id)
-	tg.classAttr(col.class)
-	tg.styleAttr(col.style)
+	col.attrs(tg)
 	tg.intAttr("span", col.span)
 	tg.void()
 }
@@ -308,9 +302,7 @@ func (cg *Colgroup) Span(s int) *Colgroup {
 // renderTo writes the Colgroup component's HTML to buf.
 func (cg *Colgroup) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "colgroup")
-	tg.attr("id", cg.id)
-	tg.classAttr(cg.class)
-	tg.styleAttr(cg.style)
+	cg.attrs(tg)
 	tg.intAttr("span", cg.span)
 	tg.children(cg.contents)
 }
@@ -343,9 +335,7 @@ func (tr *Tr) AddTd(td *Td) *Tr {
 // renderTo writes the Tr component's HTML to buf.
 func (tr *Tr) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "tr")
-	tg.attr("id", tr.id)
-	tg.classAttr(tr.class)
-	tg.styleAttr(tr.style)
+	tr.attrs(tg)
 	tg.children(tr.contents)
 }
 
@@ -379,9 +369,7 @@ func (td *Td) Rowspan(r int) *Td {
 // renderTo writes the Td component's HTML to buf.
 func (td *Td) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "td")
-	tg.attr("id", td.id)
-	tg.classAttr(td.class)
-	tg.styleAttr(td.style)
+	td.attrs(tg)
 	tg.intAttr("colspan", td.colspan)
 	tg.intAttr("rowspan", td.rowspan)
 	tg.children(td.contents)
@@ -424,9 +412,7 @@ func (th *Th) Scope(s string) *Th {
 // renderTo writes the Th component's HTML to buf.
 func (th *Th) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "th")
-	tg.attr("id", th.id)
-	tg.classAttr(th.class)
-	tg.styleAttr(th.style)
+	th.attrs(tg)
 	tg.intAttr("colspan", th.colspan)
 	tg.intAttr("rowspan", th.rowspan)
 	tg.attr("scope", th.scope)

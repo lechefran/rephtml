@@ -20,7 +20,7 @@ func NewDetails() *Details {
 func (d *Details) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "details")
 	tg.boolAttr("open", d.open)
-	tg.styleAttr(d.style)
+	d.attrs(tg)
 	tg.children(d.contents)
 }
 
@@ -48,7 +48,7 @@ func NewDialog() *Dialog {
 func (d *Dialog) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "dialog")
 	tg.boolAttr("open", d.open)
-	tg.styleAttr(d.style)
+	d.attrs(tg)
 	tg.children(d.contents)
 }
 
@@ -74,6 +74,6 @@ func NewSummary() *Summary {
 // renderTo writes the summary element's HTML to buf.
 func (s *Summary) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "summary")
-	tg.styleAttr(s.style)
+	s.attrs(tg)
 	tg.children(s.contents)
 }
