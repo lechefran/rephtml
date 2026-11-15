@@ -9,6 +9,21 @@ deprecated names keep working until v1.0.
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-11-15
+
+No API is removed or renamed. Four fixes below are marked ⚠️ **POTENTIALLY
+BREAKING** because they change behaviour or output:
+
+- element errors anywhere in a document now reach `HtmlFile.Err()`;
+- `Head` and `Body` wrappers are read when the document renders;
+- `Table` rows added with `AddTr` render before the `<tfoot>`;
+- formatted output keeps inline content on one line.
+
+To upgrade, check the document's error, finish building wrappers before adding
+them if you relied on later changes being ignored, and update tests that
+compare exact table or formatted output. Each entry has a before / after example
+and its own migration note.
+
 ### Added
 
 - Every element now supports the global `id` and `class` attributes, through
@@ -219,5 +234,7 @@ future minor release.
 
 Initial pre-release.
 
+[Unreleased]: https://github.com/lechefran/rephtml/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/lechefran/rephtml/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/lechefran/rephtml/compare/v0.1.0-beta...v0.2.0
 [0.1.0-beta]: https://github.com/lechefran/rephtml/releases/tag/v0.1.0-beta
