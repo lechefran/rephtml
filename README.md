@@ -254,6 +254,19 @@ html.AddToHead(head)
 fmt.Println(html.Err()) // and again here, once merged
 ```
 
+The document reads a wrapper when it renders, not when the wrapper is added.
+Content, attributes and errors added to a `Head` or `Body` after `AddToHead` or
+`AddToBody` all appear in the document. The wrapper's content renders at the
+point it was added, among elements added directly. When several wrappers are
+merged, the last non-empty `id`, `onload` and `onunload` win, classes accumulate,
+and a later wrapper's style declaration overrides an earlier one:
+
+```go
+body := rephtml.NewBody()
+html := rephtml.NewHtmlFile().AddToBody(body)
+body.Add(rephtml.NewP().Text("added after merging")) // still rendered
+```
+
 ## Composition Examples
 
 Build structured tables when you need explicit table sections:

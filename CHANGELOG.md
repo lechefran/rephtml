@@ -22,6 +22,31 @@ deprecated names are kept for at least one minor release before removal.
 - `AddText` on every text element always appends, whether `Text` replaces or
   appends on that element. See the README for which does which.
 
+### Fixed
+
+- ⚠️ **POTENTIALLY BREAKING:** `Head` and `Body` wrappers added with
+  `AddToHead` / `AddToBody` are now read when the document renders, not copied
+  when they are added. Before, anything added to a wrapper afterwards was
+  silently lost.
+
+  ```go
+  body := rephtml.NewBody()
+  doc := rephtml.NewHtmlFile().AddToBody(body)
+  body.Add(rephtml.NewP().Text("late"))
+  ```
+
+  Before: `<!DOCTYPE html><html></html>`.
+  After: `<!DOCTYPE html><html><body><p>late</p></body></html>`.
+
+  This applies to content, `id`, `class`, style, `onload` / `onunload`, and
+  errors. An invalid element added to a wrapper after merging now makes
+  `HtmlFile.Err()` and every output method return an error, where before it was
+  dropped without one.
+
+  *Who is affected:* code that kept changing a wrapper after adding it to a
+  document and relied on those changes being ignored. *Migration:* finish
+  building the wrapper before adding it, or add a fresh wrapper.
+
 ### Changed
 
 - `Time.Datetime` validates week and duration values with small hand-written
