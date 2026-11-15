@@ -88,15 +88,8 @@ type B struct {
 // NewB creates a new B component.
 func NewB() *B {
 	v := &B{}
-	v.init(v)
+	v.initTag(v, "b")
 	return v
-}
-
-// renderTo writes the B component's HTML to buf.
-func (b *B) renderTo(buf *bytes.Buffer) {
-	tg := startTag(buf, "b")
-	tg.styleAttr(b.style)
-	tg.text(b.text)
 }
 
 // I represents the HTML <i> element, text in an alternate voice or mood, such as a technical term.
@@ -108,15 +101,8 @@ type I struct {
 // NewI creates a new I component.
 func NewI() *I {
 	v := &I{}
-	v.init(v)
+	v.initTag(v, "i")
 	return v
-}
-
-// renderTo writes the I component's HTML to buf.
-func (i *I) renderTo(buf *bytes.Buffer) {
-	tg := startTag(buf, "i")
-	tg.styleAttr(i.style)
-	tg.text(i.text)
 }
 
 // Q represents the HTML <q> element, a short inline quotation.
@@ -156,15 +142,8 @@ type S struct {
 // NewS creates a new S component.
 func NewS() *S {
 	v := &S{}
-	v.init(v)
+	v.initTag(v, "s")
 	return v
-}
-
-// renderTo writes the S component's HTML to buf.
-func (s *S) renderTo(buf *bytes.Buffer) {
-	tg := startTag(buf, "s")
-	tg.styleAttr(s.style)
-	tg.text(s.text)
 }
 
 // U represents the HTML <u> element, text with an unarticulated annotation, rendered underlined.
@@ -176,15 +155,8 @@ type U struct {
 // NewU creates a new U component.
 func NewU() *U {
 	v := &U{}
-	v.init(v)
+	v.initTag(v, "u")
 	return v
-}
-
-// renderTo writes the U component's HTML to buf.
-func (u *U) renderTo(buf *bytes.Buffer) {
-	tg := startTag(buf, "u")
-	tg.styleAttr(u.style)
-	tg.text(u.text)
 }
 
 // Bdi represents the HTML <bdi> element, text isolated from its surroundings for bidirectional text formatting.
@@ -196,15 +168,8 @@ type Bdi struct {
 // NewBdi creates a new bdi component.
 func NewBdi() *Bdi {
 	v := &Bdi{}
-	v.init(v)
+	v.initTag(v, "bdi")
 	return v
-}
-
-// renderTo writes the Bdi component's HTML to buf.
-func (d *Bdi) renderTo(buf *bytes.Buffer) {
-	tg := startTag(buf, "bdi")
-	tg.styleAttr(d.style)
-	tg.text(d.text)
 }
 
 // Bdo represents the HTML <bdo> element, text whose bidirectional direction is overridden.
@@ -265,15 +230,8 @@ type Cite struct {
 // NewCite creates a new Cite component.
 func NewCite() *Cite {
 	v := &Cite{}
-	v.init(v)
+	v.initTag(v, "cite")
 	return v
-}
-
-// renderTo writes the Cite component's HTML to buf.
-func (c *Cite) renderTo(buf *bytes.Buffer) {
-	tg := startTag(buf, "cite")
-	tg.styleAttr(c.style)
-	tg.text(c.text)
 }
 
 // Code represents the HTML <code> element, a fragment of computer code.
@@ -285,15 +243,8 @@ type Code struct {
 // NewCode creates a new Code component.
 func NewCode() *Code {
 	v := &Code{}
-	v.init(v)
+	v.initTag(v, "code")
 	return v
-}
-
-// renderTo writes the Code component's HTML to buf.
-func (c *Code) renderTo(buf *bytes.Buffer) {
-	tg := startTag(buf, "code")
-	tg.styleAttr(c.style)
-	tg.text(c.text)
 }
 
 // Data represents the HTML <data> element, content together with a machine-readable translation of it.
@@ -361,15 +312,8 @@ type Em struct {
 // NewEm creates a new em component.
 func NewEm() *Em {
 	v := &Em{}
-	v.init(v)
+	v.initTag(v, "em")
 	return v
-}
-
-// renderTo writes the Em component's HTML to buf.
-func (e *Em) renderTo(buf *bytes.Buffer) {
-	tg := startTag(buf, "em")
-	tg.styleAttr(e.style)
-	tg.text(e.text)
 }
 
 // Mark represents the HTML <mark> element, text highlighted for reference.
@@ -381,15 +325,8 @@ type Mark struct {
 // NewMark creates a new Mark component.
 func NewMark() *Mark {
 	v := &Mark{}
-	v.init(v)
+	v.initTag(v, "mark")
 	return v
-}
-
-// renderTo writes the Mark component's HTML to buf.
-func (m *Mark) renderTo(buf *bytes.Buffer) {
-	tg := startTag(buf, "mark")
-	tg.styleAttr(m.style)
-	tg.text(m.text)
 }
 
 // Ruby represents the HTML <ruby> element, a ruby annotation, used for East Asian pronunciation guides.
@@ -421,15 +358,8 @@ type Rb struct {
 // NewRb creates a new Rb component.
 func NewRb() *Rb {
 	v := &Rb{}
-	v.init(v)
+	v.initTag(v, "rb")
 	return v
-}
-
-// renderTo writes the Rb component's HTML to buf.
-func (rb *Rb) renderTo(buf *bytes.Buffer) {
-	tg := startTag(buf, "rb")
-	tg.styleAttr(rb.style)
-	tg.text(rb.text)
 }
 
 // Rt represents the HTML <rt> element, the ruby text of a ruby annotation, such as a pronunciation.
@@ -441,15 +371,8 @@ type Rt struct {
 // NewRt creates a new Rt component.
 func NewRt() *Rt {
 	v := &Rt{}
-	v.init(v)
+	v.initTag(v, "rt")
 	return v
-}
-
-// renderTo writes the Rt component's HTML to buf.
-func (rt *Rt) renderTo(buf *bytes.Buffer) {
-	tg := startTag(buf, "rt")
-	tg.styleAttr(rt.style)
-	tg.text(rt.text)
 }
 
 // Rtc represents the HTML <rtc> element, a container for ruby text components. It is obsolete.
@@ -481,15 +404,8 @@ type Rp struct {
 // NewRp creates a new Rp component.
 func NewRp() *Rp {
 	v := &Rp{}
-	v.init(v)
+	v.initTag(v, "rp")
 	return v
-}
-
-// renderTo writes the Rp component's HTML to buf.
-func (rp *Rp) renderTo(buf *bytes.Buffer) {
-	tg := startTag(buf, "rp")
-	tg.styleAttr(rp.style)
-	tg.text(rp.text)
 }
 
 // Kbd represents the HTML <kbd> element, keyboard or other text input.
@@ -501,15 +417,8 @@ type Kbd struct {
 // NewKbd creates a new Kbd component.
 func NewKbd() *Kbd {
 	v := &Kbd{}
-	v.init(v)
+	v.initTag(v, "kbd")
 	return v
-}
-
-// renderTo writes the Kbd component's HTML to buf.
-func (k *Kbd) renderTo(buf *bytes.Buffer) {
-	tg := startTag(buf, "kbd")
-	tg.styleAttr(k.style)
-	tg.text(k.text)
 }
 
 // Sub represents the HTML <sub> element, subscript text.
@@ -521,15 +430,8 @@ type Sub struct {
 // NewSub creates a new Sub component.
 func NewSub() *Sub {
 	v := &Sub{}
-	v.init(v)
+	v.initTag(v, "sub")
 	return v
-}
-
-// renderTo writes the Sub component's HTML to buf.
-func (s *Sub) renderTo(buf *bytes.Buffer) {
-	tg := startTag(buf, "sub")
-	tg.styleAttr(s.style)
-	tg.text(s.text)
 }
 
 // Sup represents the HTML <sup> element, superscript text.
@@ -541,15 +443,8 @@ type Sup struct {
 // NewSup creates a new Sup component.
 func NewSup() *Sup {
 	v := &Sup{}
-	v.init(v)
+	v.initTag(v, "sup")
 	return v
-}
-
-// renderTo writes the Sup component's HTML to buf.
-func (s *Sup) renderTo(buf *bytes.Buffer) {
-	tg := startTag(buf, "sup")
-	tg.styleAttr(s.style)
-	tg.text(s.text)
 }
 
 // Samp represents the HTML <samp> element, sample output from a computer program.
@@ -561,15 +456,8 @@ type Samp struct {
 // NewSamp creates a new Samp component.
 func NewSamp() *Samp {
 	v := &Samp{}
-	v.init(v)
+	v.initTag(v, "samp")
 	return v
-}
-
-// renderTo writes the Samp component's HTML to buf.
-func (s *Samp) renderTo(buf *bytes.Buffer) {
-	tg := startTag(buf, "samp")
-	tg.styleAttr(s.style)
-	tg.text(s.text)
 }
 
 // Small represents the HTML <small> element, side comments and small print.
@@ -581,15 +469,8 @@ type Small struct {
 // NewSmall creates a new Small component.
 func NewSmall() *Small {
 	v := &Small{}
-	v.init(v)
+	v.initTag(v, "small")
 	return v
-}
-
-// renderTo writes the Small component's HTML to buf.
-func (s *Small) renderTo(buf *bytes.Buffer) {
-	tg := startTag(buf, "small")
-	tg.styleAttr(s.style)
-	tg.text(s.text)
 }
 
 // Span represents the HTML <span> element, a generic inline container with no semantic meaning.
@@ -601,15 +482,8 @@ type Span struct {
 // NewSpan creates a new Span component.
 func NewSpan() *Span {
 	v := &Span{}
-	v.init(v)
+	v.initTag(v, "span")
 	return v
-}
-
-// renderTo writes the Span component's HTML to buf.
-func (s *Span) renderTo(buf *bytes.Buffer) {
-	tg := startTag(buf, "span")
-	tg.styleAttr(s.style)
-	tg.text(s.text)
 }
 
 // Strong represents the HTML <strong> element, text of strong importance.
@@ -621,15 +495,8 @@ type Strong struct {
 // NewStrong creates a new Strong component.
 func NewStrong() *Strong {
 	v := &Strong{}
-	v.init(v)
+	v.initTag(v, "strong")
 	return v
-}
-
-// renderTo writes the Strong component's HTML to buf.
-func (s *Strong) renderTo(buf *bytes.Buffer) {
-	tg := startTag(buf, "strong")
-	tg.styleAttr(s.style)
-	tg.text(s.text)
 }
 
 // Time represents the HTML time element and its machine-readable datetime value.
@@ -783,15 +650,8 @@ type Var struct {
 // NewVar creates a new Var component.
 func NewVar() *Var {
 	v := &Var{}
-	v.init(v)
+	v.initTag(v, "var")
 	return v
-}
-
-// renderTo writes the Var component's HTML to buf.
-func (v *Var) renderTo(buf *bytes.Buffer) {
-	tg := startTag(buf, "var")
-	tg.styleAttr(v.style)
-	tg.text(v.text)
 }
 
 // Wbr represents the HTML <wbr> element, a position where the browser may break a line.

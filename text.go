@@ -14,15 +14,8 @@ type P struct {
 // NewP creates a new P component.
 func NewP() *P {
 	v := &P{}
-	v.init(v)
+	v.initTag(v, "p")
 	return v
-}
-
-// renderTo writes the P component's HTML to buf.
-func (p *P) renderTo(buf *bytes.Buffer) {
-	tg := startTag(buf, "p")
-	tg.styleAttr(p.style)
-	tg.text(p.text)
 }
 
 // Comment represents an HTML comment.
@@ -127,15 +120,8 @@ type Pre struct {
 // NewPre creates a new Pre component.
 func NewPre() *Pre {
 	v := &Pre{}
-	v.init(v)
+	v.initTag(v, "pre")
 	return v
-}
-
-// renderTo writes the Pre component's HTML to buf.
-func (p *Pre) renderTo(buf *bytes.Buffer) {
-	tg := startTag(buf, "pre")
-	tg.styleAttr(p.style)
-	tg.text(p.text)
 }
 
 // Blockquote represents the HTML <blockquote> element, an extended quotation.

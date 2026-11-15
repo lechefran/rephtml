@@ -131,3 +131,22 @@ func TestConcurrentWriteTo(t *testing.T) {
 	}
 	wg.Wait()
 }
+
+// BenchmarkRender measures rendering a document made mostly of text elements.
+func BenchmarkRender(b *testing.B) {
+	body := NewDiv()
+	for range 50 {
+		body.Add(NewP().Text("a < b & c")).
+			Add(NewH2().Text("heading")).
+			Add(NewSpan().AddStyle("color", "red").Text("one")).
+			Add(NewStrong().Text("two")).
+			Add(NewAnchor().Link("https://example.com").Text("link"))
+	}
+	doc := NewHtmlFile().AddToBody(body)
+	b.ReportAllocs()
+	for b.Loop() {
+		if _, err := doc.Render(); err != nil {
+			b.Fatal(err)
+		}
+	}
+}
