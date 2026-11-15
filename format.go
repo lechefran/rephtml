@@ -11,9 +11,21 @@ import (
 // It is not a public, general-purpose HTML formatter.
 type renderedDocumentHTML []byte
 
+// tokenKind classifies a formatter token.
+type tokenKind uint8
+
+const (
+	tokenText    tokenKind = iota // text content between tags
+	tokenStart                    // a start tag
+	tokenEnd                      // an end tag
+	tokenVoid                     // a void or self-closing tag
+	tokenComment                  // an HTML comment
+	tokenRaw                      // a whole raw-text element, such as script
+)
+
 // htmlToken stores one formatter token.
 type htmlToken struct {
-	kind string
+	kind tokenKind
 	name string
 	text string
 }
@@ -36,15 +48,15 @@ func formatRenderedDocumentHTML(src renderedDocumentHTML) []byte {
 	for i := 0; i < len(tokens); i++ {
 		token := tokens[i]
 		switch token.kind {
-		case "raw":
+		case tokenRaw:
 			writeRawBlock(&buf, indent, token.name, token.text)
-		case "start":
-			if i+1 < len(tokens) && tokens[i+1].kind == "end" && tokens[i+1].name == token.name {
+		case tokenStart:
+			if i+1 < len(tokens) && tokens[i+1].kind == tokenEnd && tokens[i+1].name == token.name {
 				writeFormattedLine(&buf, indent, token.text+tokens[i+1].text)
 				i++
 				continue
 			}
-			if i+2 < len(tokens) && tokens[i+1].kind == "text" && tokens[i+2].kind == "end" &&
+			if i+2 < len(tokens) && tokens[i+1].kind == tokenText && tokens[i+2].kind == tokenEnd &&
 				tokens[i+2].name == token.name && !isRawTextElement(token.name) && !strings.Contains(tokens[i+1].text, "\n") {
 				writeFormattedLine(&buf, indent, token.text+tokens[i+1].text+tokens[i+2].text)
 				i += 2
@@ -52,14 +64,14 @@ func formatRenderedDocumentHTML(src renderedDocumentHTML) []byte {
 			}
 			writeFormattedLine(&buf, indent, token.text)
 			indent++
-		case "end":
+		case tokenEnd:
 			if indent > 0 {
 				indent--
 			}
 			writeFormattedLine(&buf, indent, token.text)
-		case "void", "comment":
+		case tokenVoid, tokenComment:
 			writeFormattedLine(&buf, indent, token.text)
-		case "text":
+		case tokenText:
 			writeFormattedText(&buf, indent, token.text)
 		}
 	}
@@ -85,11 +97,11 @@ func tokenizeHTML(input string) []htmlToken {
 		if strings.HasPrefix(input[i:], "<!--") {
 			end := strings.Index(input[i:], "-->")
 			if end == -1 {
-				tokens = append(tokens, htmlToken{kind: "comment", text: input[i:]})
+				tokens = append(tokens, htmlToken{kind: tokenComment, text: input[i:]})
 				break
 			}
 			end += len("-->")
-			tokens = append(tokens, htmlToken{kind: "comment", text: input[i : i+end]})
+			tokens = append(tokens, htmlToken{kind: tokenComment, text: input[i : i+end]})
 			i += end
 			continue
 		}
@@ -110,9 +122,9 @@ func tokenizeHTML(input string) []htmlToken {
 
 		switch {
 		case isEndTag(tag):
-			tokens = append(tokens, htmlToken{kind: "end", name: name, text: tag})
+			tokens = append(tokens, htmlToken{kind: tokenEnd, name: name, text: tag})
 		case isVoidTag(name) || isSelfClosingTag(tag):
-			tokens = append(tokens, htmlToken{kind: "void", name: name, text: tag})
+			tokens = append(tokens, htmlToken{kind: tokenVoid, name: name, text: tag})
 		default:
 			if isRawTextElement(name) {
 				rawStart := end + 1
@@ -127,7 +139,7 @@ func tokenizeHTML(input string) []htmlToken {
 				if closeAt != -1 {
 					rawEnd := rawStart + closeAt
 					tokens = append(tokens, htmlToken{
-						kind: "raw",
+						kind: tokenRaw,
 						name: name,
 						text: input[i : rawEnd+len(closeTag)],
 					})
@@ -135,7 +147,7 @@ func tokenizeHTML(input string) []htmlToken {
 					continue
 				}
 			}
-			tokens = append(tokens, htmlToken{kind: "start", name: name, text: tag})
+			tokens = append(tokens, htmlToken{kind: tokenStart, name: name, text: tag})
 		}
 
 		i = end + 1
@@ -151,7 +163,7 @@ func appendTextToken(tokens []htmlToken, text string) []htmlToken {
 	if strings.TrimSpace(text) == "" {
 		return tokens
 	}
-	return append(tokens, htmlToken{kind: "text", text: text})
+	return append(tokens, htmlToken{kind: tokenText, text: text})
 }
 
 // writeFormattedLine writes one indented formatter line.
