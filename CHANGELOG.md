@@ -21,6 +21,10 @@ deprecated names are kept for at least one minor release before removal.
   `HtmlFile`.
 - `AddText` on every text element always appends, whether `Text` replaces or
   appends on that element. See the README for which does which.
+- `Table.AddColgroup` adds a `<colgroup>`, rendered after the caption and
+  before the thead. It appends, since a table can have several.
+- `Table.Err` reports a table that mixes legacy `Headers` / `Rows` with
+  structured sections.
 
 ### Fixed
 
@@ -75,6 +79,21 @@ deprecated names are kept for at least one minor release before removal.
   *Who is affected:* code that kept changing a wrapper after adding it to a
   document and relied on those changes being ignored. *Migration:* finish
   building the wrapper before adding it, or add a fresh wrapper.
+
+- ⚠️ **POTENTIALLY BREAKING:** rows added directly to a `Table` with `AddTr`
+  now render before the `<tfoot>`, as the HTML table content model requires,
+  instead of after it.
+
+  ```go
+  rephtml.NewTable().AddTfoot(foot).AddTr(row)
+  ```
+
+  Before: `<table><tfoot>…</tfoot><tr>…</tr></table>`.
+  After: `<table><tr>…</tr><tfoot>…</tfoot></table>`.
+
+  Browsers already displayed the footer last, so pages look the same; the
+  markup changes. *Who is affected:* code that compares or post-processes the
+  exact table markup. *Migration:* update the expected output.
 
 ### Changed
 
