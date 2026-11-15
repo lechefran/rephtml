@@ -329,9 +329,7 @@ func TestFormatRenderedDocumentHTMLFormatsCommentsAndVoidElements(t *testing.T) 
 		"\t\t<hr>\n" +
 		"\t\t<img src=\"chart.png\" alt=\"Chart\">\n" +
 		"\t\t<p>\n" +
-		"\t\t\tLine\n" +
-		"\t\t\t<br>\n" +
-		"\t\t\tbreak\n" +
+		"\t\t\tLine<br>break\n" +
 		"\t\t</p>\n" +
 		"\t</body>\n" +
 		"</html>\n"

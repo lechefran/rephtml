@@ -95,6 +95,42 @@ deprecated names are kept for at least one minor release before removal.
   markup changes. *Who is affected:* code that compares or post-processes the
   exact table markup. *Migration:* update the expected output.
 
+- ⚠️ **POTENTIALLY BREAKING:** formatted output (`RenderFormatted`,
+  `RenderFormattedString`, `WriteFormattedTo`, `WriteToFile`) keeps each run of
+  inline content on one line, exactly as rendered. Before, every tag went on its
+  own line, which inserted a visible space between adjacent inline elements and
+  before punctuation, and dropped whitespace-only text between them.
+
+  ```html
+  <div>Hello <b>x</b>.</div>
+  ```
+
+  Before:
+
+  ```html
+  <div>
+  	Hello
+  	<b>x</b>
+  	.
+  </div>
+  ```
+
+  which displays as `Hello x .`. After:
+
+  ```html
+  <div>
+  	Hello <b>x</b>.
+  </div>
+  ```
+
+  which displays as `Hello x.`, the same as the compact output. Block elements
+  are still indented one per line, and whitespace between block elements is
+  still dropped.
+
+  *Who is affected:* code that compares formatted output byte for byte, and
+  files written with `WriteToFile`. Compact `Render` output is unchanged.
+  *Migration:* update the expected formatted output.
+
 ### Changed
 
 - `Time.Datetime` validates week and duration values with small hand-written

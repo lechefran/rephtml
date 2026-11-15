@@ -36,6 +36,12 @@ type htmlToken struct {
 // it private and use it only for document pretty-printing paths such as
 // WriteToFile and RenderFormatted. If this package later needs to format
 // arbitrary external HTML, replace this with a real HTML tokenizer first.
+//
+// Block structure is indented one element per line. Inline content is
+// whitespace-sensitive, since a line break between two inline elements renders
+// as a space, so each run of inline elements, text and comments is written on
+// one line exactly as rendered. Formatting therefore never changes how a page
+// displays.
 func formatRenderedDocumentHTML(src renderedDocumentHTML) []byte {
 	tokens := tokenizeHTML(string(src))
 	if len(tokens) == 0 {
@@ -45,38 +51,131 @@ func formatRenderedDocumentHTML(src renderedDocumentHTML) []byte {
 	var buf bytes.Buffer
 	indent := 0
 
-	for i := 0; i < len(tokens); i++ {
-		token := tokens[i]
-		switch token.kind {
-		case tokenRaw:
-			writeRawBlock(&buf, indent, token.name, token.text)
-		case tokenStart:
-			if i+1 < len(tokens) && tokens[i+1].kind == tokenEnd && tokens[i+1].name == token.name {
-				writeFormattedLine(&buf, indent, token.text+tokens[i+1].text)
-				i++
-				continue
-			}
-			if i+2 < len(tokens) && tokens[i+1].kind == tokenText && tokens[i+2].kind == tokenEnd &&
-				tokens[i+2].name == token.name && !isRawTextElement(token.name) && !strings.Contains(tokens[i+1].text, "\n") {
-				writeFormattedLine(&buf, indent, token.text+tokens[i+1].text+tokens[i+2].text)
-				i += 2
-				continue
-			}
-			writeFormattedLine(&buf, indent, token.text)
-			indent++
-		case tokenEnd:
-			if indent > 0 {
-				indent--
-			}
-			writeFormattedLine(&buf, indent, token.text)
-		case tokenVoid, tokenComment:
-			writeFormattedLine(&buf, indent, token.text)
-		case tokenText:
-			writeFormattedText(&buf, indent, token.text)
+	for i := 0; i < len(tokens); {
+		if !isInlineToken(tokens[i]) {
+			var consumed int
+			indent, consumed = writeBlockToken(&buf, indent, tokens[i:])
+			i += consumed
+			continue
 		}
+
+		end := i + 1
+		for end < len(tokens) && isInlineToken(tokens[end]) {
+			end++
+		}
+		switch run := trimSpaceTokens(tokens[i:end]); len(run) {
+		case 0:
+			// Whitespace between block elements does not display.
+		case 1:
+			indent, _ = writeBlockToken(&buf, indent, run)
+		default:
+			indent = writeInlineRun(&buf, indent, run)
+		}
+		i = end
 	}
 
 	return buf.Bytes()
+}
+
+// writeBlockToken writes the first token on its own line and returns the new
+// indent and the number of tokens consumed. An element holding nothing, or
+// only single-line text, is written on one line with its end tag.
+func writeBlockToken(buf *bytes.Buffer, indent int, tokens []htmlToken) (int, int) {
+	token := tokens[0]
+	switch token.kind {
+	case tokenRaw:
+		writeRawBlock(buf, indent, token.name, token.text)
+	case tokenStart:
+		if len(tokens) > 1 && tokens[1].kind == tokenEnd && tokens[1].name == token.name {
+			writeFormattedLine(buf, indent, token.text+tokens[1].text)
+			return indent, 2
+		}
+		if len(tokens) > 2 && tokens[1].kind == tokenText && tokens[2].kind == tokenEnd &&
+			tokens[2].name == token.name && !isRawTextElement(token.name) && !strings.Contains(tokens[1].text, "\n") {
+			writeFormattedLine(buf, indent, token.text+tokens[1].text+tokens[2].text)
+			return indent, 3
+		}
+		writeFormattedLine(buf, indent, token.text)
+		return indent + 1, 1
+	case tokenEnd:
+		if indent > 0 {
+			indent--
+		}
+		writeFormattedLine(buf, indent, token.text)
+	case tokenVoid, tokenComment:
+		writeFormattedLine(buf, indent, token.text)
+	case tokenText:
+		writeFormattedText(buf, indent, token.text)
+	}
+	return indent, 1
+}
+
+// writeInlineRun writes a run of inline tokens on one line, verbatim, and
+// returns the new indent.
+//
+// A run can close inline elements opened before it or leave some open after
+// it, when a block element sits inside an inline one. The line is outdented by
+// the elements it closes, and the indent afterwards accounts for those it
+// leaves open, so the surrounding block structure stays aligned.
+func writeInlineRun(buf *bytes.Buffer, indent int, run []htmlToken) int {
+	depth, lowest := 0, 0
+	var line strings.Builder
+	for _, token := range run {
+		switch token.kind {
+		case tokenStart:
+			depth++
+		case tokenEnd:
+			depth--
+			lowest = min(lowest, depth)
+		}
+		line.WriteString(token.text)
+	}
+	writeFormattedLine(buf, max(indent+lowest, 0), line.String())
+	return max(indent+depth, 0)
+}
+
+// trimSpaceTokens drops whitespace-only text from both ends of an inline run.
+// At the start or end of a line of content it does not display.
+func trimSpaceTokens(run []htmlToken) []htmlToken {
+	for len(run) > 0 && isSpaceToken(run[0]) {
+		run = run[1:]
+	}
+	for len(run) > 0 && isSpaceToken(run[len(run)-1]) {
+		run = run[:len(run)-1]
+	}
+	return run
+}
+
+// isSpaceToken reports whether a token is text made only of whitespace.
+func isSpaceToken(token htmlToken) bool {
+	return token.kind == tokenText && strings.TrimSpace(token.text) == ""
+}
+
+// isInlineToken reports whether a token is inline content: text, a comment, an
+// inline element's tag, or a textarea, which sits inline in a form.
+func isInlineToken(token htmlToken) bool {
+	switch token.kind {
+	case tokenText, tokenComment:
+		return true
+	case tokenRaw:
+		return token.name == "textarea"
+	default:
+		return isInlineTag(token.name)
+	}
+}
+
+// isInlineTag reports whether a tag name is an element that displays inline by
+// default, so whitespace around it is significant.
+func isInlineTag(tag string) bool {
+	switch tag {
+	case "a", "abbr", "b", "bdi", "bdo", "br", "button", "cite", "code", "data", "del", "dfn",
+		"em", "i", "img", "input", "ins", "kbd", "label", "mark", "meter", "output", "progress",
+		"q", "rb", "rp", "rt", "rtc", "ruby", "s", "samp", "small", "span", "strong", "sub",
+		"sup", "time", "u", "var", "wbr":
+		return true
+	default:
+		return false
+	}
 }
 
 // tokenizeHTML converts rendered HTML into formatter tokens.
@@ -160,9 +259,8 @@ func appendTextToken(tokens []htmlToken, text string) []htmlToken {
 	if text == "" {
 		return tokens
 	}
-	if strings.TrimSpace(text) == "" {
-		return tokens
-	}
+	// Whitespace-only text is kept: between inline elements it displays as a
+	// space. The formatter drops it where it does not display.
 	return append(tokens, htmlToken{kind: tokenText, text: text})
 }
 
