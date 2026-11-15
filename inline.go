@@ -527,8 +527,15 @@ func (t *Time) Datetime(dt string) *Time {
 }
 
 // Err returns the last datetime validation error recorded on the time element.
+// An HtmlFile containing the element reports it from its own Err and does not
+// render.
 func (t *Time) Err() error {
 	return t.err
+}
+
+// collectErrors appends the datetime validation error, if any.
+func (t *Time) collectErrors(errs []error) []error {
+	return appendError(errs, t.err)
 }
 
 // isValidDatetime reports whether a value matches common HTML datetime forms.

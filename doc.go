@@ -41,19 +41,25 @@ func NewHtmlFile() *HtmlFile {
 
 // Err returns document structure or rendering errors recorded while building,
 // including those recorded on any Head or Body wrapper added to the document,
-// whether they were recorded before or after the wrapper was added.
+// whether they were recorded before or after the wrapper was added, and those
+// recorded by any element in the document, such as an invalid Time datetime or
+// a StyleElement given content that is not CSS. Every output method returns
+// this error instead of rendering.
 func (h *HtmlFile) Err() error {
-	if len(h.heads) == 0 && len(h.bodies) == 0 {
-		return h.err
-	}
-	errs := []error{h.err}
+	var errs []error
 	for _, head := range h.heads {
-		errs = append(errs, head.err)
+		errs = appendError(errs, head.err)
 	}
 	for _, body := range h.bodies {
-		errs = append(errs, body.err)
+		errs = appendError(errs, body.err)
 	}
-	return errors.Join(errs...)
+	errs = collectChildErrors(errs, h.headContent)
+	errs = collectChildErrors(errs, h.contents)
+	errs = collectChildErrors(errs, h.bodyContent)
+	if len(errs) == 0 {
+		return h.err
+	}
+	return errors.Join(append([]error{h.err}, errs...)...)
 }
 
 // addError records an error without interrupting fluent document construction.
@@ -381,6 +387,12 @@ type liveContents struct {
 // renderTo writes the wrapper's current children to buf.
 func (c liveContents) renderTo(buf *bytes.Buffer) {
 	writeElements(buf, *c.contents)
+}
+
+// collectErrors appends the errors recorded among the wrapper's current
+// children. The wrapper's own errors are reported separately by HtmlFile.Err.
+func (c liveContents) collectErrors(errs []error) []error {
+	return collectChildErrors(errs, *c.contents)
 }
 
 // Render returns the wrapper's current children as HTML bytes.
@@ -866,6 +878,13 @@ func (h *Head) Err() error {
 	return h.err
 }
 
+// collectErrors appends the head's own errors and those of its children. It is
+// used when a Head sits inside other content; a Head merged with AddToHead is
+// reported by HtmlFile.Err directly.
+func (h *Head) collectErrors(errs []error) []error {
+	return collectChildErrors(appendError(errs, h.err), h.contents)
+}
+
 // renderTo writes the head element's HTML to buf.
 func (h *Head) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "head")
@@ -909,6 +928,12 @@ func (b *Body) Add(e Element) *Body {
 // Err returns content errors recorded while building the body.
 func (b *Body) Err() error {
 	return b.err
+}
+
+// collectErrors appends the body's own errors and those of its children, the
+// same way Head.collectErrors does.
+func (b *Body) collectErrors(errs []error) []error {
+	return collectChildErrors(appendError(errs, b.err), b.contents)
 }
 
 // renderTo writes the body element's HTML to buf.
@@ -1247,9 +1272,16 @@ func (s *StyleElement) Add(e Element) *StyleElement {
 }
 
 // Err returns the errors recorded when content that is not CSS was added to the
-// style element.
+// style element. An HtmlFile containing the element reports them from its own
+// Err and does not render.
 func (s *StyleElement) Err() error {
 	return s.err
+}
+
+// collectErrors appends the style element's own errors. Its children are CSS
+// rules, which record none.
+func (s *StyleElement) collectErrors(errs []error) []error {
+	return appendError(errs, s.err)
 }
 
 // AddRule appends typed CSS rule content to the style element.

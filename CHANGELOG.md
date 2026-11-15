@@ -24,6 +24,35 @@ deprecated names are kept for at least one minor release before removal.
 
 ### Fixed
 
+- ⚠️ **POTENTIALLY BREAKING:** errors recorded by elements anywhere in a
+  document now reach `HtmlFile.Err()`, so every output method returns them
+  instead of rendering. Before, they were only visible on the element itself.
+  This covers:
+  - an invalid `Time.Datetime` value;
+  - a `StyleElement` given content that is not CSS;
+  - a `Head` or `Body` wrapper nested in other content instead of merged;
+  - a `Table` that mixes legacy `Headers` / `Rows` with `thead`, `tbody`,
+    `tfoot` or `tr` rows. Its legacy cells were silently not rendered; the new
+    `Table.Err()` reports it.
+
+  ```go
+  doc := rephtml.NewHtmlFile().
+      AddToBody(rephtml.NewTime().Datetime("tomorrow").Text("soon"))
+  out, err := doc.RenderString()
+  ```
+
+  Before: `out` is `<!DOCTYPE html><html><body><time>soon</time></body></html>`,
+  `err` is nil. After: `out` is empty, and `err` is `invalid datetime value:
+  "tomorrow"`.
+
+  The errors are read when `Err()` is called, so correcting the element, for
+  example by setting a valid datetime, clears the document's error.
+
+  *Who is affected:* documents that contain one of these mistakes and were
+  rendering without them. *Migration:* check `HtmlFile.Err()` (or the output
+  method's error), and fix the reported element. For a table, use either the
+  legacy `Headers` / `Rows` or the structured sections, not both.
+
 - ⚠️ **POTENTIALLY BREAKING:** `Head` and `Body` wrappers added with
   `AddToHead` / `AddToBody` are now read when the document renders, not copied
   when they are added. Before, anything added to a wrapper afterwards was

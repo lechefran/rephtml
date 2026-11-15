@@ -1,6 +1,9 @@
 package rephtml
 
-import "bytes"
+import (
+	"bytes"
+	"errors"
+)
 
 // Table represents the HTML <table> element, tabular data in rows and columns.
 type Table struct {
@@ -91,6 +94,41 @@ func (t *Table) AddTr(tr *Tr) *Table {
 	return t
 }
 
+// usesSections reports whether the table has any structured rows, which
+// replace the legacy headers and rows.
+func (t *Table) usesSections() bool {
+	return t.thead != nil || t.tbody != nil || t.tfoot != nil || len(t.trs) != 0
+}
+
+// Err reports a table built in two incompatible ways: legacy headers or rows
+// set alongside structured thead, tbody, tfoot or tr rows. The legacy cells
+// are not rendered in that case. An HtmlFile containing the table reports the
+// error from its own Err and does not render.
+func (t *Table) Err() error {
+	if t.usesSections() && (len(t.headers) != 0 || len(t.rows) != 0) {
+		return errors.New("table headers and rows are ignored when the table has thead, tbody, tfoot or tr rows")
+	}
+	return nil
+}
+
+// collectErrors appends the table's own error and those of its sections.
+func (t *Table) collectErrors(errs []error) []error {
+	errs = appendError(errs, t.Err())
+	if t.thead != nil {
+		errs = t.thead.collectErrors(errs)
+	}
+	if t.tbody != nil {
+		errs = t.tbody.collectErrors(errs)
+	}
+	if t.tfoot != nil {
+		errs = t.tfoot.collectErrors(errs)
+	}
+	for _, tr := range t.trs {
+		errs = tr.collectErrors(errs)
+	}
+	return errs
+}
+
 // renderTo writes the Table component's HTML to buf.
 func (t *Table) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "table")
@@ -117,7 +155,7 @@ func (t *Table) renderTo(buf *bytes.Buffer) {
 	}
 
 	// write legacy header and rows if no structured elements are used
-	if t.thead == nil && t.tbody == nil && t.tfoot == nil && len(t.trs) == 0 {
+	if !t.usesSections() {
 		// write header
 		if len(t.headers) > 0 {
 			buf.WriteString("<tr>")
