@@ -18,7 +18,7 @@ func NewHgroup() *Hgroup {
 // renderTo writes the Hgroup component's HTML to buf.
 func (h *Hgroup) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "hgroup")
-	tg.styleAttr(h.style)
+	h.attrs(tg)
 	tg.children(h.contents)
 }
 

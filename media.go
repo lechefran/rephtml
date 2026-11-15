@@ -58,7 +58,7 @@ func (a *Area) renderTo(buf *bytes.Buffer) {
 	tg.urlAttr("href", a.href)
 	tg.attr("shape", a.shape)
 	tg.attr("target", a.target)
-	tg.styleAttr(a.style)
+	a.attrs(tg)
 	tg.void()
 }
 
@@ -118,7 +118,7 @@ func (i *Img) renderTo(buf *bytes.Buffer) {
 	tg.attr("width", i.width)
 	tg.attr("height", i.height)
 	tg.attr("title", i.title)
-	tg.styleAttr(i.style)
+	i.attrs(tg)
 	tg.void()
 }
 
@@ -186,7 +186,7 @@ func (a *Audio) renderTo(buf *bytes.Buffer) {
 	tg.boolAttr("loop", a.loop)
 	tg.boolAttr("muted", a.muted)
 	tg.attr("preload", a.preload)
-	tg.styleAttr(a.style)
+	a.attrs(tg)
 	tg.children(a.contents)
 }
 
@@ -246,7 +246,7 @@ func (t *Track) renderTo(buf *bytes.Buffer) {
 	tg.attr("srclang", t.srclang)
 	tg.attr("label", t.label)
 	tg.boolAttr("default", t.defaultVal)
-	tg.styleAttr(t.style)
+	t.attrs(tg)
 	tg.void()
 }
 
@@ -274,7 +274,7 @@ func (m *Map) Name(name string) *Map {
 func (m *Map) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "map")
 	tg.attr("name", m.name)
-	tg.styleAttr(m.style)
+	m.attrs(tg)
 	tg.children(m.contents)
 }
 
@@ -366,6 +366,6 @@ func (v *Video) renderTo(buf *bytes.Buffer) {
 	tg.attr("width", v.width)
 	tg.attr("height", v.height)
 	tg.urlAttr("poster", v.poster)
-	tg.styleAttr(v.style)
+	v.attrs(tg)
 	tg.children(v.contents)
 }

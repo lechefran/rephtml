@@ -35,7 +35,7 @@ func (m *Math) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "math")
 	tg.attr("xmlns", m.xmlns)
 	tg.attr("display", m.display)
-	tg.styleAttr(m.style)
+	m.attrs(tg)
 	tg.children(m.contents)
 }
 
@@ -112,6 +112,6 @@ func (s *Svg) renderTo(buf *bytes.Buffer) {
 	tg.attr("version", s.version)
 	tg.attr("baseProfile", s.baseProfile)
 	tg.attr("preserveAspectRatio", s.preserveAspectRatio)
-	tg.styleAttr(s.style)
+	s.attrs(tg)
 	tg.children(s.contents)
 }

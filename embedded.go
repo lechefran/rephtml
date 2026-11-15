@@ -50,7 +50,7 @@ func (e *Embed) renderTo(buf *bytes.Buffer) {
 	tg.attr("type", e.embedType)
 	tg.attr("width", e.width)
 	tg.attr("height", e.height)
-	tg.styleAttr(e.style)
+	e.attrs(tg)
 	tg.void()
 }
 
@@ -168,7 +168,7 @@ func (i *Iframe) renderTo(buf *bytes.Buffer) {
 	tg.attr("loading", i.loading)
 	tg.attr("referrerpolicy", i.referrerpolicy)
 	tg.attr("srcdoc", i.srcdoc)
-	tg.styleAttr(i.style)
+	i.attrs(tg)
 	tg.empty()
 }
 
@@ -244,7 +244,7 @@ func (o *Object) renderTo(buf *bytes.Buffer) {
 	tg.attr("name", o.name)
 	tg.urlAttr("usemap", o.usemap)
 	tg.attr("form", o.form)
-	tg.styleAttr(o.style)
+	o.attrs(tg)
 	tg.children(o.contents)
 }
 
@@ -264,7 +264,7 @@ func NewPicture() *Picture {
 // renderTo writes the Picture component's HTML to buf.
 func (p *Picture) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "picture")
-	tg.styleAttr(p.style)
+	p.attrs(tg)
 	tg.children(p.contents)
 }
 
@@ -307,7 +307,7 @@ func (p *Portal) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "portal")
 	tg.urlAttr("src", p.src)
 	tg.attr("referrerpolicy", p.referrerpolicy)
-	tg.styleAttr(p.style)
+	p.attrs(tg)
 	tg.empty()
 }
 
@@ -367,6 +367,6 @@ func (s *Source) renderTo(buf *bytes.Buffer) {
 	tg.attr("media", s.media)
 	tg.attr("sizes", s.sizes)
 	tg.attr("type", s.srcType)
-	tg.styleAttr(s.style)
+	s.attrs(tg)
 	tg.void()
 }

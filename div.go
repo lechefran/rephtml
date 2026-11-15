@@ -18,6 +18,6 @@ func NewDiv() *Div {
 // renderTo writes the Div component's HTML to buf.
 func (d *Div) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "div")
-	tg.styleAttr(d.style)
+	d.attrs(tg)
 	tg.children(d.contents)
 }

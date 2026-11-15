@@ -34,7 +34,7 @@ func (c *Canvas) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "canvas")
 	tg.attr("width", c.width)
 	tg.attr("height", c.height)
-	tg.styleAttr(c.style)
+	c.attrs(tg)
 	tg.children(c.contents)
 }
 
@@ -55,7 +55,7 @@ func NewNoscript() *Noscript {
 // renderTo writes the Noscript component's HTML to buf.
 func (n *Noscript) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "noscript")
-	tg.styleAttr(n.style)
+	n.attrs(tg)
 	tg.children(n.contents)
 }
 
@@ -154,7 +154,7 @@ func (s *Script) renderTo(buf *bytes.Buffer) {
 	tg.attr("integrity", s.integrity)
 	tg.boolAttr("nomodule", s.noModule)
 	tg.attr("referrerpolicy", s.referrerPolicy)
-	tg.styleAttr(s.style)
+	s.attrs(tg)
 	// Script content is JavaScript, not HTML, so it is not entity-escaped. Only
 	// the sequence that would end the element is defused.
 	tg.raw(escapeScript(s.text))

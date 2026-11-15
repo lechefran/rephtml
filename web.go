@@ -26,7 +26,7 @@ func (s *Slot) Name(n string) *Slot {
 func (s *Slot) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "slot")
 	tg.attr("name", s.name)
-	tg.styleAttr(s.style)
+	s.attrs(tg)
 	tg.children(s.contents)
 }
 
@@ -35,7 +35,6 @@ type Template struct {
 	headElement
 	bodyElement
 	contentNode[*Template]
-	id string
 }
 
 // NewTemplate creates a new Template component.
@@ -45,16 +44,9 @@ func NewTemplate() *Template {
 	return v
 }
 
-// Id sets the id attribute.
-func (t *Template) Id(i string) *Template {
-	t.id = i
-	return t
-}
-
 // renderTo writes the Template component's HTML to buf.
 func (t *Template) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "template")
-	tg.attr("id", t.id)
-	tg.styleAttr(t.style)
+	t.attrs(tg)
 	tg.children(t.contents)
 }

@@ -46,7 +46,7 @@ func (a *Anchor) Link(s string) *Anchor {
 // renderTo writes the Anchor component's HTML to buf.
 func (a *Anchor) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "a")
-	tg.styleAttr(a.style)
+	a.attrs(tg)
 	tg.urlAttr("href", a.link)
 	tg.text(a.text)
 }
@@ -74,7 +74,7 @@ func (a *Abbr) Title(s string) *Abbr {
 // renderTo writes the Abbr component's HTML to buf.
 func (a *Abbr) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "abbr")
-	tg.styleAttr(a.style)
+	a.attrs(tg)
 	tg.attr("title", a.title)
 	tg.text(a.text)
 }
@@ -128,7 +128,7 @@ func (q *Q) Cite(s string) *Q {
 // renderTo writes the Q component's HTML to buf.
 func (q *Q) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "q")
-	tg.styleAttr(q.style)
+	q.attrs(tg)
 	tg.urlAttr("cite", q.cite)
 	tg.text(q.text)
 }
@@ -197,7 +197,7 @@ func (d *Bdo) Dir(dir string) *Bdo {
 func (d *Bdo) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "bdo")
 	tg.attr("dir", d.dir)
-	tg.styleAttr(d.style)
+	d.attrs(tg)
 	tg.text(d.text)
 }
 
@@ -217,7 +217,7 @@ func NewBr() *Br {
 // renderTo writes the Br component's HTML to buf.
 func (br *Br) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "br")
-	tg.styleAttr(br.style)
+	br.attrs(tg)
 	tg.void()
 }
 
@@ -270,7 +270,7 @@ func (d *Data) Value(s string) *Data {
 // renderTo writes the Data component's HTML to buf.
 func (d *Data) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "data")
-	tg.styleAttr(d.style)
+	d.attrs(tg)
 	tg.attr("value", d.value)
 	tg.text(d.text)
 }
@@ -298,7 +298,7 @@ func (d *Dfn) Title(s string) *Dfn {
 // renderTo writes the Dfn component's HTML to buf.
 func (d *Dfn) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "dfn")
-	tg.styleAttr(d.style)
+	d.attrs(tg)
 	tg.attr("title", d.title)
 	tg.text(d.text)
 }
@@ -345,7 +345,7 @@ func NewRuby() *Ruby {
 // renderTo writes the Ruby component's HTML to buf.
 func (r *Ruby) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "ruby")
-	tg.styleAttr(r.style)
+	r.attrs(tg)
 	tg.children(r.contents)
 }
 
@@ -391,7 +391,7 @@ func NewRtc() *Rtc {
 // renderTo writes the Rtc component's HTML to buf.
 func (rtc *Rtc) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "rtc")
-	tg.styleAttr(rtc.style)
+	rtc.attrs(tg)
 	tg.children(rtc.contents)
 }
 
@@ -637,7 +637,7 @@ func isDigits(s string) bool {
 func (t *Time) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "time")
 	tg.attr("datetime", t.datetime)
-	tg.styleAttr(t.style)
+	t.attrs(tg)
 	tg.text(t.text)
 }
 
@@ -670,6 +670,6 @@ func NewWbr() *Wbr {
 // renderTo writes the Wbr component's HTML to buf.
 func (w *Wbr) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "wbr")
-	tg.styleAttr(w.style)
+	w.attrs(tg)
 	tg.void()
 }

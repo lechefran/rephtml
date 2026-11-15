@@ -9,6 +9,19 @@ deprecated names are kept for at least one minor release before removal.
 
 ## [Unreleased]
 
+### Added
+
+- Every element now supports the global `id` and `class` attributes, through
+  `Id`, `AddClass`, `AddClasses` and `Class`. Before, only the table elements,
+  `Input`, `Datalist` and `Template` had `Id`, and only the table elements had
+  `class`. The attributes are written with the inline style, as `id`, `class`,
+  then `style`. Output is unchanged for elements that don't set them, including
+  the existing `id` position on `Input`, `Datalist` and `Template`.
+- `Head` and `Body` wrappers keep their `id` and `class` when merged into an
+  `HtmlFile`.
+- `AddText` on every text element always appends, whether `Text` replaces or
+  appends on that element. See the README for which does which.
+
 ### Changed
 
 - `Time.Datetime` validates week and duration values with small hand-written

@@ -112,13 +112,34 @@ fmt.Println(card.HTML())
 ## How Elements Are Built
 
 Elements embed a shared generic base that supplies the render entry points
-(`Render`, `HTML`) and the common setters (`AddStyle`, `AddStyles`, `Style`, and
-`Add` on containers). The base is parameterised by the concrete element type, so
-those setters return the element's own type and chaining works as usual:
+(`Render`, `HTML`) and the common setters (`AddStyle`, `AddStyles`, `Style`,
+`Id`, `AddClass`, `AddClasses`, `Class`, and `Add` on containers). The base is
+parameterised by the concrete element type, so those setters return the
+element's own type and chaining works as usual:
 
 ```go
 div := rephtml.NewDiv().AddStyle("color", "red").Add(rephtml.NewP()) // *Div
 ```
+
+Every element supports the global `id` and `class` attributes. They are written
+together with the inline style, as `id`, then `class`, then `style`:
+
+```go
+rephtml.NewDiv().Id("menu").AddClass("nav").AddStyle("color", "red").HTML()
+// <div id="menu" class="nav" style="color: red;"></div>
+```
+
+### Text and AddText
+
+`AddText` always appends text. `Text` depends on the element, and v1.0 will make
+it consistent:
+
+| `Text` replaces the text | `Text` appends text, like `AddText` |
+|---|---|
+| inline text elements such as `Span`, `B` and `Anchor`; headings; `P`, `Pre`, `Blockquote`; `Script`; `Caption`; `Comment` | elements that also hold child elements: `Title`, `Label`, `Button`, `Option`, `Output`, `Textarea`, `Progress`, `Meter`, `Legend`; and `StyleElement` |
+
+Use `AddText` whenever you mean to append, so your code reads the same on every
+element and keeps working when `Text` changes.
 
 Because the methods are promoted rather than declared per element, godoc renders
 their result type as `Self`. The concrete result is always the element's own

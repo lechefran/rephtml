@@ -22,7 +22,7 @@ func (d *Del) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "del")
 	tg.urlAttr("cite", d.cite)
 	tg.attr("datetime", d.datetime)
-	tg.styleAttr(d.style)
+	d.attrs(tg)
 	tg.children(d.contents)
 }
 
@@ -58,7 +58,7 @@ func (i *Ins) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "ins")
 	tg.urlAttr("cite", i.cite)
 	tg.attr("datetime", i.datetime)
-	tg.styleAttr(i.style)
+	i.attrs(tg)
 	tg.children(i.contents)
 }
 

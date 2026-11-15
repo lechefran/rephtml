@@ -18,7 +18,7 @@ func NewHeader() *Header {
 // renderTo writes the Header component's HTML to buf.
 func (h *Header) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "header")
-	tg.styleAttr(h.style)
+	h.attrs(tg)
 	tg.children(h.contents)
 }
 
@@ -46,7 +46,7 @@ func (n *Nav) Role(r string) *Nav {
 func (n *Nav) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "nav")
 	tg.attr("role", n.role)
-	tg.styleAttr(n.style)
+	n.attrs(tg)
 	tg.children(n.contents)
 }
 
@@ -66,7 +66,7 @@ func NewMain() *Main {
 // renderTo writes the Main component's HTML to buf.
 func (m *Main) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "main")
-	tg.styleAttr(m.style)
+	m.attrs(tg)
 	tg.children(m.contents)
 }
 
@@ -94,7 +94,7 @@ func (s *Section) AriaLabel(label string) *Section {
 func (s *Section) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "section")
 	tg.attr("aria-label", s.ariaLabel)
-	tg.styleAttr(s.style)
+	s.attrs(tg)
 	tg.children(s.contents)
 }
 
@@ -114,7 +114,7 @@ func NewArticle() *Article {
 // renderTo writes the Article component's HTML to buf.
 func (a *Article) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "article")
-	tg.styleAttr(a.style)
+	a.attrs(tg)
 	tg.children(a.contents)
 }
 
@@ -134,7 +134,7 @@ func NewAside() *Aside {
 // renderTo writes the Aside component's HTML to buf.
 func (as *Aside) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "aside")
-	tg.styleAttr(as.style)
+	as.attrs(tg)
 	tg.children(as.contents)
 }
 
@@ -154,7 +154,7 @@ func NewFooter() *Footer {
 // renderTo writes the Footer component's HTML to buf.
 func (f *Footer) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "footer")
-	tg.styleAttr(f.style)
+	f.attrs(tg)
 	tg.children(f.contents)
 }
 
@@ -174,6 +174,6 @@ func NewAddress() *Address {
 // renderTo writes the Address component's HTML to buf.
 func (ad *Address) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "address")
-	tg.styleAttr(ad.style)
+	ad.attrs(tg)
 	tg.children(ad.contents)
 }
