@@ -5,7 +5,7 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 While the major version is 0, a minor release may contain breaking changes;
-deprecated names are kept for at least one minor release before removal.
+deprecated names keep working until v1.0.
 
 ## [Unreleased]
 
@@ -137,6 +137,12 @@ deprecated names are kept for at least one minor release before removal.
   scanners instead of regular expressions. The accepted values are unchanged,
   and the package no longer links `regexp`, which makes programs that use it
   about 250 KB smaller.
+- Deprecated names are now kept until v1.0, instead of for at least one minor
+  release. This covers the names deprecated in 0.2.0, and `AddId` and `Styles`
+  on the table elements.
+- The README documents which setters take an `int` and which take a `string`,
+  and lists the setters that take a `string` for a whole number. They keep
+  their signatures until v1.0.
 
 ## [0.2.0] - 2026-11-14
 
