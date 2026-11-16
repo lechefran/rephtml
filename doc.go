@@ -20,6 +20,8 @@ var _ io.WriterTo = (*HtmlFile)(nil)
 // HtmlFile represents the HTML element for the document root
 type HtmlFile struct {
 	style       StyleMap
+	class       []string
+	id          string
 	contents    []Element
 	headContent []Element
 	bodyContent []Element
@@ -82,6 +84,8 @@ func (h *HtmlFile) renderTo(buf *bytes.Buffer) {
 	tg.attr("xmlns", h.xmlns)
 	tg.urlAttr("manifest", h.manifest)
 	tg.attr("contextmenu", h.contextMenu)
+	tg.attr("id", h.id)
+	tg.classAttr(h.class)
 	tg.styleAttr(h.style)
 	tg.open()
 
@@ -185,6 +189,30 @@ func (h *HtmlFile) Manifest(manifest string) *HtmlFile {
 // ContextMenu sets the contextmenu attribute
 func (h *HtmlFile) ContextMenu(contextMenu string) *HtmlFile {
 	h.contextMenu = contextMenu
+	return h
+}
+
+// Id sets the id attribute of the html element.
+func (h *HtmlFile) Id(id string) *HtmlFile {
+	h.id = id
+	return h
+}
+
+// AddClass appends one class name to the html element.
+func (h *HtmlFile) AddClass(s string) *HtmlFile {
+	h.class = append(h.class, s)
+	return h
+}
+
+// AddClasses appends multiple class names to the html element.
+func (h *HtmlFile) AddClasses(s []string) *HtmlFile {
+	h.class = append(h.class, s...)
+	return h
+}
+
+// Class replaces the html element's class names, copying the caller's slice.
+func (h *HtmlFile) Class(s []string) *HtmlFile {
+	h.class = cloneStrings(s)
 	return h
 }
 

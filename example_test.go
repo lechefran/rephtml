@@ -49,6 +49,18 @@ func ExampleDiv_Id() {
 	// <div id="menu" class="nav sticky dark"><span class="item">Home</span></div>
 }
 
+func ExampleHtmlFile_Id() {
+	doc := rephtml.NewHtmlFile().Lang("en").Id("top").AddClass("dark")
+
+	out, err := doc.RenderString()
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(out)
+	// Output:
+	// <!DOCTYPE html><html lang="en" id="top" class="dark"></html>
+}
+
 func ExampleLabel_AddText() {
 	label := rephtml.NewLabel().
 		For("email").

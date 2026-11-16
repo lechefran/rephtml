@@ -137,6 +137,27 @@ func TestMergedHeadAndBodyKeepIdAndClass(t *testing.T) {
 	}
 }
 
+func TestHtmlFileIdAndClass(t *testing.T) {
+	classes := []string{"a", "<b>"}
+	doc := NewHtmlFile().Lang("en").Id(`r"1`).Class(classes).
+		AddClass("c").AddClasses([]string{"d"}).AddStyle("color", "red")
+	classes[0] = "changed"
+
+	got, err := doc.RenderString()
+	if err != nil {
+		t.Fatal(err)
+	}
+	want := `<!DOCTYPE html><html lang="en" id="r&#34;1" class="a &lt;b&gt; c d" style="color: red;"></html>`
+	if got != want {
+		t.Fatalf("got %q, want %q", got, want)
+	}
+
+	if got, err := NewHtmlFile().Lang("en").Class(nil).RenderString(); err != nil ||
+		got != `<!DOCTYPE html><html lang="en"></html>` {
+		t.Fatalf("unset id and class: got %q, %v", got, err)
+	}
+}
+
 func TestAddText(t *testing.T) {
 	tests := []struct {
 		name string

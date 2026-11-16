@@ -9,6 +9,12 @@ deprecated names keep working until v1.0.
 
 ## [Unreleased]
 
+### Added
+
+- `HtmlFile.Id`, `AddClass`, `AddClasses` and `Class` set the `id` and `class`
+  attributes of the `<html>` element, written after its other attributes and
+  before `style`. Output is unchanged for documents that don't set them.
+
 ## [0.3.0] - 2026-11-15
 
 No API is removed or renamed. Four fixes below are marked ⚠️ **POTENTIALLY

@@ -141,8 +141,9 @@ func badge(u *User) *rephtml.Span {
 }
 ```
 
-Every element supports the global `id` and `class` attributes. They are written
-together with the inline style, as `id`, then `class`, then `style`:
+Every element supports the global `id` and `class` attributes, and so does the
+`<html>` element through `HtmlFile`. They are written together with the inline
+style, as `id`, then `class`, then `style`:
 
 ```go
 rephtml.NewDiv().Id("menu").AddClass("nav").AddStyle("color", "red").HTML()
