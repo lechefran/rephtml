@@ -22,12 +22,12 @@ The package is designed around small composable structs:
 - `Render`, `RenderString`, `RenderFormatted`, and `RenderFormattedString` return generated HTML plus any document error.
 - `WriteTo` and `WriteFormattedTo` stream a document to any `io.Writer`, such as an `http.ResponseWriter`.
 
-The current release is **v0.3.0**. The module is still below v1, so a minor release may contain breaking changes. Deprecated names keep working until v1.0, and every release is described in the [changelog](CHANGELOG.md).
+The current release is **v0.4.0**. The module is still below v1, so a minor release may contain breaking changes. Deprecated names keep working until v1.0, and every release is described in the [changelog](CHANGELOG.md).
 
 ## Installation
 
 ```sh
-go get github.com/lechefran/rephtml@v0.3.0
+go get github.com/lechefran/rephtml@v0.4.0
 ```
 
 Use `@latest` to follow new releases. The module requires the Go version declared in [go.mod](go.mod).
@@ -478,6 +478,10 @@ so one bad entry does not discard the rest of the list.
 
 The examples above are self-contained and use the root package import path: `github.com/lechefran/rephtml`. Runnable examples also appear on [pkg.go.dev](https://pkg.go.dev/github.com/lechefran/rephtml#pkg-examples).
 
+## Upgrading from v0.3.0
+
+v0.4.0 only adds API, so code that compiled against v0.3.0 still compiles and renders the same output. New in v0.4.0: `Id`, `AddClass`, `AddClasses` and `Class` on `HtmlFile`, for the `<html>` element.
+
 ## Upgrading from v0.2.0
 
 v0.3.0 does not remove or rename any API, so code that compiled against v0.2.0 still compiles. Four corrections change behaviour or output, and the [changelog](CHANGELOG.md) shows each one before and after:
@@ -521,7 +525,7 @@ New in v0.2.0: `WriteTo`, `WriteFormattedTo`, `Bdo.Dir` and `StyleElement.Err`.
 
 ## Releases
 
-Release notes for every version are in the [changelog](CHANGELOG.md) and on the [GitHub releases page](https://github.com/lechefran/rephtml/releases). Versions follow [semantic versioning](https://semver.org/), and the Go module proxy serves each tagged version, so `go get github.com/lechefran/rephtml@v0.3.0` pins an exact release.
+Release notes for every version are in the [changelog](CHANGELOG.md) and on the [GitHub releases page](https://github.com/lechefran/rephtml/releases). Versions follow [semantic versioning](https://semver.org/), and the Go module proxy serves each tagged version, so `go get github.com/lechefran/rephtml@v0.4.0` pins an exact release.
 
 ## Supported Elements
 ### Document Structure

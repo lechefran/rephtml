@@ -9,6 +9,10 @@ deprecated names keep working until v1.0.
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-11-15
+
+Additive only: no API is removed or renamed, and no existing output changes.
+
 ### Added
 
 - `HtmlFile.Id`, `AddClass`, `AddClasses` and `Class` set the `id` and `class`
@@ -240,7 +244,8 @@ future minor release.
 
 Initial pre-release.
 
-[Unreleased]: https://github.com/lechefran/rephtml/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/lechefran/rephtml/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/lechefran/rephtml/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/lechefran/rephtml/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/lechefran/rephtml/compare/v0.1.0-beta...v0.2.0
 [0.1.0-beta]: https://github.com/lechefran/rephtml/releases/tag/v0.1.0-beta
