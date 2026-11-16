@@ -22,7 +22,7 @@ The package is designed around small composable structs:
 - `Render`, `RenderString`, `RenderFormatted`, and `RenderFormattedString` return generated HTML plus any document error.
 - `WriteTo` and `WriteFormattedTo` stream a document to any `io.Writer`, such as an `http.ResponseWriter`.
 
-The current release is **v0.4.0**. The module is still below v1, so a minor release may contain breaking changes. Deprecated names keep working until v1.0, and every release is described in the [changelog](CHANGELOG.md).
+The current release is **v0.4.0**. The module is still below v1, so a minor release may contain breaking changes. Deprecated names are kept for at least one minor release before removal, and every release is described in the [changelog](CHANGELOG.md).
 
 ## Installation
 
@@ -499,7 +499,7 @@ New in v0.3.0: `Id`, `AddClass`, `AddClasses` and `Class` on every element; `Add
 
 ## Upgrading from v0.1.0-beta
 
-v0.2.0 does not remove any API, so code that compiled against `v0.1.0-beta` still compiles. Some setters have new, consistently capitalised names, and the old names are deprecated. They still work and are kept until v1.0:
+v0.2.0 does not remove any API, so code that compiled against `v0.1.0-beta` still compiles. Some setters have new, consistently capitalised names, and the old names were deprecated. They were removed in v0.5.0, so use the new names:
 
 | Deprecated | Use instead |
 |---|---|
@@ -510,7 +510,7 @@ v0.2.0 does not remove any API, so code that compiled against `v0.1.0-beta` stil
 | `Iframe.Referrerpolicy`, `Portal.Referrerpolicy`, `Script.Referrerpolicy` | `ReferrerPolicy` |
 | `Script.Crossorigin` | `CrossOrigin` |
 
-`go vet` and staticcheck report uses of deprecated names, so they are easy to find.
+Code that still uses an old name no longer compiles, and the compiler names the replacement, for example `type *Form has no field or method Autocomplete, but does have method AutoComplete`. The table elements' `AddId` and `Styles` were removed in v0.5.0 too: use `Id` and `Style`.
 
 Some rendered output changes, all of them corrections:
 

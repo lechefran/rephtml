@@ -74,13 +74,6 @@ func (f *Form) AutoComplete(autocomplete string) *Form {
 	return f
 }
 
-// Autocomplete sets the autocomplete attribute.
-//
-// Deprecated: use AutoComplete.
-func (f *Form) Autocomplete(autocomplete string) *Form {
-	return f.AutoComplete(autocomplete)
-}
-
 // AcceptCharset sets the accept-charset attribute
 func (f *Form) AcceptCharset(acceptcharset string) *Form {
 	f.acceptcharset = acceptcharset
@@ -91,13 +84,6 @@ func (f *Form) AcceptCharset(acceptcharset string) *Form {
 func (f *Form) NoValidate(novalidate bool) *Form {
 	f.novalidate = novalidate
 	return f
-}
-
-// Novalidate sets the novalidate attribute.
-//
-// Deprecated: use NoValidate.
-func (f *Form) Novalidate(novalidate bool) *Form {
-	return f.NoValidate(novalidate)
 }
 
 // Label represents the HTML label element for form controls
@@ -257,13 +243,6 @@ func (i *Input) AutoComplete(autocomplete string) *Input {
 	return i
 }
 
-// Autocomplete sets the autocomplete attribute.
-//
-// Deprecated: use AutoComplete.
-func (i *Input) Autocomplete(autocomplete string) *Input {
-	return i.AutoComplete(autocomplete)
-}
-
 // Min sets the min attribute
 func (i *Input) Min(min string) *Input {
 	i.min = min
@@ -302,25 +281,11 @@ func (i *Input) MaxLength(maxlength int) *Input {
 	return i
 }
 
-// Maxlength sets the maxlength attribute.
-//
-// Deprecated: use MaxLength.
-func (i *Input) Maxlength(maxlength int) *Input {
-	return i.MaxLength(maxlength)
-}
-
 // MinLength sets the minlength attribute. Zero is emitted; negative values
 // are omitted.
 func (i *Input) MinLength(minlength int) *Input {
 	i.minlength = setInt(minlength)
 	return i
-}
-
-// Minlength sets the minlength attribute.
-//
-// Deprecated: use MinLength.
-func (i *Input) Minlength(minlength int) *Input {
-	return i.MinLength(minlength)
 }
 
 // Multiple sets the multiple attribute

@@ -80,15 +80,15 @@ func TestStyleAttributeWrittenMidList(t *testing.T) {
 		element Element
 		want    string
 	}{
-		{"Td", NewTd().Id("i").AddClass("c").Colspan(2).Styles(style),
+		{"Td", NewTd().Id("i").AddClass("c").Colspan(2).Style(style),
 			`<td id="i" class="c" style="color: red; margin: 0;" colspan="2"></td>`},
-		{"Th", NewTh().Id("i").AddClass("c").Colspan(3).Styles(style),
+		{"Th", NewTh().Id("i").AddClass("c").Colspan(3).Style(style),
 			`<th id="i" class="c" style="color: red; margin: 0;" colspan="3"></th>`},
-		{"Col", NewCol().Id("i").AddClass("c").Span(2).Styles(style),
+		{"Col", NewCol().Id("i").AddClass("c").Span(2).Style(style),
 			`<col id="i" class="c" style="color: red; margin: 0;" span="2">`},
-		{"Colgroup", NewColgroup().Id("i").AddClass("c").Span(2).Styles(style),
+		{"Colgroup", NewColgroup().Id("i").AddClass("c").Span(2).Style(style),
 			`<colgroup id="i" class="c" style="color: red; margin: 0;" span="2"></colgroup>`},
-		{"Table", NewTable().Id("i").AddClass("c").Styles(style),
+		{"Table", NewTable().Id("i").AddClass("c").Style(style),
 			`<table id="i" class="c" style="color: red; margin: 0;"></table>`},
 	}
 

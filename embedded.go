@@ -119,13 +119,6 @@ func (i *Iframe) AllowFullscreen(allowfullscreen bool) *Iframe {
 	return i
 }
 
-// Allowfullscreen sets the allowfullscreen attribute.
-//
-// Deprecated: use AllowFullscreen.
-func (i *Iframe) Allowfullscreen(allowfullscreen bool) *Iframe {
-	return i.AllowFullscreen(allowfullscreen)
-}
-
 // Loading sets the loading attribute.
 func (i *Iframe) Loading(loading string) *Iframe {
 	i.loading = loading
@@ -136,13 +129,6 @@ func (i *Iframe) Loading(loading string) *Iframe {
 func (i *Iframe) ReferrerPolicy(referrerpolicy string) *Iframe {
 	i.referrerpolicy = referrerpolicy
 	return i
-}
-
-// Referrerpolicy sets the referrerpolicy attribute.
-//
-// Deprecated: use ReferrerPolicy.
-func (i *Iframe) Referrerpolicy(referrerpolicy string) *Iframe {
-	return i.ReferrerPolicy(referrerpolicy)
 }
 
 // Srcdoc sets the srcdoc attribute, the HTML document the frame displays.
@@ -293,13 +279,6 @@ func (p *Portal) Src(src string) *Portal {
 func (p *Portal) ReferrerPolicy(referrerpolicy string) *Portal {
 	p.referrerpolicy = referrerpolicy
 	return p
-}
-
-// Referrerpolicy sets the referrerpolicy attribute.
-//
-// Deprecated: use ReferrerPolicy.
-func (p *Portal) Referrerpolicy(referrerpolicy string) *Portal {
-	return p.ReferrerPolicy(referrerpolicy)
 }
 
 // renderTo writes the Portal component's HTML to buf.

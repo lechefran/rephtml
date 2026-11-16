@@ -45,16 +45,6 @@ func TestEveryStyledElementHasFullStyleAPI(t *testing.T) {
 			t.Errorf("%s produced no output", tt.name)
 		}
 	}
-
-	// The table elements historically spelled this Styles; Style now comes from
-	// the shared base and Styles remains as a deprecated alias.
-	style := StyleMap{"color": "red"}
-	if a, b := NewTd().Style(style).HTML(), NewTd().Styles(style).HTML(); a != b {
-		t.Errorf("Td.Style = %q but Td.Styles = %q, want both the same", a, b)
-	}
-	if a, b := NewTable().Id("x").HTML(), NewTable().AddId("x").HTML(); a != b {
-		t.Errorf("Table.Id = %q but Table.AddId = %q, want both the same", a, b)
-	}
 }
 
 // TestStyleSettersCopyCallerMaps pins that Style takes a copy, so a caller can

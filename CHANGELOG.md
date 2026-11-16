@@ -5,7 +5,7 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 While the major version is 0, a minor release may contain breaking changes;
-deprecated names keep working until v1.0.
+deprecated names are kept for at least one minor release before removal.
 
 ## [Unreleased]
 
@@ -46,6 +46,27 @@ deprecated names keep working until v1.0.
   *Who is affected:* every caller of these setters, since the code no longer
   compiles. *Migration:* pass the number instead of its text, using
   `strconv.Atoi` where the value starts out as a string.
+
+### Removed
+
+- ⚠️ **POTENTIALLY BREAKING:** the deprecated names are removed. This reverses
+  the 0.3.0 note that they would be kept until v1.0. Output from the
+  replacement names is unchanged.
+
+  | Removed | Use instead |
+  |---|---|
+  | `Form.Autocomplete`, `Input.Autocomplete` | `AutoComplete` |
+  | `Form.Novalidate` | `NoValidate` |
+  | `Input.Maxlength`, `Input.Minlength` | `MaxLength`, `MinLength` |
+  | `Iframe.Allowfullscreen` | `AllowFullscreen` |
+  | `Iframe.Referrerpolicy`, `Portal.Referrerpolicy`, `Script.Referrerpolicy` | `ReferrerPolicy` |
+  | `Script.Crossorigin` | `CrossOrigin` |
+  | `AddId` on the table elements | `Id` |
+  | `Styles` on the table elements | `Style` |
+
+  *Who is affected:* code that still uses an old name, which no longer
+  compiles. The compiler error names the replacement. *Migration:* rename the
+  call; `go vet` and staticcheck on v0.4.0 list every use.
 
 ## [0.4.0] - 2026-11-15
 

@@ -259,43 +259,6 @@ func (n *textNode[Self]) AddText(s string) Self {
 	return n.self
 }
 
-// tabular carries the deprecated setters that only the table elements have.
-// The id and class attributes they introduced are now on every element.
-type tabular[Self selfElement] struct {
-	node[Self]
-}
-
-// AddId sets the id attribute.
-//
-// Deprecated: an element has at most one id. Use Id.
-func (n *tabular[Self]) AddId(s string) Self {
-	return n.Id(s)
-}
-
-// Styles replaces the inline CSS declarations.
-//
-// Deprecated: use Style, which every other element uses for this.
-func (n *tabular[Self]) Styles(m StyleMap) Self {
-	return n.Style(m)
-}
-
-// tabularNode is a table element that also holds child elements.
-type tabularNode[Self selfElement] struct {
-	tabular[Self]
-	contents []Element
-}
-
-// Add appends child content, ignoring nil children.
-func (n *tabularNode[Self]) Add(e Element) Self {
-	n.contents = appendElement(n.contents, e)
-	return n.self
-}
-
-// collectErrors appends the errors recorded anywhere among the children.
-func (n *tabularNode[Self]) collectErrors(errs []error) []error {
-	return collectChildErrors(errs, n.contents)
-}
-
 // bodyElement marks an element as valid document body content.
 //
 // It is a mixin rather than part of the tier chain because an element can be

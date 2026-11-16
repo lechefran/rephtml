@@ -8,7 +8,7 @@ import (
 // Table represents the HTML <table> element, tabular data in rows and columns.
 type Table struct {
 	bodyElement
-	tabular[*Table]
+	node[*Table]
 	headers   []string
 	rows      [][]string
 	caption   *Caption
@@ -197,7 +197,7 @@ func (t *Table) renderTo(buf *bytes.Buffer) {
 // Thead represents the HTML <thead> element, the header rows of a table.
 type Thead struct {
 	bodyElement
-	tabularNode[*Thead]
+	contentNode[*Thead]
 }
 
 // NewThead creates a new Thead component.
@@ -223,7 +223,7 @@ func (th *Thead) renderTo(buf *bytes.Buffer) {
 // Tbody represents the HTML <tbody> element, the body rows of a table.
 type Tbody struct {
 	bodyElement
-	tabularNode[*Tbody]
+	contentNode[*Tbody]
 }
 
 // NewTbody creates a new Tbody component.
@@ -249,7 +249,7 @@ func (tb *Tbody) renderTo(buf *bytes.Buffer) {
 // Tfoot represents the HTML <tfoot> element, the footer rows of a table.
 type Tfoot struct {
 	bodyElement
-	tabularNode[*Tfoot]
+	contentNode[*Tfoot]
 }
 
 // NewTfoot creates a new Tfoot component.
@@ -275,7 +275,7 @@ func (tf *Tfoot) renderTo(buf *bytes.Buffer) {
 // Caption represents the HTML <caption> element, the title of a table.
 type Caption struct {
 	bodyElement
-	tabular[*Caption]
+	node[*Caption]
 	text string
 }
 
@@ -308,7 +308,7 @@ func (c *Caption) renderTo(buf *bytes.Buffer) {
 // Col represents the HTML <col> element, a column in a colgroup, used to share properties across a column.
 type Col struct {
 	bodyElement
-	tabular[*Col]
+	node[*Col]
 	span int
 }
 
@@ -336,7 +336,7 @@ func (col *Col) renderTo(buf *bytes.Buffer) {
 // Colgroup represents the HTML <colgroup> element, a group of columns in a table.
 type Colgroup struct {
 	bodyElement
-	tabularNode[*Colgroup]
+	contentNode[*Colgroup]
 	span int
 }
 
@@ -364,7 +364,7 @@ func (cg *Colgroup) renderTo(buf *bytes.Buffer) {
 // Tr represents the HTML <tr> element, a row of cells in a table.
 type Tr struct {
 	bodyElement
-	tabularNode[*Tr]
+	contentNode[*Tr]
 }
 
 // NewTr creates a new Tr component.
@@ -396,7 +396,7 @@ func (tr *Tr) renderTo(buf *bytes.Buffer) {
 // Td represents the HTML <td> element, a data cell in a table.
 type Td struct {
 	bodyElement
-	tabularNode[*Td]
+	contentNode[*Td]
 	colspan int
 	rowspan int
 }
@@ -432,7 +432,7 @@ func (td *Td) renderTo(buf *bytes.Buffer) {
 // Th represents the HTML <th> element, a header cell in a table.
 type Th struct {
 	bodyElement
-	tabularNode[*Th]
+	contentNode[*Th]
 	colspan int
 	rowspan int
 	scope   string
