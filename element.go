@@ -208,9 +208,12 @@ type textContent[Self selfElement] struct {
 	contentNode[Self]
 }
 
-// Text appends escaped text content after any existing content.
+// Text sets the escaped text content, replacing any text set before. Child
+// elements are kept: the text takes the place of the first earlier text, or
+// goes after the children when there was none. Use AddText to append.
 func (n *textContent[Self]) Text(s string) Self {
-	return n.AddText(s)
+	n.contents = replaceText(n.contents, escapedText(s))
+	return n.self
 }
 
 // AddText appends escaped text content after any existing content.
@@ -254,43 +257,6 @@ func (n *textNode[Self]) Text(s string) Self {
 func (n *textNode[Self]) AddText(s string) Self {
 	n.text += s
 	return n.self
-}
-
-// tabular carries the deprecated setters that only the table elements have.
-// The id and class attributes they introduced are now on every element.
-type tabular[Self selfElement] struct {
-	node[Self]
-}
-
-// AddId sets the id attribute.
-//
-// Deprecated: an element has at most one id. Use Id.
-func (n *tabular[Self]) AddId(s string) Self {
-	return n.Id(s)
-}
-
-// Styles replaces the inline CSS declarations.
-//
-// Deprecated: use Style, which every other element uses for this.
-func (n *tabular[Self]) Styles(m StyleMap) Self {
-	return n.Style(m)
-}
-
-// tabularNode is a table element that also holds child elements.
-type tabularNode[Self selfElement] struct {
-	tabular[Self]
-	contents []Element
-}
-
-// Add appends child content, ignoring nil children.
-func (n *tabularNode[Self]) Add(e Element) Self {
-	n.contents = appendElement(n.contents, e)
-	return n.self
-}
-
-// collectErrors appends the errors recorded anywhere among the children.
-func (n *tabularNode[Self]) collectErrors(errs []error) []error {
-	return collectChildErrors(errs, n.contents)
 }
 
 // bodyElement marks an element as valid document body content.

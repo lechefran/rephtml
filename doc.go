@@ -20,6 +20,8 @@ var _ io.WriterTo = (*HtmlFile)(nil)
 // HtmlFile represents the HTML element for the document root
 type HtmlFile struct {
 	style       StyleMap
+	class       []string
+	id          string
 	contents    []Element
 	headContent []Element
 	bodyContent []Element
@@ -82,6 +84,8 @@ func (h *HtmlFile) renderTo(buf *bytes.Buffer) {
 	tg.attr("xmlns", h.xmlns)
 	tg.urlAttr("manifest", h.manifest)
 	tg.attr("contextmenu", h.contextMenu)
+	tg.attr("id", h.id)
+	tg.classAttr(h.class)
 	tg.styleAttr(h.style)
 	tg.open()
 
@@ -185,6 +189,30 @@ func (h *HtmlFile) Manifest(manifest string) *HtmlFile {
 // ContextMenu sets the contextmenu attribute
 func (h *HtmlFile) ContextMenu(contextMenu string) *HtmlFile {
 	h.contextMenu = contextMenu
+	return h
+}
+
+// Id sets the id attribute of the html element.
+func (h *HtmlFile) Id(id string) *HtmlFile {
+	h.id = id
+	return h
+}
+
+// AddClass appends one class name to the html element.
+func (h *HtmlFile) AddClass(s string) *HtmlFile {
+	h.class = append(h.class, s)
+	return h
+}
+
+// AddClasses appends multiple class names to the html element.
+func (h *HtmlFile) AddClasses(s []string) *HtmlFile {
+	h.class = append(h.class, s...)
+	return h
+}
+
+// Class replaces the html element's class names, copying the caller's slice.
+func (h *HtmlFile) Class(s []string) *HtmlFile {
+	h.class = cloneStrings(s)
 	return h
 }
 
@@ -970,13 +998,16 @@ func (s *StyleElement) AddRule(rule CSSRule) *StyleElement {
 	return s
 }
 
-// Text adds CSS text content to the style element
+// Text sets the CSS text content of the style element, replacing any text set
+// before. Rules added with AddRule are kept: the text takes the place of the
+// first earlier text, or goes after the rules when there was none. Use AddText
+// to append.
 func (s *StyleElement) Text(text string) *StyleElement {
-	return s.AddText(text)
+	s.contents = replaceText(s.contents, rawText(escapeCSS(text)))
+	return s
 }
 
-// AddText appends CSS text content to the style element. It is the same as
-// Text, which also appends.
+// AddText appends CSS text content to the style element.
 func (s *StyleElement) AddText(text string) *StyleElement {
 	s.contents = appendElement(s.contents, rawText(escapeCSS(text)))
 	return s

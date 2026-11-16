@@ -5,9 +5,91 @@ All notable changes to this project are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 While the major version is 0, a minor release may contain breaking changes;
-deprecated names keep working until v1.0.
+deprecated names are kept for at least one minor release before removal.
 
 ## [Unreleased]
+
+## [0.5.0] - 2026-11-16
+
+A breaking release that settles three API inconsistencies:
+
+- `Text` replaces the text on every element; `AddText` appends.
+- Setters for whole-number attributes take an `int`.
+- The deprecated names are removed.
+
+Code that uses the changed setters or the removed names stops compiling, and
+the compiler names the fix. `Text` changes without a compile error, so search
+for elements that call it more than once. Each entry below has a before /
+after example and a migration note.
+
+### Changed
+
+- ⚠️ **POTENTIALLY BREAKING:** `Text` now replaces the text on every element.
+  Before, it appended on the elements that also hold child elements (`Title`,
+  `Label`, `Button`, `Option`, `Output`, `Textarea`, `Progress`, `Meter`,
+  `Legend`) and on `StyleElement`. On those elements the child elements and
+  CSS rules stay where they are: the new text takes the place of the first
+  earlier text, or goes after the children when there was none.
+
+  ```go
+  rephtml.NewButton().Text("Save").Text(" draft")
+  ```
+
+  Before: `<button>Save draft</button>`. After: `<button> draft</button>`.
+
+  *Who is affected:* code that calls `Text` more than once on one of these
+  elements, or after `AddText`, to build up its text. *Migration:* use
+  `AddText` for every call after the first.
+
+- ⚠️ **POTENTIALLY BREAKING:** the setters for attributes that are always whole
+  numbers take an `int` instead of a `string`: `Input.Size`, `Input.MaxLength`,
+  `Input.MinLength`, `Select.Size`, `Textarea.Rows`, `Textarea.Cols`,
+  `Textarea.MaxLength` and `Textarea.MinLength`. Values the attribute does not
+  allow are omitted: `size`, `rows` and `cols` below one, and negative
+  `maxlength` / `minlength`. Zero lengths are emitted.
+
+  ```go
+  rephtml.NewTextarea().Rows("4")  // before
+  rephtml.NewTextarea().Rows(4)    // after
+  ```
+
+  The output for valid numbers is unchanged. Before, any text was written as
+  given, so `Rows("abc")` produced `rows="abc"`; that no longer compiles.
+
+  *Who is affected:* every caller of these setters, since the code no longer
+  compiles. *Migration:* pass the number instead of its text, using
+  `strconv.Atoi` where the value starts out as a string.
+
+### Removed
+
+- ⚠️ **POTENTIALLY BREAKING:** the deprecated names are removed. This reverses
+  the 0.3.0 note that they would be kept until v1.0. Output from the
+  replacement names is unchanged.
+
+  | Removed | Use instead |
+  |---|---|
+  | `Form.Autocomplete`, `Input.Autocomplete` | `AutoComplete` |
+  | `Form.Novalidate` | `NoValidate` |
+  | `Input.Maxlength`, `Input.Minlength` | `MaxLength`, `MinLength` |
+  | `Iframe.Allowfullscreen` | `AllowFullscreen` |
+  | `Iframe.Referrerpolicy`, `Portal.Referrerpolicy`, `Script.Referrerpolicy` | `ReferrerPolicy` |
+  | `Script.Crossorigin` | `CrossOrigin` |
+  | `AddId` on the table elements | `Id` |
+  | `Styles` on the table elements | `Style` |
+
+  *Who is affected:* code that still uses an old name, which no longer
+  compiles. The compiler error names the replacement. *Migration:* rename the
+  call; `go vet` and staticcheck on v0.4.0 list every use.
+
+## [0.4.0] - 2026-11-15
+
+Additive only: no API is removed or renamed, and no existing output changes.
+
+### Added
+
+- `HtmlFile.Id`, `AddClass`, `AddClasses` and `Class` set the `id` and `class`
+  attributes of the `<html>` element, written after its other attributes and
+  before `style`. Output is unchanged for documents that don't set them.
 
 ## [0.3.0] - 2026-11-15
 
@@ -234,7 +316,9 @@ future minor release.
 
 Initial pre-release.
 
-[Unreleased]: https://github.com/lechefran/rephtml/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/lechefran/rephtml/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/lechefran/rephtml/compare/v0.4.0...v0.5.0
+[0.4.0]: https://github.com/lechefran/rephtml/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/lechefran/rephtml/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/lechefran/rephtml/compare/v0.1.0-beta...v0.2.0
 [0.1.0-beta]: https://github.com/lechefran/rephtml/releases/tag/v0.1.0-beta

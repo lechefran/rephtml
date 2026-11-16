@@ -22,12 +22,12 @@ The package is designed around small composable structs:
 - `Render`, `RenderString`, `RenderFormatted`, and `RenderFormattedString` return generated HTML plus any document error.
 - `WriteTo` and `WriteFormattedTo` stream a document to any `io.Writer`, such as an `http.ResponseWriter`.
 
-The current release is **v0.3.0**. The module is still below v1, so a minor release may contain breaking changes. Deprecated names keep working until v1.0, and every release is described in the [changelog](CHANGELOG.md).
+The current release is **v0.5.0**. The module is still below v1, so a minor release may contain breaking changes. Deprecated names are kept for at least one minor release before removal, and every release is described in the [changelog](CHANGELOG.md).
 
 ## Installation
 
 ```sh
-go get github.com/lechefran/rephtml@v0.3.0
+go get github.com/lechefran/rephtml@v0.5.0
 ```
 
 Use `@latest` to follow new releases. The module requires the Go version declared in [go.mod](go.mod).
@@ -121,26 +121,6 @@ element's own type and chaining works as usual:
 div := rephtml.NewDiv().AddStyle("color", "red").Add(rephtml.NewP()) // *Div
 ```
 
-Every element supports the global `id` and `class` attributes. They are written
-together with the inline style, as `id`, then `class`, then `style`:
-
-```go
-rephtml.NewDiv().Id("menu").AddClass("nav").AddStyle("color", "red").HTML()
-// <div id="menu" class="nav" style="color: red;"></div>
-```
-
-### Text and AddText
-
-`AddText` always appends text. `Text` depends on the element, and v1.0 will make
-it consistent:
-
-| `Text` replaces the text | `Text` appends text, like `AddText` |
-|---|---|
-| inline text elements such as `Span`, `B` and `Anchor`; headings; `P`, `Pre`, `Blockquote`; `Script`; `Caption`; `Comment` | elements that also hold child elements: `Title`, `Label`, `Button`, `Option`, `Output`, `Textarea`, `Progress`, `Meter`, `Legend`; and `StyleElement` |
-
-Use `AddText` whenever you mean to append, so your code reads the same on every
-element and keeps working when `Text` changes.
-
 Because the methods are promoted rather than declared per element, godoc renders
 their result type as `Self`. The concrete result is always the element's own
 pointer type, for example `*Div` above.
@@ -161,18 +141,41 @@ func badge(u *User) *rephtml.Span {
 }
 ```
 
+Every element supports the global `id` and `class` attributes, and so does the
+`<html>` element through `HtmlFile`. They are written together with the inline
+style, as `id`, then `class`, then `style`:
+
+```go
+rephtml.NewDiv().Id("menu").AddClass("nav").AddStyle("color", "red").HTML()
+// <div id="menu" class="nav" style="color: red;"></div>
+```
+
+### Text and AddText
+
+On every element, `Text` sets the text, replacing any text set before, and
+`AddText` appends to it.
+
+Some elements also hold child elements, such as `Label`, `Button`, `Option` and
+`StyleElement`'s rules. On those, `Text` keeps the children where they are. The
+new text takes the place of the first earlier text, or goes after the children
+when there was none:
+
+```go
+rephtml.NewLabel().Add(rephtml.NewInput().Type("checkbox")).Text("Agree").HTML()
+// <label><input type="checkbox">Agree</label>
+```
+
 ### Attribute value types
 
 A setter takes an `int` when the attribute is always a whole number, such as
-`Td.Colspan`, `Col.Span`, `Ol.Start` and `Li.Value`. It takes a `string` when
+`Td.Colspan`, `Col.Span`, `Ol.Start`, `Li.Value`, `Input.Size`,
+`Input.MaxLength`, `Select.Size` and `Textarea.Rows`. It takes a `string` when
 the value can carry units, dates, decimals or keywords, such as `Img.Width`,
 `Input.Min` and `Meter.Value`. The string is written as given.
 
-A few older setters take a `string` for an attribute that is always a whole
-number: `Input.Size`, `Input.MaxLength`, `Input.MinLength`, `Select.Size`,
-`Textarea.Rows`, `Textarea.Cols`, `Textarea.MaxLength` and
-`Textarea.MinLength`. They keep that signature until v1.0, so pass the number
-as text, for example `Rows("4")`.
+An `int` attribute is omitted when the value is not allowed. Sizes, spans,
+`rows` and `cols` must be at least one. `maxlength` and `minlength` may be
+zero but not negative. `Ol.Start` and `Li.Value` accept any number.
 
 ## Concurrency
 
@@ -477,6 +480,20 @@ so one bad entry does not discard the rest of the list.
 
 The examples above are self-contained and use the root package import path: `github.com/lechefran/rephtml`. Runnable examples also appear on [pkg.go.dev](https://pkg.go.dev/github.com/lechefran/rephtml#pkg-examples).
 
+## Upgrading from v0.4.0
+
+v0.5.0 makes three breaking changes. The [changelog](CHANGELOG.md) shows each one before and after:
+
+- **`Text` replaces the text on every element.** It used to append on `Title`, `Label`, `Button`, `Option`, `Output`, `Textarea`, `Progress`, `Meter`, `Legend` and `StyleElement`. Use `AddText` for every call after the first. This one compiles either way, so search for elements that call `Text` more than once.
+- **Whole-number setters take an `int`:** `Input.Size`, `Input.MaxLength`, `Input.MinLength`, `Select.Size`, `Textarea.Rows`, `Textarea.Cols`, `Textarea.MaxLength` and `Textarea.MinLength`. Write `Rows(4)` instead of `Rows("4")`.
+- **The deprecated names are removed.** See the table under [Upgrading from v0.1.0-beta](#upgrading-from-v010-beta). The table elements' `AddId` and `Styles` are gone too: use `Id` and `Style`.
+
+Upgrading to v0.4.0 first and running `go vet` or staticcheck lists every use of a deprecated name.
+
+## Upgrading from v0.3.0
+
+v0.4.0 only adds API, so code that compiled against v0.3.0 still compiles and renders the same output. New in v0.4.0: `Id`, `AddClass`, `AddClasses` and `Class` on `HtmlFile`, for the `<html>` element.
+
 ## Upgrading from v0.2.0
 
 v0.3.0 does not remove or rename any API, so code that compiled against v0.2.0 still compiles. Four corrections change behaviour or output, and the [changelog](CHANGELOG.md) shows each one before and after:
@@ -492,7 +509,7 @@ New in v0.3.0: `Id`, `AddClass`, `AddClasses` and `Class` on every element; `Add
 
 ## Upgrading from v0.1.0-beta
 
-v0.2.0 does not remove any API, so code that compiled against `v0.1.0-beta` still compiles. Some setters have new, consistently capitalised names, and the old names are deprecated. They still work and are kept until v1.0:
+v0.2.0 does not remove any API, so code that compiled against `v0.1.0-beta` still compiles. Some setters have new, consistently capitalised names, and the old names were deprecated. They were removed in v0.5.0, so use the new names:
 
 | Deprecated | Use instead |
 |---|---|
@@ -503,7 +520,7 @@ v0.2.0 does not remove any API, so code that compiled against `v0.1.0-beta` stil
 | `Iframe.Referrerpolicy`, `Portal.Referrerpolicy`, `Script.Referrerpolicy` | `ReferrerPolicy` |
 | `Script.Crossorigin` | `CrossOrigin` |
 
-`go vet` and staticcheck report uses of deprecated names, so they are easy to find.
+Code that still uses an old name no longer compiles, and the compiler names the replacement, for example `type *Form has no field or method Autocomplete, but does have method AutoComplete`. The table elements' `AddId` and `Styles` were removed in v0.5.0 too: use `Id` and `Style`.
 
 Some rendered output changes, all of them corrections:
 
@@ -520,7 +537,7 @@ New in v0.2.0: `WriteTo`, `WriteFormattedTo`, `Bdo.Dir` and `StyleElement.Err`.
 
 ## Releases
 
-Release notes for every version are in the [changelog](CHANGELOG.md) and on the [GitHub releases page](https://github.com/lechefran/rephtml/releases). Versions follow [semantic versioning](https://semver.org/), and the Go module proxy serves each tagged version, so `go get github.com/lechefran/rephtml@v0.3.0` pins an exact release.
+Release notes for every version are in the [changelog](CHANGELOG.md) and on the [GitHub releases page](https://github.com/lechefran/rephtml/releases). Versions follow [semantic versioning](https://semver.org/), and the Go module proxy serves each tagged version, so `go get github.com/lechefran/rephtml@v0.5.0` pins an exact release.
 
 ## Supported Elements
 ### Document Structure

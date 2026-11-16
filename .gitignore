@@ -7,3 +7,8 @@
 # ignore local agent/skill instruction files anywhere in the tree
 skills.md
 agents.md
+
+# local agent guidance, kept out of the repo for now
+/CLAUDE.md
+/CODEBASE.md
+/.claude/
