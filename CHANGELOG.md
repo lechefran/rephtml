@@ -9,6 +9,19 @@ deprecated names are kept for at least one minor release before removal.
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-11-16
+
+A breaking release that settles three API inconsistencies:
+
+- `Text` replaces the text on every element; `AddText` appends.
+- Setters for whole-number attributes take an `int`.
+- The deprecated names are removed.
+
+Code that uses the changed setters or the removed names stops compiling, and
+the compiler names the fix. `Text` changes without a compile error, so search
+for elements that call it more than once. Each entry below has a before /
+after example and a migration note.
+
 ### Changed
 
 - ⚠️ **POTENTIALLY BREAKING:** `Text` now replaces the text on every element.
@@ -303,7 +316,8 @@ future minor release.
 
 Initial pre-release.
 
-[Unreleased]: https://github.com/lechefran/rephtml/compare/v0.4.0...HEAD
+[Unreleased]: https://github.com/lechefran/rephtml/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/lechefran/rephtml/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/lechefran/rephtml/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/lechefran/rephtml/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/lechefran/rephtml/compare/v0.1.0-beta...v0.2.0
