@@ -9,6 +9,25 @@ deprecated names keep working until v1.0.
 
 ## [Unreleased]
 
+### Changed
+
+- ⚠️ **POTENTIALLY BREAKING:** `Text` now replaces the text on every element.
+  Before, it appended on the elements that also hold child elements (`Title`,
+  `Label`, `Button`, `Option`, `Output`, `Textarea`, `Progress`, `Meter`,
+  `Legend`) and on `StyleElement`. On those elements the child elements and
+  CSS rules stay where they are: the new text takes the place of the first
+  earlier text, or goes after the children when there was none.
+
+  ```go
+  rephtml.NewButton().Text("Save").Text(" draft")
+  ```
+
+  Before: `<button>Save draft</button>`. After: `<button> draft</button>`.
+
+  *Who is affected:* code that calls `Text` more than once on one of these
+  elements, or after `AddText`, to build up its text. *Migration:* use
+  `AddText` for every call after the first.
+
 ## [0.4.0] - 2026-11-15
 
 Additive only: no API is removed or renamed, and no existing output changes.

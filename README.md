@@ -152,15 +152,18 @@ rephtml.NewDiv().Id("menu").AddClass("nav").AddStyle("color", "red").HTML()
 
 ### Text and AddText
 
-`AddText` always appends text. `Text` depends on the element, and v1.0 will make
-it consistent:
+On every element, `Text` sets the text, replacing any text set before, and
+`AddText` appends to it.
 
-| `Text` replaces the text | `Text` appends text, like `AddText` |
-|---|---|
-| inline text elements such as `Span`, `B` and `Anchor`; headings; `P`, `Pre`, `Blockquote`; `Script`; `Caption`; `Comment` | elements that also hold child elements: `Title`, `Label`, `Button`, `Option`, `Output`, `Textarea`, `Progress`, `Meter`, `Legend`; and `StyleElement` |
+Some elements also hold child elements, such as `Label`, `Button`, `Option` and
+`StyleElement`'s rules. On those, `Text` keeps the children where they are. The
+new text takes the place of the first earlier text, or goes after the children
+when there was none:
 
-Use `AddText` whenever you mean to append, so your code reads the same on every
-element and keeps working when `Text` changes.
+```go
+rephtml.NewLabel().Add(rephtml.NewInput().Type("checkbox")).Text("Agree").HTML()
+// <label><input type="checkbox">Agree</label>
+```
 
 ### Attribute value types
 

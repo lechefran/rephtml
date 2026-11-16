@@ -432,6 +432,30 @@ func (r rawText) HTML() string {
 	return htmlElement(r)
 }
 
+// replaceText sets an element's text among its children. t takes the place of
+// the first child of its own type, the other children of that type are
+// dropped, and every other child keeps its position. When there is no text
+// child yet, t is appended.
+func replaceText[T Element](contents []Element, t T) []Element {
+	out := contents[:0]
+	placed := false
+	for _, e := range contents {
+		if _, ok := e.(T); ok {
+			if !placed {
+				out = append(out, t)
+				placed = true
+			}
+			continue
+		}
+		out = append(out, e)
+	}
+	clear(contents[len(out):])
+	if !placed {
+		out = append(out, t)
+	}
+	return out
+}
+
 // escapedText stores content that should be escaped before rendering.
 type escapedText string
 

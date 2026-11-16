@@ -998,13 +998,16 @@ func (s *StyleElement) AddRule(rule CSSRule) *StyleElement {
 	return s
 }
 
-// Text adds CSS text content to the style element
+// Text sets the CSS text content of the style element, replacing any text set
+// before. Rules added with AddRule are kept: the text takes the place of the
+// first earlier text, or goes after the rules when there was none. Use AddText
+// to append.
 func (s *StyleElement) Text(text string) *StyleElement {
-	return s.AddText(text)
+	s.contents = replaceText(s.contents, rawText(escapeCSS(text)))
+	return s
 }
 
-// AddText appends CSS text content to the style element. It is the same as
-// Text, which also appends.
+// AddText appends CSS text content to the style element.
 func (s *StyleElement) AddText(text string) *StyleElement {
 	s.contents = appendElement(s.contents, rawText(escapeCSS(text)))
 	return s

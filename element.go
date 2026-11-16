@@ -208,9 +208,12 @@ type textContent[Self selfElement] struct {
 	contentNode[Self]
 }
 
-// Text appends escaped text content after any existing content.
+// Text sets the escaped text content, replacing any text set before. Child
+// elements are kept: the text takes the place of the first earlier text, or
+// goes after the children when there was none. Use AddText to append.
 func (n *textContent[Self]) Text(s string) Self {
-	return n.AddText(s)
+	n.contents = replaceText(n.contents, escapedText(s))
+	return n.self
 }
 
 // AddText appends escaped text content after any existing content.
