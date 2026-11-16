@@ -22,12 +22,12 @@ The package is designed around small composable structs:
 - `Render`, `RenderString`, `RenderFormatted`, and `RenderFormattedString` return generated HTML plus any document error.
 - `WriteTo` and `WriteFormattedTo` stream a document to any `io.Writer`, such as an `http.ResponseWriter`.
 
-The current release is **v0.2.0**. The module is still below v1, so a minor release may contain breaking changes. Deprecated names keep working until v1.0, and every release is described in the [changelog](CHANGELOG.md).
+The current release is **v0.3.0**. The module is still below v1, so a minor release may contain breaking changes. Deprecated names keep working until v1.0, and every release is described in the [changelog](CHANGELOG.md).
 
 ## Installation
 
 ```sh
-go get github.com/lechefran/rephtml@v0.2.0
+go get github.com/lechefran/rephtml@v0.3.0
 ```
 
 Use `@latest` to follow new releases. The module requires the Go version declared in [go.mod](go.mod).
@@ -477,6 +477,19 @@ so one bad entry does not discard the rest of the list.
 
 The examples above are self-contained and use the root package import path: `github.com/lechefran/rephtml`. Runnable examples also appear on [pkg.go.dev](https://pkg.go.dev/github.com/lechefran/rephtml#pkg-examples).
 
+## Upgrading from v0.2.0
+
+v0.3.0 does not remove or rename any API, so code that compiled against v0.2.0 still compiles. Four corrections change behaviour or output, and the [changelog](CHANGELOG.md) shows each one before and after:
+
+- **Element errors reach the document.** An invalid `Time.Datetime`, non-CSS content in a `StyleElement`, a `Head` or `Body` nested in other content, or a `Table` that mixes `Headers` / `Rows` with sections now makes `HtmlFile.Err()` and every output method return an error instead of rendering. Check the error and fix the reported element.
+- **`Head` and `Body` wrappers are read when the document renders.** Changes made to a wrapper after `AddToHead` / `AddToBody` now appear in the output. Finish building a wrapper before adding it if you relied on later changes being ignored.
+- **`Table` rows added with `AddTr` render before the `<tfoot>`.** Browsers already displayed the footer last; only the markup order changes.
+- **Formatted output keeps inline content on one line.** `RenderFormatted`, `RenderFormattedString`, `WriteFormattedTo` and `WriteToFile` no longer put each inline tag on its own line, which had added visible spaces. Compact `Render` output is unchanged.
+
+Update any test that compares exact output for these cases.
+
+New in v0.3.0: `Id`, `AddClass`, `AddClasses` and `Class` on every element; `AddText` on every text element; `Table.AddColgroup`; `Table.Err`. The package no longer links `regexp`, which makes programs that use it about 250 KB smaller.
+
 ## Upgrading from v0.1.0-beta
 
 v0.2.0 does not remove any API, so code that compiled against `v0.1.0-beta` still compiles. Some setters have new, consistently capitalised names, and the old names are deprecated. They still work and are kept until v1.0:
@@ -507,7 +520,7 @@ New in v0.2.0: `WriteTo`, `WriteFormattedTo`, `Bdo.Dir` and `StyleElement.Err`.
 
 ## Releases
 
-Release notes for every version are in the [changelog](CHANGELOG.md) and on the [GitHub releases page](https://github.com/lechefran/rephtml/releases). Versions follow [semantic versioning](https://semver.org/), and the Go module proxy serves each tagged version, so `go get github.com/lechefran/rephtml@v0.2.0` pins an exact release.
+Release notes for every version are in the [changelog](CHANGELOG.md) and on the [GitHub releases page](https://github.com/lechefran/rephtml/releases). Versions follow [semantic versioning](https://semver.org/), and the Go module proxy serves each tagged version, so `go get github.com/lechefran/rephtml@v0.3.0` pins an exact release.
 
 ## Supported Elements
 ### Document Structure
