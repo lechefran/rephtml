@@ -154,9 +154,9 @@ type Input struct {
 	max          string
 	step         string
 	pattern      string
-	size         string
-	maxlength    string
-	minlength    string
+	size         int
+	maxlength    optionalInt
+	minlength    optionalInt
 	multiple     bool
 	accept       string
 	checked      bool
@@ -183,9 +183,9 @@ func (i *Input) renderTo(buf *bytes.Buffer) {
 	tg.attr("max", i.max)
 	tg.attr("step", i.step)
 	tg.attr("pattern", i.pattern)
-	tg.attr("size", i.size)
-	tg.attr("maxlength", i.maxlength)
-	tg.attr("minlength", i.minlength)
+	tg.intAttr("size", i.size)
+	tg.optionalIntAttr("maxlength", i.maxlength)
+	tg.optionalIntAttr("minlength", i.minlength)
 	tg.attr("accept", i.accept)
 	tg.boolAttr("required", i.required)
 	tg.boolAttr("disabled", i.disabled)
@@ -288,35 +288,38 @@ func (i *Input) Pattern(pattern string) *Input {
 	return i
 }
 
-// Size sets the size attribute
-func (i *Input) Size(size string) *Input {
+// Size sets the size attribute, the visible width in characters. Values below
+// one are omitted.
+func (i *Input) Size(size int) *Input {
 	i.size = size
 	return i
 }
 
-// MaxLength sets the maxlength attribute.
-func (i *Input) MaxLength(maxlength string) *Input {
-	i.maxlength = maxlength
+// MaxLength sets the maxlength attribute. Zero is emitted; negative values
+// are omitted.
+func (i *Input) MaxLength(maxlength int) *Input {
+	i.maxlength = setInt(maxlength)
 	return i
 }
 
 // Maxlength sets the maxlength attribute.
 //
 // Deprecated: use MaxLength.
-func (i *Input) Maxlength(maxlength string) *Input {
+func (i *Input) Maxlength(maxlength int) *Input {
 	return i.MaxLength(maxlength)
 }
 
-// MinLength sets the minlength attribute.
-func (i *Input) MinLength(minlength string) *Input {
-	i.minlength = minlength
+// MinLength sets the minlength attribute. Zero is emitted; negative values
+// are omitted.
+func (i *Input) MinLength(minlength int) *Input {
+	i.minlength = setInt(minlength)
 	return i
 }
 
 // Minlength sets the minlength attribute.
 //
 // Deprecated: use MinLength.
-func (i *Input) Minlength(minlength string) *Input {
+func (i *Input) Minlength(minlength int) *Input {
 	return i.MinLength(minlength)
 }
 
@@ -540,7 +543,7 @@ type Select struct {
 	contentNode[*Select]
 	name         string
 	form         string
-	size         string
+	size         int
 	multiple     bool
 	required     bool
 	disabled     bool
@@ -560,7 +563,7 @@ func (s *Select) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "select")
 	tg.attr("name", s.name)
 	tg.attr("form", s.form)
-	tg.attr("size", s.size)
+	tg.intAttr("size", s.size)
 	tg.attr("autocomplete", s.autoComplete)
 	tg.boolAttr("multiple", s.multiple)
 	tg.boolAttr("required", s.required)
@@ -582,8 +585,9 @@ func (s *Select) Form(form string) *Select {
 	return s
 }
 
-// Size sets the size attribute
-func (s *Select) Size(size string) *Select {
+// Size sets the size attribute, the number of visible options. Values below
+// one are omitted.
+func (s *Select) Size(size int) *Select {
 	s.size = size
 	return s
 }
@@ -732,11 +736,11 @@ type Textarea struct {
 	textContent[*Textarea]
 	name         string
 	form         string
-	rows         string
-	cols         string
+	rows         int
+	cols         int
 	placeholder  string
-	maxLength    string
-	minLength    string
+	maxLength    optionalInt
+	minLength    optionalInt
 	wrap         string
 	required     bool
 	disabled     bool
@@ -758,11 +762,11 @@ func (t *Textarea) renderTo(buf *bytes.Buffer) {
 	tg := startTag(buf, "textarea")
 	tg.attr("name", t.name)
 	tg.attr("form", t.form)
-	tg.attr("rows", t.rows)
-	tg.attr("cols", t.cols)
+	tg.intAttr("rows", t.rows)
+	tg.intAttr("cols", t.cols)
 	tg.attr("placeholder", t.placeholder)
-	tg.attr("maxlength", t.maxLength)
-	tg.attr("minlength", t.minLength)
+	tg.optionalIntAttr("maxlength", t.maxLength)
+	tg.optionalIntAttr("minlength", t.minLength)
 	tg.attr("wrap", t.wrap)
 	tg.attr("autocomplete", t.autoComplete)
 	tg.attr("spellcheck", t.spellcheck)
@@ -786,14 +790,16 @@ func (t *Textarea) Form(form string) *Textarea {
 	return t
 }
 
-// Rows sets the rows attribute
-func (t *Textarea) Rows(rows string) *Textarea {
+// Rows sets the rows attribute, the visible number of lines. Values below one
+// are omitted.
+func (t *Textarea) Rows(rows int) *Textarea {
 	t.rows = rows
 	return t
 }
 
-// Cols sets the cols attribute
-func (t *Textarea) Cols(cols string) *Textarea {
+// Cols sets the cols attribute, the visible width in characters. Values below
+// one are omitted.
+func (t *Textarea) Cols(cols int) *Textarea {
 	t.cols = cols
 	return t
 }
@@ -804,15 +810,17 @@ func (t *Textarea) Placeholder(placeholder string) *Textarea {
 	return t
 }
 
-// MaxLength sets the maxlength attribute
-func (t *Textarea) MaxLength(maxLength string) *Textarea {
-	t.maxLength = maxLength
+// MaxLength sets the maxlength attribute. Zero is emitted; negative values
+// are omitted.
+func (t *Textarea) MaxLength(maxLength int) *Textarea {
+	t.maxLength = setInt(maxLength)
 	return t
 }
 
-// MinLength sets the minlength attribute
-func (t *Textarea) MinLength(minLength string) *Textarea {
-	t.minLength = minLength
+// MinLength sets the minlength attribute. Zero is emitted; negative values
+// are omitted.
+func (t *Textarea) MinLength(minLength int) *Textarea {
+	t.minLength = setInt(minLength)
 	return t
 }
 

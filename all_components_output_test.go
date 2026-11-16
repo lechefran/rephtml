@@ -263,7 +263,7 @@ func TestFormComponentOutputFormats(t *testing.T) {
 		{name: "Datalist", element: NewDatalist().Id("choices").Add(NewOption().Value("a").Text("A")), want: `<datalist id="choices"><option value="a">A</option></datalist>`},
 		{name: "Optgroup", element: NewOptgroup().Label("Group").Add(NewOption().Text("A")), want: `<optgroup label="Group"><option>A</option></optgroup>`},
 		{name: "Option", element: NewOption().Value("a").Label("A").Selected(true).Text("Alpha"), want: `<option value="a" label="A" selected>Alpha</option>`},
-		{name: "Textarea", element: NewTextarea().Name("notes").Rows("2").Cols("20").Text("Hello"), want: `<textarea name="notes" rows="2" cols="20">Hello</textarea>`},
+		{name: "Textarea", element: NewTextarea().Name("notes").Rows(2).Cols(20).Text("Hello"), want: `<textarea name="notes" rows="2" cols="20">Hello</textarea>`},
 		{name: "Progress", element: NewProgress().Value("50").Max("100").Text("50%"), want: `<progress value="50" max="100">50%</progress>`},
 		{name: "Meter", element: NewMeter().Value("5").Min("0").Max("10").Low("3").High("8").Optimum("6").Text("5"), want: `<meter value="5" min="0" max="10" low="3" high="8" optimum="6">5</meter>`},
 		{name: "Legend", element: NewLegend().Text("Legend"), want: `<legend>Legend</legend>`},

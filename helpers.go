@@ -354,6 +354,26 @@ func (t tag) intAttr(name string, value int) {
 	}
 }
 
+// optionalInt is a non-negative integer attribute for which zero is a
+// meaningful value, such as maxlength. The zero value is unset.
+type optionalInt struct {
+	value int
+	set   bool
+}
+
+// setInt returns an optionalInt set to v.
+func setInt(v int) optionalInt {
+	return optionalInt{value: v, set: true}
+}
+
+// optionalIntAttr writes an optionalInt attribute once it is set, omitting
+// negative values, which the attribute does not allow.
+func (t tag) optionalIntAttr(name string, o optionalInt) {
+	if o.set && o.value >= 0 {
+		writeIntAttr(t.buf, name, o.value)
+	}
+}
+
 // classAttr writes a class attribute, omitting it when there are no classes.
 func (t tag) classAttr(classes []string) {
 	if len(classes) != 0 {

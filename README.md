@@ -168,15 +168,14 @@ rephtml.NewLabel().Add(rephtml.NewInput().Type("checkbox")).Text("Agree").HTML()
 ### Attribute value types
 
 A setter takes an `int` when the attribute is always a whole number, such as
-`Td.Colspan`, `Col.Span`, `Ol.Start` and `Li.Value`. It takes a `string` when
+`Td.Colspan`, `Col.Span`, `Ol.Start`, `Li.Value`, `Input.Size`,
+`Input.MaxLength`, `Select.Size` and `Textarea.Rows`. It takes a `string` when
 the value can carry units, dates, decimals or keywords, such as `Img.Width`,
 `Input.Min` and `Meter.Value`. The string is written as given.
 
-A few older setters take a `string` for an attribute that is always a whole
-number: `Input.Size`, `Input.MaxLength`, `Input.MinLength`, `Select.Size`,
-`Textarea.Rows`, `Textarea.Cols`, `Textarea.MaxLength` and
-`Textarea.MinLength`. They keep that signature until v1.0, so pass the number
-as text, for example `Rows("4")`.
+An `int` attribute is omitted when the value is not allowed. Sizes, spans,
+`rows` and `cols` must be at least one. `maxlength` and `minlength` may be
+zero but not negative. `Ol.Start` and `Li.Value` accept any number.
 
 ## Concurrency
 

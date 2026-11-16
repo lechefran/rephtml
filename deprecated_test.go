@@ -36,14 +36,14 @@ func TestDeprecatedSettersMatchCanonicalNames(t *testing.T) {
 		},
 		{
 			"Input.MaxLength",
-			NewInput().MaxLength("10"),
-			NewInput().Maxlength("10"),
+			NewInput().MaxLength(10),
+			NewInput().Maxlength(10),
 			`<input maxlength="10">`,
 		},
 		{
 			"Input.MinLength",
-			NewInput().MinLength("2"),
-			NewInput().Minlength("2"),
+			NewInput().MinLength(2),
+			NewInput().Minlength(2),
 			`<input minlength="2">`,
 		},
 		{

@@ -28,6 +28,25 @@ deprecated names keep working until v1.0.
   elements, or after `AddText`, to build up its text. *Migration:* use
   `AddText` for every call after the first.
 
+- ⚠️ **POTENTIALLY BREAKING:** the setters for attributes that are always whole
+  numbers take an `int` instead of a `string`: `Input.Size`, `Input.MaxLength`,
+  `Input.MinLength`, `Select.Size`, `Textarea.Rows`, `Textarea.Cols`,
+  `Textarea.MaxLength` and `Textarea.MinLength`. Values the attribute does not
+  allow are omitted: `size`, `rows` and `cols` below one, and negative
+  `maxlength` / `minlength`. Zero lengths are emitted.
+
+  ```go
+  rephtml.NewTextarea().Rows("4")  // before
+  rephtml.NewTextarea().Rows(4)    // after
+  ```
+
+  The output for valid numbers is unchanged. Before, any text was written as
+  given, so `Rows("abc")` produced `rows="abc"`; that no longer compiles.
+
+  *Who is affected:* every caller of these setters, since the code no longer
+  compiles. *Migration:* pass the number instead of its text, using
+  `strconv.Atoi` where the value starts out as a string.
+
 ## [0.4.0] - 2026-11-15
 
 Additive only: no API is removed or renamed, and no existing output changes.
