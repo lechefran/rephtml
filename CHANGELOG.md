@@ -9,6 +9,15 @@ deprecated names are kept for at least one minor release before removal.
 
 ## [Unreleased]
 
+### Documentation
+
+- Every exported identifier is documented in a consistent form for pkg.go.dev. No code, output or signature changes.
+- Setters say that they return the element, and the package doc has a new "Chaining" section that explains the `Self` return type shown on shared setters such as `AddClass` and `Add`.
+- Setters that write a URL attribute say that an unsafe URL is replaced with `BlockedURL`. `Script` and `StyleElement` text setters say that the text is written raw.
+- Interface methods and the fields of the CSS rule types are documented. `Table` explains its string API and structured API.
+- Doc comments use `[Name]` links, so related types and methods are clickable.
+- Added `godoc_test.go`, which fails when an exported identifier has no doc comment.
+
 ## [0.5.0] - 2026-11-16
 
 A breaking release that settles three API inconsistencies:

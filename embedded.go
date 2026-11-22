@@ -12,32 +12,34 @@ type Embed struct {
 	height    string
 }
 
-// NewEmbed creates a new Embed component.
+// NewEmbed returns a new, empty <embed> element.
 func NewEmbed() *Embed {
 	v := &Embed{}
 	v.init(v)
 	return v
 }
 
-// Src sets the src attribute.
+// Src sets the src attribute and returns the element.
+//
+// An unsafe URL is replaced with [BlockedURL] when rendered; see [IsSafeURL].
 func (e *Embed) Src(src string) *Embed {
 	e.src = src
 	return e
 }
 
-// Type sets the type attribute.
+// Type sets the type attribute and returns the element.
 func (e *Embed) Type(embedType string) *Embed {
 	e.embedType = embedType
 	return e
 }
 
-// Width sets the width attribute.
+// Width sets the width attribute and returns the element.
 func (e *Embed) Width(width string) *Embed {
 	e.width = width
 	return e
 }
 
-// Height sets the height attribute.
+// Height sets the height attribute and returns the element.
 func (e *Embed) Height(height string) *Embed {
 	e.height = height
 	return e
@@ -70,62 +72,64 @@ type Iframe struct {
 	srcdoc          string
 }
 
-// NewIframe creates a new Iframe component.
+// NewIframe returns a new, empty <iframe> element.
 func NewIframe() *Iframe {
 	v := &Iframe{}
 	v.init(v)
 	return v
 }
 
-// Src sets the src attribute.
+// Src sets the src attribute and returns the element.
+//
+// An unsafe URL is replaced with [BlockedURL] when rendered; see [IsSafeURL].
 func (i *Iframe) Src(src string) *Iframe {
 	i.src = src
 	return i
 }
 
-// Width sets the width attribute.
+// Width sets the width attribute and returns the element.
 func (i *Iframe) Width(width string) *Iframe {
 	i.width = width
 	return i
 }
 
-// Height sets the height attribute.
+// Height sets the height attribute and returns the element.
 func (i *Iframe) Height(height string) *Iframe {
 	i.height = height
 	return i
 }
 
-// Name sets the name attribute.
+// Name sets the name attribute and returns the element.
 func (i *Iframe) Name(name string) *Iframe {
 	i.name = name
 	return i
 }
 
-// Sandbox sets the sandbox attribute.
+// Sandbox sets the sandbox attribute and returns the element.
 func (i *Iframe) Sandbox(sandbox string) *Iframe {
 	i.sandbox = sandbox
 	return i
 }
 
-// Allow sets the allow attribute.
+// Allow sets the allow attribute and returns the element.
 func (i *Iframe) Allow(allow string) *Iframe {
 	i.allow = allow
 	return i
 }
 
-// AllowFullscreen sets the allowfullscreen attribute.
+// AllowFullscreen sets the allowfullscreen attribute and returns the element.
 func (i *Iframe) AllowFullscreen(allowfullscreen bool) *Iframe {
 	i.allowfullscreen = allowfullscreen
 	return i
 }
 
-// Loading sets the loading attribute.
+// Loading sets the loading attribute and returns the element.
 func (i *Iframe) Loading(loading string) *Iframe {
 	i.loading = loading
 	return i
 }
 
-// ReferrerPolicy sets the referrerpolicy attribute.
+// ReferrerPolicy sets the referrerpolicy attribute and returns the element.
 func (i *Iframe) ReferrerPolicy(referrerpolicy string) *Iframe {
 	i.referrerpolicy = referrerpolicy
 	return i
@@ -171,50 +175,54 @@ type Object struct {
 	form    string
 }
 
-// NewObject creates a new Object component.
+// NewObject returns a new, empty <object> element.
 func NewObject() *Object {
 	v := &Object{}
 	v.init(v)
 	return v
 }
 
-// Data sets the data attribute.
+// Data sets the data attribute and returns the element.
+//
+// An unsafe URL is replaced with [BlockedURL] when rendered; see [IsSafeURL].
 func (o *Object) Data(data string) *Object {
 	o.data = data
 	return o
 }
 
-// Type sets the type attribute.
+// Type sets the type attribute and returns the element.
 func (o *Object) Type(objType string) *Object {
 	o.objType = objType
 	return o
 }
 
-// Width sets the width attribute.
+// Width sets the width attribute and returns the element.
 func (o *Object) Width(width string) *Object {
 	o.width = width
 	return o
 }
 
-// Height sets the height attribute.
+// Height sets the height attribute and returns the element.
 func (o *Object) Height(height string) *Object {
 	o.height = height
 	return o
 }
 
-// Name sets the name attribute.
+// Name sets the name attribute and returns the element.
 func (o *Object) Name(name string) *Object {
 	o.name = name
 	return o
 }
 
-// Usemap sets the usemap attribute.
+// Usemap sets the usemap attribute and returns the element.
+//
+// An unsafe URL is replaced with [BlockedURL] when rendered; see [IsSafeURL].
 func (o *Object) Usemap(usemap string) *Object {
 	o.usemap = usemap
 	return o
 }
 
-// Form sets the form attribute.
+// Form sets the form attribute and returns the element.
 func (o *Object) Form(form string) *Object {
 	o.form = form
 	return o
@@ -240,7 +248,7 @@ type Picture struct {
 	contentNode[*Picture]
 }
 
-// NewPicture creates a new Picture component.
+// NewPicture returns a new, empty <picture> element.
 func NewPicture() *Picture {
 	v := &Picture{}
 	v.init(v)
@@ -262,20 +270,22 @@ type Portal struct {
 	referrerpolicy string
 }
 
-// NewPortal creates a new Portal component.
+// NewPortal returns a new, empty <portal> element.
 func NewPortal() *Portal {
 	v := &Portal{}
 	v.init(v)
 	return v
 }
 
-// Src sets the src attribute.
+// Src sets the src attribute and returns the element.
+//
+// An unsafe URL is replaced with [BlockedURL] when rendered; see [IsSafeURL].
 func (p *Portal) Src(src string) *Portal {
 	p.src = src
 	return p
 }
 
-// ReferrerPolicy sets the referrerpolicy attribute.
+// ReferrerPolicy sets the referrerpolicy attribute and returns the element.
 func (p *Portal) ReferrerPolicy(referrerpolicy string) *Portal {
 	p.referrerpolicy = referrerpolicy
 	return p
@@ -301,38 +311,43 @@ type Source struct {
 	srcType string
 }
 
-// NewSource creates a new Source component.
+// NewSource returns a new, empty <source> element.
 func NewSource() *Source {
 	v := &Source{}
 	v.init(v)
 	return v
 }
 
-// Src sets the src attribute.
+// Src sets the src attribute and returns the element.
+//
+// An unsafe URL is replaced with [BlockedURL] when rendered; see [IsSafeURL].
 func (s *Source) Src(src string) *Source {
 	s.src = src
 	return s
 }
 
-// Srcset sets the srcset attribute.
+// Srcset sets the srcset attribute and returns the element.
+//
+// Each candidate URL is filtered like [IsSafeURL] and an unsafe one is replaced
+// with [BlockedURL] when rendered.
 func (s *Source) Srcset(srcset string) *Source {
 	s.srcset = srcset
 	return s
 }
 
-// Media sets the media attribute.
+// Media sets the media attribute and returns the element.
 func (s *Source) Media(media string) *Source {
 	s.media = media
 	return s
 }
 
-// Sizes sets the sizes attribute.
+// Sizes sets the sizes attribute and returns the element.
 func (s *Source) Sizes(sizes string) *Source {
 	s.sizes = sizes
 	return s
 }
 
-// Type sets the type attribute.
+// Type sets the type attribute and returns the element.
 func (s *Source) Type(srcType string) *Source {
 	s.srcType = srcType
 	return s

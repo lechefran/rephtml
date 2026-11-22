@@ -6,6 +6,15 @@ import (
 )
 
 // Table represents the HTML <table> element, tabular data in rows and columns.
+//
+// A table can be built in two ways. The simple way is the string API:
+// [Table.Headers] or [Table.AddHeader] for the header row and [Table.AddRows]
+// or [Table.AddRow] for the data rows, whose cell text is HTML-escaped. The
+// structured way adds [Thead], [Tbody], [Tfoot] and [Tr] elements, which allow
+// spans, scopes and attributes on each cell.
+//
+// Do not mix the two. When any structured rows are present the string cells
+// are not rendered, and [Table.Err] reports the conflict.
 type Table struct {
 	bodyElement
 	node[*Table]
@@ -19,45 +28,48 @@ type Table struct {
 	trs       []*Tr
 }
 
-// NewTable creates a new Table component.
+// NewTable returns a new, empty <table> element.
 func NewTable() *Table {
 	v := &Table{}
 	v.init(v)
 	return v
 }
 
-// AddHeader appends one header cell to the table's first row.
+// AddHeader appends one header cell to the table's first row and returns the
+// table. Part of the string API; see [Table].
 func (t *Table) AddHeader(s string) *Table {
 	t.headers = append(t.headers, s)
 	return t
 }
 
-// AddHeaders appends several header cells to the table's first row.
+// AddHeaders appends several header cells to the table's first row and returns
+// the table.
 func (t *Table) AddHeaders(s []string) *Table {
 	t.headers = append(t.headers, s...)
 	return t
 }
 
-// Headers sets the header cells of the table's first row, copying the caller's
-// slice.
+// Headers sets the header cells of the table's first row and returns the
+// table. The slice is copied, so later changes to it do not affect the table.
 func (t *Table) Headers(s []string) *Table {
 	t.headers = cloneStrings(s)
 	return t
 }
 
-// AddRow appends one row of cells, copying the caller's slice.
+// AddRow appends one row of cells and returns the table. The slice is copied.
 func (t *Table) AddRow(s []string) *Table {
 	t.rows = append(t.rows, cloneStrings(s))
 	return t
 }
 
-// AddRows appends several rows of cells, copying the caller's slices.
+// AddRows appends several rows of cells and returns the table. The slices are
+// copied.
 func (t *Table) AddRows(s [][]string) *Table {
 	t.rows = append(t.rows, cloneRows(s)...)
 	return t
 }
 
-// Rows replaces the rows of cells, copying the caller's slices.
+// Rows replaces the rows of cells and returns the table. The slices are copied.
 func (t *Table) Rows(s [][]string) *Table {
 	t.rows = cloneRows(s)
 	return t
@@ -200,7 +212,7 @@ type Thead struct {
 	contentNode[*Thead]
 }
 
-// NewThead creates a new Thead component.
+// NewThead returns a new, empty <thead> element.
 func NewThead() *Thead {
 	v := &Thead{}
 	v.init(v)
@@ -226,7 +238,7 @@ type Tbody struct {
 	contentNode[*Tbody]
 }
 
-// NewTbody creates a new Tbody component.
+// NewTbody returns a new, empty <tbody> element.
 func NewTbody() *Tbody {
 	v := &Tbody{}
 	v.init(v)
@@ -252,7 +264,7 @@ type Tfoot struct {
 	contentNode[*Tfoot]
 }
 
-// NewTfoot creates a new Tfoot component.
+// NewTfoot returns a new, empty <tfoot> element.
 func NewTfoot() *Tfoot {
 	v := &Tfoot{}
 	v.init(v)
@@ -279,7 +291,7 @@ type Caption struct {
 	text string
 }
 
-// NewCaption creates a new Caption component.
+// NewCaption returns a new, empty <caption> element.
 func NewCaption() *Caption {
 	v := &Caption{}
 	v.init(v)
@@ -312,14 +324,14 @@ type Col struct {
 	span int
 }
 
-// NewCol creates a new Col component.
+// NewCol returns a new, empty <col> element.
 func NewCol() *Col {
 	v := &Col{}
 	v.init(v)
 	return v
 }
 
-// Span sets the span attribute.
+// Span sets the span attribute and returns the element.
 func (col *Col) Span(s int) *Col {
 	col.span = s
 	return col
@@ -340,14 +352,14 @@ type Colgroup struct {
 	span int
 }
 
-// NewColgroup creates a new Colgroup component.
+// NewColgroup returns a new, empty <colgroup> element.
 func NewColgroup() *Colgroup {
 	v := &Colgroup{}
 	v.init(v)
 	return v
 }
 
-// Span sets the span attribute.
+// Span sets the span attribute and returns the element.
 func (cg *Colgroup) Span(s int) *Colgroup {
 	cg.span = s
 	return cg
@@ -367,7 +379,7 @@ type Tr struct {
 	contentNode[*Tr]
 }
 
-// NewTr creates a new Tr component.
+// NewTr returns a new, empty <tr> element.
 func NewTr() *Tr {
 	v := &Tr{}
 	v.init(v)
@@ -401,20 +413,20 @@ type Td struct {
 	rowspan int
 }
 
-// NewTd creates a new Td component.
+// NewTd returns a new, empty <td> element.
 func NewTd() *Td {
 	v := &Td{}
 	v.init(v)
 	return v
 }
 
-// Colspan sets the colspan attribute.
+// Colspan sets the colspan attribute and returns the element.
 func (td *Td) Colspan(c int) *Td {
 	td.colspan = c
 	return td
 }
 
-// Rowspan sets the rowspan attribute.
+// Rowspan sets the rowspan attribute and returns the element.
 func (td *Td) Rowspan(r int) *Td {
 	td.rowspan = r
 	return td
@@ -438,26 +450,26 @@ type Th struct {
 	scope   string
 }
 
-// NewTh creates a new Th component.
+// NewTh returns a new, empty <th> element.
 func NewTh() *Th {
 	v := &Th{}
 	v.init(v)
 	return v
 }
 
-// Colspan sets the colspan attribute.
+// Colspan sets the colspan attribute and returns the element.
 func (th *Th) Colspan(c int) *Th {
 	th.colspan = c
 	return th
 }
 
-// Rowspan sets the rowspan attribute.
+// Rowspan sets the rowspan attribute and returns the element.
 func (th *Th) Rowspan(r int) *Th {
 	th.rowspan = r
 	return th
 }
 
-// Scope sets the scope attribute.
+// Scope sets the scope attribute and returns the element.
 func (th *Th) Scope(s string) *Th {
 	th.scope = s
 	return th

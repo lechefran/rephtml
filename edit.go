@@ -2,7 +2,7 @@ package rephtml
 
 import "bytes"
 
-// Del represents the HTML del element for marking deleted text
+// Del represents the HTML <del> element, used for marking deleted text.
 type Del struct {
 	bodyElement
 	contentNode[*Del]
@@ -10,7 +10,7 @@ type Del struct {
 	datetime string
 }
 
-// NewDel creates a new Del element
+// NewDel returns a new, empty <del> element.
 func NewDel() *Del {
 	v := &Del{}
 	v.init(v)
@@ -26,19 +26,21 @@ func (d *Del) renderTo(buf *bytes.Buffer) {
 	tg.children(d.contents)
 }
 
-// Cite sets the cite attribute
+// Cite sets the cite attribute and returns the element.
+//
+// An unsafe URL is replaced with [BlockedURL] when rendered; see [IsSafeURL].
 func (d *Del) Cite(url string) *Del {
 	d.cite = url
 	return d
 }
 
-// Datetime sets the datetime attribute
+// Datetime sets the datetime attribute and returns the element.
 func (d *Del) Datetime(datetime string) *Del {
 	d.datetime = datetime
 	return d
 }
 
-// Ins represents the HTML ins element for marking inserted text
+// Ins represents the HTML <ins> element, used for marking inserted text.
 type Ins struct {
 	bodyElement
 	contentNode[*Ins]
@@ -46,7 +48,7 @@ type Ins struct {
 	datetime string
 }
 
-// NewIns creates a new Ins element
+// NewIns returns a new, empty <ins> element.
 func NewIns() *Ins {
 	v := &Ins{}
 	v.init(v)
@@ -62,13 +64,15 @@ func (i *Ins) renderTo(buf *bytes.Buffer) {
 	tg.children(i.contents)
 }
 
-// Cite sets the cite attribute
+// Cite sets the cite attribute and returns the element.
+//
+// An unsafe URL is replaced with [BlockedURL] when rendered; see [IsSafeURL].
 func (i *Ins) Cite(url string) *Ins {
 	i.cite = url
 	return i
 }
 
-// Datetime sets the datetime attribute
+// Datetime sets the datetime attribute and returns the element.
 func (i *Ins) Datetime(datetime string) *Ins {
 	i.datetime = datetime
 	return i

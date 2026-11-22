@@ -8,7 +8,7 @@ type Div struct {
 	contentNode[*Div]
 }
 
-// NewDiv creates a new Div component.
+// NewDiv returns a new, empty <div> element.
 func NewDiv() *Div {
 	v := &Div{}
 	v.init(v)

@@ -17,7 +17,7 @@ const tab = "\t"
 // HtmlFile streams its output through io.WriterTo.
 var _ io.WriterTo = (*HtmlFile)(nil)
 
-// HtmlFile represents the HTML element for the document root
+// HtmlFile represents the HTML <html> element, the root of a document.
 type HtmlFile struct {
 	style       StyleMap
 	class       []string
@@ -36,7 +36,7 @@ type HtmlFile struct {
 	err         error
 }
 
-// NewHtmlFile creates a new HtmlFile element
+// NewHtmlFile returns a new, empty <html> element.
 func NewHtmlFile() *HtmlFile {
 	return &HtmlFile{style: make(StyleMap)}
 }
@@ -156,37 +156,39 @@ func (h *HtmlFile) AddToBody(e Element) *HtmlFile {
 	return h
 }
 
-// Lang sets the lang attribute
+// Lang sets the lang attribute and returns the element.
 func (h *HtmlFile) Lang(lang string) *HtmlFile {
 	h.lang = lang
 	return h
 }
 
-// Dir sets the dir attribute
+// Dir sets the dir attribute and returns the element.
 func (h *HtmlFile) Dir(dir string) *HtmlFile {
 	h.dir = dir
 	return h
 }
 
-// XmlLang sets the xml:lang attribute
+// XmlLang sets the xml:lang attribute and returns the element.
 func (h *HtmlFile) XmlLang(xmlLang string) *HtmlFile {
 	h.xmlLang = xmlLang
 	return h
 }
 
-// Xmlns sets the xmlns attribute
+// Xmlns sets the xmlns attribute and returns the element.
 func (h *HtmlFile) Xmlns(xmlns string) *HtmlFile {
 	h.xmlns = xmlns
 	return h
 }
 
-// Manifest sets the manifest attribute
+// Manifest sets the manifest attribute and returns the element.
+//
+// An unsafe URL is replaced with [BlockedURL] when rendered; see [IsSafeURL].
 func (h *HtmlFile) Manifest(manifest string) *HtmlFile {
 	h.manifest = manifest
 	return h
 }
 
-// ContextMenu sets the contextmenu attribute
+// ContextMenu sets the contextmenu attribute and returns the element.
 func (h *HtmlFile) ContextMenu(contextMenu string) *HtmlFile {
 	h.contextMenu = contextMenu
 	return h
@@ -234,7 +236,9 @@ func (h *HtmlFile) Style(m StyleMap) *HtmlFile {
 	return h
 }
 
-// WriteToFile writes the formatted HTML document to path.
+// WriteToFile writes the formatted HTML document to path, as
+// [HtmlFile.RenderFormatted] would return it. It returns the document error
+// from [HtmlFile.Err] without touching path.
 //
 // The document is written to a temporary file in the same directory and then
 // renamed over path, so a failed write never leaves a truncated file behind and
@@ -303,7 +307,7 @@ func removeIfExists(path string) error {
 	return nil
 }
 
-// WriteTo writes the compact HTML document to w and implements io.WriterTo.
+// WriteTo writes the compact HTML document to w and implements [io.WriterTo].
 //
 // It renders straight into a pooled buffer and copies that to w, so unlike
 // Render it makes no intermediate copy of the document. A document error is
@@ -322,8 +326,9 @@ func (h *HtmlFile) WriteTo(w io.Writer) (int64, error) {
 
 // WriteFormattedTo writes the human-readable formatted HTML document to w.
 //
-// Like WriteTo it returns a document error before writing anything. Formatting
-// adds whitespace between tags, so use WriteTo when exact output matters.
+// Like [HtmlFile.WriteTo] it returns a document error before writing anything.
+// Formatting adds whitespace between tags, so use WriteTo when exact output
+// matters.
 func (h *HtmlFile) WriteFormattedTo(w io.Writer) (int64, error) {
 	html, err := h.RenderFormatted()
 	if err != nil {
@@ -336,7 +341,8 @@ func (h *HtmlFile) WriteFormattedTo(w io.Writer) (int64, error) {
 	return int64(n), err
 }
 
-// Render returns the compact HTML document bytes.
+// Render returns the compact HTML document bytes, or the error reported by
+// [HtmlFile.Err] instead of rendering.
 func (h *HtmlFile) Render() ([]byte, error) {
 	html, err := h.renderDocument()
 	if err != nil {
@@ -353,7 +359,9 @@ func (h *HtmlFile) renderDocument() (renderedDocumentHTML, error) {
 	return renderedDocumentHTML(renderElement(h)), nil
 }
 
-// RenderString returns the compact HTML document as a string.
+// RenderString returns the compact HTML document as a string, or the error
+// reported by [HtmlFile.Err] instead of rendering. It is the string form of
+// [HtmlFile.Render].
 func (h *HtmlFile) RenderString() (string, error) {
 	html, err := h.Render()
 	if err != nil {
@@ -362,7 +370,9 @@ func (h *HtmlFile) RenderString() (string, error) {
 	return string(html), nil
 }
 
-// RenderFormatted returns human-readable formatted HTML document bytes.
+// RenderFormatted returns human-readable formatted HTML document bytes, or the
+// error reported by [HtmlFile.Err] instead of rendering. Formatting adds
+// whitespace between tags; use [HtmlFile.Render] when exact output matters.
 func (h *HtmlFile) RenderFormatted() ([]byte, error) {
 	html, err := h.renderDocument()
 	if err != nil {
@@ -371,7 +381,9 @@ func (h *HtmlFile) RenderFormatted() ([]byte, error) {
 	return formatRenderedDocumentHTML(html), nil
 }
 
-// RenderFormattedString returns formatted HTML as a string.
+// RenderFormattedString returns formatted HTML as a string, or the error
+// reported by [HtmlFile.Err] instead of rendering. It is the string form of
+// [HtmlFile.RenderFormatted].
 func (h *HtmlFile) RenderFormattedString() (string, error) {
 	html, err := h.RenderFormatted()
 	if err != nil {
@@ -549,13 +561,13 @@ func elementName(e Element) string {
 	return t.Name()
 }
 
-// Head represents the HTML head element for document metadata
+// Head represents the HTML <head> element, used for document metadata.
 type Head struct {
 	contentNode[*Head]
 	err error
 }
 
-// NewHead creates a new Head element
+// NewHead returns a new, empty <head> element.
 func NewHead() *Head {
 	v := &Head{}
 	v.init(v)
@@ -600,7 +612,7 @@ func (h *Head) renderTo(buf *bytes.Buffer) {
 	tg.children(h.contents)
 }
 
-// Body represents the HTML body element for document content
+// Body represents the HTML <body> element, used for document content.
 type Body struct {
 	bodyElement
 	contentNode[*Body]
@@ -609,7 +621,7 @@ type Body struct {
 	err      error
 }
 
-// NewBody creates a new Body element
+// NewBody returns a new, empty <body> element.
 func NewBody() *Body {
 	v := &Body{}
 	v.init(v)
@@ -653,25 +665,25 @@ func (b *Body) renderTo(buf *bytes.Buffer) {
 	tg.children(b.contents)
 }
 
-// OnLoad sets the onload attribute
+// OnLoad sets the onload attribute and returns the element.
 func (b *Body) OnLoad(onLoad string) *Body {
 	b.onLoad = onLoad
 	return b
 }
 
-// OnUnload sets the onunload attribute
+// OnUnload sets the onunload attribute and returns the element.
 func (b *Body) OnUnload(onUnload string) *Body {
 	b.onUnload = onUnload
 	return b
 }
 
-// Title represents the HTML title element for document title
+// Title represents the HTML <title> element, used for document title.
 type Title struct {
 	headElement
 	textContent[*Title]
 }
 
-// NewTitle creates a new Title element
+// NewTitle returns a new, empty <title> element.
 func NewTitle() *Title {
 	v := &Title{}
 	v.init(v)
@@ -685,7 +697,7 @@ func (t *Title) renderTo(buf *bytes.Buffer) {
 	tg.children(t.contents)
 }
 
-// Base represents the HTML base element for document base URL
+// Base represents the HTML <base> element, used for document base URL.
 type Base struct {
 	headElement
 	node[*Base]
@@ -693,7 +705,7 @@ type Base struct {
 	target string
 }
 
-// NewBase creates a new Base element
+// NewBase returns a new, empty <base> element.
 func NewBase() *Base {
 	v := &Base{}
 	v.init(v)
@@ -709,19 +721,21 @@ func (b *Base) renderTo(buf *bytes.Buffer) {
 	tg.void()
 }
 
-// Href sets the href attribute
+// Href sets the href attribute and returns the element.
+//
+// An unsafe URL is replaced with [BlockedURL] when rendered; see [IsSafeURL].
 func (b *Base) Href(href string) *Base {
 	b.href = href
 	return b
 }
 
-// Target sets the target attribute
+// Target sets the target attribute and returns the element.
 func (b *Base) Target(target string) *Base {
 	b.target = target
 	return b
 }
 
-// Link represents the HTML link element for external resources
+// Link represents the HTML <link> element, used for external resources.
 type Link struct {
 	headElement
 	node[*Link]
@@ -736,7 +750,7 @@ type Link struct {
 	hreflang       string
 }
 
-// NewLink creates a new Link element
+// NewLink returns a new, empty <link> element.
 func NewLink() *Link {
 	v := &Link{}
 	v.init(v)
@@ -759,61 +773,63 @@ func (l *Link) renderTo(buf *bytes.Buffer) {
 	tg.void()
 }
 
-// Rel sets the rel attribute
+// Rel sets the rel attribute and returns the element.
 func (l *Link) Rel(rel string) *Link {
 	l.rel = rel
 	return l
 }
 
-// Href sets the href attribute
+// Href sets the href attribute and returns the element.
+//
+// An unsafe URL is replaced with [BlockedURL] when rendered; see [IsSafeURL].
 func (l *Link) Href(href string) *Link {
 	l.href = href
 	return l
 }
 
-// Type sets the type attribute
+// Type sets the type attribute and returns the element.
 func (l *Link) Type(linkType string) *Link {
 	l.linkType = linkType
 	return l
 }
 
-// Media sets the media attribute
+// Media sets the media attribute and returns the element.
 func (l *Link) Media(media string) *Link {
 	l.media = media
 	return l
 }
 
-// Sizes sets the sizes attribute
+// Sizes sets the sizes attribute and returns the element.
 func (l *Link) Sizes(sizes string) *Link {
 	l.sizes = sizes
 	return l
 }
 
-// CrossOrigin Cross Origin sets the crossOrigin attribute
+// CrossOrigin sets the crossorigin attribute and returns the element.
 func (l *Link) CrossOrigin(crossOrigin string) *Link {
 	l.crossOrigin = crossOrigin
 	return l
 }
 
-// Integrity sets the integrity attribute
+// Integrity sets the integrity attribute and returns the element.
 func (l *Link) Integrity(integrity string) *Link {
 	l.integrity = integrity
 	return l
 }
 
-// ReferrerPolicy Referrer Policy sets the referrerPolicy attribute
+// ReferrerPolicy sets the referrerpolicy attribute and returns the element.
 func (l *Link) ReferrerPolicy(referrerPolicy string) *Link {
 	l.referrerPolicy = referrerPolicy
 	return l
 }
 
-// Hreflang sets the hreflang attribute
+// Hreflang sets the hreflang attribute and returns the element.
 func (l *Link) Hreflang(hreflang string) *Link {
 	l.hreflang = hreflang
 	return l
 }
 
-// Meta represents the HTML meta element for metadata
+// Meta represents the HTML <meta> element, used for metadata.
 type Meta struct {
 	headElement
 	node[*Meta]
@@ -825,7 +841,7 @@ type Meta struct {
 	scheme    string
 }
 
-// NewMeta creates a new Meta element
+// NewMeta returns a new, empty <meta> element.
 func NewMeta() *Meta {
 	v := &Meta{}
 	v.init(v)
@@ -892,43 +908,43 @@ func filterRefreshContent(content string) string {
 	return content[:i] + BlockedURL
 }
 
-// Name sets the name attribute
+// Name sets the name attribute and returns the element.
 func (m *Meta) Name(name string) *Meta {
 	m.name = name
 	return m
 }
 
-// Content sets the content attribute
+// Content sets the content attribute and returns the element.
 func (m *Meta) Content(content string) *Meta {
 	m.content = content
 	return m
 }
 
-// Charset sets the charset attribute
+// Charset sets the charset attribute and returns the element.
 func (m *Meta) Charset(charset string) *Meta {
 	m.charset = charset
 	return m
 }
 
-// Property sets the property attribute
+// Property sets the property attribute and returns the element.
 func (m *Meta) Property(property string) *Meta {
 	m.property = property
 	return m
 }
 
-// HttpEquiv sets the http-equiv attribute
+// HttpEquiv sets the http-equiv attribute and returns the element.
 func (m *Meta) HttpEquiv(httpequiv string) *Meta {
 	m.httpEquiv = httpequiv
 	return m
 }
 
-// Scheme sets the scheme attribute
+// Scheme sets the scheme attribute and returns the element.
 func (m *Meta) Scheme(scheme string) *Meta {
 	m.scheme = scheme
 	return m
 }
 
-// StyleElement represents the HTML style element for CSS styles
+// StyleElement represents the HTML <style> element, used for CSS styles.
 type StyleElement struct {
 	headElement
 	bodyElement
@@ -938,7 +954,7 @@ type StyleElement struct {
 	err       error
 }
 
-// NewStyleElement creates a new StyleElement element
+// NewStyleElement returns a new, empty <style> element.
 func NewStyleElement() *StyleElement {
 	v := &StyleElement{}
 	v.init(v)
@@ -992,34 +1008,42 @@ func (s *StyleElement) collectErrors(errs []error) []error {
 	return appendError(errs, s.err)
 }
 
-// AddRule appends typed CSS rule content to the style element.
+// AddRule appends typed CSS rule content to the style element and returns it.
+// Use it instead of raw text for rules the package models, such as
+// [MediaRule] and [KeyframesRule].
 func (s *StyleElement) AddRule(rule CSSRule) *StyleElement {
 	s.contents = appendElement(s.contents, rule)
 	return s
 }
 
-// Text sets the CSS text content of the style element, replacing any text set
-// before. Rules added with AddRule are kept: the text takes the place of the
-// first earlier text, or goes after the rules when there was none. Use AddText
-// to append.
+// Text sets the CSS text content of the style element and returns it,
+// replacing any text set before. Rules added with [StyleElement.AddRule] are
+// kept: the text takes the place of the first earlier text, or goes after the
+// rules when there was none. Use [StyleElement.AddText] to append.
+//
+// The text is written as raw CSS, not HTML-escaped, with only the sequence
+// that would end the element rewritten. Do not pass untrusted input.
 func (s *StyleElement) Text(text string) *StyleElement {
 	s.contents = replaceText(s.contents, rawText(escapeCSS(text)))
 	return s
 }
 
-// AddText appends CSS text content to the style element.
+// AddText appends CSS text content to the style element and returns it.
+//
+// Like [StyleElement.Text], the text is written as raw CSS, so do not pass
+// untrusted input.
 func (s *StyleElement) AddText(text string) *StyleElement {
 	s.contents = appendElement(s.contents, rawText(escapeCSS(text)))
 	return s
 }
 
-// Type sets the type attribute
+// Type sets the type attribute and returns the element.
 func (s *StyleElement) Type(styleType string) *StyleElement {
 	s.styleType = styleType
 	return s
 }
 
-// Media sets the media attribute
+// Media sets the media attribute and returns the element.
 func (s *StyleElement) Media(media string) *StyleElement {
 	s.media = media
 	return s

@@ -22,8 +22,10 @@ func NewStyleMap() StyleMap {
 
 // Style renders a complete style element for one selector rule.
 type Style struct {
+	// Props holds the CSS declarations written inside the rule's braces.
 	Props StyleMap
-	Tags  []string
+	// Tags holds the selectors the rule applies to, joined with commas.
+	Tags []string
 }
 
 // NewStyle creates a style element for one CSS selector rule.
@@ -87,13 +89,17 @@ func ruleFromStyle(s *Style) *StyleRule {
 // CSSRule represents renderable CSS that can be placed inside a style element.
 type CSSRule interface {
 	Element
+	// IsCSSRule marks the element as a CSS rule that [StyleElement] and
+	// [MediaRule] accept. It does nothing and exists only for the compiler.
 	IsCSSRule()
 }
 
 // StyleRule renders one CSS selector rule without wrapping it in a style tag.
 type StyleRule struct {
+	// Props holds the CSS declarations written inside the rule's braces.
 	Props StyleMap
-	Tags  []string
+	// Tags holds the selectors the rule applies to, joined with commas.
+	Tags []string
 }
 
 // NewStyleRule creates one unwrapped selector rule.
@@ -188,6 +194,7 @@ func (r *RawCSSRule) IsCSSRule() {}
 
 // CharsetRule represents a CSS @charset rule.
 type CharsetRule struct {
+	// Charset is the character encoding name, such as "UTF-8".
 	Charset string
 }
 
@@ -221,7 +228,10 @@ func (c *CharsetRule) IsCSSRule() {}
 
 // ImportRule represents a CSS @import rule.
 type ImportRule struct {
-	Href       string
+	// Href is the URL of the stylesheet to import.
+	Href string
+	// Conditions holds optional media queries, joined with commas, that must
+	// match for the import to apply.
 	Conditions []string
 }
 
@@ -271,6 +281,7 @@ func (i *ImportRule) IsCSSRule() {}
 
 // FontFaceRule represents a CSS @font-face declaration block.
 type FontFaceRule struct {
+	// Props holds the font descriptors, such as font-family and src.
 	Props StyleMap
 }
 
@@ -323,7 +334,9 @@ func (f *FontFaceRule) IsCSSRule() {}
 
 // FontFeatureValuesRule represents a CSS @font-feature-values block.
 type FontFeatureValuesRule struct {
-	Family  string
+	// Family is the font family the feature values apply to.
+	Family string
+	// Content is the raw body of the block, such as a @styleset definition.
 	Content string
 }
 
@@ -365,7 +378,10 @@ func (f *FontFeatureValuesRule) IsCSSRule() {}
 
 // MediaRule represents a CSS @media grouping rule.
 type MediaRule struct {
+	// Query is the media query that decides when the rules apply, such as
+	// "(min-width: 600px)".
 	Query string
+	// Rules holds the rules nested inside the @media block.
 	Rules []CSSRule
 }
 
@@ -419,8 +435,10 @@ func (m *MediaRule) IsCSSRule() {}
 
 // KeyframeBlock represents one keyframe selector block inside @keyframes.
 type KeyframeBlock struct {
+	// Selector is the keyframe selector, such as "from", "to" or "50%".
 	Selector string
-	Props    StyleMap
+	// Props holds the CSS declarations applied at that point of the animation.
+	Props StyleMap
 }
 
 // NewKeyframeBlock creates a new keyframe selector block.
@@ -474,7 +492,9 @@ func (k *KeyframeBlock) Style(styles StyleMap) *KeyframeBlock {
 
 // KeyframesRule represents a CSS @keyframes rule.
 type KeyframesRule struct {
-	Name   string
+	// Name is the animation name that animation-name refers to.
+	Name string
+	// Frames holds the keyframe blocks in the order they are written.
 	Frames []*KeyframeBlock
 }
 

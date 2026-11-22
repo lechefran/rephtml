@@ -10,20 +10,20 @@ type Canvas struct {
 	height string
 }
 
-// NewCanvas creates a new Canvas component.
+// NewCanvas returns a new, empty <canvas> element.
 func NewCanvas() *Canvas {
 	v := &Canvas{}
 	v.init(v)
 	return v
 }
 
-// Width sets the width attribute.
+// Width sets the width attribute and returns the element.
 func (c *Canvas) Width(width string) *Canvas {
 	c.width = width
 	return c
 }
 
-// Height sets the height attribute.
+// Height sets the height attribute and returns the element.
 func (c *Canvas) Height(height string) *Canvas {
 	c.height = height
 	return c
@@ -45,7 +45,7 @@ type Noscript struct {
 	contentNode[*Noscript]
 }
 
-// NewNoscript creates a new Noscript component.
+// NewNoscript returns a new, empty <noscript> element.
 func NewNoscript() *Noscript {
 	v := &Noscript{}
 	v.init(v)
@@ -74,56 +74,58 @@ type Script struct {
 	referrerPolicy string
 }
 
-// NewScript creates a new Script component.
+// NewScript returns a new, empty <script> element.
 func NewScript() *Script {
 	v := &Script{}
 	v.init(v)
 	return v
 }
 
-// Src sets the src attribute.
+// Src sets the src attribute and returns the element.
+//
+// An unsafe URL is replaced with [BlockedURL] when rendered; see [IsSafeURL].
 func (s *Script) Src(src string) *Script {
 	s.src = src
 	return s
 }
 
-// Type sets the type attribute.
+// Type sets the type attribute and returns the element.
 func (s *Script) Type(scriptType string) *Script {
 	s.scriptType = scriptType
 	return s
 }
 
-// Async sets the async attribute.
+// Async sets the async attribute and returns the element.
 func (s *Script) Async(async bool) *Script {
 	s.async = async
 	return s
 }
 
-// Defer sets the defer attribute.
+// Defer sets the defer attribute and returns the element.
 func (s *Script) Defer(deferScript bool) *Script {
 	s.deferScript = deferScript
 	return s
 }
 
-// CrossOrigin sets the crossorigin attribute.
+// CrossOrigin sets the crossorigin attribute and returns the element.
 func (s *Script) CrossOrigin(crossorigin string) *Script {
 	s.crossOrigin = crossorigin
 	return s
 }
 
-// Integrity sets the integrity attribute.
+// Integrity sets the integrity attribute and returns the element.
 func (s *Script) Integrity(integrity string) *Script {
 	s.integrity = integrity
 	return s
 }
 
-// Nomodule sets the nomodule attribute.
+// Nomodule sets the nomodule attribute and returns the element.
 func (s *Script) Nomodule(nomodule bool) *Script {
 	s.noModule = nomodule
 	return s
 }
 
-// ReferrerPolicy sets the referrerpolicy attribute.
+// ReferrerPolicy sets the referrerpolicy attribute and returns the element.
 func (s *Script) ReferrerPolicy(referrerpolicy string) *Script {
 	s.referrerPolicy = referrerpolicy
 	return s

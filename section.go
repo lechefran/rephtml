@@ -8,7 +8,7 @@ type Header struct {
 	contentNode[*Header]
 }
 
-// NewHeader creates a new Header component.
+// NewHeader returns a new, empty <header> element.
 func NewHeader() *Header {
 	v := &Header{}
 	v.init(v)
@@ -29,14 +29,14 @@ type Nav struct {
 	role string
 }
 
-// NewNav creates a new Nav component.
+// NewNav returns a new, empty <nav> element.
 func NewNav() *Nav {
 	v := &Nav{}
 	v.init(v)
 	return v
 }
 
-// Role sets the role attribute.
+// Role sets the role attribute and returns the element.
 func (n *Nav) Role(r string) *Nav {
 	n.role = r
 	return n
@@ -56,7 +56,7 @@ type Main struct {
 	contentNode[*Main]
 }
 
-// NewMain creates a new Main component.
+// NewMain returns a new, empty <main> element.
 func NewMain() *Main {
 	v := &Main{}
 	v.init(v)
@@ -77,14 +77,14 @@ type Section struct {
 	ariaLabel string
 }
 
-// NewSection creates a new Section component.
+// NewSection returns a new, empty <section> element.
 func NewSection() *Section {
 	v := &Section{}
 	v.init(v)
 	return v
 }
 
-// AriaLabel sets the arialabel attribute.
+// AriaLabel sets the arialabel attribute and returns the element.
 func (s *Section) AriaLabel(label string) *Section {
 	s.ariaLabel = label
 	return s
@@ -104,7 +104,7 @@ type Article struct {
 	contentNode[*Article]
 }
 
-// NewArticle creates a new Article component.
+// NewArticle returns a new, empty <article> element.
 func NewArticle() *Article {
 	v := &Article{}
 	v.init(v)
@@ -124,7 +124,7 @@ type Aside struct {
 	contentNode[*Aside]
 }
 
-// NewAside creates a new Aside component.
+// NewAside returns a new, empty <aside> element.
 func NewAside() *Aside {
 	v := &Aside{}
 	v.init(v)
@@ -144,7 +144,7 @@ type Footer struct {
 	contentNode[*Footer]
 }
 
-// NewFooter creates a new Footer component.
+// NewFooter returns a new, empty <footer> element.
 func NewFooter() *Footer {
 	v := &Footer{}
 	v.init(v)
@@ -164,7 +164,7 @@ type Address struct {
 	contentNode[*Address]
 }
 
-// NewAddress creates a new Address component.
+// NewAddress returns a new, empty <address> element.
 func NewAddress() *Address {
 	v := &Address{}
 	v.init(v)

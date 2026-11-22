@@ -30,14 +30,16 @@ type Anchor struct {
 	link string
 }
 
-// NewAnchor creates a new Anchor component.
+// NewAnchor returns a new, empty <a> element.
 func NewAnchor() *Anchor {
 	v := &Anchor{}
 	v.init(v)
 	return v
 }
 
-// Link sets the link attribute.
+// Link sets the href attribute and returns the element.
+//
+// An unsafe URL is replaced with [BlockedURL] when rendered; see [IsSafeURL].
 func (a *Anchor) Link(s string) *Anchor {
 	a.link = s
 	return a
@@ -58,14 +60,14 @@ type Abbr struct {
 	title string
 }
 
-// NewAbbr creates a new Abbr component.
+// NewAbbr returns a new, empty <abbr> element.
 func NewAbbr() *Abbr {
 	v := &Abbr{}
 	v.init(v)
 	return v
 }
 
-// Title sets the title attribute.
+// Title sets the title attribute and returns the element.
 func (a *Abbr) Title(s string) *Abbr {
 	a.title = s
 	return a
@@ -85,7 +87,7 @@ type B struct {
 	textNode[*B]
 }
 
-// NewB creates a new B component.
+// NewB returns a new, empty <b> element.
 func NewB() *B {
 	v := &B{}
 	v.initTag(v, "b")
@@ -98,7 +100,7 @@ type I struct {
 	textNode[*I]
 }
 
-// NewI creates a new I component.
+// NewI returns a new, empty <i> element.
 func NewI() *I {
 	v := &I{}
 	v.initTag(v, "i")
@@ -112,14 +114,16 @@ type Q struct {
 	cite string
 }
 
-// NewQ creates a new Q component.
+// NewQ returns a new, empty <q> element.
 func NewQ() *Q {
 	v := &Q{}
 	v.init(v)
 	return v
 }
 
-// Cite sets the cite attribute.
+// Cite sets the cite attribute and returns the element.
+//
+// An unsafe URL is replaced with [BlockedURL] when rendered; see [IsSafeURL].
 func (q *Q) Cite(s string) *Q {
 	q.cite = s
 	return q
@@ -139,7 +143,7 @@ type S struct {
 	textNode[*S]
 }
 
-// NewS creates a new S component.
+// NewS returns a new, empty <s> element.
 func NewS() *S {
 	v := &S{}
 	v.initTag(v, "s")
@@ -152,7 +156,7 @@ type U struct {
 	textNode[*U]
 }
 
-// NewU creates a new U component.
+// NewU returns a new, empty <u> element.
 func NewU() *U {
 	v := &U{}
 	v.initTag(v, "u")
@@ -165,7 +169,7 @@ type Bdi struct {
 	textNode[*Bdi]
 }
 
-// NewBdi creates a new bdi component.
+// NewBdi returns a new, empty <bdi> element.
 func NewBdi() *Bdi {
 	v := &Bdi{}
 	v.initTag(v, "bdi")
@@ -179,7 +183,7 @@ type Bdo struct {
 	dir string
 }
 
-// NewBdo creates a new bdo component.
+// NewBdo returns a new, empty <bdo> element.
 func NewBdo() *Bdo {
 	v := &Bdo{}
 	v.init(v)
@@ -207,7 +211,7 @@ type Br struct {
 	node[*Br]
 }
 
-// NewBr creates a new Br component.
+// NewBr returns a new, empty <br> element.
 func NewBr() *Br {
 	v := &Br{}
 	v.init(v)
@@ -227,7 +231,7 @@ type Cite struct {
 	textNode[*Cite]
 }
 
-// NewCite creates a new Cite component.
+// NewCite returns a new, empty <cite> element.
 func NewCite() *Cite {
 	v := &Cite{}
 	v.initTag(v, "cite")
@@ -240,7 +244,7 @@ type Code struct {
 	textNode[*Code]
 }
 
-// NewCode creates a new Code component.
+// NewCode returns a new, empty <code> element.
 func NewCode() *Code {
 	v := &Code{}
 	v.initTag(v, "code")
@@ -254,14 +258,14 @@ type Data struct {
 	value string
 }
 
-// NewData creates a new Data component.
+// NewData returns a new, empty <data> element.
 func NewData() *Data {
 	v := &Data{}
 	v.init(v)
 	return v
 }
 
-// Value sets the value attribute.
+// Value sets the value attribute and returns the element.
 func (d *Data) Value(s string) *Data {
 	d.value = s
 	return d
@@ -282,14 +286,14 @@ type Dfn struct {
 	title string
 }
 
-// NewDfn creates a new Dfn component.
+// NewDfn returns a new, empty <dfn> element.
 func NewDfn() *Dfn {
 	v := &Dfn{}
 	v.init(v)
 	return v
 }
 
-// Title sets the title attribute.
+// Title sets the title attribute and returns the element.
 func (d *Dfn) Title(s string) *Dfn {
 	d.title = s
 	return d
@@ -309,7 +313,7 @@ type Em struct {
 	textNode[*Em]
 }
 
-// NewEm creates a new em component.
+// NewEm returns a new, empty <em> element.
 func NewEm() *Em {
 	v := &Em{}
 	v.initTag(v, "em")
@@ -322,7 +326,7 @@ type Mark struct {
 	textNode[*Mark]
 }
 
-// NewMark creates a new Mark component.
+// NewMark returns a new, empty <mark> element.
 func NewMark() *Mark {
 	v := &Mark{}
 	v.initTag(v, "mark")
@@ -335,7 +339,7 @@ type Ruby struct {
 	contentNode[*Ruby]
 }
 
-// NewRuby creates a new Ruby component.
+// NewRuby returns a new, empty <ruby> element.
 func NewRuby() *Ruby {
 	v := &Ruby{}
 	v.init(v)
@@ -355,7 +359,7 @@ type Rb struct {
 	textNode[*Rb]
 }
 
-// NewRb creates a new Rb component.
+// NewRb returns a new, empty <rb> element.
 func NewRb() *Rb {
 	v := &Rb{}
 	v.initTag(v, "rb")
@@ -368,7 +372,7 @@ type Rt struct {
 	textNode[*Rt]
 }
 
-// NewRt creates a new Rt component.
+// NewRt returns a new, empty <rt> element.
 func NewRt() *Rt {
 	v := &Rt{}
 	v.initTag(v, "rt")
@@ -381,7 +385,7 @@ type Rtc struct {
 	contentNode[*Rtc]
 }
 
-// NewRtc creates a new Rtc component.
+// NewRtc returns a new, empty <rtc> element.
 func NewRtc() *Rtc {
 	v := &Rtc{}
 	v.init(v)
@@ -401,7 +405,7 @@ type Rp struct {
 	textNode[*Rp]
 }
 
-// NewRp creates a new Rp component.
+// NewRp returns a new, empty <rp> element.
 func NewRp() *Rp {
 	v := &Rp{}
 	v.initTag(v, "rp")
@@ -414,7 +418,7 @@ type Kbd struct {
 	textNode[*Kbd]
 }
 
-// NewKbd creates a new Kbd component.
+// NewKbd returns a new, empty <kbd> element.
 func NewKbd() *Kbd {
 	v := &Kbd{}
 	v.initTag(v, "kbd")
@@ -427,7 +431,7 @@ type Sub struct {
 	textNode[*Sub]
 }
 
-// NewSub creates a new Sub component.
+// NewSub returns a new, empty <sub> element.
 func NewSub() *Sub {
 	v := &Sub{}
 	v.initTag(v, "sub")
@@ -440,7 +444,7 @@ type Sup struct {
 	textNode[*Sup]
 }
 
-// NewSup creates a new Sup component.
+// NewSup returns a new, empty <sup> element.
 func NewSup() *Sup {
 	v := &Sup{}
 	v.initTag(v, "sup")
@@ -453,7 +457,7 @@ type Samp struct {
 	textNode[*Samp]
 }
 
-// NewSamp creates a new Samp component.
+// NewSamp returns a new, empty <samp> element.
 func NewSamp() *Samp {
 	v := &Samp{}
 	v.initTag(v, "samp")
@@ -466,7 +470,7 @@ type Small struct {
 	textNode[*Small]
 }
 
-// NewSmall creates a new Small component.
+// NewSmall returns a new, empty <small> element.
 func NewSmall() *Small {
 	v := &Small{}
 	v.initTag(v, "small")
@@ -479,7 +483,7 @@ type Span struct {
 	textNode[*Span]
 }
 
-// NewSpan creates a new Span component.
+// NewSpan returns a new, empty <span> element.
 func NewSpan() *Span {
 	v := &Span{}
 	v.initTag(v, "span")
@@ -492,7 +496,7 @@ type Strong struct {
 	textNode[*Strong]
 }
 
-// NewStrong creates a new Strong component.
+// NewStrong returns a new, empty <strong> element.
 func NewStrong() *Strong {
 	v := &Strong{}
 	v.initTag(v, "strong")
@@ -507,7 +511,7 @@ type Time struct {
 	err      error
 }
 
-// NewTime creates a time element.
+// NewTime returns a new, empty <time> element.
 func NewTime() *Time {
 	v := &Time{}
 	v.init(v)
@@ -654,7 +658,7 @@ type Var struct {
 	textNode[*Var]
 }
 
-// NewVar creates a new Var component.
+// NewVar returns a new, empty <var> element.
 func NewVar() *Var {
 	v := &Var{}
 	v.initTag(v, "var")
@@ -667,7 +671,7 @@ type Wbr struct {
 	node[*Wbr]
 }
 
-// NewWbr creates a new Wbr component.
+// NewWbr returns a new, empty <wbr> element.
 func NewWbr() *Wbr {
 	v := &Wbr{}
 	v.init(v)

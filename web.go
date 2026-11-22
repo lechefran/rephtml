@@ -9,14 +9,14 @@ type Slot struct {
 	name string
 }
 
-// NewSlot creates a new Slot component.
+// NewSlot returns a new, empty <slot> element.
 func NewSlot() *Slot {
 	v := &Slot{}
 	v.init(v)
 	return v
 }
 
-// Name sets the name attribute.
+// Name sets the name attribute and returns the element.
 func (s *Slot) Name(n string) *Slot {
 	s.name = n
 	return s
@@ -37,7 +37,7 @@ type Template struct {
 	contentNode[*Template]
 }
 
-// NewTemplate creates a new Template component.
+// NewTemplate returns a new, empty <template> element.
 func NewTemplate() *Template {
 	v := &Template{}
 	v.init(v)

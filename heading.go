@@ -8,7 +8,7 @@ type Hgroup struct {
 	contentNode[*Hgroup]
 }
 
-// NewHgroup creates a new Hgroup component.
+// NewHgroup returns a new, empty <hgroup> element.
 func NewHgroup() *Hgroup {
 	v := &Hgroup{}
 	v.init(v)
@@ -28,7 +28,7 @@ type H1 struct {
 	textNode[*H1]
 }
 
-// NewH1 creates a new H1 component.
+// NewH1 returns a new, empty <h1> element.
 func NewH1() *H1 {
 	v := &H1{}
 	v.initTag(v, "h1")
@@ -41,7 +41,7 @@ type H2 struct {
 	textNode[*H2]
 }
 
-// NewH2 creates a new H2 component.
+// NewH2 returns a new, empty <h2> element.
 func NewH2() *H2 {
 	v := &H2{}
 	v.initTag(v, "h2")
@@ -54,7 +54,7 @@ type H3 struct {
 	textNode[*H3]
 }
 
-// NewH3 creates a new H3 component.
+// NewH3 returns a new, empty <h3> element.
 func NewH3() *H3 {
 	v := &H3{}
 	v.initTag(v, "h3")
@@ -67,7 +67,7 @@ type H4 struct {
 	textNode[*H4]
 }
 
-// NewH4 creates a new H4 component.
+// NewH4 returns a new, empty <h4> element.
 func NewH4() *H4 {
 	v := &H4{}
 	v.initTag(v, "h4")
@@ -80,7 +80,7 @@ type H5 struct {
 	textNode[*H5]
 }
 
-// NewH5 creates a new H5 component.
+// NewH5 returns a new, empty <h5> element.
 func NewH5() *H5 {
 	v := &H5{}
 	v.initTag(v, "h5")
@@ -93,7 +93,7 @@ type H6 struct {
 	textNode[*H6]
 }
 
-// NewH6 creates a new H6 component.
+// NewH6 returns a new, empty <h6> element.
 func NewH6() *H6 {
 	v := &H6{}
 	v.initTag(v, "h6")
