@@ -236,7 +236,9 @@ func (h *HtmlFile) Style(m StyleMap) *HtmlFile {
 	return h
 }
 
-// WriteToFile writes the formatted HTML document to path.
+// WriteToFile writes the formatted HTML document to path, as
+// [HtmlFile.RenderFormatted] would return it. It returns the document error
+// from [HtmlFile.Err] without touching path.
 //
 // The document is written to a temporary file in the same directory and then
 // renamed over path, so a failed write never leaves a truncated file behind and
@@ -305,7 +307,7 @@ func removeIfExists(path string) error {
 	return nil
 }
 
-// WriteTo writes the compact HTML document to w and implements io.WriterTo.
+// WriteTo writes the compact HTML document to w and implements [io.WriterTo].
 //
 // It renders straight into a pooled buffer and copies that to w, so unlike
 // Render it makes no intermediate copy of the document. A document error is
@@ -324,8 +326,9 @@ func (h *HtmlFile) WriteTo(w io.Writer) (int64, error) {
 
 // WriteFormattedTo writes the human-readable formatted HTML document to w.
 //
-// Like WriteTo it returns a document error before writing anything. Formatting
-// adds whitespace between tags, so use WriteTo when exact output matters.
+// Like [HtmlFile.WriteTo] it returns a document error before writing anything.
+// Formatting adds whitespace between tags, so use WriteTo when exact output
+// matters.
 func (h *HtmlFile) WriteFormattedTo(w io.Writer) (int64, error) {
 	html, err := h.RenderFormatted()
 	if err != nil {
@@ -338,7 +341,8 @@ func (h *HtmlFile) WriteFormattedTo(w io.Writer) (int64, error) {
 	return int64(n), err
 }
 
-// Render returns the compact HTML document bytes.
+// Render returns the compact HTML document bytes, or the error reported by
+// [HtmlFile.Err] instead of rendering.
 func (h *HtmlFile) Render() ([]byte, error) {
 	html, err := h.renderDocument()
 	if err != nil {
@@ -355,7 +359,9 @@ func (h *HtmlFile) renderDocument() (renderedDocumentHTML, error) {
 	return renderedDocumentHTML(renderElement(h)), nil
 }
 
-// RenderString returns the compact HTML document as a string.
+// RenderString returns the compact HTML document as a string, or the error
+// reported by [HtmlFile.Err] instead of rendering. It is the string form of
+// [HtmlFile.Render].
 func (h *HtmlFile) RenderString() (string, error) {
 	html, err := h.Render()
 	if err != nil {
@@ -364,7 +370,9 @@ func (h *HtmlFile) RenderString() (string, error) {
 	return string(html), nil
 }
 
-// RenderFormatted returns human-readable formatted HTML document bytes.
+// RenderFormatted returns human-readable formatted HTML document bytes, or the
+// error reported by [HtmlFile.Err] instead of rendering. Formatting adds
+// whitespace between tags; use [HtmlFile.Render] when exact output matters.
 func (h *HtmlFile) RenderFormatted() ([]byte, error) {
 	html, err := h.renderDocument()
 	if err != nil {
@@ -373,7 +381,9 @@ func (h *HtmlFile) RenderFormatted() ([]byte, error) {
 	return formatRenderedDocumentHTML(html), nil
 }
 
-// RenderFormattedString returns formatted HTML as a string.
+// RenderFormattedString returns formatted HTML as a string, or the error
+// reported by [HtmlFile.Err] instead of rendering. It is the string form of
+// [HtmlFile.RenderFormatted].
 func (h *HtmlFile) RenderFormattedString() (string, error) {
 	html, err := h.RenderFormatted()
 	if err != nil {
@@ -998,22 +1008,30 @@ func (s *StyleElement) collectErrors(errs []error) []error {
 	return appendError(errs, s.err)
 }
 
-// AddRule appends typed CSS rule content to the style element.
+// AddRule appends typed CSS rule content to the style element and returns it.
+// Use it instead of raw text for rules the package models, such as
+// [MediaRule] and [KeyframesRule].
 func (s *StyleElement) AddRule(rule CSSRule) *StyleElement {
 	s.contents = appendElement(s.contents, rule)
 	return s
 }
 
-// Text sets the CSS text content of the style element, replacing any text set
-// before. Rules added with AddRule are kept: the text takes the place of the
-// first earlier text, or goes after the rules when there was none. Use AddText
-// to append.
+// Text sets the CSS text content of the style element and returns it,
+// replacing any text set before. Rules added with [StyleElement.AddRule] are
+// kept: the text takes the place of the first earlier text, or goes after the
+// rules when there was none. Use [StyleElement.AddText] to append.
+//
+// The text is written as raw CSS, not HTML-escaped, with only the sequence
+// that would end the element rewritten. Do not pass untrusted input.
 func (s *StyleElement) Text(text string) *StyleElement {
 	s.contents = replaceText(s.contents, rawText(escapeCSS(text)))
 	return s
 }
 
-// AddText appends CSS text content to the style element.
+// AddText appends CSS text content to the style element and returns it.
+//
+// Like [StyleElement.Text], the text is written as raw CSS, so do not pass
+// untrusted input.
 func (s *StyleElement) AddText(text string) *StyleElement {
 	s.contents = appendElement(s.contents, rawText(escapeCSS(text)))
 	return s

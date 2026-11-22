@@ -253,13 +253,20 @@ func (n *textNode[Self]) renderTo(buf *bytes.Buffer) {
 	tg.text(n.text)
 }
 
-// Text replaces the escaped text content and returns the element.
+// Text replaces the text content and returns the element.
+//
+// The text is HTML-escaped. The exception is [Script], whose text is written
+// as raw JavaScript with only the sequence that would end the element
+// rewritten, so never pass untrusted input to it.
 func (n *textNode[Self]) Text(s string) Self {
 	n.text = s
 	return n.self
 }
 
-// AddText appends escaped text to the text content and returns the element.
+// AddText appends to the text content and returns the element.
+//
+// As with Text, the text is HTML-escaped, except on [Script], where it is raw
+// JavaScript.
 func (n *textNode[Self]) AddText(s string) Self {
 	n.text += s
 	return n.self

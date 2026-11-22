@@ -6,6 +6,15 @@ import (
 )
 
 // Table represents the HTML <table> element, tabular data in rows and columns.
+//
+// A table can be built in two ways. The simple way is the string API:
+// [Table.Headers] or [Table.AddHeader] for the header row and [Table.AddRows]
+// or [Table.AddRow] for the data rows, whose cell text is HTML-escaped. The
+// structured way adds [Thead], [Tbody], [Tfoot] and [Tr] elements, which allow
+// spans, scopes and attributes on each cell.
+//
+// Do not mix the two. When any structured rows are present the string cells
+// are not rendered, and [Table.Err] reports the conflict.
 type Table struct {
 	bodyElement
 	node[*Table]
@@ -26,38 +35,41 @@ func NewTable() *Table {
 	return v
 }
 
-// AddHeader appends one header cell to the table's first row.
+// AddHeader appends one header cell to the table's first row and returns the
+// table. Part of the string API; see [Table].
 func (t *Table) AddHeader(s string) *Table {
 	t.headers = append(t.headers, s)
 	return t
 }
 
-// AddHeaders appends several header cells to the table's first row.
+// AddHeaders appends several header cells to the table's first row and returns
+// the table.
 func (t *Table) AddHeaders(s []string) *Table {
 	t.headers = append(t.headers, s...)
 	return t
 }
 
-// Headers sets the header cells of the table's first row, copying the caller's
-// slice.
+// Headers sets the header cells of the table's first row and returns the
+// table. The slice is copied, so later changes to it do not affect the table.
 func (t *Table) Headers(s []string) *Table {
 	t.headers = cloneStrings(s)
 	return t
 }
 
-// AddRow appends one row of cells, copying the caller's slice.
+// AddRow appends one row of cells and returns the table. The slice is copied.
 func (t *Table) AddRow(s []string) *Table {
 	t.rows = append(t.rows, cloneStrings(s))
 	return t
 }
 
-// AddRows appends several rows of cells, copying the caller's slices.
+// AddRows appends several rows of cells and returns the table. The slices are
+// copied.
 func (t *Table) AddRows(s [][]string) *Table {
 	t.rows = append(t.rows, cloneRows(s)...)
 	return t
 }
 
-// Rows replaces the rows of cells, copying the caller's slices.
+// Rows replaces the rows of cells and returns the table. The slices are copied.
 func (t *Table) Rows(s [][]string) *Table {
 	t.rows = cloneRows(s)
 	return t
