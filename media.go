@@ -20,13 +20,13 @@ func NewArea() *Area {
 	return v
 }
 
-// Alt sets the alt attribute.
+// Alt sets the alt attribute and returns the element.
 func (a *Area) Alt(alt string) *Area {
 	a.alt = alt
 	return a
 }
 
-// Coords sets the coords attribute.
+// Coords sets the coords attribute and returns the element.
 func (a *Area) Coords(coords string) *Area {
 	a.coords = coords
 	return a
@@ -40,13 +40,13 @@ func (a *Area) Href(href string) *Area {
 	return a
 }
 
-// Shape sets the shape attribute.
+// Shape sets the shape attribute and returns the element.
 func (a *Area) Shape(shape string) *Area {
 	a.shape = shape
 	return a
 }
 
-// Target sets the target attribute.
+// Target sets the target attribute and returns the element.
 func (a *Area) Target(target string) *Area {
 	a.target = target
 	return a
@@ -90,25 +90,25 @@ func (i *Img) Src(src string) *Img {
 	return i
 }
 
-// Alt sets the alt attribute.
+// Alt sets the alt attribute and returns the element.
 func (i *Img) Alt(alt string) *Img {
 	i.alt = alt
 	return i
 }
 
-// Width sets the width attribute.
+// Width sets the width attribute and returns the element.
 func (i *Img) Width(width string) *Img {
 	i.width = width
 	return i
 }
 
-// Height sets the height attribute.
+// Height sets the height attribute and returns the element.
 func (i *Img) Height(height string) *Img {
 	i.height = height
 	return i
 }
 
-// Title sets the title attribute.
+// Title sets the title attribute and returns the element.
 func (i *Img) Title(title string) *Img {
 	i.title = title
 	return i
@@ -153,31 +153,31 @@ func (a *Audio) Src(src string) *Audio {
 	return a
 }
 
-// Controls sets the controls attribute.
+// Controls sets the controls attribute and returns the element.
 func (a *Audio) Controls(controls bool) *Audio {
 	a.controls = controls
 	return a
 }
 
-// Autoplay sets the autoplay attribute.
+// Autoplay sets the autoplay attribute and returns the element.
 func (a *Audio) Autoplay(autoplay bool) *Audio {
 	a.autoplay = autoplay
 	return a
 }
 
-// Loop sets the loop attribute.
+// Loop sets the loop attribute and returns the element.
 func (a *Audio) Loop(loop bool) *Audio {
 	a.loop = loop
 	return a
 }
 
-// Muted sets the muted attribute.
+// Muted sets the muted attribute and returns the element.
 func (a *Audio) Muted(muted bool) *Audio {
 	a.muted = muted
 	return a
 }
 
-// Preload sets the preload attribute.
+// Preload sets the preload attribute and returns the element.
 func (a *Audio) Preload(preload string) *Audio {
 	a.preload = preload
 	return a
@@ -222,25 +222,25 @@ func (t *Track) Src(src string) *Track {
 	return t
 }
 
-// Kind sets the kind attribute.
+// Kind sets the kind attribute and returns the element.
 func (t *Track) Kind(kind string) *Track {
 	t.kind = kind
 	return t
 }
 
-// Srclang sets the srclang attribute.
+// Srclang sets the srclang attribute and returns the element.
 func (t *Track) Srclang(srclang string) *Track {
 	t.srclang = srclang
 	return t
 }
 
-// Label sets the label attribute.
+// Label sets the label attribute and returns the element.
 func (t *Track) Label(label string) *Track {
 	t.label = label
 	return t
 }
 
-// Default sets the default attribute.
+// Default sets the default attribute and returns the element.
 func (t *Track) Default(def bool) *Track {
 	t.defaultVal = def
 	return t
@@ -272,7 +272,7 @@ func NewMap() *Map {
 	return v
 }
 
-// Name sets the name attribute.
+// Name sets the name attribute and returns the element.
 func (m *Map) Name(name string) *Map {
 	m.name = name
 	return m
@@ -316,43 +316,43 @@ func (v *Video) Src(src string) *Video {
 	return v
 }
 
-// Controls sets the controls attribute.
+// Controls sets the controls attribute and returns the element.
 func (v *Video) Controls(controls bool) *Video {
 	v.controls = controls
 	return v
 }
 
-// Autoplay sets the autoplay attribute.
+// Autoplay sets the autoplay attribute and returns the element.
 func (v *Video) Autoplay(autoplay bool) *Video {
 	v.autoplay = autoplay
 	return v
 }
 
-// Loop sets the loop attribute.
+// Loop sets the loop attribute and returns the element.
 func (v *Video) Loop(loop bool) *Video {
 	v.loop = loop
 	return v
 }
 
-// Muted sets the muted attribute.
+// Muted sets the muted attribute and returns the element.
 func (v *Video) Muted(muted bool) *Video {
 	v.muted = muted
 	return v
 }
 
-// Preload sets the preload attribute.
+// Preload sets the preload attribute and returns the element.
 func (v *Video) Preload(preload string) *Video {
 	v.preload = preload
 	return v
 }
 
-// Width sets the width attribute.
+// Width sets the width attribute and returns the element.
 func (v *Video) Width(width string) *Video {
 	v.width = width
 	return v
 }
 
-// Height sets the height attribute.
+// Height sets the height attribute and returns the element.
 func (v *Video) Height(height string) *Video {
 	v.height = height
 	return v

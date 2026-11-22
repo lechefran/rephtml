@@ -319,7 +319,7 @@ func NewCol() *Col {
 	return v
 }
 
-// Span sets the span attribute.
+// Span sets the span attribute and returns the element.
 func (col *Col) Span(s int) *Col {
 	col.span = s
 	return col
@@ -347,7 +347,7 @@ func NewColgroup() *Colgroup {
 	return v
 }
 
-// Span sets the span attribute.
+// Span sets the span attribute and returns the element.
 func (cg *Colgroup) Span(s int) *Colgroup {
 	cg.span = s
 	return cg
@@ -408,13 +408,13 @@ func NewTd() *Td {
 	return v
 }
 
-// Colspan sets the colspan attribute.
+// Colspan sets the colspan attribute and returns the element.
 func (td *Td) Colspan(c int) *Td {
 	td.colspan = c
 	return td
 }
 
-// Rowspan sets the rowspan attribute.
+// Rowspan sets the rowspan attribute and returns the element.
 func (td *Td) Rowspan(r int) *Td {
 	td.rowspan = r
 	return td
@@ -445,19 +445,19 @@ func NewTh() *Th {
 	return v
 }
 
-// Colspan sets the colspan attribute.
+// Colspan sets the colspan attribute and returns the element.
 func (th *Th) Colspan(c int) *Th {
 	th.colspan = c
 	return th
 }
 
-// Rowspan sets the rowspan attribute.
+// Rowspan sets the rowspan attribute and returns the element.
 func (th *Th) Rowspan(r int) *Th {
 	th.rowspan = r
 	return th
 }
 
-// Scope sets the scope attribute.
+// Scope sets the scope attribute and returns the element.
 func (th *Th) Scope(s string) *Th {
 	th.scope = s
 	return th

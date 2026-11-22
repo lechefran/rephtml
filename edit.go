@@ -34,7 +34,7 @@ func (d *Del) Cite(url string) *Del {
 	return d
 }
 
-// Datetime sets the datetime attribute
+// Datetime sets the datetime attribute and returns the element.
 func (d *Del) Datetime(datetime string) *Del {
 	d.datetime = datetime
 	return d
@@ -72,7 +72,7 @@ func (i *Ins) Cite(url string) *Ins {
 	return i
 }
 
-// Datetime sets the datetime attribute
+// Datetime sets the datetime attribute and returns the element.
 func (i *Ins) Datetime(datetime string) *Ins {
 	i.datetime = datetime
 	return i

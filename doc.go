@@ -156,25 +156,25 @@ func (h *HtmlFile) AddToBody(e Element) *HtmlFile {
 	return h
 }
 
-// Lang sets the lang attribute
+// Lang sets the lang attribute and returns the element.
 func (h *HtmlFile) Lang(lang string) *HtmlFile {
 	h.lang = lang
 	return h
 }
 
-// Dir sets the dir attribute
+// Dir sets the dir attribute and returns the element.
 func (h *HtmlFile) Dir(dir string) *HtmlFile {
 	h.dir = dir
 	return h
 }
 
-// XmlLang sets the xml:lang attribute
+// XmlLang sets the xml:lang attribute and returns the element.
 func (h *HtmlFile) XmlLang(xmlLang string) *HtmlFile {
 	h.xmlLang = xmlLang
 	return h
 }
 
-// Xmlns sets the xmlns attribute
+// Xmlns sets the xmlns attribute and returns the element.
 func (h *HtmlFile) Xmlns(xmlns string) *HtmlFile {
 	h.xmlns = xmlns
 	return h
@@ -188,7 +188,7 @@ func (h *HtmlFile) Manifest(manifest string) *HtmlFile {
 	return h
 }
 
-// ContextMenu sets the contextmenu attribute
+// ContextMenu sets the contextmenu attribute and returns the element.
 func (h *HtmlFile) ContextMenu(contextMenu string) *HtmlFile {
 	h.contextMenu = contextMenu
 	return h
@@ -655,13 +655,13 @@ func (b *Body) renderTo(buf *bytes.Buffer) {
 	tg.children(b.contents)
 }
 
-// OnLoad sets the onload attribute
+// OnLoad sets the onload attribute and returns the element.
 func (b *Body) OnLoad(onLoad string) *Body {
 	b.onLoad = onLoad
 	return b
 }
 
-// OnUnload sets the onunload attribute
+// OnUnload sets the onunload attribute and returns the element.
 func (b *Body) OnUnload(onUnload string) *Body {
 	b.onUnload = onUnload
 	return b
@@ -719,7 +719,7 @@ func (b *Base) Href(href string) *Base {
 	return b
 }
 
-// Target sets the target attribute
+// Target sets the target attribute and returns the element.
 func (b *Base) Target(target string) *Base {
 	b.target = target
 	return b
@@ -763,7 +763,7 @@ func (l *Link) renderTo(buf *bytes.Buffer) {
 	tg.void()
 }
 
-// Rel sets the rel attribute
+// Rel sets the rel attribute and returns the element.
 func (l *Link) Rel(rel string) *Link {
 	l.rel = rel
 	return l
@@ -777,19 +777,19 @@ func (l *Link) Href(href string) *Link {
 	return l
 }
 
-// Type sets the type attribute
+// Type sets the type attribute and returns the element.
 func (l *Link) Type(linkType string) *Link {
 	l.linkType = linkType
 	return l
 }
 
-// Media sets the media attribute
+// Media sets the media attribute and returns the element.
 func (l *Link) Media(media string) *Link {
 	l.media = media
 	return l
 }
 
-// Sizes sets the sizes attribute
+// Sizes sets the sizes attribute and returns the element.
 func (l *Link) Sizes(sizes string) *Link {
 	l.sizes = sizes
 	return l
@@ -801,7 +801,7 @@ func (l *Link) CrossOrigin(crossOrigin string) *Link {
 	return l
 }
 
-// Integrity sets the integrity attribute
+// Integrity sets the integrity attribute and returns the element.
 func (l *Link) Integrity(integrity string) *Link {
 	l.integrity = integrity
 	return l
@@ -813,7 +813,7 @@ func (l *Link) ReferrerPolicy(referrerPolicy string) *Link {
 	return l
 }
 
-// Hreflang sets the hreflang attribute
+// Hreflang sets the hreflang attribute and returns the element.
 func (l *Link) Hreflang(hreflang string) *Link {
 	l.hreflang = hreflang
 	return l
@@ -898,37 +898,37 @@ func filterRefreshContent(content string) string {
 	return content[:i] + BlockedURL
 }
 
-// Name sets the name attribute
+// Name sets the name attribute and returns the element.
 func (m *Meta) Name(name string) *Meta {
 	m.name = name
 	return m
 }
 
-// Content sets the content attribute
+// Content sets the content attribute and returns the element.
 func (m *Meta) Content(content string) *Meta {
 	m.content = content
 	return m
 }
 
-// Charset sets the charset attribute
+// Charset sets the charset attribute and returns the element.
 func (m *Meta) Charset(charset string) *Meta {
 	m.charset = charset
 	return m
 }
 
-// Property sets the property attribute
+// Property sets the property attribute and returns the element.
 func (m *Meta) Property(property string) *Meta {
 	m.property = property
 	return m
 }
 
-// HttpEquiv sets the http-equiv attribute
+// HttpEquiv sets the http-equiv attribute and returns the element.
 func (m *Meta) HttpEquiv(httpequiv string) *Meta {
 	m.httpEquiv = httpequiv
 	return m
 }
 
-// Scheme sets the scheme attribute
+// Scheme sets the scheme attribute and returns the element.
 func (m *Meta) Scheme(scheme string) *Meta {
 	m.scheme = scheme
 	return m
@@ -1019,13 +1019,13 @@ func (s *StyleElement) AddText(text string) *StyleElement {
 	return s
 }
 
-// Type sets the type attribute
+// Type sets the type attribute and returns the element.
 func (s *StyleElement) Type(styleType string) *StyleElement {
 	s.styleType = styleType
 	return s
 }
 
-// Media sets the media attribute
+// Media sets the media attribute and returns the element.
 func (s *StyleElement) Media(media string) *StyleElement {
 	s.media = media
 	return s

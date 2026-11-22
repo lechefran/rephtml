@@ -36,7 +36,7 @@ func NewNav() *Nav {
 	return v
 }
 
-// Role sets the role attribute.
+// Role sets the role attribute and returns the element.
 func (n *Nav) Role(r string) *Nav {
 	n.role = r
 	return n
@@ -84,7 +84,7 @@ func NewSection() *Section {
 	return v
 }
 
-// AriaLabel sets the arialabel attribute.
+// AriaLabel sets the arialabel attribute and returns the element.
 func (s *Section) AriaLabel(label string) *Section {
 	s.ariaLabel = label
 	return s

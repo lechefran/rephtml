@@ -67,7 +67,7 @@ func NewAbbr() *Abbr {
 	return v
 }
 
-// Title sets the title attribute.
+// Title sets the title attribute and returns the element.
 func (a *Abbr) Title(s string) *Abbr {
 	a.title = s
 	return a
@@ -265,7 +265,7 @@ func NewData() *Data {
 	return v
 }
 
-// Value sets the value attribute.
+// Value sets the value attribute and returns the element.
 func (d *Data) Value(s string) *Data {
 	d.value = s
 	return d
@@ -293,7 +293,7 @@ func NewDfn() *Dfn {
 	return v
 }
 
-// Title sets the title attribute.
+// Title sets the title attribute and returns the element.
 func (d *Dfn) Title(s string) *Dfn {
 	d.title = s
 	return d

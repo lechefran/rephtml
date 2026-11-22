@@ -175,13 +175,13 @@ func NewMenu() *Menu {
 	return v
 }
 
-// Type sets the type attribute.
+// Type sets the type attribute and returns the element.
 func (m *Menu) Type(t string) *Menu {
 	m.menuType = t
 	return m
 }
 
-// Label sets the label attribute.
+// Label sets the label attribute and returns the element.
 func (m *Menu) Label(l string) *Menu {
 	m.label = l
 	return m
@@ -221,13 +221,13 @@ func (o *Ol) Start(s int) *Ol {
 	return o
 }
 
-// Type sets the type attribute.
+// Type sets the type attribute and returns the element.
 func (o *Ol) Type(t string) *Ol {
 	o.listType = t
 	return o
 }
 
-// Reversed sets the reversed attribute.
+// Reversed sets the reversed attribute and returns the element.
 func (o *Ol) Reversed(r bool) *Ol {
 	o.reversed = r
 	return o

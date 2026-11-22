@@ -24,7 +24,7 @@ func (d *Details) renderTo(buf *bytes.Buffer) {
 	tg.children(d.contents)
 }
 
-// Open sets the open attribute
+// Open sets the open attribute and returns the element.
 func (d *Details) Open(open bool) *Details {
 	d.open = open
 	return d
@@ -52,7 +52,7 @@ func (d *Dialog) renderTo(buf *bytes.Buffer) {
 	tg.children(d.contents)
 }
 
-// Open sets the open attribute
+// Open sets the open attribute and returns the element.
 func (d *Dialog) Open(open bool) *Dialog {
 	d.open = open
 	return d

@@ -46,43 +46,43 @@ func (f *Form) Action(action string) *Form {
 	return f
 }
 
-// Method sets the method attribute
+// Method sets the method attribute and returns the element.
 func (f *Form) Method(method string) *Form {
 	f.method = method
 	return f
 }
 
-// Enctype sets the enctype attribute
+// Enctype sets the enctype attribute and returns the element.
 func (f *Form) Enctype(enctype string) *Form {
 	f.enctype = enctype
 	return f
 }
 
-// Name sets the name attribute
+// Name sets the name attribute and returns the element.
 func (f *Form) Name(name string) *Form {
 	f.name = name
 	return f
 }
 
-// Target sets the target attribute
+// Target sets the target attribute and returns the element.
 func (f *Form) Target(target string) *Form {
 	f.target = target
 	return f
 }
 
-// AutoComplete sets the autocomplete attribute.
+// AutoComplete sets the autocomplete attribute and returns the element.
 func (f *Form) AutoComplete(autocomplete string) *Form {
 	f.autocomplete = autocomplete
 	return f
 }
 
-// AcceptCharset sets the accept-charset attribute
+// AcceptCharset sets the accept-charset attribute and returns the element.
 func (f *Form) AcceptCharset(acceptcharset string) *Form {
 	f.acceptcharset = acceptcharset
 	return f
 }
 
-// NoValidate sets the novalidate attribute.
+// NoValidate sets the novalidate attribute and returns the element.
 func (f *Form) NoValidate(novalidate bool) *Form {
 	f.novalidate = novalidate
 	return f
@@ -112,13 +112,13 @@ func (l *Label) renderTo(buf *bytes.Buffer) {
 	tg.children(l.contents)
 }
 
-// For sets the for attribute
+// For sets the for attribute and returns the element.
 func (l *Label) For(forattr string) *Label {
 	l.forattr = forattr
 	return l
 }
 
-// Form sets the form attribute
+// Form sets the form attribute and returns the element.
 func (l *Label) Form(form string) *Label {
 	l.form = form
 	return l
@@ -185,85 +185,85 @@ func (i *Input) renderTo(buf *bytes.Buffer) {
 	tg.void()
 }
 
-// Type sets the type attribute
+// Type sets the type attribute and returns the element.
 func (i *Input) Type(inputtype string) *Input {
 	i.inputtype = inputtype
 	return i
 }
 
-// Name sets the name attribute
+// Name sets the name attribute and returns the element.
 func (i *Input) Name(name string) *Input {
 	i.name = name
 	return i
 }
 
-// Value sets the value attribute
+// Value sets the value attribute and returns the element.
 func (i *Input) Value(value string) *Input {
 	i.value = value
 	return i
 }
 
-// Placeholder sets the placeholder attribute
+// Placeholder sets the placeholder attribute and returns the element.
 func (i *Input) Placeholder(placeholder string) *Input {
 	i.placeholder = placeholder
 	return i
 }
 
-// Form sets the form attribute
+// Form sets the form attribute and returns the element.
 func (i *Input) Form(form string) *Input {
 	i.form = form
 	return i
 }
 
-// Required sets the required attribute
+// Required sets the required attribute and returns the element.
 func (i *Input) Required(required bool) *Input {
 	i.required = required
 	return i
 }
 
-// Disabled sets the disabled attribute
+// Disabled sets the disabled attribute and returns the element.
 func (i *Input) Disabled(disabled bool) *Input {
 	i.disabled = disabled
 	return i
 }
 
-// Readonly sets the readonly attribute
+// Readonly sets the readonly attribute and returns the element.
 func (i *Input) Readonly(readonly bool) *Input {
 	i.readonly = readonly
 	return i
 }
 
-// Autofocus sets the autofocus attribute
+// Autofocus sets the autofocus attribute and returns the element.
 func (i *Input) Autofocus(autofocus bool) *Input {
 	i.autofocus = autofocus
 	return i
 }
 
-// AutoComplete sets the autocomplete attribute.
+// AutoComplete sets the autocomplete attribute and returns the element.
 func (i *Input) AutoComplete(autocomplete string) *Input {
 	i.autocomplete = autocomplete
 	return i
 }
 
-// Min sets the min attribute
+// Min sets the min attribute and returns the element.
 func (i *Input) Min(min string) *Input {
 	i.min = min
 	return i
 }
 
-// Max sets the max attribute
+// Max sets the max attribute and returns the element.
 func (i *Input) Max(max string) *Input {
 	i.max = max
 	return i
 }
 
-// Step sets the step attribute
+// Step sets the step attribute and returns the element.
 func (i *Input) Step(step string) *Input {
 	i.step = step
 	return i
 }
 
-// Pattern sets the pattern attribute
+// Pattern sets the pattern attribute and returns the element.
 func (i *Input) Pattern(pattern string) *Input {
 	i.pattern = pattern
 	return i
@@ -290,19 +290,19 @@ func (i *Input) MinLength(minlength int) *Input {
 	return i
 }
 
-// Multiple sets the multiple attribute
+// Multiple sets the multiple attribute and returns the element.
 func (i *Input) Multiple(multiple bool) *Input {
 	i.multiple = multiple
 	return i
 }
 
-// Accept sets the accept attribute
+// Accept sets the accept attribute and returns the element.
 func (i *Input) Accept(accept string) *Input {
 	i.accept = accept
 	return i
 }
 
-// Checked sets the checked attribute
+// Checked sets the checked attribute and returns the element.
 func (i *Input) Checked(checked bool) *Input {
 	i.checked = checked
 	return i
@@ -334,19 +334,19 @@ func (o *Output) renderTo(buf *bytes.Buffer) {
 	tg.children(o.contents)
 }
 
-// For sets the for attribute
+// For sets the for attribute and returns the element.
 func (o *Output) For(forattr string) *Output {
 	o.forattr = forattr
 	return o
 }
 
-// Name sets the name attribute
+// Name sets the name attribute and returns the element.
 func (o *Output) Name(name string) *Output {
 	o.name = name
 	return o
 }
 
-// Form sets the form attribute
+// Form sets the form attribute and returns the element.
 func (o *Output) Form(form string) *Output {
 	o.form = form
 	return o
@@ -378,19 +378,19 @@ func (f *Fieldset) renderTo(buf *bytes.Buffer) {
 	tg.children(f.contents)
 }
 
-// Form sets the form attribute
+// Form sets the form attribute and returns the element.
 func (f *Fieldset) Form(form string) *Fieldset {
 	f.form = form
 	return f
 }
 
-// Name sets the name attribute
+// Name sets the name attribute and returns the element.
 func (f *Fieldset) Name(name string) *Fieldset {
 	f.name = name
 	return f
 }
 
-// Disabled sets the disabled attribute
+// Disabled sets the disabled attribute and returns the element.
 func (f *Fieldset) Disabled(disabled bool) *Fieldset {
 	f.disabled = disabled
 	return f
@@ -438,25 +438,25 @@ func (b *Button) renderTo(buf *bytes.Buffer) {
 	tg.children(b.contents)
 }
 
-// Type sets the type attribute
+// Type sets the type attribute and returns the element.
 func (b *Button) Type(buttonType string) *Button {
 	b.buttonType = buttonType
 	return b
 }
 
-// Name sets the name attribute
+// Name sets the name attribute and returns the element.
 func (b *Button) Name(name string) *Button {
 	b.name = name
 	return b
 }
 
-// Value sets the value attribute
+// Value sets the value attribute and returns the element.
 func (b *Button) Value(value string) *Button {
 	b.value = value
 	return b
 }
 
-// Form sets the form attribute
+// Form sets the form attribute and returns the element.
 func (b *Button) Form(form string) *Button {
 	b.form = form
 	return b
@@ -470,37 +470,37 @@ func (b *Button) FormAction(formAction string) *Button {
 	return b
 }
 
-// FormEnctype sets the formenctype attribute
+// FormEnctype sets the formenctype attribute and returns the element.
 func (b *Button) FormEnctype(formEnctype string) *Button {
 	b.formEnctype = formEnctype
 	return b
 }
 
-// FormMethod sets the formmethod attribute
+// FormMethod sets the formmethod attribute and returns the element.
 func (b *Button) FormMethod(formMethod string) *Button {
 	b.formMethod = formMethod
 	return b
 }
 
-// FormTarget sets the formtarget attribute
+// FormTarget sets the formtarget attribute and returns the element.
 func (b *Button) FormTarget(formTarget string) *Button {
 	b.formTarget = formTarget
 	return b
 }
 
-// FormNovalidate sets the formnovalidate attribute
+// FormNovalidate sets the formnovalidate attribute and returns the element.
 func (b *Button) FormNovalidate(formNovalidate bool) *Button {
 	b.formNovalidate = formNovalidate
 	return b
 }
 
-// Disabled sets the disabled attribute
+// Disabled sets the disabled attribute and returns the element.
 func (b *Button) Disabled(disabled bool) *Button {
 	b.disabled = disabled
 	return b
 }
 
-// Autofocus sets the autofocus attribute
+// Autofocus sets the autofocus attribute and returns the element.
 func (b *Button) Autofocus(autofocus bool) *Button {
 	b.autofocus = autofocus
 	return b
@@ -542,13 +542,13 @@ func (s *Select) renderTo(buf *bytes.Buffer) {
 	tg.children(s.contents)
 }
 
-// Name sets the name attribute
+// Name sets the name attribute and returns the element.
 func (s *Select) Name(name string) *Select {
 	s.name = name
 	return s
 }
 
-// Form sets the form attribute
+// Form sets the form attribute and returns the element.
 func (s *Select) Form(form string) *Select {
 	s.form = form
 	return s
@@ -561,31 +561,31 @@ func (s *Select) Size(size int) *Select {
 	return s
 }
 
-// Multiple sets the multiple attribute
+// Multiple sets the multiple attribute and returns the element.
 func (s *Select) Multiple(multiple bool) *Select {
 	s.multiple = multiple
 	return s
 }
 
-// Required sets the required attribute
+// Required sets the required attribute and returns the element.
 func (s *Select) Required(required bool) *Select {
 	s.required = required
 	return s
 }
 
-// Disabled sets the disabled attribute
+// Disabled sets the disabled attribute and returns the element.
 func (s *Select) Disabled(disabled bool) *Select {
 	s.disabled = disabled
 	return s
 }
 
-// Autofocus sets the autofocus attribute
+// Autofocus sets the autofocus attribute and returns the element.
 func (s *Select) Autofocus(autofocus bool) *Select {
 	s.autofocus = autofocus
 	return s
 }
 
-// AutoComplete sets the autocomplete attribute
+// AutoComplete sets the autocomplete attribute and returns the element.
 func (s *Select) AutoComplete(autoComplete string) *Select {
 	s.autoComplete = autoComplete
 	return s
@@ -635,13 +635,13 @@ func (o *Optgroup) renderTo(buf *bytes.Buffer) {
 	tg.children(o.contents)
 }
 
-// Label sets the label attribute
+// Label sets the label attribute and returns the element.
 func (o *Optgroup) Label(label string) *Optgroup {
 	o.label = label
 	return o
 }
 
-// Disabled sets the disabled attribute
+// Disabled sets the disabled attribute and returns the element.
 func (o *Optgroup) Disabled(disabled bool) *Optgroup {
 	o.disabled = disabled
 	return o
@@ -675,25 +675,25 @@ func (o *Option) renderTo(buf *bytes.Buffer) {
 	tg.children(o.contents)
 }
 
-// Value sets the value attribute
+// Value sets the value attribute and returns the element.
 func (o *Option) Value(value string) *Option {
 	o.value = value
 	return o
 }
 
-// Label sets the label attribute
+// Label sets the label attribute and returns the element.
 func (o *Option) Label(label string) *Option {
 	o.label = label
 	return o
 }
 
-// Selected sets the selected attribute
+// Selected sets the selected attribute and returns the element.
 func (o *Option) Selected(selected bool) *Option {
 	o.selected = selected
 	return o
 }
 
-// Disabled sets the disabled attribute
+// Disabled sets the disabled attribute and returns the element.
 func (o *Option) Disabled(disabled bool) *Option {
 	o.disabled = disabled
 	return o
@@ -747,13 +747,13 @@ func (t *Textarea) renderTo(buf *bytes.Buffer) {
 	tg.children(t.contents)
 }
 
-// Name sets the name attribute
+// Name sets the name attribute and returns the element.
 func (t *Textarea) Name(name string) *Textarea {
 	t.name = name
 	return t
 }
 
-// Form sets the form attribute
+// Form sets the form attribute and returns the element.
 func (t *Textarea) Form(form string) *Textarea {
 	t.form = form
 	return t
@@ -773,7 +773,7 @@ func (t *Textarea) Cols(cols int) *Textarea {
 	return t
 }
 
-// Placeholder sets the placeholder attribute
+// Placeholder sets the placeholder attribute and returns the element.
 func (t *Textarea) Placeholder(placeholder string) *Textarea {
 	t.placeholder = placeholder
 	return t
@@ -793,43 +793,43 @@ func (t *Textarea) MinLength(minLength int) *Textarea {
 	return t
 }
 
-// Wrap sets the wrap attribute
+// Wrap sets the wrap attribute and returns the element.
 func (t *Textarea) Wrap(wrap string) *Textarea {
 	t.wrap = wrap
 	return t
 }
 
-// Required sets the required attribute
+// Required sets the required attribute and returns the element.
 func (t *Textarea) Required(required bool) *Textarea {
 	t.required = required
 	return t
 }
 
-// Disabled sets the disabled attribute
+// Disabled sets the disabled attribute and returns the element.
 func (t *Textarea) Disabled(disabled bool) *Textarea {
 	t.disabled = disabled
 	return t
 }
 
-// Readonly sets the readonly attribute
+// Readonly sets the readonly attribute and returns the element.
 func (t *Textarea) Readonly(readonly bool) *Textarea {
 	t.readonly = readonly
 	return t
 }
 
-// Autofocus sets the autofocus attribute
+// Autofocus sets the autofocus attribute and returns the element.
 func (t *Textarea) Autofocus(autofocus bool) *Textarea {
 	t.autofocus = autofocus
 	return t
 }
 
-// AutoComplete sets the autocomplete attribute
+// AutoComplete sets the autocomplete attribute and returns the element.
 func (t *Textarea) AutoComplete(autoComplete string) *Textarea {
 	t.autoComplete = autoComplete
 	return t
 }
 
-// Spellcheck sets the spellcheck attribute
+// Spellcheck sets the spellcheck attribute and returns the element.
 func (t *Textarea) Spellcheck(spellcheck string) *Textarea {
 	t.spellcheck = spellcheck
 	return t
@@ -861,19 +861,19 @@ func (p *Progress) renderTo(buf *bytes.Buffer) {
 	tg.children(p.contents)
 }
 
-// Value sets the value attribute
+// Value sets the value attribute and returns the element.
 func (p *Progress) Value(value string) *Progress {
 	p.value = value
 	return p
 }
 
-// Max sets the max attribute
+// Max sets the max attribute and returns the element.
 func (p *Progress) Max(max string) *Progress {
 	p.max = max
 	return p
 }
 
-// Form sets the form attribute
+// Form sets the form attribute and returns the element.
 func (p *Progress) Form(form string) *Progress {
 	p.form = form
 	return p
@@ -913,43 +913,43 @@ func (m *Meter) renderTo(buf *bytes.Buffer) {
 	tg.children(m.contents)
 }
 
-// Value sets the value attribute
+// Value sets the value attribute and returns the element.
 func (m *Meter) Value(value string) *Meter {
 	m.value = value
 	return m
 }
 
-// Min sets the min attribute
+// Min sets the min attribute and returns the element.
 func (m *Meter) Min(min string) *Meter {
 	m.min = min
 	return m
 }
 
-// Max sets the max attribute
+// Max sets the max attribute and returns the element.
 func (m *Meter) Max(max string) *Meter {
 	m.max = max
 	return m
 }
 
-// Low sets the low attribute
+// Low sets the low attribute and returns the element.
 func (m *Meter) Low(low string) *Meter {
 	m.low = low
 	return m
 }
 
-// High sets the high attribute
+// High sets the high attribute and returns the element.
 func (m *Meter) High(high string) *Meter {
 	m.high = high
 	return m
 }
 
-// Optimum sets the optimum attribute
+// Optimum sets the optimum attribute and returns the element.
 func (m *Meter) Optimum(optimum string) *Meter {
 	m.optimum = optimum
 	return m
 }
 
-// Form sets the form attribute
+// Form sets the form attribute and returns the element.
 func (m *Meter) Form(form string) *Meter {
 	m.form = form
 	return m

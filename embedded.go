@@ -27,19 +27,19 @@ func (e *Embed) Src(src string) *Embed {
 	return e
 }
 
-// Type sets the type attribute.
+// Type sets the type attribute and returns the element.
 func (e *Embed) Type(embedType string) *Embed {
 	e.embedType = embedType
 	return e
 }
 
-// Width sets the width attribute.
+// Width sets the width attribute and returns the element.
 func (e *Embed) Width(width string) *Embed {
 	e.width = width
 	return e
 }
 
-// Height sets the height attribute.
+// Height sets the height attribute and returns the element.
 func (e *Embed) Height(height string) *Embed {
 	e.height = height
 	return e
@@ -87,49 +87,49 @@ func (i *Iframe) Src(src string) *Iframe {
 	return i
 }
 
-// Width sets the width attribute.
+// Width sets the width attribute and returns the element.
 func (i *Iframe) Width(width string) *Iframe {
 	i.width = width
 	return i
 }
 
-// Height sets the height attribute.
+// Height sets the height attribute and returns the element.
 func (i *Iframe) Height(height string) *Iframe {
 	i.height = height
 	return i
 }
 
-// Name sets the name attribute.
+// Name sets the name attribute and returns the element.
 func (i *Iframe) Name(name string) *Iframe {
 	i.name = name
 	return i
 }
 
-// Sandbox sets the sandbox attribute.
+// Sandbox sets the sandbox attribute and returns the element.
 func (i *Iframe) Sandbox(sandbox string) *Iframe {
 	i.sandbox = sandbox
 	return i
 }
 
-// Allow sets the allow attribute.
+// Allow sets the allow attribute and returns the element.
 func (i *Iframe) Allow(allow string) *Iframe {
 	i.allow = allow
 	return i
 }
 
-// AllowFullscreen sets the allowfullscreen attribute.
+// AllowFullscreen sets the allowfullscreen attribute and returns the element.
 func (i *Iframe) AllowFullscreen(allowfullscreen bool) *Iframe {
 	i.allowfullscreen = allowfullscreen
 	return i
 }
 
-// Loading sets the loading attribute.
+// Loading sets the loading attribute and returns the element.
 func (i *Iframe) Loading(loading string) *Iframe {
 	i.loading = loading
 	return i
 }
 
-// ReferrerPolicy sets the referrerpolicy attribute.
+// ReferrerPolicy sets the referrerpolicy attribute and returns the element.
 func (i *Iframe) ReferrerPolicy(referrerpolicy string) *Iframe {
 	i.referrerpolicy = referrerpolicy
 	return i
@@ -190,25 +190,25 @@ func (o *Object) Data(data string) *Object {
 	return o
 }
 
-// Type sets the type attribute.
+// Type sets the type attribute and returns the element.
 func (o *Object) Type(objType string) *Object {
 	o.objType = objType
 	return o
 }
 
-// Width sets the width attribute.
+// Width sets the width attribute and returns the element.
 func (o *Object) Width(width string) *Object {
 	o.width = width
 	return o
 }
 
-// Height sets the height attribute.
+// Height sets the height attribute and returns the element.
 func (o *Object) Height(height string) *Object {
 	o.height = height
 	return o
 }
 
-// Name sets the name attribute.
+// Name sets the name attribute and returns the element.
 func (o *Object) Name(name string) *Object {
 	o.name = name
 	return o
@@ -222,7 +222,7 @@ func (o *Object) Usemap(usemap string) *Object {
 	return o
 }
 
-// Form sets the form attribute.
+// Form sets the form attribute and returns the element.
 func (o *Object) Form(form string) *Object {
 	o.form = form
 	return o
@@ -285,7 +285,7 @@ func (p *Portal) Src(src string) *Portal {
 	return p
 }
 
-// ReferrerPolicy sets the referrerpolicy attribute.
+// ReferrerPolicy sets the referrerpolicy attribute and returns the element.
 func (p *Portal) ReferrerPolicy(referrerpolicy string) *Portal {
 	p.referrerpolicy = referrerpolicy
 	return p
@@ -335,19 +335,19 @@ func (s *Source) Srcset(srcset string) *Source {
 	return s
 }
 
-// Media sets the media attribute.
+// Media sets the media attribute and returns the element.
 func (s *Source) Media(media string) *Source {
 	s.media = media
 	return s
 }
 
-// Sizes sets the sizes attribute.
+// Sizes sets the sizes attribute and returns the element.
 func (s *Source) Sizes(sizes string) *Source {
 	s.sizes = sizes
 	return s
 }
 
-// Type sets the type attribute.
+// Type sets the type attribute and returns the element.
 func (s *Source) Type(srcType string) *Source {
 	s.srcType = srcType
 	return s
