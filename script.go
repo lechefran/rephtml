@@ -81,7 +81,9 @@ func NewScript() *Script {
 	return v
 }
 
-// Src sets the src attribute.
+// Src sets the src attribute and returns the element.
+//
+// An unsafe URL is replaced with [BlockedURL] when rendered; see [IsSafeURL].
 func (s *Script) Src(src string) *Script {
 	s.src = src
 	return s

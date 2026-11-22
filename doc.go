@@ -180,7 +180,9 @@ func (h *HtmlFile) Xmlns(xmlns string) *HtmlFile {
 	return h
 }
 
-// Manifest sets the manifest attribute
+// Manifest sets the manifest attribute and returns the element.
+//
+// An unsafe URL is replaced with [BlockedURL] when rendered; see [IsSafeURL].
 func (h *HtmlFile) Manifest(manifest string) *HtmlFile {
 	h.manifest = manifest
 	return h
@@ -709,7 +711,9 @@ func (b *Base) renderTo(buf *bytes.Buffer) {
 	tg.void()
 }
 
-// Href sets the href attribute
+// Href sets the href attribute and returns the element.
+//
+// An unsafe URL is replaced with [BlockedURL] when rendered; see [IsSafeURL].
 func (b *Base) Href(href string) *Base {
 	b.href = href
 	return b
@@ -765,7 +769,9 @@ func (l *Link) Rel(rel string) *Link {
 	return l
 }
 
-// Href sets the href attribute
+// Href sets the href attribute and returns the element.
+//
+// An unsafe URL is replaced with [BlockedURL] when rendered; see [IsSafeURL].
 func (l *Link) Href(href string) *Link {
 	l.href = href
 	return l

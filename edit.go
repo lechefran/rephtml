@@ -26,7 +26,9 @@ func (d *Del) renderTo(buf *bytes.Buffer) {
 	tg.children(d.contents)
 }
 
-// Cite sets the cite attribute
+// Cite sets the cite attribute and returns the element.
+//
+// An unsafe URL is replaced with [BlockedURL] when rendered; see [IsSafeURL].
 func (d *Del) Cite(url string) *Del {
 	d.cite = url
 	return d
@@ -62,7 +64,9 @@ func (i *Ins) renderTo(buf *bytes.Buffer) {
 	tg.children(i.contents)
 }
 
-// Cite sets the cite attribute
+// Cite sets the cite attribute and returns the element.
+//
+// An unsafe URL is replaced with [BlockedURL] when rendered; see [IsSafeURL].
 func (i *Ins) Cite(url string) *Ins {
 	i.cite = url
 	return i

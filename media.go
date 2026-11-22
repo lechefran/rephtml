@@ -32,7 +32,9 @@ func (a *Area) Coords(coords string) *Area {
 	return a
 }
 
-// Href sets the href attribute.
+// Href sets the href attribute and returns the element.
+//
+// An unsafe URL is replaced with [BlockedURL] when rendered; see [IsSafeURL].
 func (a *Area) Href(href string) *Area {
 	a.href = href
 	return a
@@ -80,7 +82,9 @@ func NewImg() *Img {
 	return v
 }
 
-// Src sets the src attribute.
+// Src sets the src attribute and returns the element.
+//
+// An unsafe URL is replaced with [BlockedURL] when rendered; see [IsSafeURL].
 func (i *Img) Src(src string) *Img {
 	i.src = src
 	return i
@@ -141,7 +145,9 @@ func NewAudio() *Audio {
 	return v
 }
 
-// Src sets the src attribute.
+// Src sets the src attribute and returns the element.
+//
+// An unsafe URL is replaced with [BlockedURL] when rendered; see [IsSafeURL].
 func (a *Audio) Src(src string) *Audio {
 	a.src = src
 	return a
@@ -208,7 +214,9 @@ func NewTrack() *Track {
 	return v
 }
 
-// Src sets the src attribute.
+// Src sets the src attribute and returns the element.
+//
+// An unsafe URL is replaced with [BlockedURL] when rendered; see [IsSafeURL].
 func (t *Track) Src(src string) *Track {
 	t.src = src
 	return t
@@ -300,7 +308,9 @@ func NewVideo() *Video {
 	return v
 }
 
-// Src sets the src attribute.
+// Src sets the src attribute and returns the element.
+//
+// An unsafe URL is replaced with [BlockedURL] when rendered; see [IsSafeURL].
 func (v *Video) Src(src string) *Video {
 	v.src = src
 	return v
@@ -348,7 +358,9 @@ func (v *Video) Height(height string) *Video {
 	return v
 }
 
-// Poster sets the poster attribute.
+// Poster sets the poster attribute and returns the element.
+//
+// An unsafe URL is replaced with [BlockedURL] when rendered; see [IsSafeURL].
 func (v *Video) Poster(poster string) *Video {
 	v.poster = poster
 	return v

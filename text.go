@@ -144,7 +144,9 @@ func NewBlockquote() *Blockquote {
 	return v
 }
 
-// Cite sets the cite attribute.
+// Cite sets the cite attribute and returns the element.
+//
+// An unsafe URL is replaced with [BlockedURL] when rendered; see [IsSafeURL].
 func (b *Blockquote) Cite(c string) *Blockquote {
 	b.cite = c
 	return b

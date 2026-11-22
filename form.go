@@ -38,7 +38,9 @@ func (f *Form) renderTo(buf *bytes.Buffer) {
 	tg.children(f.contents)
 }
 
-// Action sets the action attribute
+// Action sets the action attribute and returns the element.
+//
+// An unsafe URL is replaced with [BlockedURL] when rendered; see [IsSafeURL].
 func (f *Form) Action(action string) *Form {
 	f.action = action
 	return f
@@ -460,7 +462,9 @@ func (b *Button) Form(form string) *Button {
 	return b
 }
 
-// FormAction sets the formaction attribute
+// FormAction sets the formaction attribute and returns the element.
+//
+// An unsafe URL is replaced with [BlockedURL] when rendered; see [IsSafeURL].
 func (b *Button) FormAction(formAction string) *Button {
 	b.formAction = formAction
 	return b

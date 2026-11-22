@@ -19,7 +19,9 @@ func NewEmbed() *Embed {
 	return v
 }
 
-// Src sets the src attribute.
+// Src sets the src attribute and returns the element.
+//
+// An unsafe URL is replaced with [BlockedURL] when rendered; see [IsSafeURL].
 func (e *Embed) Src(src string) *Embed {
 	e.src = src
 	return e
@@ -77,7 +79,9 @@ func NewIframe() *Iframe {
 	return v
 }
 
-// Src sets the src attribute.
+// Src sets the src attribute and returns the element.
+//
+// An unsafe URL is replaced with [BlockedURL] when rendered; see [IsSafeURL].
 func (i *Iframe) Src(src string) *Iframe {
 	i.src = src
 	return i
@@ -178,7 +182,9 @@ func NewObject() *Object {
 	return v
 }
 
-// Data sets the data attribute.
+// Data sets the data attribute and returns the element.
+//
+// An unsafe URL is replaced with [BlockedURL] when rendered; see [IsSafeURL].
 func (o *Object) Data(data string) *Object {
 	o.data = data
 	return o
@@ -208,7 +214,9 @@ func (o *Object) Name(name string) *Object {
 	return o
 }
 
-// Usemap sets the usemap attribute.
+// Usemap sets the usemap attribute and returns the element.
+//
+// An unsafe URL is replaced with [BlockedURL] when rendered; see [IsSafeURL].
 func (o *Object) Usemap(usemap string) *Object {
 	o.usemap = usemap
 	return o
@@ -269,7 +277,9 @@ func NewPortal() *Portal {
 	return v
 }
 
-// Src sets the src attribute.
+// Src sets the src attribute and returns the element.
+//
+// An unsafe URL is replaced with [BlockedURL] when rendered; see [IsSafeURL].
 func (p *Portal) Src(src string) *Portal {
 	p.src = src
 	return p
@@ -308,13 +318,18 @@ func NewSource() *Source {
 	return v
 }
 
-// Src sets the src attribute.
+// Src sets the src attribute and returns the element.
+//
+// An unsafe URL is replaced with [BlockedURL] when rendered; see [IsSafeURL].
 func (s *Source) Src(src string) *Source {
 	s.src = src
 	return s
 }
 
-// Srcset sets the srcset attribute.
+// Srcset sets the srcset attribute and returns the element.
+//
+// Each candidate URL is filtered like [IsSafeURL] and an unsafe one is replaced
+// with [BlockedURL] when rendered.
 func (s *Source) Srcset(srcset string) *Source {
 	s.srcset = srcset
 	return s

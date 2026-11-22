@@ -37,7 +37,9 @@ func NewAnchor() *Anchor {
 	return v
 }
 
-// Link sets the link attribute.
+// Link sets the href attribute and returns the element.
+//
+// An unsafe URL is replaced with [BlockedURL] when rendered; see [IsSafeURL].
 func (a *Anchor) Link(s string) *Anchor {
 	a.link = s
 	return a
@@ -119,7 +121,9 @@ func NewQ() *Q {
 	return v
 }
 
-// Cite sets the cite attribute.
+// Cite sets the cite attribute and returns the element.
+//
+// An unsafe URL is replaced with [BlockedURL] when rendered; see [IsSafeURL].
 func (q *Q) Cite(s string) *Q {
 	q.cite = s
 	return q
