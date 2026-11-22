@@ -2,7 +2,7 @@ package rephtml
 
 import "bytes"
 
-// Form represents the HTML form element for user input
+// Form represents the HTML <form> element, used for user input.
 type Form struct {
 	bodyElement
 	contentNode[*Form]
@@ -16,7 +16,7 @@ type Form struct {
 	acceptcharset string
 }
 
-// NewForm creates a new Form element
+// NewForm returns a new, empty <form> element.
 func NewForm() *Form {
 	v := &Form{}
 	v.init(v)
@@ -88,7 +88,7 @@ func (f *Form) NoValidate(novalidate bool) *Form {
 	return f
 }
 
-// Label represents the HTML label element for form controls
+// Label represents the HTML <label> element, used for form controls.
 type Label struct {
 	bodyElement
 	textContent[*Label]
@@ -96,7 +96,7 @@ type Label struct {
 	form    string
 }
 
-// NewLabel creates a new Label element
+// NewLabel returns a new, empty <label> element.
 func NewLabel() *Label {
 	v := &Label{}
 	v.init(v)
@@ -124,7 +124,7 @@ func (l *Label) Form(form string) *Label {
 	return l
 }
 
-// Input represents the HTML input element for user input
+// Input represents the HTML <input> element, used for user input.
 type Input struct {
 	bodyElement
 	node[*Input]
@@ -150,7 +150,7 @@ type Input struct {
 	checked      bool
 }
 
-// NewInput creates a new Input element
+// NewInput returns a new, empty <input> element.
 func NewInput() *Input {
 	v := &Input{}
 	v.init(v)
@@ -308,7 +308,7 @@ func (i *Input) Checked(checked bool) *Input {
 	return i
 }
 
-// Output represents the HTML output element for calculation results
+// Output represents the HTML <output> element, used for calculation results.
 type Output struct {
 	bodyElement
 	textContent[*Output]
@@ -317,7 +317,7 @@ type Output struct {
 	form    string
 }
 
-// NewOutput creates a new Output element
+// NewOutput returns a new, empty <output> element.
 func NewOutput() *Output {
 	v := &Output{}
 	v.init(v)
@@ -352,7 +352,7 @@ func (o *Output) Form(form string) *Output {
 	return o
 }
 
-// Fieldset represents the HTML fieldset element for grouping form controls
+// Fieldset represents the HTML <fieldset> element, used for grouping form controls.
 type Fieldset struct {
 	bodyElement
 	contentNode[*Fieldset]
@@ -361,7 +361,7 @@ type Fieldset struct {
 	disabled bool
 }
 
-// NewFieldset creates a new Fieldset element
+// NewFieldset returns a new, empty <fieldset> element.
 func NewFieldset() *Fieldset {
 	v := &Fieldset{}
 	v.init(v)
@@ -396,7 +396,7 @@ func (f *Fieldset) Disabled(disabled bool) *Fieldset {
 	return f
 }
 
-// Button represents the HTML button element for clickable buttons
+// Button represents the HTML <button> element, used for clickable buttons.
 type Button struct {
 	bodyElement
 	textContent[*Button]
@@ -413,7 +413,7 @@ type Button struct {
 	autofocus      bool
 }
 
-// NewButton creates a new Button element
+// NewButton returns a new, empty <button> element.
 func NewButton() *Button {
 	v := &Button{}
 	v.init(v)
@@ -506,7 +506,7 @@ func (b *Button) Autofocus(autofocus bool) *Button {
 	return b
 }
 
-// Select represents the HTML select element for dropdown lists
+// Select represents the HTML <select> element, used for dropdown lists.
 type Select struct {
 	bodyElement
 	contentNode[*Select]
@@ -520,7 +520,7 @@ type Select struct {
 	autoComplete string
 }
 
-// NewSelect creates a new Select element
+// NewSelect returns a new, empty <select> element.
 func NewSelect() *Select {
 	v := &Select{}
 	v.init(v)
@@ -591,13 +591,13 @@ func (s *Select) AutoComplete(autoComplete string) *Select {
 	return s
 }
 
-// Datalist represents the HTML datalist element for predefined options
+// Datalist represents the HTML <datalist> element, used for predefined options.
 type Datalist struct {
 	bodyElement
 	contentNode[*Datalist]
 }
 
-// NewDatalist creates a new Datalist element
+// NewDatalist returns a new, empty <datalist> element.
 func NewDatalist() *Datalist {
 	v := &Datalist{}
 	v.init(v)
@@ -611,7 +611,7 @@ func (d *Datalist) renderTo(buf *bytes.Buffer) {
 	tg.children(d.contents)
 }
 
-// Optgroup represents the HTML optgroup element for grouping options
+// Optgroup represents the HTML <optgroup> element, used for grouping options.
 type Optgroup struct {
 	bodyElement
 	contentNode[*Optgroup]
@@ -619,7 +619,7 @@ type Optgroup struct {
 	disabled bool
 }
 
-// NewOptgroup creates a new Optgroup element
+// NewOptgroup returns a new, empty <optgroup> element.
 func NewOptgroup() *Optgroup {
 	v := &Optgroup{}
 	v.init(v)
@@ -647,7 +647,7 @@ func (o *Optgroup) Disabled(disabled bool) *Optgroup {
 	return o
 }
 
-// Option represents the HTML option element for select options
+// Option represents the HTML <option> element, used for select options.
 type Option struct {
 	bodyElement
 	textContent[*Option]
@@ -657,7 +657,7 @@ type Option struct {
 	disabled bool
 }
 
-// NewOption creates a new Option element
+// NewOption returns a new, empty <option> element.
 func NewOption() *Option {
 	v := &Option{}
 	v.init(v)
@@ -699,7 +699,7 @@ func (o *Option) Disabled(disabled bool) *Option {
 	return o
 }
 
-// Textarea represents the HTML textarea element for multi-line text input
+// Textarea represents the HTML <textarea> element, used for multi-line text input.
 type Textarea struct {
 	bodyElement
 	textContent[*Textarea]
@@ -719,7 +719,7 @@ type Textarea struct {
 	spellcheck   string
 }
 
-// NewTextarea creates a new Textarea element
+// NewTextarea returns a new, empty <textarea> element.
 func NewTextarea() *Textarea {
 	v := &Textarea{}
 	v.init(v)
@@ -835,7 +835,7 @@ func (t *Textarea) Spellcheck(spellcheck string) *Textarea {
 	return t
 }
 
-// Progress represents the HTML progress element for showing completion progress
+// Progress represents the HTML <progress> element, used for showing completion progress.
 type Progress struct {
 	bodyElement
 	textContent[*Progress]
@@ -844,7 +844,7 @@ type Progress struct {
 	form  string
 }
 
-// NewProgress creates a new Progress element
+// NewProgress returns a new, empty <progress> element.
 func NewProgress() *Progress {
 	v := &Progress{}
 	v.init(v)
@@ -879,7 +879,7 @@ func (p *Progress) Form(form string) *Progress {
 	return p
 }
 
-// Meter represents the HTML meter element for displaying scalar measurements
+// Meter represents the HTML <meter> element, used for displaying scalar measurements.
 type Meter struct {
 	bodyElement
 	textContent[*Meter]
@@ -892,7 +892,7 @@ type Meter struct {
 	form    string
 }
 
-// NewMeter creates a new Meter element
+// NewMeter returns a new, empty <meter> element.
 func NewMeter() *Meter {
 	v := &Meter{}
 	v.init(v)
@@ -955,13 +955,13 @@ func (m *Meter) Form(form string) *Meter {
 	return m
 }
 
-// Legend represents the HTML legend element for fieldset captions
+// Legend represents the HTML <legend> element, used for fieldset captions.
 type Legend struct {
 	bodyElement
 	textContent[*Legend]
 }
 
-// NewLegend creates a new Legend element
+// NewLegend returns a new, empty <legend> element.
 func NewLegend() *Legend {
 	v := &Legend{}
 	v.init(v)

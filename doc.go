@@ -17,7 +17,7 @@ const tab = "\t"
 // HtmlFile streams its output through io.WriterTo.
 var _ io.WriterTo = (*HtmlFile)(nil)
 
-// HtmlFile represents the HTML element for the document root
+// HtmlFile represents the HTML <html> element, the root of a document.
 type HtmlFile struct {
 	style       StyleMap
 	class       []string
@@ -36,7 +36,7 @@ type HtmlFile struct {
 	err         error
 }
 
-// NewHtmlFile creates a new HtmlFile element
+// NewHtmlFile returns a new, empty <html> element.
 func NewHtmlFile() *HtmlFile {
 	return &HtmlFile{style: make(StyleMap)}
 }
@@ -551,13 +551,13 @@ func elementName(e Element) string {
 	return t.Name()
 }
 
-// Head represents the HTML head element for document metadata
+// Head represents the HTML <head> element, used for document metadata.
 type Head struct {
 	contentNode[*Head]
 	err error
 }
 
-// NewHead creates a new Head element
+// NewHead returns a new, empty <head> element.
 func NewHead() *Head {
 	v := &Head{}
 	v.init(v)
@@ -602,7 +602,7 @@ func (h *Head) renderTo(buf *bytes.Buffer) {
 	tg.children(h.contents)
 }
 
-// Body represents the HTML body element for document content
+// Body represents the HTML <body> element, used for document content.
 type Body struct {
 	bodyElement
 	contentNode[*Body]
@@ -611,7 +611,7 @@ type Body struct {
 	err      error
 }
 
-// NewBody creates a new Body element
+// NewBody returns a new, empty <body> element.
 func NewBody() *Body {
 	v := &Body{}
 	v.init(v)
@@ -667,13 +667,13 @@ func (b *Body) OnUnload(onUnload string) *Body {
 	return b
 }
 
-// Title represents the HTML title element for document title
+// Title represents the HTML <title> element, used for document title.
 type Title struct {
 	headElement
 	textContent[*Title]
 }
 
-// NewTitle creates a new Title element
+// NewTitle returns a new, empty <title> element.
 func NewTitle() *Title {
 	v := &Title{}
 	v.init(v)
@@ -687,7 +687,7 @@ func (t *Title) renderTo(buf *bytes.Buffer) {
 	tg.children(t.contents)
 }
 
-// Base represents the HTML base element for document base URL
+// Base represents the HTML <base> element, used for document base URL.
 type Base struct {
 	headElement
 	node[*Base]
@@ -695,7 +695,7 @@ type Base struct {
 	target string
 }
 
-// NewBase creates a new Base element
+// NewBase returns a new, empty <base> element.
 func NewBase() *Base {
 	v := &Base{}
 	v.init(v)
@@ -725,7 +725,7 @@ func (b *Base) Target(target string) *Base {
 	return b
 }
 
-// Link represents the HTML link element for external resources
+// Link represents the HTML <link> element, used for external resources.
 type Link struct {
 	headElement
 	node[*Link]
@@ -740,7 +740,7 @@ type Link struct {
 	hreflang       string
 }
 
-// NewLink creates a new Link element
+// NewLink returns a new, empty <link> element.
 func NewLink() *Link {
 	v := &Link{}
 	v.init(v)
@@ -795,7 +795,7 @@ func (l *Link) Sizes(sizes string) *Link {
 	return l
 }
 
-// CrossOrigin Cross Origin sets the crossOrigin attribute
+// CrossOrigin sets the crossorigin attribute and returns the element.
 func (l *Link) CrossOrigin(crossOrigin string) *Link {
 	l.crossOrigin = crossOrigin
 	return l
@@ -807,7 +807,7 @@ func (l *Link) Integrity(integrity string) *Link {
 	return l
 }
 
-// ReferrerPolicy Referrer Policy sets the referrerPolicy attribute
+// ReferrerPolicy sets the referrerpolicy attribute and returns the element.
 func (l *Link) ReferrerPolicy(referrerPolicy string) *Link {
 	l.referrerPolicy = referrerPolicy
 	return l
@@ -819,7 +819,7 @@ func (l *Link) Hreflang(hreflang string) *Link {
 	return l
 }
 
-// Meta represents the HTML meta element for metadata
+// Meta represents the HTML <meta> element, used for metadata.
 type Meta struct {
 	headElement
 	node[*Meta]
@@ -831,7 +831,7 @@ type Meta struct {
 	scheme    string
 }
 
-// NewMeta creates a new Meta element
+// NewMeta returns a new, empty <meta> element.
 func NewMeta() *Meta {
 	v := &Meta{}
 	v.init(v)
@@ -934,7 +934,7 @@ func (m *Meta) Scheme(scheme string) *Meta {
 	return m
 }
 
-// StyleElement represents the HTML style element for CSS styles
+// StyleElement represents the HTML <style> element, used for CSS styles.
 type StyleElement struct {
 	headElement
 	bodyElement
@@ -944,7 +944,7 @@ type StyleElement struct {
 	err       error
 }
 
-// NewStyleElement creates a new StyleElement element
+// NewStyleElement returns a new, empty <style> element.
 func NewStyleElement() *StyleElement {
 	v := &StyleElement{}
 	v.init(v)

@@ -2,14 +2,14 @@ package rephtml
 
 import "bytes"
 
-// Details represents the HTML details element for creating a disclosure widget
+// Details represents the HTML <details> element, used for creating a disclosure widget.
 type Details struct {
 	bodyElement
 	contentNode[*Details]
 	open bool
 }
 
-// NewDetails creates a new Details element
+// NewDetails returns a new, empty <details> element.
 func NewDetails() *Details {
 	v := &Details{}
 	v.init(v)
@@ -30,14 +30,14 @@ func (d *Details) Open(open bool) *Details {
 	return d
 }
 
-// Dialog represents the HTML dialog element for creating modal dialogs
+// Dialog represents the HTML <dialog> element, used for creating modal dialogs.
 type Dialog struct {
 	bodyElement
 	contentNode[*Dialog]
 	open bool
 }
 
-// NewDialog creates a new Dialog element
+// NewDialog returns a new, empty <dialog> element.
 func NewDialog() *Dialog {
 	v := &Dialog{}
 	v.init(v)
@@ -58,13 +58,13 @@ func (d *Dialog) Open(open bool) *Dialog {
 	return d
 }
 
-// Summary represents the HTML summary element for details disclosure summary
+// Summary represents the HTML <summary> element, used for details disclosure summary.
 type Summary struct {
 	bodyElement
 	contentNode[*Summary]
 }
 
-// NewSummary creates a new Summary element
+// NewSummary returns a new, empty <summary> element.
 func NewSummary() *Summary {
 	v := &Summary{}
 	v.init(v)

@@ -11,7 +11,7 @@ type P struct {
 	textNode[*P]
 }
 
-// NewP creates a new P component.
+// NewP returns a new, empty <p> element.
 func NewP() *P {
 	v := &P{}
 	v.initTag(v, "p")
@@ -27,7 +27,7 @@ type Comment struct {
 	text string
 }
 
-// NewComment creates a new Comment component.
+// NewComment returns a new, empty Comment.
 func NewComment() *Comment {
 	return &Comment{}
 }
@@ -103,7 +103,7 @@ type Hr struct {
 	node[*Hr]
 }
 
-// NewHr creates a new Hr component.
+// NewHr returns a new, empty <hr> element.
 func NewHr() *Hr {
 	v := &Hr{}
 	v.init(v)
@@ -123,7 +123,7 @@ type Pre struct {
 	textNode[*Pre]
 }
 
-// NewPre creates a new Pre component.
+// NewPre returns a new, empty <pre> element.
 func NewPre() *Pre {
 	v := &Pre{}
 	v.initTag(v, "pre")
@@ -137,7 +137,7 @@ type Blockquote struct {
 	cite string
 }
 
-// NewBlockquote creates a new Blockquote component.
+// NewBlockquote returns a new, empty <blockquote> element.
 func NewBlockquote() *Blockquote {
 	v := &Blockquote{}
 	v.init(v)
@@ -168,7 +168,7 @@ type Menu struct {
 	label    string
 }
 
-// NewMenu creates a new Menu component.
+// NewMenu returns a new, empty <menu> element.
 func NewMenu() *Menu {
 	v := &Menu{}
 	v.init(v)
@@ -206,7 +206,7 @@ type Ol struct {
 	reversed bool
 }
 
-// NewOl creates a new Ol component.
+// NewOl returns a new, empty <ol> element.
 func NewOl() *Ol {
 	v := &Ol{}
 	v.init(v)
@@ -251,7 +251,7 @@ type Ul struct {
 	contentNode[*Ul]
 }
 
-// NewUl creates a new Ul component.
+// NewUl returns a new, empty <ul> element.
 func NewUl() *Ul {
 	v := &Ul{}
 	v.init(v)
@@ -273,7 +273,7 @@ type Li struct {
 	valueSet bool
 }
 
-// NewLi creates a new Li component.
+// NewLi returns a new, empty <li> element.
 func NewLi() *Li {
 	v := &Li{}
 	v.init(v)
@@ -304,7 +304,7 @@ type Dl struct {
 	contentNode[*Dl]
 }
 
-// NewDl creates a new Dl component.
+// NewDl returns a new, empty <dl> element.
 func NewDl() *Dl {
 	v := &Dl{}
 	v.init(v)
@@ -324,7 +324,7 @@ type Dt struct {
 	contentNode[*Dt]
 }
 
-// NewDt creates a new Dt component.
+// NewDt returns a new, empty <dt> element.
 func NewDt() *Dt {
 	v := &Dt{}
 	v.init(v)
@@ -344,7 +344,7 @@ type Dd struct {
 	contentNode[*Dd]
 }
 
-// NewDd creates a new Dd component.
+// NewDd returns a new, empty <dd> element.
 func NewDd() *Dd {
 	v := &Dd{}
 	v.init(v)
@@ -364,7 +364,7 @@ type Figure struct {
 	contentNode[*Figure]
 }
 
-// NewFigure creates a new Figure component.
+// NewFigure returns a new, empty <figure> element.
 func NewFigure() *Figure {
 	v := &Figure{}
 	v.init(v)
@@ -384,7 +384,7 @@ type Figcaption struct {
 	contentNode[*Figcaption]
 }
 
-// NewFigcaption creates a new Figcaption component.
+// NewFigcaption returns a new, empty <figcaption> element.
 func NewFigcaption() *Figcaption {
 	v := &Figcaption{}
 	v.init(v)
@@ -404,7 +404,7 @@ type Search struct {
 	contentNode[*Search]
 }
 
-// NewSearch creates a new Search component.
+// NewSearch returns a new, empty <search> element.
 func NewSearch() *Search {
 	v := &Search{}
 	v.init(v)

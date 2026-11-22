@@ -2,7 +2,7 @@ package rephtml
 
 import "bytes"
 
-// Del represents the HTML del element for marking deleted text
+// Del represents the HTML <del> element, used for marking deleted text.
 type Del struct {
 	bodyElement
 	contentNode[*Del]
@@ -10,7 +10,7 @@ type Del struct {
 	datetime string
 }
 
-// NewDel creates a new Del element
+// NewDel returns a new, empty <del> element.
 func NewDel() *Del {
 	v := &Del{}
 	v.init(v)
@@ -40,7 +40,7 @@ func (d *Del) Datetime(datetime string) *Del {
 	return d
 }
 
-// Ins represents the HTML ins element for marking inserted text
+// Ins represents the HTML <ins> element, used for marking inserted text.
 type Ins struct {
 	bodyElement
 	contentNode[*Ins]
@@ -48,7 +48,7 @@ type Ins struct {
 	datetime string
 }
 
-// NewIns creates a new Ins element
+// NewIns returns a new, empty <ins> element.
 func NewIns() *Ins {
 	v := &Ins{}
 	v.init(v)

@@ -13,7 +13,7 @@ type Area struct {
 	target string
 }
 
-// NewArea creates a new Area component.
+// NewArea returns a new, empty <area> element.
 func NewArea() *Area {
 	v := &Area{}
 	v.init(v)
@@ -75,7 +75,7 @@ type Img struct {
 	title  string
 }
 
-// NewImg creates a new Img component.
+// NewImg returns a new, empty <img> element.
 func NewImg() *Img {
 	v := &Img{}
 	v.init(v)
@@ -138,7 +138,7 @@ type Audio struct {
 	preload  string
 }
 
-// NewAudio creates a new Audio component.
+// NewAudio returns a new, empty <audio> element.
 func NewAudio() *Audio {
 	v := &Audio{}
 	v.init(v)
@@ -207,7 +207,7 @@ type Track struct {
 	defaultVal bool
 }
 
-// NewTrack creates a new Track component.
+// NewTrack returns a new, empty <track> element.
 func NewTrack() *Track {
 	v := &Track{}
 	v.init(v)
@@ -265,7 +265,7 @@ type Map struct {
 	name string
 }
 
-// NewMap creates a new Map component.
+// NewMap returns a new, empty <map> element.
 func NewMap() *Map {
 	v := &Map{}
 	v.init(v)
@@ -301,7 +301,7 @@ type Video struct {
 	poster   string
 }
 
-// NewVideo creates a new Video component.
+// NewVideo returns a new, empty <video> element.
 func NewVideo() *Video {
 	v := &Video{}
 	v.init(v)

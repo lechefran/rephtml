@@ -19,7 +19,7 @@ type Table struct {
 	trs       []*Tr
 }
 
-// NewTable creates a new Table component.
+// NewTable returns a new, empty <table> element.
 func NewTable() *Table {
 	v := &Table{}
 	v.init(v)
@@ -200,7 +200,7 @@ type Thead struct {
 	contentNode[*Thead]
 }
 
-// NewThead creates a new Thead component.
+// NewThead returns a new, empty <thead> element.
 func NewThead() *Thead {
 	v := &Thead{}
 	v.init(v)
@@ -226,7 +226,7 @@ type Tbody struct {
 	contentNode[*Tbody]
 }
 
-// NewTbody creates a new Tbody component.
+// NewTbody returns a new, empty <tbody> element.
 func NewTbody() *Tbody {
 	v := &Tbody{}
 	v.init(v)
@@ -252,7 +252,7 @@ type Tfoot struct {
 	contentNode[*Tfoot]
 }
 
-// NewTfoot creates a new Tfoot component.
+// NewTfoot returns a new, empty <tfoot> element.
 func NewTfoot() *Tfoot {
 	v := &Tfoot{}
 	v.init(v)
@@ -279,7 +279,7 @@ type Caption struct {
 	text string
 }
 
-// NewCaption creates a new Caption component.
+// NewCaption returns a new, empty <caption> element.
 func NewCaption() *Caption {
 	v := &Caption{}
 	v.init(v)
@@ -312,7 +312,7 @@ type Col struct {
 	span int
 }
 
-// NewCol creates a new Col component.
+// NewCol returns a new, empty <col> element.
 func NewCol() *Col {
 	v := &Col{}
 	v.init(v)
@@ -340,7 +340,7 @@ type Colgroup struct {
 	span int
 }
 
-// NewColgroup creates a new Colgroup component.
+// NewColgroup returns a new, empty <colgroup> element.
 func NewColgroup() *Colgroup {
 	v := &Colgroup{}
 	v.init(v)
@@ -367,7 +367,7 @@ type Tr struct {
 	contentNode[*Tr]
 }
 
-// NewTr creates a new Tr component.
+// NewTr returns a new, empty <tr> element.
 func NewTr() *Tr {
 	v := &Tr{}
 	v.init(v)
@@ -401,7 +401,7 @@ type Td struct {
 	rowspan int
 }
 
-// NewTd creates a new Td component.
+// NewTd returns a new, empty <td> element.
 func NewTd() *Td {
 	v := &Td{}
 	v.init(v)
@@ -438,7 +438,7 @@ type Th struct {
 	scope   string
 }
 
-// NewTh creates a new Th component.
+// NewTh returns a new, empty <th> element.
 func NewTh() *Th {
 	v := &Th{}
 	v.init(v)

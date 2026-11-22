@@ -12,7 +12,7 @@ type Embed struct {
 	height    string
 }
 
-// NewEmbed creates a new Embed component.
+// NewEmbed returns a new, empty <embed> element.
 func NewEmbed() *Embed {
 	v := &Embed{}
 	v.init(v)
@@ -72,7 +72,7 @@ type Iframe struct {
 	srcdoc          string
 }
 
-// NewIframe creates a new Iframe component.
+// NewIframe returns a new, empty <iframe> element.
 func NewIframe() *Iframe {
 	v := &Iframe{}
 	v.init(v)
@@ -175,7 +175,7 @@ type Object struct {
 	form    string
 }
 
-// NewObject creates a new Object component.
+// NewObject returns a new, empty <object> element.
 func NewObject() *Object {
 	v := &Object{}
 	v.init(v)
@@ -248,7 +248,7 @@ type Picture struct {
 	contentNode[*Picture]
 }
 
-// NewPicture creates a new Picture component.
+// NewPicture returns a new, empty <picture> element.
 func NewPicture() *Picture {
 	v := &Picture{}
 	v.init(v)
@@ -270,7 +270,7 @@ type Portal struct {
 	referrerpolicy string
 }
 
-// NewPortal creates a new Portal component.
+// NewPortal returns a new, empty <portal> element.
 func NewPortal() *Portal {
 	v := &Portal{}
 	v.init(v)
@@ -311,7 +311,7 @@ type Source struct {
 	srcType string
 }
 
-// NewSource creates a new Source component.
+// NewSource returns a new, empty <source> element.
 func NewSource() *Source {
 	v := &Source{}
 	v.init(v)

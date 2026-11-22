@@ -10,7 +10,7 @@ type Canvas struct {
 	height string
 }
 
-// NewCanvas creates a new Canvas component.
+// NewCanvas returns a new, empty <canvas> element.
 func NewCanvas() *Canvas {
 	v := &Canvas{}
 	v.init(v)
@@ -45,7 +45,7 @@ type Noscript struct {
 	contentNode[*Noscript]
 }
 
-// NewNoscript creates a new Noscript component.
+// NewNoscript returns a new, empty <noscript> element.
 func NewNoscript() *Noscript {
 	v := &Noscript{}
 	v.init(v)
@@ -74,7 +74,7 @@ type Script struct {
 	referrerPolicy string
 }
 
-// NewScript creates a new Script component.
+// NewScript returns a new, empty <script> element.
 func NewScript() *Script {
 	v := &Script{}
 	v.init(v)
