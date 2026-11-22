@@ -8,19 +8,34 @@ import "bytes"
 // state, so there is no separate preparation step and a built element can be
 // rendered from several goroutines at once.
 type Element interface {
+	// Render returns the element and its children as HTML bytes.
 	Render() []byte
+	// HTML returns the element and its children as an HTML string.
 	HTML() string
 }
 
 // HeadElement is HTML content that can be appended to a document head.
+//
+// The elements that may appear in a head, such as [Title], [Meta], [Link],
+// [Base], [StyleElement] and [Script], implement it. [HtmlFile.AddToHead]
+// rejects anything else and records the error on [HtmlFile.Err].
 type HeadElement interface {
 	Element
+	// IsHeadElement marks the element as valid head content. It does nothing
+	// and exists only so the compiler can tell head elements from the rest.
 	IsHeadElement()
 }
 
 // BodyElement is HTML content that can be appended to a document body.
+//
+// Every element that may appear in a body, such as [Div], [P] and [Table],
+// implements it. [HtmlFile.AddToBody] rejects anything else and records the
+// error on [HtmlFile.Err]. A few elements, such as [Script] and [StyleElement],
+// are valid in both the head and the body.
 type BodyElement interface {
 	Element
+	// IsBodyElement marks the element as valid body content. It does nothing
+	// and exists only so the compiler can tell body elements from the rest.
 	IsBodyElement()
 }
 
