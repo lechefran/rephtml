@@ -45,7 +45,7 @@ func (b *base[Self]) renderSelf(buf *bytes.Buffer) {
 	b.self.renderTo(buf)
 }
 
-// Render returns the element's HTML bytes.
+// Render returns the element and its children as HTML bytes.
 //
 // The returned slice is the caller's own copy, so it may be retained or
 // modified without affecting the element or any later render.
@@ -56,7 +56,7 @@ func (b *base[Self]) Render() []byte {
 	return cloneBytes(buf.Bytes())
 }
 
-// HTML returns the element's HTML as a string.
+// HTML returns the element and its children as an HTML string.
 func (b *base[Self]) HTML() string {
 	buf := getBuffer()
 	defer putBuffer(buf)
@@ -115,43 +115,47 @@ func (n *node[Self]) init(self Self) {
 	n.style = make(StyleMap)
 }
 
-// AddStyle adds one inline CSS declaration.
+// AddStyle adds one inline CSS declaration and returns the element, so calls
+// can be chained. A property that is already set is replaced.
 func (n *node[Self]) AddStyle(k, v string) Self {
 	n.style[k] = v
 	return n.self
 }
 
-// AddStyles adds multiple inline CSS declarations.
+// AddStyles adds multiple inline CSS declarations and returns the element.
+// Properties that are already set are replaced.
 func (n *node[Self]) AddStyles(m StyleMap) Self {
 	maps.Copy(n.style, m)
 	return n.self
 }
 
-// Style replaces the inline CSS declarations, copying the caller's map.
+// Style replaces all inline CSS declarations and returns the element. The
+// map is copied, so later changes to it do not affect the element.
 func (n *node[Self]) Style(m StyleMap) Self {
 	n.style = cloneStyleMap(m)
 	return n.self
 }
 
-// AddClass appends one class name.
+// AddClass appends one class name and returns the element.
 func (n *node[Self]) AddClass(s string) Self {
 	n.class = append(n.class, s)
 	return n.self
 }
 
-// AddClasses appends multiple class names.
+// AddClasses appends multiple class names and returns the element.
 func (n *node[Self]) AddClasses(s []string) Self {
 	n.class = append(n.class, s...)
 	return n.self
 }
 
-// Class replaces the class names, copying the caller's slice.
+// Class replaces all class names and returns the element. The slice is
+// copied, so later changes to it do not affect the element.
 func (n *node[Self]) Class(s []string) Self {
 	n.class = cloneStrings(s)
 	return n.self
 }
 
-// Id sets the id attribute.
+// Id sets the id attribute and returns the element.
 func (n *node[Self]) Id(s string) Self {
 	n.id = s
 	return n.self
@@ -163,7 +167,7 @@ type contentNode[Self selfElement] struct {
 	contents []Element
 }
 
-// Add appends child content, ignoring nil children.
+// Add appends child content and returns the element. A nil child is ignored.
 func (n *contentNode[Self]) Add(e Element) Self {
 	n.contents = appendElement(n.contents, e)
 	return n.self
@@ -208,15 +212,17 @@ type textContent[Self selfElement] struct {
 	contentNode[Self]
 }
 
-// Text sets the escaped text content, replacing any text set before. Child
-// elements are kept: the text takes the place of the first earlier text, or
-// goes after the children when there was none. Use AddText to append.
+// Text sets the escaped text content and returns the element. It replaces
+// any text set before. Child elements are kept: the text takes the place of
+// the first earlier text, or goes after the children when there was none. Use
+// AddText to append instead.
 func (n *textContent[Self]) Text(s string) Self {
 	n.contents = replaceText(n.contents, escapedText(s))
 	return n.self
 }
 
-// AddText appends escaped text content after any existing content.
+// AddText appends escaped text after any existing content and returns the
+// element.
 func (n *textContent[Self]) AddText(s string) Self {
 	n.contents = appendElement(n.contents, escapedText(s))
 	return n.self
@@ -247,13 +253,13 @@ func (n *textNode[Self]) renderTo(buf *bytes.Buffer) {
 	tg.text(n.text)
 }
 
-// Text replaces the text content.
+// Text replaces the escaped text content and returns the element.
 func (n *textNode[Self]) Text(s string) Self {
 	n.text = s
 	return n.self
 }
 
-// AddText appends to the text content.
+// AddText appends escaped text to the text content and returns the element.
 func (n *textNode[Self]) AddText(s string) Self {
 	n.text += s
 	return n.self
